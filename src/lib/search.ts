@@ -68,7 +68,7 @@ function widgetText(name: WidgetName): string {
 const documents: Doc[] = [
   {
     href: "/",
-    title: "現場トレース",
+    title: "Java Web の読み方",
     crumb: "トップ",
     text: "HTTP と Java Web アプリの構成、既存コードの追い方、よくある不具合パターン、シナリオでの切り分け。申請くん。",
   },

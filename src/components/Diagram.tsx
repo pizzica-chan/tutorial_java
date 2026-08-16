@@ -392,7 +392,7 @@ function Divide() {
   return (
     <div className="d-cols">
       <PhotoCard src="/images/client-laptop.jpg" alt="ノートPC" title="ブラウザ">
-        Network にリクエストが無いか
+        Network タブにリクエストが無いか
       </PhotoCard>
       <PhotoCard src="/images/server-racks.jpg" alt="アプリが動くサーバ" title="アプリ">
         ログに到達しているか。例外は自作クラスか

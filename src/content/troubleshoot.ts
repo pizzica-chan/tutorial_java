@@ -27,7 +27,7 @@ export const troubleshootTrack: Track = {
             },
             {
               title: "区間を切る",
-              text: "ブラウザまで来ているか、サーバに届いているか、DB まで行っているか。Network とログで分ける。値の中身は、止められるならデバッガ。",
+              text: "ブラウザまで来ているか、サーバに届いているか、DB まで行っているか。Network タブとログで分ける。値の中身は、止められるならデバッガ。",
             },
             {
               title: "仮説を1つにする",
@@ -254,7 +254,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
         },
         {
           type: "p",
-          text: "フロントが JSON を期待しているのに、500 の HTML エラーページが返ると、画面にはパースエラーとだけ出ることがあります。Network のステータスと Content-Type を先に見ます。",
+          text: "フロントが JSON を期待しているのに、500 の HTML エラーページが返ると、画面にはパースエラーとだけ出ることがあります。Network タブのステータスと Content-Type を先に見ます。",
         },
         {
           type: "ol",
@@ -414,7 +414,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           items: [
             "ミリ秒まで見る。秒だけだと差が消える",
             "スレッド名（nio-8080-exec-3 など）やリクエスト ID で、同じリクエストの行だけを揃える。別リクエストの行が混ざると差が無意味になる",
-            "Network の待ち時間と、サーバログの最初と最後の時刻を比べる。Network だけ長いなら、アプリに入る前（待ち行列、LB、DNS）",
+            "Network タブの待ち時間と、サーバログの最初と最後の時刻を比べる。Network タブだけ長いなら、アプリに入る前（待ち行列、LB、DNS）",
             "通過点のログが少なければ、空いている区間の中を疑う。足りないときだけ、ID 付きの通過点を一時的に足す",
           ],
         },
@@ -460,7 +460,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           type: "table",
           headers: ["確認", "意味"],
           rows: [
-            ["Network にリクエストが無い", "ボタンの JS、二重送信防止、別ウィンドウ"],
+            ["Network タブにリクエストが無い", "ボタンの JS、二重送信防止、別ウィンドウ"],
             ["リクエストはあるがサーバログが無い", "別インスタンス、パス違い、LB"],
             ["SQLException", "DB 接続、SQL、ロック、DB ユーザ権限"],
             ["接続タイムアウト", "FW、DNS、接続先設定"],

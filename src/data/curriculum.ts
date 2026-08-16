@@ -88,8 +88,8 @@ export function pageDescription(pathname: string): string {
 }
 
 export function pageTitle(pathname: string): string {
-  const site = "現場トレース";
-  if (pathname === "/") return `${site} — Java Web の基礎と切り分け`;
+  const site = "Java Web の読み方";
+  if (pathname === "/") return `${site} — 基礎と切り分け`;
   if (pathname === "/lab") return `ラボ — ${site}`;
   if (pathname === "/glossary" || pathname.startsWith("/glossary")) return `用語集 — ${site}`;
   const parts = pathname.split("/").filter(Boolean);

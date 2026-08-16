@@ -132,8 +132,8 @@ pre {
 
 .brand-name {
   font-family: var(--serif);
-  font-size: 22px;
-  letter-spacing: 0.08em;
+  font-size: 17px;
+  letter-spacing: 0.02em;
 }
 
 .brand-sub {

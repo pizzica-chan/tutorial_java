@@ -38,14 +38,14 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "一覧の件数は、DB に保存された行です。バックエンドはその行を SQL で読み、フロントは返ってきた結果を出します。見た目の CSS とは切り分けが違います。",
+      "一覧の件数は、SQL が読んだ DB の行です。先に飛んだ SQL を見て、同じ条件で行を数えます。見た目の CSS とは切り分けが違います。",
   },
   "web-status": {
     id: "web-status",
     question: "ログイン後の操作で「権限がありません」と出た。ステータスについて妥当なのは？",
     choices: [
       "必ず 403 になる",
-      "403 は「権限が無い」と読む番号だが、実際の番号や画面はアプリによる。Network で確認する",
+      "403 は「権限が無い」と読む番号だが、実際の番号や画面はアプリによる。Network タブで確認する",
       "必ず 401 になる",
       "必ず 500 なので、スタックトレースだけ見る",
     ],
@@ -68,7 +68,7 @@ export const quizzes = {
   },
   "web-api": {
     id: "web-api",
-    question: "画面の JS が JSON を期待しているのに「パースできない」と出る。Network では /api/requests が 200 で、Content-Type は text/html。疑うのは？",
+    question: "画面の JS が JSON を期待しているのに「パースできない」と出る。Network タブでは /api/requests が 200 で、Content-Type は text/html。疑うのは？",
     choices: [
       "JSON のキー名の綴りだけ",
       "ログイン画面など HTML が返っている",
@@ -128,7 +128,7 @@ export const quizzes = {
   },
   "read-debug": {
     id: "read-debug",
-    question: "画面に「承認済み」と出る。Network の JSON は status: PENDING。次は？",
+    question: "画面に「承認済み」と出る。Network タブの JSON は status: PENDING。次は？",
     choices: [
       "RequestService に IDE のブレークポイントを置く",
       "ブラウザの開発者ツールで、JSON を画面に出している JS を見る",
@@ -209,7 +209,7 @@ export const quizzes = {
     question: "「申請一覧がおかしい」だけ渡された。最初にやることは？",
     choices: [
       "Repository から通読する",
-      "操作・期待・実際を一文にし、Network でリクエストの有無を見る",
+      "操作・期待・実際を一文にし、Network タブでリクエストの有無を見る",
       "本番 DB を UPDATE する",
       "CSS の色を全部変える",
     ],
@@ -219,7 +219,7 @@ export const quizzes = {
   },
   "sc-front": {
     id: "sc-front",
-    question: "承認ボタンを押しても何も起きない。Network に新しい POST が無い。次は？",
+    question: "承認ボタンを押しても何も起きない。Network タブに新しい POST が無い。次は？",
     choices: [
       "RequestService の SQL を読む",
       "サーバに届いていないので、フォームか JS、コンソールのエラーを見る",
@@ -261,13 +261,13 @@ export const quizzes = {
     question: "検証だけ一覧が 0 件。GET は 200。コードは同じと言われている。先に疑うのは？",
     choices: [
       "CSS の font-size",
-      "今つないでいる DB に、ログインユーザの行があるか",
+      "今つないでいる DB を、飛んだ SQL と同じ条件で見る",
       "Java のインデント",
       "エディタの配色",
     ],
     answer: 1,
     explanation:
-      "200 で件数が違うなら、データは DB にある。コード通読より先に、接続先と件数を見ます。",
+      "200 で件数が違うなら、データは DB にある。コード通読より先に、飛んだ SQL と、その条件での件数を見ます。",
   },
   "sc-net": {
     id: "sc-net",
@@ -287,7 +287,7 @@ export const quizzes = {
     question: "一覧の HTML は 200。表のスタイルだけ当たっていない。次は？",
     choices: [
       "RequestService の null チェック",
-      "Network で CSS / JS のステータスを見る。404 ならパスか手前の HTTPサーバ",
+      "Network タブで CSS / JS のステータスを見る。404 ならパスか手前の HTTPサーバ",
       "DB の文字コードだけを疑う",
       "承認者マスタを全削除する",
     ],

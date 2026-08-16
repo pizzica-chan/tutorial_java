@@ -12,18 +12,18 @@ export const traceTrack: Track = {
       id: "from-screen",
       title: "画面から入口を特定する",
       minutes: 8,
-      summary: "アドレスバー、Network、フォームの action。",
+      summary: "アドレスバー、Network タブ、フォームの action。",
       blocks: [
         {
           type: "p",
-          text: "入口の探し方は「ソースの読み方」と同じです。この章では、特定した入口から SQL と応答まで、一本の線の区間を追います。画面遷移しない操作は、アドレスバーではなく Network の XHR / fetch を見ます。",
+          text: "入口の探し方は「ソースの読み方」と同じです。この章では、特定した入口から SQL と応答まで、一本の線の区間を追います。画面遷移しない操作は、アドレスバーではなく Network タブの XHR / fetch を見ます。",
         },
         { type: "diagram", name: "read-entry", caption: "画面の URL から、サーバ側の入口へ。" },
         {
           type: "ol",
           items: [
             "対象画面を開き、アドレスバーの URL を控える",
-            "開発者ツールの Network で、操作した瞬間のリクエストを特定する（JSON なら XHR / fetch）",
+            "開発者ツールの Network タブで、操作した瞬間のリクエストを特定する（JSON なら XHR / fetch）",
             "HTML またはテンプレートで form / a / fetch の行き先を見る",
             "そのパスで Java を検索する",
           ],

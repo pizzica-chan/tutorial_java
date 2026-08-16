@@ -221,7 +221,7 @@ export const stackCases: StackCase[] = [
   {
     id: "csrf",
     title: "承認するとログイン画面に戻る",
-    symptom: "ボタンを押すと一覧ではなくログインへ。ログに例外は少ない。Network の番号も確認する。",
+    symptom: "ボタンを押すと一覧ではなくログインへ。ログに例外は少ない。Network タブの番号も確認する。",
     lines: [
       {
         kind: "framework",

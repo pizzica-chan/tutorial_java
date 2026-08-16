@@ -38,7 +38,7 @@ export const terms: TermDef[] = [
   {
     term: "401 / 403",
     aliases: ["401", "403"],
-    body: "番号の読み方として、401 は未ログイン、403 は権限が無い。画面にそう出ても、実際の番号や遷移はアプリによって違います。Network で確認します。",
+    body: "番号の読み方として、401 は未ログイン、403 は権限が無い。画面にそう出ても、実際の番号や遷移はアプリによって違います。Network タブで確認します。",
   },
   {
     term: "400",
@@ -531,7 +531,7 @@ export const terms: TermDef[] = [
   {
     term: "ブラウザ",
     aliases: ["ブラウザ"],
-    body: "利用者が画面を見るソフト。Chrome など。開発者ツールの Network もここにあります。",
+    body: "利用者が画面を見るソフト。Chrome など。開発者ツールの Network タブもここにあります。",
   },
   {
     term: "サーバ",
@@ -896,7 +896,7 @@ export const terms: TermDef[] = [
   {
     term: "開発者ツール",
     aliases: ["開発者ツール"],
-    body: "ブラウザに付いている調査画面。Network で通信、Console で JS の例外、Sources で JS のブレークポイントを見ます。",
+    body: "ブラウザに付いている調査画面。Network タブで通信、Console で JS の例外、Sources で JS のブレークポイントを見ます。",
   },
   {
     term: "パース",

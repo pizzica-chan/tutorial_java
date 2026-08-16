@@ -16,7 +16,7 @@ export const readingTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "リポジトリを上から読む必要はありません。調べたい画面や機能に対して、URL または画面上の文字列から入口を特定します。画面が遷移しない Web API は、アドレスバーではなく Network の XHR / fetch の URL を使います。",
+          text: "リポジトリを上から読む必要はありません。調べたい画面や機能に対して、URL または画面上の文字列から入口を特定します。画面が遷移しない Web API は、アドレスバーではなく Network タブの XHR / fetch の URL を使います。",
         },
         {
           type: "figure",
@@ -28,7 +28,7 @@ export const readingTrack: Track = {
         {
           type: "ol",
           items: [
-            "対象の URL を確認する（画面ならアドレスバー、API なら Network）",
+            "対象の URL を確認する（画面ならアドレスバー、API なら Network タブ）",
             "同じパス文字列をソース検索する",
             "ヒットした Controller から Service、SQL へ降りる",
             "テンプレートのボタン、または JS の fetch 先と突き合わせる",
@@ -184,7 +184,7 @@ request.getApproverId().equals(userId); // NPE`,
             "再現できない、既に終わった障害 → ログ",
             "本番や、止めると他の人が待たされる検証 → ログ",
             "遅さの調査 → 止めると時間が変わる",
-            "件数や中身がおかしい → 先に DB",
+            "件数や中身がおかしい → 飛んだ SQL と、その条件の DB",
           ],
         },
         {
@@ -231,14 +231,14 @@ request.getApproverId().equals(userId); // NPE`,
             "Console … JS の例外。赤い行が、ボタンを押しても何も起きないときの入口になる",
             "Sources（ソース）… JS にブレークポイント。click や fetch の直前で止める",
             "Elements（要素）… いま画面にある HTML と CSS。サーバが返した HTML のあと、JS が書き換えていることがある",
-            "Network … 通信。デバッガではないが、同じ開発者ツール。リクエストが飛んだかを先に見る",
+            "Network タブ … 通信。デバッガではないが、同じ開発者ツール。リクエストが飛んだかを先に見る",
           ],
         },
         {
           type: "callout",
           kind: "note",
           title: "申請くんと JS",
-          text: "申請くんのようにサーバが HTML を組み立てるアプリでは、表示の多くはテンプレートです。JS のデバッガが主役になるのは、画面内で fetch している、ボタンを押しても Network に行が無い、JSON は正しいのに画面の数字が違う、ときです。",
+          text: "申請くんのようにサーバが HTML を組み立てるアプリでは、表示の多くはテンプレートです。JS のデバッガが主役になるのは、画面内で fetch している、ボタンを押しても Network タブに行が無い、JSON は正しいのに画面の数字が違う、ときです。",
         },
         {
           type: "h2",
@@ -248,8 +248,8 @@ request.getApproverId().equals(userId); // NPE`,
           type: "table",
           headers: ["見たいもの", "先に使うもの"],
           rows: [
-            ["ボタンを押しても Network にリクエストが無い。Console に例外", "ブラウザ"],
-            ["JSON や HTML の本文が期待と違う", "まず Network。そのあと IDE でサーバ側"],
+            ["ボタンを押しても Network タブにリクエストが無い。Console に例外", "ブラウザ"],
+            ["JSON や HTML の本文が期待と違う", "まず Network タブ。そのあと IDE でサーバ側"],
             ["Service の変数、if の条件、DB に渡す値", "IDE"],
             ["色や位置だけ", "Elements。デバッガではない"],
           ],

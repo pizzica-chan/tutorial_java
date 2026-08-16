@@ -105,11 +105,11 @@ export function Layout() {
           閉じる
         </button>
         <NavLink to="/" className="brand" onClick={() => setOpen(false)}>
-          <span className="brand-mark">追</span>
+          <span className="brand-mark">読</span>
           <span>
-            <span className="brand-name">現場トレース</span>
+            <span className="brand-name">Java Web の読み方</span>
             <br />
-            <span className="brand-sub">GENBA TRACE</span>
+            <span className="brand-sub">JAVA WEB</span>
           </span>
         </NavLink>
 

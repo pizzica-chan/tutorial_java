@@ -243,7 +243,7 @@ public class RequestApiController {
           type: "callout",
           kind: "trap",
           title: "見た目だけ壊れる",
-          text: "画面が白い、スタイルが当たっていない、は Java 例外ではなく静的ファイルのパス違いであることが多いです。Network で 404 を探します。",
+          text: "画面が白い、スタイルが当たっていない、は Java 例外ではなく静的ファイルのパス違いであることが多いです。Network タブで 404 を探します。",
         },
         {
           type: "p",
