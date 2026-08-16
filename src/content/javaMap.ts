@@ -96,7 +96,7 @@ export const javaMapTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "ブラウザから見た「サーバ」は、箱が重なっていることがあります。Controller の手前に、HTTPサーバとサーブレットコンテナがあります。申請くんのコードは、どの重ね方でも同じです。違うのは外側です。",
+          text: "ブラウザから見た「サーバ」は、箱が重なっていることがあります。Controller の手前に、HTTPサーバとサーブレットコンテナがあります。",
         },
         {
           type: "h2",
@@ -123,7 +123,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "よく見る重ね方は次の3つです。ローカルの申請くんは「内蔵だけ」です。",
+          text: "よく見る重ね方は次の3つです。",
         },
         {
           type: "steps",
@@ -138,7 +138,7 @@ export const javaMapTrack: Track = {
             },
             {
               title: "手前に Apache / nginx",
-              text: "ブラウザはまず Apache か nginx へ送ります。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです（SSL オフロード）。静的ファイルの配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろは内蔵でも外部 WAR でも構いません。",
+              text: "ブラウザからの HTTP リクエストは、まず Apache か nginx が受けます。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです（SSL オフロード）。静的ファイルの配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろは内蔵でも外部 WAR でも構いません。",
             },
           ],
         },
