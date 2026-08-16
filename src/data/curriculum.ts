@@ -77,7 +77,7 @@ export function pageDescription(pathname: string): string {
   const parts = pathname.split("/").filter(Boolean);
   if (parts[0] === "tracks" && parts[1] && parts[2]) {
     const found = getLesson(parts[1], parts[2]);
-    if (found) return found.lesson.summary;
+    if (found) return `${found.track.title} — ${found.lesson.title}`;
     return fallback;
   }
   if (parts[0] === "tracks" && parts[1]) {

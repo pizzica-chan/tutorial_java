@@ -12,7 +12,6 @@ export const webTrack: Track = {
       id: "letter",
       title: "リクエストとレスポンス",
       minutes: 8,
-      summary: "ブラウザがリクエストを送り、サーバがレスポンスを返す。画面はその返事を表示したものです。",
       blocks: [
         {
           type: "p",
@@ -71,7 +70,6 @@ export const webTrack: Track = {
       id: "front-back",
       title: "フロントエンドとバックエンド",
       minutes: 9,
-      summary: "画面側とサーバ側。データは DB に保存されている。",
       blocks: [
         {
           type: "p",
@@ -126,8 +124,11 @@ export const webTrack: Track = {
       id: "url-method",
       title: "URL・メソッド・ステータス",
       minutes: 10,
-      summary: "切り分けはパスとステータス番号から始めます。",
       blocks: [
+        {
+          type: "p",
+          text: "切り分けは、URL のパスとステータス番号から始めます。",
+        },
         {
           type: "h2",
           text: "URL の分解",
@@ -186,7 +187,6 @@ export const webTrack: Track = {
       id: "headers",
       title: "ヘッダ",
       minutes: 8,
-      summary: "リクエストとレスポンスのヘッダ。Content-Type、Cookie、Location、Referer。",
       blocks: [
         {
           type: "p",
@@ -221,7 +221,6 @@ export const webTrack: Track = {
       id: "session",
       title: "Cookie とセッション",
       minutes: 9,
-      summary: "HTTP は状態を持たない。サーバが ID で対応づける。",
       blocks: [
         {
           type: "p",
@@ -244,7 +243,6 @@ export const webTrack: Track = {
       id: "front-roles",
       title: "HTML / CSS / JS",
       minutes: 8,
-      summary: "送信先、hidden、表示条件を読む。",
       blocks: [
         {
           type: "p",

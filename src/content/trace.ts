@@ -12,7 +12,6 @@ export const traceTrack: Track = {
       id: "from-screen",
       title: "画面から入口を特定する",
       minutes: 8,
-      summary: "アドレスバー、Network タブ、フォームの action。",
       blocks: [
         {
           type: "p",
@@ -41,7 +40,6 @@ export const traceTrack: Track = {
       id: "mapping",
       title: "URL マッピング",
       minutes: 8,
-      summary: "クラスのプレフィックスとメソッドのパスを足す。",
       blocks: [
         {
           type: "p",
@@ -104,7 +102,6 @@ public class RequestApiController {
       id: "down",
       title: "Service から SQL",
       minutes: 9,
-      summary: "分岐、権限、更新、外部連携。",
       blocks: [
         {
           type: "p",
@@ -141,11 +138,10 @@ mailService.notifyApplicant(request);`,
       id: "sql",
       title: "SQL の突き合わせ",
       minutes: 8,
-      summary: "件数、列、条件。",
       blocks: [
         {
           type: "p",
-          text: "MyBatis なら XML、JPA ならログに出る SQL または @Query。見る観点は同じです。",
+          text: "MyBatis なら XML、JPA ならログに出る SQL または @Query。件数・列・条件を突き合わせます。見る観点は同じです。",
         },
         {
           type: "table",
@@ -168,7 +164,6 @@ mailService.notifyApplicant(request);`,
       id: "full-flow",
       title: "一覧表示の全区間",
       minutes: 10,
-      summary: "ブラウザから HTML が返るまで。",
       blocks: [
         {
           type: "p",

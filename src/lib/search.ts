@@ -76,14 +76,14 @@ const documents: Doc[] = [
     href: `/tracks/${track.id}`,
     title: track.title,
     crumb: `${track.no} 章`,
-    text: [track.title, track.kicker, track.description, ...track.lessons.map((lesson) => `${lesson.title} ${lesson.summary}`)].join("\n"),
+    text: [track.title, track.kicker, track.description, ...track.lessons.map((lesson) => lesson.title)].join("\n"),
   })),
   ...tracks.flatMap((track) =>
     track.lessons.map((lesson) => ({
       href: `/tracks/${track.id}/${lesson.id}`,
       title: lesson.title,
       crumb: `${track.no} ${track.title}`,
-      text: [track.title, lesson.title, lesson.summary, ...lesson.blocks.map(blockText)].join("\n"),
+      text: [track.title, lesson.title, ...lesson.blocks.map(blockText)].join("\n"),
     })),
   ),
   ...terms.map((item) => ({

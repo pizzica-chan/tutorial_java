@@ -3,22 +3,29 @@ import type { Track } from "../types";
 export const scenarioTrack: Track = {
   id: "scenario",
   no: "06",
-  title: "シナリオで追う",
+  title: "実務のシナリオで追う",
   kicker: "SCENARIO",
-  description: "限られた情報から、原因の層を先に決める。",
+  description: "障害対応と改修の影響調査。限られた情報から、次に見る層を決める。",
   accent: "#6ec8c0",
   lessons: [
     {
       id: "how",
       title: "シナリオの使い方",
       minutes: 7,
-      summary: "現象を固定し、手間の少ない確認で層を決める。",
       blocks: [
         {
           type: "p",
-          text: "この章は、「〇〇画面で、こういう事象が起きた」だけ渡されたときの追い方です。最初からソースを通読しません。手間の少ない確認で、フロント、バックエンド、DB、ネットワーク、HTTPサーバのどれかを先に決めます。",
+          text: "この章は、現場でよく渡される2種類の依頼を想定します。障害対応は「〇〇画面で、こういう事象が起きた」だけ渡されたときの追い方です。改修の影響調査は「〇〇を変えたいので、どこを直す必要があるか」を洗い出す依頼です。どちらも最初からソースを通読しません。",
         },
-        { type: "diagram", name: "scenario-layers", caption: "原因の層。仮説は、このうち1つにします。" },
+        { type: "diagram", name: "scenario-layers", caption: "障害対応では、原因の層を1つに絞る。" },
+        {
+          type: "h2",
+          text: "障害対応",
+        },
+        {
+          type: "p",
+          text: "手間の少ない確認で、フロント、バックエンド、DB、ネットワーク、HTTPサーバのどれかを先に決めます。",
+        },
         {
           type: "ol",
           items: [
@@ -46,14 +53,46 @@ export const scenarioTrack: Track = {
           title: "仮説は1つ",
           text: "JS と SQL とファイアウォールが同時に怪しいのは、切り分けになっていません。確認コストが低いものから潰します。",
         },
+        {
+          type: "h2",
+          text: "改修の影響調査",
+        },
+        {
+          type: "p",
+          text: "壊れている場所を探すのではなく、変更の波及先を一覧にします。見積もりやレビュー用なら、ファイル名と概要で足りることが多く、全部を読み切る必要はありません。",
+        },
+        {
+          type: "ol",
+          items: [
+            "依頼文を一文にする（何を変えるか、触らない範囲）",
+            "既存の識別子で検索する（カラム名、定数名、URL、画面の文言）",
+            "ヒットごとに「表示」「分岐」「永続化」に分類する",
+            "画面・API・バッチが同じデータを触っていないかを見る",
+          ],
+        },
+        {
+          type: "table",
+          headers: ["検索の手がかり", "分類の例"],
+          rows: [
+            ["status / PENDING", "enum、if 分岐、Mapper の WHERE、画面の表示"],
+            ["/shinsei/requests", "Controller、テンプレート、JS の fetch 先"],
+            ["t_request", "Mapper XML、Entity、マイグレーション"],
+            ["承認待ち", "テンプレート、メッセージ定義、一覧の条件"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "検索のやり方",
+          text: "文字列検索と、型・メソッドの参照検索は別です。詳しい手順は「ソースの読み方」の入口と名前で探すを見ます。",
+        },
         { type: "quiz", id: "sc-how" },
       ],
     },
     {
       id: "front",
-      title: "申請一覧で、承認ボタンを押しても何も起きない",
+      title: "[障害調査] 申請一覧で、承認ボタンを押しても何も起きない",
       minutes: 8,
-      summary: "リクエストが飛んでいなければ、サーバはまだ関係ない。",
       blocks: [
         {
           type: "callout",
@@ -108,9 +147,8 @@ export const scenarioTrack: Track = {
     },
     {
       id: "back",
-      title: "承認すると「エラーが発生しました」",
+      title: "[障害調査] 承認すると「エラーが発生しました」",
       minutes: 8,
-      summary: "POST が 500 なら、スタックを先に見る。",
       blocks: [
         {
           type: "callout",
@@ -156,9 +194,8 @@ export const scenarioTrack: Track = {
     },
     {
       id: "message",
-      title: "「この申請は承認できません」と出るが、ログに例外が無い",
+      title: "[障害調査] 「この申請は承認できません」と出るが、ログに例外が無い",
       minutes: 8,
-      summary: "ERROR が無いなら、画面の文言でソースを探す。ヒットしなければ DB や外部 API。",
       blocks: [
         {
           type: "callout",
@@ -236,9 +273,8 @@ requestService.approve(id, userId);`,
     },
     {
       id: "db",
-      title: "検証だけ、申請一覧が 0 件",
+      title: "[障害調査] 検証だけ、申請一覧が 0 件",
       minutes: 8,
-      summary: "200 で中身が違うなら、実行された SQL とその条件の行。",
       blocks: [
         {
           type: "callout",
@@ -284,9 +320,8 @@ requestService.approve(id, userId);`,
     },
     {
       id: "net",
-      title: "検証だけ、画面がいつまでも読み込み中",
+      title: "[障害調査] 検証だけ、画面がいつまでも読み込み中",
       minutes: 8,
-      summary: "ログにリクエストが無いこと自体が情報。",
       blocks: [
         {
           type: "callout",
@@ -332,9 +367,8 @@ requestService.approve(id, userId);`,
     },
     {
       id: "http-server",
-      title: "一覧は出るが、画面だけ崩れている",
+      title: "[障害調査] 一覧は出るが、画面だけ崩れている",
       minutes: 8,
-      summary: "HTML と CSS は別リクエスト。404 の行き先を見る。",
       blocks: [
         {
           type: "callout",
@@ -382,6 +416,132 @@ requestService.approve(id, userId);`,
           text: "href が /css/app.css のままで、コンテキストパス /shinsei が付いていない、というずれもあります。それでも先に Network タブの 404 URL を見ます。",
         },
         { type: "quiz", id: "sc-http" },
+      ],
+    },
+    {
+      id: "impact-status",
+      title: "[影響調査] 申請ステータスに CANCELLED を足したい",
+      minutes: 9,
+      blocks: [
+        {
+          type: "callout",
+          kind: "note",
+          title: "シナリオ",
+          text: "取り下げ機能の見積もりのため、申請ステータスに CANCELLED を追加したときの影響範囲を調べてほしい、と依頼された。不具合報告ではない。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "現状の値は PENDING / APPROVED などがある（詳細は未確認）",
+            "DB には t_request があり、status カラムがあると聞いている",
+            "いつリリースするか、画面を変えるかはまだ決まっていない",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先にやること",
+        },
+        {
+          type: "p",
+          text: "Network タブやログは、壊れているかどうかの確認用です。影響調査では、まず既存の識別子でソースを検索し、ヒットを分類します。",
+        },
+        {
+          type: "ol",
+          items: [
+            "status、PENDING、APPROVED、t_request で全文検索する",
+            "enum や定数クラスがあれば、そこが値の定義元",
+            "Mapper XML の WHERE status = … と、Service の if 分岐をメモする",
+            "テンプレートの th:if や、一覧・詳細の表示文言を見る",
+            "同じ status を JSON で返す API や、夜間バッチが無いかも同じ語で検索する",
+          ],
+        },
+        { type: "diagram", name: "call-chain", caption: "例: 承認は Controller → Service → Mapper。status を触る箇所は、この鎖の複数点に散らばる。" },
+        {
+          type: "code",
+          title: "検索で見つかった分岐の例（申請くん）",
+          lang: "java",
+          code: `if (!"PENDING".equals(request.getStatus())) {
+  redirectAttributes.addFlashAttribute(
+      "errorMessage", "この申請は承認できません");
+  return "redirect:/requests/" + id;
+}
+// 一覧 Mapper: WHERE status IN ('PENDING', 'APPROVED')`,
+        },
+        {
+          type: "p",
+          text: "CANCELLED を足すと、承認可否の if、一覧の抽出条件、画面のラベル、帳票や API の返却値を直す必要がある、と一覧にできます。全部を読み切らなくても、ヒットファイルと「分岐 / 表示 / SQL」の分類で見積もりに回せます。",
+        },
+        {
+          type: "ul",
+          items: [
+            "既存の値名（PENDING）から逆引きすると漏れが減る",
+            "画面だけ見ても、Service やバッチの分岐は見落とす",
+            "DB の CHECK 制約や、他システム連携のコード値も確認対象",
+          ],
+        },
+        { type: "quiz", id: "sc-impact-status" },
+      ],
+    },
+    {
+      id: "impact-search",
+      title: "[影響調査] 一覧の検索条件に部署を足したい",
+      minutes: 8,
+      blocks: [
+        {
+          type: "callout",
+          kind: "note",
+          title: "シナリオ",
+          text: "申請一覧に「部署で絞り込み」を追加したい。既存の一覧処理への影響を教えてほしい、と依頼された。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "対象画面は申請一覧。URL は /shinsei/requests",
+            "フォームに部署のプルダウンを足す想定",
+            "CSV エクスポートがあるかは、依頼文には書いていない",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先にやること",
+        },
+        {
+          type: "p",
+          text: "変更の入口は一覧の URL です。/shinsei/requests で検索し、Controller のメソッドから Service、Mapper へ降ります。同じ一覧を別経路から出していないかも見ます。",
+        },
+        { type: "diagram", name: "read-entry", caption: "URL → Controller → Service → SQL。影響調査も入口は同じです。" },
+        {
+          type: "table",
+          headers: ["確認すること", "理由"],
+          rows: [
+            ["Controller の引数（クエリパラメータ）", "部署 ID をどこで受け取るか"],
+            ["Service の一覧メソッド", "条件を足す本体"],
+            ["Mapper の SELECT と WHERE", "SQL とインデックスの影響"],
+            ["テンプレートの form と th:href", "画面とパラメータ名の対応"],
+            ["export / download の URL", "一覧と同じ条件を使っているか"],
+          ],
+        },
+        {
+          type: "p",
+          text: "検索で RequestController.list と RequestMapper.selectByApplicant だけでなく、CSV 用の export メソッドも同じ Mapper を呼んでいる、と分かれば、一覧とエクスポートの両方を直す必要がある、と書けます。",
+        },
+        {
+          type: "ul",
+          items: [
+            "画面だけ追うと、裏の SQL やエクスポートを見落とす",
+            "クエリパラメータ名は、テンプレートと Controller で一致しているか確認する",
+            "影響一覧は「ファイル + 何を変えるか」で十分なことが多い",
+          ],
+        },
+        { type: "quiz", id: "sc-impact-search" },
       ],
     },
   ],

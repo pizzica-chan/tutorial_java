@@ -41,9 +41,6 @@ export function TrackPage() {
                 <strong>
                   {String(index + 1).padStart(2, "0")} {lesson.title}
                 </strong>
-                <p style={{ margin: "4px 0 0", color: "var(--muted)" }}>
-                  <TextWithTerms highlight={false} text={lesson.summary} />
-                </p>
               </div>
               <span className="lesson-mins">
                 <Icon name="clock" size={14} />

@@ -258,16 +258,16 @@ export const quizzes = {
   },
   "sc-how": {
     id: "sc-how",
-    question: "「申請一覧がおかしい」だけ渡された。最初にやることは？",
+    question: "障害対応と改修の影響調査。それぞれ最初にやることは？",
     choices: [
-      "Repository から通読する",
-      "操作・期待・実際を一文にし、Network タブでリクエストの有無を見る",
-      "本番 DB を UPDATE する",
-      "CSS の色を全部変える",
+      "どちらも Repository から通読する",
+      "障害は操作・期待・実際と Network タブで層を決める。影響調査は依頼を一文にし、既存の識別子で検索する",
+      "どちらも本番 DB を UPDATE する",
+      "どちらも CSS の色を全部変える",
     ],
     answer: 1,
     explanation:
-      "層が決まる前にコードを通読しません。リクエストが飛んだか、ステータスは何かを先に確認します。",
+      "どちらも通読しません。障害は届いた層を、影響調査は変更の波及先を、低コストの手順で絞ります。",
   },
   "sc-front": {
     id: "sc-front",
@@ -346,6 +346,32 @@ export const quizzes = {
     answer: 1,
     explanation:
       "HTML と CSS は別リクエストです。ドキュメントが 200 でも、静的ファイルだけ 404 のことがあります。",
+  },
+  "sc-impact-status": {
+    id: "sc-impact-status",
+    question: "ステータスに CANCELLED を足す影響調査。まず有効な手がかりは？",
+    choices: [
+      "操作時刻の ERROR ログだけ",
+      "既存の status / PENDING / t_request で検索し、分岐・SQL・画面を分類する",
+      "CSS の font-size",
+      "favicon.ico の有無",
+    ],
+    answer: 1,
+    explanation:
+      "不具合ではなく波及先の洗い出しです。既存の値名から逆引きし、表示・分岐・永続化に分類します。",
+  },
+  "sc-impact-search": {
+    id: "sc-impact-search",
+    question: "一覧に部署の絞り込みを足す影響調査。入口として先に決めるのは？",
+    choices: [
+      "Mapper XML を上から通読する",
+      "一覧の URL（/shinsei/requests）から Controller を特定し、同じ一覧を使う export が無いかも見る",
+      "本番 DB の全テーブルを DROP する",
+      "ブラウザのテーマ",
+    ],
+    answer: 1,
+    explanation:
+      "影響調査も入口は URL です。Controller → Service → Mapper に降り、一覧と同じ条件の別経路（CSV など）を見落としません。",
   },
 } satisfies Record<string, Quiz>;
 

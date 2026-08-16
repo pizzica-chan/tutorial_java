@@ -54,7 +54,6 @@ export type Lesson = {
   id: string;
   title: string;
   minutes: number;
-  summary: string;
   blocks: Block[];
 };
 

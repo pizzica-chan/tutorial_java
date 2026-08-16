@@ -4,7 +4,6 @@ import { getLesson } from "../data/curriculum";
 import { NotFoundPage } from "./NotFoundPage";
 import { lessonKey, setLastLesson, toggleCompleted } from "../lib/progress";
 import { Article } from "../components/Article";
-import { TextWithTerms } from "../components/TextWithTerms";
 import { Icon } from "../components/Icon";
 import { useProgress } from "../hooks/useProgress";
 
@@ -38,9 +37,6 @@ export function LessonPage() {
       <h1 className="serif" style={{ fontSize: 40, marginTop: 8 }}>
         {lesson.title}
       </h1>
-      <p className="lede">
-        <TextWithTerms text={lesson.summary} />
-      </p>
       <Article blocks={lesson.blocks} />
       <div className="pager">
         {prev ? (

@@ -12,7 +12,6 @@ export const troubleshootTrack: Track = {
       id: "loop",
       title: "調査手順",
       minutes: 8,
-      summary: "再現、区間切り分け、仮説、最小変更。",
       blocks: [
         {
           type: "p",
@@ -61,7 +60,6 @@ export const troubleshootTrack: Track = {
       id: "logs",
       title: "ログの場所と読み方",
       minutes: 12,
-      summary: "アプリと HTTPサーバのログ。行き先を確認し、時刻とレベルで読む。",
       blocks: [
         {
           type: "p",
@@ -218,7 +216,6 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
       id: "log-follow",
       title: "ログで処理を追う",
       minutes: 12,
-      summary: "Java メソッドの順、MyBatis の SQL、混在した本番ログから一本を拾う。",
       blocks: [
         {
           type: "p",
@@ -342,7 +339,6 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       id: "stack",
       title: "スタックトレース",
       minutes: 12,
-      summary: "右端がファイル名。自分たちが書いたコードのパッケージ名の行から調べる。",
       blocks: [
         {
           type: "p",
@@ -414,7 +410,6 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       id: "p-500",
       title: "パターン: 500 / 例外",
       minutes: 8,
-      summary: "画面はエラー。サーバログにスタックがある。",
       blocks: [
         {
           type: "p",
@@ -449,7 +444,6 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       id: "p-404",
       title: "パターン: 404 / 画面が開かない",
       minutes: 7,
-      summary: "マッピング、コンテキストパス、静的ファイル、HTTP メソッド。",
       blocks: [
         {
           type: "p",
@@ -477,7 +471,6 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       id: "p-auth",
       title: "パターン: 401 / 403 / ログインへ戻る",
       minutes: 9,
-      summary: "未ログイン、権限、セッション、CSRF。",
       blocks: [
         {
           type: "p",
@@ -510,7 +503,6 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       id: "p-data",
       title: "パターン: 件数・更新結果がおかしい",
       minutes: 8,
-      summary: "WHERE、論理削除、別テーブル、コミット。",
       blocks: [
         {
           type: "p",
@@ -536,7 +528,6 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       id: "p-env",
       title: "パターン: 環境差",
       minutes: 8,
-      summary: "設定、データ、権限、ネットワーク。",
       blocks: [
         {
           type: "p",
@@ -561,7 +552,6 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       id: "p-slow",
       title: "パターン: 遅い",
       minutes: 9,
-      summary: "時刻差、SQL、N+1、外部 API、ロック。",
       blocks: [
         {
           type: "p",
@@ -627,7 +617,6 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       id: "net-check",
       title: "ネットワークの疎通確認",
       minutes: 14,
-      summary: "TCP/IP と HTTP の層。ping、経路、ポート、curl で届く箱を切る。",
       blocks: [
         {
           type: "p",
@@ -786,7 +775,6 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
       id: "divide",
       title: "届いていない切り分け",
       minutes: 7,
-      summary: "アプリの if より手前。",
       blocks: [
         {
           type: "p",

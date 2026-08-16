@@ -12,7 +12,6 @@ export const readingTrack: Track = {
       id: "dont-read-all",
       title: "入口から読む",
       minutes: 6,
-      summary: "全体を通読しない。調べたい処理の入口を探す。",
       blocks: [
         {
           type: "p",
@@ -49,7 +48,6 @@ export const readingTrack: Track = {
       id: "search",
       title: "名前で探す",
       minutes: 8,
-      summary: "画面の文字、パス、テーブル、メッセージ。",
       blocks: [
         {
           type: "p",
@@ -78,7 +76,6 @@ export const readingTrack: Track = {
       id: "call-chain",
       title: "呼び出し元と呼び出し先",
       minutes: 8,
-      summary: "誰に呼ばれ、誰を呼ぶか。",
       blocks: [
         {
           type: "p",
@@ -105,7 +102,6 @@ export const readingTrack: Track = {
       id: "where-from",
       title: "値の源流",
       minutes: 8,
-      summary: "null や不正値は、今の行より上流にあることが多い。",
       blocks: [
         {
           type: "p",
@@ -145,7 +141,6 @@ request.getApproverId().equals(userId); // NPE`,
       id: "debug",
       title: "デバッガで止めて見る",
       minutes: 10,
-      summary: "再現できるとき、実行を止めて今の変数を見る。",
       blocks: [
         {
           type: "p",
@@ -271,7 +266,6 @@ request.getApproverId().equals(userId); // NPE`,
       id: "spec-gap",
       title: "仕様とコードの差",
       minutes: 7,
-      summary: "設計書より、現在のコードと実挙動を先に確認する。",
       blocks: [
         {
           type: "p",
@@ -298,8 +292,11 @@ request.getApproverId().equals(userId); // NPE`,
       id: "order",
       title: "読む順番",
       minutes: 6,
-      summary: "現象 → 入口 → 分岐 → 永続化 → 出口。",
       blocks: [
+        {
+          type: "p",
+          text: "読む順番は、現象 → 入口 → 分岐 → 永続化 → 出口 です。",
+        },
         {
           type: "steps",
           items: [

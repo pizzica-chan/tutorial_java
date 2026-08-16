@@ -12,7 +12,6 @@ export const javaMapTrack: Track = {
       id: "tree",
       title: "ディレクトリ構成",
       minutes: 8,
-      summary: "ファイルの役割を先に把握する。",
       blocks: [
         {
           type: "p",
@@ -31,7 +30,6 @@ export const javaMapTrack: Track = {
       id: "build",
       title: "pom.xml / Gradle",
       minutes: 7,
-      summary: "Java の版と、使っているライブラリ。",
       blocks: [
         {
           type: "p",
@@ -58,7 +56,6 @@ export const javaMapTrack: Track = {
       id: "arch",
       title: "よくある構成",
       minutes: 10,
-      summary: "HTTPサーバとサーブレットコンテナの重ね方。手前の LB・CDN・WAF も。",
       blocks: [
         {
           type: "p",
@@ -164,11 +161,10 @@ export const javaMapTrack: Track = {
       id: "yml",
       title: "application.yml / application.properties",
       minutes: 8,
-      summary: "接続先、ポート、プロファイル、コンテキストパス。",
       blocks: [
         {
           type: "p",
-          text: "Spring Boot 用の設定ファイルです。yml でも properties でも同じ意味です。申請くんは yml です。",
+          text: "Spring Boot 用の設定ファイルです。接続先、ポート、プロファイル、コンテキストパスはここに書きます。yml でも properties でも同じ意味です。申請くんは yml です。",
         },
         {
           type: "code",
@@ -208,7 +204,6 @@ server:
       id: "layers",
       title: "Controller / Service / Repository",
       minutes: 9,
-      summary: "名前が崩れていても、探す順番は同じ。",
       blocks: [
         {
           type: "p",
@@ -258,7 +253,6 @@ public class RequestApiController {
       id: "view-static",
       title: "テンプレートと静的ファイル",
       minutes: 7,
-      summary: "return \"request/list\" が指すファイル。",
       blocks: [
         {
           type: "p",
@@ -289,7 +283,6 @@ public class RequestApiController {
       id: "security-filter",
       title: "Filter / Interceptor / AOP",
       minutes: 11,
-      summary: "ソースの呼び出しだけ追うと、通っていない処理がある。",
       blocks: [
         {
           type: "p",
