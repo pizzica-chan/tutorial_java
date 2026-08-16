@@ -3,12 +3,11 @@ import { RequestFlow } from "../components/RequestFlow";
 import { StackLab } from "../components/StackLab";
 import { HttpInspector } from "../components/HttpInspector";
 import { QuizBlock } from "../components/QuizBlock";
-import { TermScope, TextWithTerms } from "../components/TextWithTerms";
+import { TextWithTerms } from "../components/TextWithTerms";
 
 export function LabPage() {
   return (
-    <TermScope>
-      <div className="content lab-page">
+    <div className="content lab-page">
       <p className="kicker">LAB</p>
       <h1 className="serif" style={{ fontSize: 42 }}>ラボ</h1>
       <p className="lede">
@@ -21,7 +20,7 @@ export function LabPage() {
 
       <h2 className="serif">2. HTTP</h2>
       <p>
-        <TextWithTerms text="承認時のリクエストとレスポンスです。メソッド、Cookie、リダイレクト、CSRF。" />
+        <TextWithTerms text="承認時のリクエストとレスポンスです。HTTP メソッド、Cookie、リダイレクト、CSRF。" />
       </p>
       <HttpInspector />
 
@@ -36,17 +35,17 @@ export function LabPage() {
         <TextWithTerms text="at 行の右端が、ソースの位置です。RequestService.java:41 なら、そのファイルの 41 行目を見ます。" />
       </p>
       <p>
-        <TextWithTerms text="org.springframework や java. で始まる行は、自分たちが書いたコードではありません。申請くんなら jp.co.example で始まる行を、上から最初に見つけたところから調べます。" />
+        <TextWithTerms text="org.springframework や java. で始まる行は、自分たちが書いたコードではありません。申請くんなら、パッケージ名 jp.co.example.shinsei で始まる行を、上から最初に見つけたところから調べます。" />
       </p>
       <StackLab />
 
       <h2 className="serif">5. 確認</h2>
+      <p>各章で出題済みの確認問題です。</p>
       <QuizBlock id="trace-start" />
       <QuizBlock id="ts-npe" />
       <QuizBlock id="ts-own-class" />
       <QuizBlock id="ts-log" />
       <QuizBlock id="java-layer" />
-      </div>
-    </TermScope>
+    </div>
   );
 }

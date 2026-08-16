@@ -44,6 +44,9 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "arch-roles": ArchRoles,
   "arch-patterns": ArchPatterns,
   "front-back": FrontBack,
+  "scenario-layers": ScenarioLayers,
+  "cross-cut": CrossCut,
+  "debug-two": DebugTwo,
 };
 
 function Node({ kicker, title, sub }: { kicker: string; title: string; sub?: string }) {
@@ -96,6 +99,24 @@ function PhotoCard({ src, alt, title, children }: { src: string; alt: string; ti
   );
 }
 
+function ScenarioLayers() {
+  return (
+    <div className="d-stack">
+      <Layer icon="browser">フロントエンド（ブラウザ・JS）</Layer>
+      <Arrow down label="届く道（ネットワーク）" />
+      <Layer icon="server" accent>
+        HTTPサーバ（任意）Apache / nginx
+      </Layer>
+      <Arrow down label="中継" />
+      <Layer icon="inbox" accent>
+        バックエンド（Java）
+      </Layer>
+      <Arrow down label="SQL" />
+      <Layer icon="database">DB（データを保存）</Layer>
+    </div>
+  );
+}
+
 function FrontBack() {
   return (
     <div className="d-row wrap">
@@ -103,7 +124,20 @@ function FrontBack() {
       <Arrow label="HTTP" />
       <Node kicker="BACK" title="バックエンド" sub="Java・SQL を投げる" />
       <Arrow label="SQL" />
-      <Node kicker="DATA" title="DB" sub="件数と行の実体" />
+      <Node kicker="DATA" title="DB" sub="データを保存する" />
+    </div>
+  );
+}
+
+function DebugTwo() {
+  return (
+    <div className="d-cols">
+      <PhotoCard src="/images/client-laptop.jpg" alt="ノートPC" title="フロントエンド">
+        ブラウザの開発者ツール。JS のブレークポイント、Console、いまの HTML
+      </PhotoCard>
+      <PhotoCard src="/images/code-screen.jpg" alt="ソースを開いたエディタ" title="バックエンド">
+        IDE のデバッガ。Java のブレークポイントと変数
+      </PhotoCard>
     </div>
   );
 }
@@ -113,10 +147,10 @@ function HttpRoundtrip() {
     <div className="d-split">
       <PhotoNode src="/images/client-laptop.jpg" alt="ノートPCで作業している机" kicker="CLIENT" title="ブラウザ" sub="画面・Network タブ" />
       <div className="d-arrows">
-        <Arrow label="リクエスト GET /requests" />
-        <Arrow reverse label="レスポンス 200 HTML" />
+        <Arrow label="リクエスト" />
+        <Arrow reverse label="レスポンス" />
       </div>
-      <PhotoNode src="/images/server-racks.jpg" alt="サーバ室のラック" kicker="SERVER" title="Java アプリ" sub="Controller 以降" />
+      <PhotoNode src="/images/server-racks.jpg" alt="サーバ室のラック" kicker="SERVER" title="サーバ" sub="リクエストを受け、応答を返す" />
     </div>
   );
 }
@@ -176,14 +210,32 @@ function Layers() {
 
 function Filters() {
   return (
-    <div className="d-row wrap">
-      <Node kicker="IN" title="リクエスト" />
-      <Arrow label="通過" />
-      <Node kicker="FILTER" title="Security" sub="未ログインなら 302" />
-      <Arrow label="通過" />
-      <Node kicker="FILTER" title="CSRF" sub="トークン不正なら弾く" />
-      <Arrow label="到達" />
-      <Node kicker="APP" title="Controller" />
+    <div className="d-stack">
+      <div className="d-layer">リクエスト</div>
+      <Arrow down label="Security の Filter Chain" />
+      <div className="d-layer accent">CSRF</div>
+      <Arrow down label="例: トークン不正ならここで止まる" />
+      <div className="d-layer accent">ログイン / 権限</div>
+      <Arrow down label="例: 未ログインならここで止まる" />
+      <div className="d-layer">Controller</div>
+    </div>
+  );
+}
+
+function CrossCut() {
+  return (
+    <div className="d-stack">
+      <div className="d-layer">リクエスト</div>
+      <Arrow down label="サーブレットの仕組み" />
+      <div className="d-layer accent">Filter</div>
+      <Arrow down label="Spring MVC" />
+      <div className="d-layer accent">Interceptor</div>
+      <Arrow down label="メソッド本体" />
+      <div className="d-layer">Controller</div>
+      <Arrow down label="見た目は service.approve()" />
+      <div className="d-layer accent">AOP / プロキシ</div>
+      <Arrow down label="実体" />
+      <div className="d-layer">Service</div>
     </div>
   );
 }
@@ -255,28 +307,91 @@ function StackLine() {
 
 function StackOwn() {
   return (
-    <div className="d-trace">
-      <div className="d-trace-line dim">
-        <span>FW</span> org.springframework.…HandlerMethod.invoke
-      </div>
-      <div className="d-trace-line dim">
-        <span>JDK</span> jdk.proxy2.$Proxy128.approve
-      </div>
-      <div className="d-trace-line own">
-        <span>自作</span> RequestService.approve (RequestService.java:41)
-      </div>
-      <div className="d-trace-line own muted">
-        <span>自作</span> RequestController.approve … 呼び出し元
-      </div>
-      <p className="diagram-note">上から見て、会社名で始まる最初の行から調べます。</p>
+    <div className="d-stack-log">
+      {stackDump.map((line) => (
+        <div key={line.text} className={`d-stack-log-line ${line.kind}`}>
+          <code>{line.text}</code>
+          {line.note ? <b>{line.note}</b> : null}
+        </div>
+      ))}
     </div>
   );
 }
 
+const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: string }[] = [
+  {
+    kind: "ex",
+    text: 'java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because the return value of "RequestEntity.getApproverId()" is null',
+  },
+  {
+    kind: "hit",
+    text: "    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:41)",
+    note: "このファイルの 41 行目を最初に調べる",
+  },
+  {
+    kind: "dim",
+    text: "    at jp.co.example.shinsei.service.RequestService$$EnhancerBySpringCGLIB$$8a1b2c.approve(<generated>)",
+    note: "生成コード。飛ばす",
+  },
+  {
+    kind: "dim",
+    text: "    at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:792)",
+  },
+  {
+    kind: "dim",
+    text: "    at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)",
+  },
+  {
+    kind: "dim",
+    text: "    at jdk.proxy2.$Proxy128.approve(Unknown Source)",
+  },
+  {
+    kind: "own",
+    text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:58)",
+    note: "呼び出し元。このファイルの 58 行目",
+  },
+  {
+    kind: "dim",
+    text: "    at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)",
+  },
+  {
+    kind: "dim",
+    text: "    at java.base/java.lang.reflect.Method.invoke(Method.java:568)",
+  },
+  {
+    kind: "dim",
+    text: "    at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)",
+  },
+  {
+    kind: "dim",
+    text: "    at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)",
+  },
+  {
+    kind: "dim",
+    text: "    at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)",
+  },
+  {
+    kind: "dim",
+    text: "    at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1072)",
+  },
+  {
+    kind: "dim",
+    text: "    at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:965)",
+  },
+  {
+    kind: "dim",
+    text: "    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:209)",
+  },
+  {
+    kind: "dim",
+    text: "    ... 42 more",
+  },
+];
+
 function Divide() {
   return (
     <div className="d-cols">
-      <PhotoCard src="/images/client-laptop.jpg" alt="手元のノートPC" title="ブラウザ">
+      <PhotoCard src="/images/client-laptop.jpg" alt="ノートPC" title="ブラウザ">
         Network にリクエストが無いか
       </PhotoCard>
       <PhotoCard src="/images/server-racks.jpg" alt="アプリが動くサーバ" title="アプリ">
@@ -408,8 +523,8 @@ function EnvDiff() {
       <div className="d-layer">同じコード</div>
       <Arrow down label="環境が違う" />
       <div className="d-cols">
-        <PhotoCard src="/images/home-desk.jpg" alt="手元で入力している机" title="ローカル">
-          dev プロファイル、手元の DB
+        <PhotoCard src="/images/home-desk.jpg" alt="入力している机" title="ローカル環境">
+          dev プロファイル、ローカル環境の DB
         </PhotoCard>
         <PhotoCard src="/images/server-racks.jpg" alt="検証や本番のサーバ" title="検証 / 本番">
           設定、データ、権限、プロキシ
@@ -433,7 +548,7 @@ function LogWhere() {
   return (
     <div className="d-cols">
       <div className="d-col">
-        <h4>手元</h4>
+        <h4>ローカル環境</h4>
         <p>起動したコンソール。ローカル開発で多い</p>
       </div>
       <div className="d-col">
@@ -486,7 +601,7 @@ function ArchRoles() {
   return (
     <div className="d-stack">
       <Layer icon="browser">ブラウザ</Layer>
-      <Arrow down label="HTTP/HTTPSリクエスト" />
+      <Arrow down label="HTTP/HTTPS リクエスト" />
       <Layer icon="server" accent>
         HTTPサーバ（任意）Apache / nginx
       </Layer>
@@ -507,7 +622,7 @@ function ArchPatterns() {
         <h4>内蔵だけ</h4>
         <div className="d-stack">
           <Layer icon="browser">ブラウザ</Layer>
-          <Arrow down label="HTTP/HTTPSリクエスト" />
+          <Arrow down label="HTTP/HTTPS リクエスト" />
           <Layer icon="box" accent>
             内蔵 Tomcat / Jetty
           </Layer>
@@ -519,7 +634,7 @@ function ArchPatterns() {
         <h4>外部 WAR</h4>
         <div className="d-stack">
           <Layer icon="browser">ブラウザ</Layer>
-          <Arrow down label="HTTP/HTTPSリクエスト" />
+          <Arrow down label="HTTP/HTTPS リクエスト" />
           <Layer icon="box" accent>
             外部 Tomcat / Jetty
           </Layer>
@@ -531,7 +646,7 @@ function ArchPatterns() {
         <h4>手前に HTTPサーバ</h4>
         <div className="d-stack">
           <Layer icon="browser">ブラウザ</Layer>
-          <Arrow down label="HTTP/HTTPSリクエスト" />
+          <Arrow down label="HTTP/HTTPS リクエスト" />
           <Layer icon="server" accent>
             Apache / nginx
           </Layer>

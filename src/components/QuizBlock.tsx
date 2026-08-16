@@ -19,7 +19,7 @@ export function QuizBlock({ id }: { id: string }) {
       <h3>
         <TextWithTerms text={quiz.question} />
       </h3>
-      <div role="group" aria-label="選択肢">
+      <div role="radiogroup" aria-label="選択肢">
         {quiz.choices.map((choice, index) => {
           const cls =
             revealed && index === quiz.answer ? "correct" : revealed && index === picked ? "wrong" : "";
@@ -28,7 +28,8 @@ export function QuizBlock({ id }: { id: string }) {
               key={`${index}-${choice}`}
               className={`choice ${cls}`}
               type="button"
-              aria-pressed={picked === index}
+              role="radio"
+              aria-checked={picked === index}
               onClick={() => setPicked(index)}
             >
               <TextWithTerms text={choice} />

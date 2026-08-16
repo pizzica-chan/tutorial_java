@@ -17,7 +17,7 @@ export function HomePage() {
         <p className="lede">
           <TextWithTerms
             highlight={false}
-            text="HTTP と Java Web アプリの構成、既存コードの追い方、よくある不具合パターン。ゼロからアプリを作る教材ではありません。例として Spring Boot の申請アプリを使います。"
+            text="HTTP と Java Web アプリの構成、既存コードの追い方、よくある不具合パターン、シナリオでの切り分け。ゼロからアプリを作る教材ではありません。コード例は架空の社内申請アプリ「申請くん」です。"
           />
         </p>
         <div className="hero-actions">
@@ -31,7 +31,7 @@ export function HomePage() {
             </Link>
           )}
           <Link className="btn btn-ghost" to={resume ? firstLessonPath("web") : "/tracks/troubleshoot"}>
-            {resume ? "最初から" : "パターン別トラブルシュート"}
+            {resume ? "最初から" : "経験者向け: パターン別へ"}
           </Link>
         </div>
         <div className="stats">
@@ -55,7 +55,12 @@ export function HomePage() {
       </div>
       <div className="grid">
         {tracks.map((track) => (
-          <Link className="card" to={`/tracks/${track.id}`} key={track.id}>
+          <Link
+            className="card"
+            to={`/tracks/${track.id}`}
+            key={track.id}
+            style={{ borderLeft: `3px solid ${track.accent}` }}
+          >
             <div className="meta">
               <span className="card-kicker">
                 <Icon name={trackIcon(track.id)} size={16} />
@@ -77,7 +82,13 @@ export function HomePage() {
       <p>
         <TextWithTerms
           highlight={false}
-          text="Spring Boot、Thymeleaf、MyBatis、MySQL、Spring Security の構成例です。ディレクトリやリクエスト追跡の説明で参照します。"
+          text="架空の社内向け申請アプリです。社員が申請を出し、承認者が承認する、という想定です。実在しません。"
+        />
+      </p>
+      <p>
+        <TextWithTerms
+          highlight={false}
+          text="構成は Spring Boot、Thymeleaf、MyBatis、MySQL、Spring Security。以降の URL、ソース、ログはこのアプリの話です。"
         />
       </p>
       <p>

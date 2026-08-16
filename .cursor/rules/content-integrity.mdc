@@ -1,0 +1,20 @@
+---
+description: 章構成・検索・README をずらしない。教材を変えたら check する
+globs: src/content/**/*.ts,src/data/**/*.ts,src/lib/search.ts,README.md,scripts/check-content.mjs
+alwaysApply: false
+---
+
+# 教材の参照と構成
+
+章の追加・改名・削除をしたら、次を同じ変更に含める。
+
+- `src/data/curriculum.ts` の `tracks`
+- サイドバーが読む章データ（curriculum 経由）
+- `src/lib/search.ts` の索引（トップ・章ページ・項目）
+- `README.md` の章一覧
+
+図は本文と矛盾させない。手前の HTTP サーバは「任意」であることが本文にあれば、シナリオの層図でも必須に見せない。
+
+未使用の `Track.accent` を足さない。使うならカードや章見出しで参照する。
+
+教材・クイズ・画像パスを変えたら `npm run check` を実行する。クイズ ID、図の名前、`public/images/` の実体と `SOURCES.md` を見る。

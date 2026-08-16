@@ -1,4 +1,4 @@
-export type TrackId = "web" | "java-map" | "reading" | "trace" | "troubleshoot";
+export type TrackId = "web" | "java-map" | "reading" | "trace" | "troubleshoot" | "scenario";
 
 export type CalloutKind = "tip" | "note" | "warn" | "trap";
 
@@ -30,7 +30,10 @@ export type DiagramName =
   | "log-line"
   | "arch-roles"
   | "arch-patterns"
-  | "front-back";
+  | "front-back"
+  | "scenario-layers"
+  | "cross-cut"
+  | "debug-two";
 
 export type Block =
   | { type: "p"; text: string }

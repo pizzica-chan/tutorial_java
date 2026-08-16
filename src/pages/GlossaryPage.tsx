@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { glossary, glossaryAnchor } from "../data/terms";
+import { TextWithTerms } from "../components/TextWithTerms";
 
 export function GlossaryPage() {
   const location = useLocation();
@@ -22,7 +23,9 @@ export function GlossaryPage() {
         {glossary.map((item) => (
           <div key={item.term} id={glossaryAnchor(item.term)}>
             <dt>{item.term}</dt>
-            <dd>{item.body}</dd>
+            <dd>
+              <TextWithTerms text={item.body} />
+            </dd>
           </div>
         ))}
       </dl>

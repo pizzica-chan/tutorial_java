@@ -4,6 +4,7 @@ import { javaMapTrack } from "../content/javaMap";
 import { readingTrack } from "../content/reading";
 import { traceTrack } from "../content/trace";
 import { troubleshootTrack } from "../content/troubleshoot";
+import { scenarioTrack } from "../content/scenario";
 
 export const tracks: Track[] = [
   webTrack,
@@ -11,6 +12,7 @@ export const tracks: Track[] = [
   readingTrack,
   traceTrack,
   troubleshootTrack,
+  scenarioTrack,
 ];
 
 export const totalLessons = tracks.reduce((sum, track) => sum + track.lessons.length, 0);
@@ -63,6 +65,26 @@ export function getLesson(trackId: string | undefined, lessonId: string | undefi
 export function firstLessonPath(trackId: TrackId): string {
   const track = getTrack(trackId);
   return `/tracks/${trackId}/${track?.lessons[0]?.id ?? ""}`;
+}
+
+export function pageDescription(pathname: string): string {
+  const fallback = "Java Web アプリの基礎と、症状別トラブルシュート。既存コードの読み方。";
+  if (pathname === "/") return fallback;
+  if (pathname === "/lab") return "申請くんのソース、HTTP、リクエスト区間、スタックトレースを確認するラボ。";
+  if (pathname === "/glossary" || pathname.startsWith("/glossary")) {
+    return "HTTP、Java Web、Spring まわりの用語。本文の点線から飛びます。";
+  }
+  const parts = pathname.split("/").filter(Boolean);
+  if (parts[0] === "tracks" && parts[1] && parts[2]) {
+    const found = getLesson(parts[1], parts[2]);
+    if (found) return found.lesson.summary;
+    return fallback;
+  }
+  if (parts[0] === "tracks" && parts[1]) {
+    const track = getTrack(parts[1]);
+    if (track) return track.description;
+  }
+  return fallback;
 }
 
 export function pageTitle(pathname: string): string {

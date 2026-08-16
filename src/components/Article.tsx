@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import type { Block, WidgetName } from "../types";
+import type { Block, CalloutKind, WidgetName } from "../types";
 import { QuizBlock } from "./QuizBlock";
 import { ProjectExplorer } from "./ProjectExplorer";
 import { RequestFlow } from "./RequestFlow";
@@ -145,14 +145,16 @@ function BlockView({ block }: { block: Block }) {
           ))}
         </div>
       );
-    default:
-      return null;
+    default: {
+      const _exhaustive: never = block;
+      return _exhaustive;
+    }
   }
 }
 
-function label(kind: string) {
+function label(kind: CalloutKind) {
   if (kind === "warn") return "注意";
   if (kind === "trap") return "落とし穴";
   if (kind === "note") return "補足";
-  return "指針";
+  return "ヒント";
 }

@@ -12,6 +12,7 @@ export function SiteSearch() {
   const [active, setActive] = useState(0);
   const hits = query.trim() ? searchSite(query) : [];
   const show = open && query.trim().length > 0;
+  const activeId = show && hits[active] ? `${listId}-opt-${active}` : undefined;
 
   useEffect(() => {
     setActive(0);
@@ -57,12 +58,15 @@ export function SiteSearch() {
       <input
         id="site-search-input"
         type="search"
+        role="combobox"
         placeholder="サイト内を検索"
         value={query}
         autoComplete="off"
         aria-autocomplete="list"
+        aria-haspopup="listbox"
         aria-controls={listId}
         aria-expanded={show}
+        aria-activedescendant={activeId}
         onChange={(event) => {
           setQuery(event.target.value);
           setOpen(true);
@@ -77,10 +81,16 @@ export function SiteSearch() {
             <li className="search-empty">一致する項目はありません</li>
           ) : (
             hits.map((hit, index) => (
-              <li key={hit.href + hit.title} role="option" aria-selected={index === active}>
+              <li
+                key={hit.href + hit.title}
+                id={`${listId}-opt-${index}`}
+                role="option"
+                aria-selected={index === active}
+              >
                 <button
                   className={index === active ? "active" : ""}
                   type="button"
+                  tabIndex={-1}
                   onMouseEnter={() => setActive(index)}
                   onClick={() => go(hit)}
                 >

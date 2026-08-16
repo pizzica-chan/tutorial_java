@@ -25,7 +25,9 @@ export type IconName =
   | "database"
   | "file"
   | "arrow-left"
-  | "arrow-right";
+  | "arrow-right"
+  | "close"
+  | "flag";
 
 const paths: Record<IconName, ReactNode> = {
   tip: (
@@ -164,6 +166,13 @@ const paths: Record<IconName, ReactNode> = {
   ),
   "arrow-left": <path d="M15 6 9 12l6 6M9 12h10" />,
   "arrow-right": <path d="m9 6 6 6-6 6M15 12H5" />,
+  close: <path d="m6 6 12 12M18 6 6 18" />,
+  flag: (
+    <>
+      <path d="M6 4v16" />
+      <path d="M6 5h11l-2.5 3.5L17 12H6" />
+    </>
+  ),
 };
 
 export function Icon({
@@ -204,6 +213,7 @@ export function trackIcon(id: TrackId): IconName {
   if (id === "java-map") return "folder";
   if (id === "reading") return "book";
   if (id === "trace") return "route";
+  if (id === "scenario") return "flag";
   return "wrench";
 }
 

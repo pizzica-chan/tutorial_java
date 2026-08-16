@@ -1,10 +1,16 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { pageTitle, tracks, totalLessons } from "../data/curriculum";
+import { useEffect, useRef, useState } from "react";
+import { pageDescription, pageTitle, tracks, totalLessons } from "../data/curriculum";
 import { lessonKey } from "../lib/progress";
 import { useProgress } from "../hooks/useProgress";
 import { SiteSearch } from "./SiteSearch";
 import { Icon } from "./Icon";
+
+function focusableIn(root: HTMLElement) {
+  return [...root.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input, select, textarea")].filter(
+    (el) => !el.hasAttribute("disabled") && el.getAttribute("aria-hidden") !== "true",
+  );
+}
 
 export function Layout() {
   const [open, setOpen] = useState(false);
@@ -13,14 +19,65 @@ export function Layout() {
   const percent = Math.min(100, Math.round((completed.length / totalLessons) * 100));
   const trackMatch = location.pathname.match(/^\/tracks\/([^/]+)/);
   const currentTrackId = trackMatch?.[1];
+  const navRef = useRef<HTMLElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    document.title = pageTitle(location.pathname);
+    const title = pageTitle(location.pathname);
+    const description = pageDescription(location.pathname);
+    document.title = title;
+    const set = (selector: string, value: string) => {
+      document.querySelector(selector)?.setAttribute("content", value);
+    };
+    set('meta[name="description"]', description);
+    set('meta[property="og:title"]', title);
+    set('meta[property="og:description"]', description);
   }, [location.pathname]);
 
   useEffect(() => {
     setOpen(false);
   }, [location.pathname]);
+
+  // 目次を開いたまま広い画面になると、常時表示のサイドバーと本文の inert が食い違う
+  useEffect(() => {
+    const wide = window.matchMedia("(min-width: 901px)");
+    const onChange = () => {
+      if (wide.matches) setOpen(false);
+    };
+    wide.addEventListener("change", onChange);
+    return () => wide.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const nav = navRef.current;
+    if (!nav) return;
+    const items = focusableIn(nav);
+    items[0]?.focus();
+
+    function onKey(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        setOpen(false);
+        toggleRef.current?.focus();
+        return;
+      }
+      if (event.key !== "Tab" || !navRef.current) return;
+      const loop = focusableIn(navRef.current);
+      if (loop.length === 0) return;
+      const first = loop[0];
+      const last = loop[loop.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    }
+
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [open]);
 
   return (
     <div className="app-shell">
@@ -30,7 +87,23 @@ export function Layout() {
       {open ? (
         <button className="backdrop" type="button" aria-label="メニューを閉じる" onClick={() => setOpen(false)} />
       ) : null}
-      <aside id="site-nav" className={`sidebar ${open ? "open" : ""}`}>
+      <aside
+        id="site-nav"
+        ref={navRef}
+        className={`sidebar ${open ? "open" : ""}`}
+        aria-label="目次"
+      >
+        <button
+          className="btn btn-ghost sidebar-close"
+          type="button"
+          onClick={() => {
+            setOpen(false);
+            toggleRef.current?.focus();
+          }}
+        >
+          <Icon name="close" size={14} />
+          閉じる
+        </button>
         <NavLink to="/" className="brand" onClick={() => setOpen(false)}>
           <span className="brand-mark">追</span>
           <span>
@@ -98,9 +171,10 @@ export function Layout() {
         </div>
       </aside>
 
-      <div className="main" id="main" tabIndex={-1}>
+      <main className="main" id="main" tabIndex={-1} inert={open}>
         <header className="topbar">
           <button
+            ref={toggleRef}
             className="btn btn-ghost mobile-toggle"
             type="button"
             aria-expanded={open}
@@ -116,7 +190,7 @@ export function Layout() {
           </p>
         </header>
         <Outlet />
-      </div>
+      </main>
     </div>
   );
 }

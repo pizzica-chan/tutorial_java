@@ -23,9 +23,9 @@ Accept: text/html`,
     layer: "Filter",
     title: "セキュリティフィルタ",
     detail:
-      "Spring Security が「ログイン済みか」「このURLを見てよいか」を先に判定します。ここで弾かれると Controller まで届きません。",
+      "Spring Security が「ログイン済みか」「このURLを見てよいか」を先に判定します。ここで弾かれると Controller まで届きません。番号や遷移先は実装次第です。",
     code: `authenticated?
-  no  -> 302 /login
+  no  -> 例: 302 /login（401 や HTML のことも）
   yes -> 次へ`,
   },
   {
@@ -33,7 +33,7 @@ Accept: text/html`,
     layer: "Controller",
     title: "RequestController#list",
     detail:
-      "URL と HTTP メソッドが一致するメソッドが呼ばれます。Spring では @GetMapping などで受けます。ここでは画面用のデータを Model に載せ、テンプレート名を返します。",
+      "URL と HTTP メソッドが一致する Java メソッドが呼ばれます。Spring では @GetMapping などで受けます。ここでは画面用のデータを Model に載せ、テンプレート名を返します。",
     code: `@GetMapping
 public String list(Model model, LoginUser user) {
   model.addAttribute("requests", requestService.findMine(user.getId()));
@@ -55,7 +55,7 @@ public String list(Model model, LoginUser user) {
     layer: "MyBatis",
     title: "RequestMapper#findMine",
     detail:
-      "メソッド名や XML の id が SQL に接続されます。件数がおかしい、遅い、エラー、はここで実体を見ます。",
+      "メソッド名や XML の id が SQL に接続されます。件数がおかしい、遅い、エラーになるといった症状は、ここで実体を見ます。",
     code: `SELECT ... FROM t_request
  WHERE applicant_id = ?
     OR approver_id = ?
@@ -66,7 +66,7 @@ public String list(Model model, LoginUser user) {
     layer: "MySQL",
     title: "テーブル t_request",
     detail:
-      "実データはDBにあります。検証環境に該当データが無い、権限用のマスタが違う、はコードではなくデータの問題です。",
+      "実データは DB にあります。検証環境に該当データが無い、権限用のマスタが違うといったことは、コードではなくデータの問題です。",
   },
   {
     id: "view",
@@ -103,6 +103,11 @@ export const stackKindLabel: Record<StackLineKind, string> = {
   hint: "補足",
 };
 
+export function firstAppLine(item: StackCase): number {
+  const index = item.lines.findIndex((line) => line.kind === "app");
+  return index >= 0 ? index : 0;
+}
+
 export const stackCases: StackCase[] = [
   {
     id: "npe",
@@ -111,13 +116,28 @@ export const stackCases: StackCase[] = [
     lines: [
       {
         kind: "exception",
-        text: "java.lang.NullPointerException: Cannot invoke \"Long.equals(Object)\" because the return value of \"RequestEntity.getApproverId()\" is null",
+        text: 'java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because the return value of "RequestEntity.getApproverId()" is null',
         note: "例外の型とメッセージが本体です。approverId が null の申請で equals している、と読めます。",
       },
       {
         kind: "app",
         text: "    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:41)",
-        note: "jp.co.example で始まる、上から最初の行。右端の RequestService.java:41 がソースの位置です。その 41 行目を見ます。",
+        note: "自分たちが書いたコードのパッケージ名で始まり、.java がある、上から最初の行。このファイルの 41 行目を最初に調べます。",
+      },
+      {
+        kind: "framework",
+        text: "    at jp.co.example.shinsei.service.RequestService$$EnhancerBySpringCGLIB$$8a1b2c.approve(<generated>)",
+        note: "パッケージ名は自作コードと同じでも、$$Enhancer は Spring が作った生成コードです。隣の .java 行に戻ります。",
+      },
+      {
+        kind: "framework",
+        text: "    at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:792)",
+        note: "フレームワーク内部。原因箇所ではありません。",
+      },
+      {
+        kind: "jdk",
+        text: "    at jdk.proxy2.$Proxy128.approve(Unknown Source)",
+        note: "生成されたプロキシです。Unknown Source なので飛ばします。",
       },
       {
         kind: "app",
@@ -126,13 +146,23 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "jdk",
-        text: "    at jdk.proxy2.$Proxy128.approve(Unknown Source)",
-        note: "Spring が生成したプロキシです。自作クラスではありません。隣の jp.co.example 行に戻ります。",
+        text: "    at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)",
+        note: "JDK の反射呼び出しです。飛ばします。",
       },
       {
         kind: "framework",
-        text: "    at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invoke(...)",
-        note: "フレームワーク内部。原因箇所ではありません。パッケージ名 org.springframework で見分けます。",
+        text: "    at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)",
+        note: "org.springframework はライブラリです。長いクラス名で止まらないでください。",
+      },
+      {
+        kind: "framework",
+        text: "    at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1072)",
+        note: "リクエストを振り分ける枠組みです。直すファイルではありません。",
+      },
+      {
+        kind: "framework",
+        text: "    ... 42 more",
+        note: "Java は長いスタックの末尾を省略します。見る場所は、省略より上の自作行です。",
       },
     ],
   },
@@ -148,8 +178,18 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "framework",
+        text: "    at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:172)",
+        note: "Spring が SQLException を包んでいる途中です。ここで止まっても直すファイルではありません。",
+      },
+      {
+        kind: "framework",
         text: "    at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:154)",
-        note: "MyBatis 内部。ここで止まっても直すファイルではありません。自作の Repository / Mapper を探します。",
+        note: "MyBatis 内部です。自作の Repository / Mapper を探します。",
+      },
+      {
+        kind: "jdk",
+        text: "    at jdk.proxy2.$Proxy84.findMine(Unknown Source)",
+        note: "Mapper のプロキシです。Unknown Source なので飛ばします。",
       },
       {
         kind: "app",
@@ -157,16 +197,31 @@ export const stackCases: StackCase[] = [
         note: "自作クラス。対応する XML の findMine を開きます。ライブラリの行より、この行が入口です。",
       },
       {
+        kind: "app",
+        text: "    at jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:22)",
+        note: "呼び出し元の Service。SQL の中身は Repository / Mapper 側にあります。",
+      },
+      {
+        kind: "app",
+        text: "    at jp.co.example.shinsei.controller.RequestController.list(RequestController.java:31)",
+        note: "画面の入口。一覧を開いた操作から来ている、と確認できます。",
+      },
+      {
+        kind: "framework",
+        text: "    at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1072)",
+        note: "フレームワーク内部。飛ばします。",
+      },
+      {
         kind: "exception",
         text: "Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'priority' in 'field list'",
-        note: "Caused by が根因です。Mapper に priority を足したのに、検証DBの ALTER が未実施、が典型です。",
+        note: "Caused by が根因です。Mapper に priority を足したのに、検証 DB で ALTER が未実施なのが典型です。",
       },
     ],
   },
   {
     id: "csrf",
     title: "承認するとログイン画面に戻る",
-    symptom: "ボタンを押すと一覧ではなくログインへ。ログに例外は少ない。",
+    symptom: "ボタンを押すと一覧ではなくログインへ。ログに例外は少ない。Network の番号も確認する。",
     lines: [
       {
         kind: "framework",
@@ -175,8 +230,8 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "hint",
-        text: "フォームに th:action は書いたが、sec:csrf 相当の hidden が無い / Ajax で header を付け忘れ",
-        note: "POST なのにトークンが無いと、Security がセッションを切ってログインへ戻すことがあります。500 ではないので「落ちてない」と誤解しがちです。",
+        text: "フォームに CSRF 用 hidden が無い / Ajax でヘッダを付け忘れ（Thymeleaf なら th:action で自動挿入されることが多い）",
+        note: "トークン不正の典型は 403 です。設定によっては 302 やログイン画面の HTML になることもあります。500 ではないので「エラーになっていない」と誤解しがちです。",
       },
     ],
   },
@@ -209,7 +264,7 @@ Set-Cookie: JSESSIONID=AB12CD34; Path=/shinsei; HttpOnly`,
     },
     {
       label: "_csrf",
-      text: "見知らぬサイトからのフォーム送信を防ぐトークンです。これが欠けるとログイン画面に飛ばされがちです。",
+      text: "見知らぬサイトからのフォーム送信を防ぐトークンです。欠けると 403 になることが多いです。設定によってはログイン画面へ誘導されます。",
     },
   ],
 };

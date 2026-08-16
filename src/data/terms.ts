@@ -6,6 +6,11 @@ export type TermDef = {
 
 export const terms: TermDef[] = [
   {
+    term: "申請くん",
+    aliases: ["申請くん"],
+    body: "この教材の架空の社内申請アプリ。社員が申請を出し、承認者が承認する、という想定です。Spring Boot、Thymeleaf、MyBatis、MySQL、Spring Security。実在しません。",
+  },
+  {
     term: "HTTP",
     aliases: ["HTTP"],
     body: "ブラウザとサーバがデータをやり取りする約束事。1回の会話はリクエストとレスポンスで完結します。",
@@ -18,17 +23,17 @@ export const terms: TermDef[] = [
   {
     term: "GET / POST",
     aliases: ["GET", "POST"],
-    body: "HTTPメソッド。GETは取得、POSTは登録・更新など状態を変える操作に使います。",
+    body: "HTTP メソッド。GET は取得、POST は登録・更新など状態を変える操作に使います。",
   },
   {
     term: "ステータスコード",
     aliases: ["ステータスコード", "ステータス番号", "2xx", "3xx", "4xx", "5xx"],
-    body: "応答の結果を表す3桁の番号。2xxは成功、3xxは別URLへ、4xxはクライアント側、5xxはサーバ側の問題です。",
+    body: "応答の結果を表す 3 桁の番号。2xx は成功、3xx は別 URL へ、4xx はクライアント側、5xx はサーバ側の問題です。",
   },
   {
     term: "404",
     aliases: ["404"],
-    body: "Not Found。そのURLに対応する処理やファイルが無い、という応答です。",
+    body: "Not Found。その URL に対応する処理やファイルが無い、という応答です。",
   },
   {
     term: "401 / 403",
@@ -48,7 +53,7 @@ export const terms: TermDef[] = [
   {
     term: "302",
     aliases: ["302", "303"],
-    body: "リダイレクト。別のURLへ誘導する応答です。ログイン画面へ飛ばすときや、POST後の画面遷移でよく使います。",
+    body: "リダイレクト。別の URL へ誘導する応答です。ログイン画面へ飛ばすときや、POST 後の画面遷移でよく使います。",
   },
   {
     term: "200",
@@ -58,7 +63,7 @@ export const terms: TermDef[] = [
   {
     term: "ヘッダ",
     aliases: ["レスポンスヘッダ", "リクエストヘッダ", "ヘッダ"],
-    body: "HTTPの本文の前に付く付加情報。Content-Type、Cookie、Location などがあります。",
+    body: "HTTP の本文の前に付く付加情報。Content-Type、Cookie、Location などがあります。",
   },
   {
     term: "Cookie",
@@ -88,12 +93,12 @@ export const terms: TermDef[] = [
   {
     term: "CSRF",
     aliases: ["CSRFトークン", "CSRF"],
-    body: "Cross-Site Request Forgery。ログイン中の利用者に、別サイトから意図しないPOSTをさせる攻撃。トークンで防ぎます。",
+    body: "Cross-Site Request Forgery。ログイン中の利用者に、別サイトから意図しない POST をさせる攻撃。トークンで防ぎます。",
   },
   {
     term: "Controller",
     aliases: ["Controller"],
-    body: "URLとHTTPメソッドを受けて、次の処理へ渡す層。画面処理を追うときの起点です。Spring ではこの名前が多いです。",
+    body: "URL と HTTP メソッドを受けて、次の処理へ渡す層。画面処理を追うときの起点です。Spring ではこの名前が多いです。",
   },
   {
     term: "RestController",
@@ -118,7 +123,7 @@ export const terms: TermDef[] = [
   {
     term: "Mapper",
     aliases: ["Mapper"],
-    body: "MyBatisなどで、JavaのメソッドとSQLを対応づける部品です。",
+    body: "MyBatis などで、Java のメソッドと SQL を対応づける部品です。",
   },
   {
     term: "Entity",
@@ -201,12 +206,12 @@ export const terms: TermDef[] = [
   {
     term: "スタックトレース",
     aliases: ["スタックトレース"],
-    body: "例外が起きたときの呼び出し履歴。右端の (File.java:行番号) がソースの位置です。org.springframework や java. は飛ばして、会社名で始まる行を上から探します。",
+    body: "例外が起きたときの呼び出し履歴。右端の (File.java:行番号) がソースの位置です。org.springframework や java. は飛ばして、自分たちが書いたコードのパッケージ名の行を上から探します。",
   },
   {
     term: "自作クラス",
     aliases: ["自作クラス", "自作パッケージ"],
-    body: "このプロジェクトで書いたコード。at 行のパッケージが会社名（申請くんなら jp.co.example）で始まる行です。",
+    body: "このプロジェクトで書いたコード。at 行のパッケージが、自分たちが書いたコードのもの（申請くんなら jp.co.example.shinsei）で始まる行です。",
   },
   {
     term: "NullPointerException",
@@ -231,7 +236,27 @@ export const terms: TermDef[] = [
   {
     term: "Filter",
     aliases: ["フィルタ", "フィルター", "Filter"],
-    body: "Controllerの手前で全リクエストを通す処理。ログイン確認やCSRF検査がここにあります。Spring Security でもここにあります。",
+    body: "Controller の手前で全リクエストを通す処理。ログイン確認や CSRF 検査がここにあります。Spring Security も、実体は Filter の連鎖です。Controller のソースからは呼ばれません。",
+  },
+  {
+    term: "Interceptor",
+    aliases: ["Interceptor", "HandlerInterceptor", "addInterceptors"],
+    body: "Spring MVC で、Controller メソッドの直前・直後に動く処理。preHandle / postHandle。WebMvcConfigurer の addInterceptors で登録します。Controller のソースに呼び出しは出ません。",
+  },
+  {
+    term: "AOP",
+    aliases: ["AOP", "@Aspect", "アスペクト"],
+    body: "メソッド呼び出しの手前やあとに、別処理を挟む仕組み。トランザクションや独自ログがここに載ります。ソース上は service.approve() に見えて、実行時はプロキシが先に動きます。",
+  },
+  {
+    term: "@Transactional",
+    aliases: ["@Transactional", "Transactional"],
+    body: "そのメソッドをトランザクションで囲む印です。Spring の AOP プロキシが先に動くので、メソッド本体の1行目より前に処理があります。",
+  },
+  {
+    term: "@ControllerAdvice",
+    aliases: ["@ControllerAdvice", "ControllerAdvice"],
+    body: "複数の Controller の例外や共通処理をまとめる印です。throw したメソッドの return ではなく、こちらが画面や JSON を決めることがあります。",
   },
   {
     term: "アノテーション",
@@ -241,17 +266,17 @@ export const terms: TermDef[] = [
   {
     term: "@GetMapping",
     aliases: ["@GetMapping"],
-    body: "指定したURLへの GET を、このメソッドが受け取るという印です。画面を開く・一覧を表示する、といった取得処理で使います。Spring のアノテーションです。",
+    body: "指定した URL への GET を、この Java メソッドが受け取るという印です。画面を開く、一覧を表示するといった取得処理で使います。Spring のアノテーションです。",
   },
   {
     term: "@PostMapping",
     aliases: ["@PostMapping"],
-    body: "指定したURLへの POST を、このメソッドが受け取るという印です。登録・更新・承認など、状態を変える操作で使います。Spring のアノテーションです。",
+    body: "指定した URL への POST を、この Java メソッドが受け取るという印です。登録・更新・承認など、状態を変える操作で使います。Spring のアノテーションです。",
   },
   {
     term: "@RequestMapping",
     aliases: ["@RequestMapping"],
-    body: "クラスやメソッドに付けるURLの土台。クラスに /requests と書くと、配下のメソッドのパスと合成されます。Spring のアノテーションです。",
+    body: "クラスや Java メソッドに付ける URL の土台。クラスに /requests と書くと、配下のメソッドのパスと合成されます。Spring のアノテーションです。",
   },
   {
     term: "@RequestParam",
@@ -261,7 +286,7 @@ export const terms: TermDef[] = [
   {
     term: "マッピング",
     aliases: ["URLマッピング", "マッピング"],
-    body: "どのURL・HTTPメソッドを、どのメソッドが処理するかの対応づけです。Spring では @GetMapping などで書きます。",
+    body: "どの URL と HTTP メソッド（GET など）を、どの Java メソッドが処理するかの対応づけです。Spring では @GetMapping などで書きます。",
   },
   {
     term: "バリデーション",
@@ -276,7 +301,12 @@ export const terms: TermDef[] = [
   {
     term: "コミット",
     aliases: ["コミット"],
-    body: "トランザクションの確定。これが無いと更新がDBに残りません。",
+    body: "トランザクションの確定。これが無いと更新が DB に残りません。",
+  },
+  {
+    term: "永続化",
+    aliases: ["永続化"],
+    body: "メモリ上の値を、DB やファイルへ残すことです。画面を閉じても残るデータの書き込みがこれです。",
   },
   {
     term: "バインド",
@@ -366,7 +396,7 @@ export const terms: TermDef[] = [
   {
     term: "WAR",
     aliases: ["war", "WAR"],
-    body: "Java Webアプリの配布形式。外部のTomcatなどに載せるときに使います。",
+    body: "Java Web アプリの配布形式。外部の Tomcat などに載せるときに使います。",
   },
   {
     term: "HTTPサーバ",
@@ -571,7 +601,7 @@ export const terms: TermDef[] = [
   {
     term: "PUT / PATCH / DELETE",
     aliases: ["PUT", "PATCH", "DELETE"],
-    body: "HTTPメソッド。API で更新や削除に使うことが多いです。GET は見る、POST は送る、の仲間です。",
+    body: "HTTP メソッド。API で更新や削除に使うことが多いです。GET は見る、POST は送る、の仲間です。",
   },
   {
     term: "Location",
@@ -596,12 +626,12 @@ export const terms: TermDef[] = [
   {
     term: "ポート",
     aliases: ["ポート"],
-    body: "同じマシンでサービスを区別する番号。例: 8080。設定と実際が違うと繋がりません。",
+    body: "同じマシンでサービスを区別する番号。例: 8080。設定と実際が違うとつながりません。",
   },
   {
     term: "フォーム",
     aliases: ["フォーム", "form"],
-    body: "画面で値を書いて送る部分です。入力欄と送信ボタンがセットになっています。どこへ、GET か POST か、もここに書いてあります。",
+    body: "画面で値を書いて送る部分です。入力欄と送信ボタンがセットになっています。どこへ送るか、GET か POST かも、ここに書いてあります。",
   },
   {
     term: "hidden",
@@ -616,7 +646,7 @@ export const terms: TermDef[] = [
   {
     term: "name属性",
     aliases: ["name 属性", "name属性"],
-    body: "フォーム項目の名前。サーバの @RequestParam と一致している必要があります。@RequestParam は Spring のアノテーションです。",
+    body: "フォーム項目の名前。サーバの @RequestParam と対応づきます。名前が違うと null やバインドエラーになりやすいです。required = false なら必須ではありません。@RequestParam は Spring のアノテーションです。",
   },
   {
     term: "@PathVariable",
@@ -651,7 +681,7 @@ export const terms: TermDef[] = [
   {
     term: "メソッド",
     aliases: ["メソッド"],
-    body: "クラスの中の処理のまとまり。HTTP の GET / POST のことも、同じ言葉で呼びます。",
+    body: "クラスの中の処理のまとまりです。HTTP の GET / POST も現場では「メソッド」と呼びますが、別物です。前後で HTTP か Java かを見分けます。",
   },
   {
     term: "オブジェクト",
@@ -706,12 +736,12 @@ export const terms: TermDef[] = [
   {
     term: "permitAll",
     aliases: ["permitAll", "authenticated", "hasRole"],
-    body: "Spring Security の許可設定。誰でも可、ログイン必須、特定ロールのみ、を並べます。",
+    body: "Spring Security の許可設定。誰でも可、ログイン必須、特定ロールのみといった設定を並べます。",
   },
   {
     term: "認証",
     aliases: ["認証"],
-    body: "誰か、を確認すること。ログインがこれです。失敗したときの応答は、401 やログイン画面など、アプリによって違います。",
+    body: "誰であるかを確認すること。ログインがこれです。失敗したときの応答は、401 やログイン画面など、アプリによって違います。",
   },
   {
     term: "未ログイン",
@@ -721,7 +751,7 @@ export const terms: TermDef[] = [
   {
     term: "認可",
     aliases: ["認可"],
-    body: "権限を確かめること、の言い方です。認証（誰か）のあとで、その操作をしてよいかを見ます。",
+    body: "「権限を確かめること」という言い方です。認証（誰であるか）のあとで、その操作をしてよいかを見ます。",
   },
   {
     term: "権限",
@@ -826,12 +856,12 @@ export const terms: TermDef[] = [
   {
     term: "IDE",
     aliases: ["IDE"],
-    body: "ソースを編集・検索する開発環境。IntelliJ や Eclipse など。",
+    body: "ソースを編集・検索する開発環境。IntelliJ や Eclipse など。デバッガもここにあります。",
   },
   {
     term: "デバッガ",
     aliases: ["デバッガ"],
-    body: "実行を止めて中身を見る道具。ブレークポイントとセットで使います。",
+    body: "動いているプログラムを指定した行で一時停止し、そのときの変数を見る道具。バックエンドは IDE、フロントエンドはブラウザの開発者ツールです。",
   },
   {
     term: "ライブラリ",
@@ -866,7 +896,7 @@ export const terms: TermDef[] = [
   {
     term: "開発者ツール",
     aliases: ["開発者ツール"],
-    body: "ブラウザに付いている調査画面。Network タブで実際の通信を見ます。",
+    body: "ブラウザに付いている調査画面。Network で通信、Console で JS の例外、Sources で JS のブレークポイントを見ます。",
   },
   {
     term: "パース",
@@ -924,71 +954,6 @@ function isKatakanaTerm(alias: string): boolean {
   return /^[\u30A0-\u30FFー]+$/.test(alias);
 }
 
-const SKIP_INLINE = new Set([
-  "リクエスト",
-  "レスポンス",
-  "ブラウザ",
-  "サーバ",
-  "権限",
-  "認証",
-  "未ログイン",
-  "認可",
-  "ロール",
-  "クラス",
-  "メソッド",
-  "例外",
-  "ログ",
-  "テーブル",
-  "パッケージ",
-  "オブジェクト",
-  "引数",
-  "戻り値",
-  "ホスト",
-  "HTML",
-  "CSS",
-  "URL",
-  "フォーム",
-  "ヘッダ",
-  "クエリ",
-  "フロントエンド",
-  "バックエンド",
-  "コンテナ",
-  "インスタンス",
-  "ライブラリ",
-  "フレームワーク",
-  "プロキシ",
-  "バッチ",
-  "キャッシュ",
-  "タイムアウト",
-  "ロック",
-  "モック",
-  "環境変数",
-  "カラム",
-  "ドメイン",
-  "ポート",
-  "マッピング",
-  "コミット",
-  "バインド",
-  "インデックス",
-  "プロファイル",
-  "テンプレート",
-  "静的ファイル",
-  "アノテーション",
-  "バリデーション",
-  "トランザクション",
-  "論理削除",
-  "文字コード",
-  "タイムゾーン",
-  "標準出力",
-  "ローテート",
-  "IDE",
-  "デバッガ",
-  "アドレスバー",
-  "開発者ツール",
-  "パース",
-  "依存関係",
-]);
-
 type Matcher = {
   alias: string;
   pattern: string;
@@ -996,7 +961,6 @@ type Matcher = {
 };
 
 const matchers: Matcher[] = terms
-  .filter((def) => !SKIP_INLINE.has(def.term))
   .flatMap((def) => def.aliases.map((alias) => ({ alias, def })))
   .sort((a, b) => b.alias.length - a.alias.length)
   .map(({ alias, def }) => {

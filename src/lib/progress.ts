@@ -8,7 +8,10 @@ export type LessonRef = { trackId: string; lessonId: string };
 function read(): string[] {
   try {
     const raw = localStorage.getItem(KEY);
-    return raw ? (JSON.parse(raw) as string[]) : [];
+    if (!raw) return [];
+    const parsed: unknown = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter((item): item is string => typeof item === "string");
   } catch {
     return [];
   }
@@ -27,13 +30,15 @@ export function toggleCompleted(id: string): string[] {
   if (current.has(id)) current.delete(id);
   else current.add(id);
   const next = [...current];
+  let saved = next;
   try {
     localStorage.setItem(KEY, JSON.stringify(next));
   } catch {
-    return read();
+    // 容量超過やプライベートモードでは保存できない。画面は実際の中身に合わせる
+    saved = read();
   }
   window.dispatchEvent(new Event("genba-progress"));
-  return next;
+  return saved;
 }
 
 export function lessonKey(trackId: string, lessonId: string): string {
@@ -52,8 +57,11 @@ export function getLastLesson(): LessonRef | null {
   try {
     const raw = localStorage.getItem(LAST_KEY);
     if (!raw) return null;
-    const parsed = JSON.parse(raw) as LessonRef;
-    if (typeof parsed.trackId === "string" && typeof parsed.lessonId === "string") return parsed;
+    const parsed: unknown = JSON.parse(raw);
+    if (parsed && typeof parsed === "object") {
+      const { trackId, lessonId } = parsed as Partial<LessonRef>;
+      if (typeof trackId === "string" && typeof lessonId === "string") return { trackId, lessonId };
+    }
     return null;
   } catch {
     return null;

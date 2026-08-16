@@ -1,0 +1,37 @@
+---
+description: 教材のコード例・スタック・フォームは、読める実例として示す
+globs: src/content/**/*.ts,src/data/**/*.ts,src/components/Diagram.tsx
+alwaysApply: false
+---
+
+# 教材サンプルの形
+
+疑似コードと明示しない限り、Java はコンパイルできる形で書く。アノテーションだけをクラスに並べない。
+
+```
+# 悪い
+@Controller
+@RequestMapping("/requests")
+public class RequestController {
+  @GetMapping
+  @GetMapping("/{id}")
+  @PostMapping("/{id}/approve")
+}
+
+# よい
+@Controller
+@RequestMapping("/requests")
+public class RequestController {
+  @GetMapping
+  public String list(...) { ... }        // GET /requests
+
+  @GetMapping("/{id}")
+  public String detail(...) { ... }      // GET /requests/12
+}
+```
+
+スタックは例外が最上段、下へ行くほど呼び出し元。Service の AOP プロキシは、その Service の直下に置く。
+
+Spring Security を使う POST フォームには CSRF 用 hidden を書く。`th:action` なら自動挿入が多い、と補足してよい。
+
+クイズは、その項目が教えたことの確認にする。入口特定の項で「遅さ」を問わない。

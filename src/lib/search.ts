@@ -1,4 +1,4 @@
-import type { Block } from "../types";
+import type { Block, WidgetName } from "../types";
 import { tracks } from "../data/curriculum";
 import { getQuiz } from "../data/quizzes";
 import { glossaryAnchor, terms } from "../data/terms";
@@ -43,12 +43,41 @@ function blockText(block: Block): string {
       return [block.headers.join(" "), ...block.rows.map((row) => row.join(" "))].join("\n");
     case "steps":
       return block.items.map((item) => `${item.title}\n${item.text}`).join("\n");
+    case "widget":
+      return widgetText(block.name);
+    default:
+      return "";
+  }
+}
+
+function widgetText(name: WidgetName): string {
+  switch (name) {
+    case "explorer":
+      return projectFiles.map((item) => `${item.path}\n${item.note}\n${item.why}`).join("\n");
+    case "flow":
+      return requestFlow.map((item) => `${item.layer}\n${item.title}\n${item.detail}`).join("\n");
+    case "stack":
+      return stackCases.map((item) => `${item.title}\n${item.symptom}`).join("\n");
+    case "http":
+      return `${httpSample.request}\n${httpSample.response}`;
     default:
       return "";
   }
 }
 
 const documents: Doc[] = [
+  {
+    href: "/",
+    title: "現場トレース",
+    crumb: "トップ",
+    text: "HTTP と Java Web アプリの構成、既存コードの追い方、よくある不具合パターン、シナリオでの切り分け。申請くん。",
+  },
+  ...tracks.map((track) => ({
+    href: `/tracks/${track.id}`,
+    title: track.title,
+    crumb: `${track.no} 章`,
+    text: [track.title, track.kicker, track.description, ...track.lessons.map((lesson) => `${lesson.title} ${lesson.summary}`)].join("\n"),
+  })),
   ...tracks.flatMap((track) =>
     track.lessons.map((lesson) => ({
       href: `/tracks/${track.id}/${lesson.id}`,

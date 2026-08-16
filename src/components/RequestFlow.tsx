@@ -3,10 +3,12 @@ import { requestFlow } from "../data/labs";
 import { TextWithTerms } from "./TextWithTerms";
 import { CodeBlock } from "./CodeBlock";
 import { Icon, flowLayerIcon } from "./Icon";
+import { tabPanelProps, tabProps, useTabList } from "../hooks/useTabList";
 
 export function RequestFlow() {
   const [active, setActive] = useState(0);
   const step = requestFlow[active];
+  const { listRef, onKeyDown } = useTabList(requestFlow.length, active, setActive);
 
   return (
     <section className="widget">
@@ -32,12 +34,19 @@ export function RequestFlow() {
           </button>
         </div>
       </div>
-      <div className="widget-nav flow">
+      <div
+        className="widget-nav flow"
+        role="tablist"
+        aria-label="リクエストの区間"
+        ref={listRef}
+        onKeyDown={onKeyDown}
+      >
         {requestFlow.map((item, index) => (
           <button
             key={item.id}
             className={`flow-step ${index === active ? "active" : ""}`}
             type="button"
+            {...tabProps("flow", index, index === active)}
             onClick={() => setActive(index)}
           >
             <span className="tag">{String(index + 1).padStart(2, "0")}</span>
@@ -51,7 +60,7 @@ export function RequestFlow() {
           </button>
         ))}
       </div>
-      <div className="widget-main">
+      <div className="widget-main" {...tabPanelProps("flow", active)}>
         <h3>{step.title}</h3>
         <p>
           <TextWithTerms text={step.detail} />

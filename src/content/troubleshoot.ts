@@ -27,11 +27,11 @@ export const troubleshootTrack: Track = {
             },
             {
               title: "区間を切る",
-              text: "ブラウザまで来ているか、サーバに届いているか、DB まで行っているか。Network とログで分ける。",
+              text: "ブラウザまで来ているか、サーバに届いているか、DB まで行っているか。Network とログで分ける。値の中身は、止められるならデバッガ。",
             },
             {
               title: "仮説を1つにする",
-              text: "権限と SQL と JS が同時に怪しい、は切り分けになっていません。確認コストが低いものから潰します。",
+              text: "権限と SQL と JS が同時に怪しいのは、切り分けになっていません。確認コストが低いものから潰します。",
             },
             {
               title: "変更は最小",
@@ -81,7 +81,7 @@ export const troubleshootTrack: Track = {
             "手順書、README、聞ける人に「今の環境のログはどこか」を確認する",
             "application.yml や application.properties の logging.file や logging.path、logging.level を見る",
             "logback-spring.xml や log4j2.xml があれば、file のパスを見る",
-            "手元なら、起動したコンソールに同じ内容が出ていることが多い",
+            "ローカル環境なら、起動したコンソールに同じ内容が出ていることが多い",
           ],
         },
         { type: "diagram", name: "log-where", caption: "中身は同じ記録です。置き場所が違うだけです。" },
@@ -124,7 +124,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
             "操作した時刻と、ログの時刻を合わせる。日付が違うファイルなら、まず日付を合わせる",
             "ERROR と WARN を先に見る。INFO は「処理がそこに届いたか」の確認に使う",
             "メッセージで何が起きたかを読む。その下に at 行が続けばスタックトレース",
-            "クラス名が会社のパッケージなら、そのソースを開く",
+            "自分たちが書いたコードのパッケージ名なら、そのソースの行番号を調べる",
           ],
         },
         {
@@ -135,7 +135,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           type: "callout",
           kind: "trap",
           title: "ログが無い",
-          text: "操作時刻に何も無いこと自体が情報です。別インスタンス、別ファイル、リクエストがサーバに届いていない、を疑います。",
+          text: "操作時刻に何も無いこと自体が情報です。別インスタンス、別ファイル、リクエストがサーバに届いていないことを疑います。",
         },
         {
           type: "h2",
@@ -143,7 +143,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
         },
         {
           type: "p",
-          text: "既存ログで到達も例外も分からないとき、一時的に ID と通過点を出します。パスワードやトークンは出しません。調査が終わったら戻します。",
+          text: "既存ログで到達も例外も分からないとき、一時的に ID と通過点を出します。パスワードやトークンは出しません。調査が終わったら戻します。値を今の行で見たいだけなら、ログを足すよりデバッガです。止められない環境ではログです。",
         },
         {
           type: "callout",
@@ -164,11 +164,24 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
       id: "stack",
       title: "スタックトレース",
       minutes: 12,
-      summary: "右端がファイル名。会社名で始まる行から調べる。",
+      summary: "右端がファイル名。自分たちが書いたコードのパッケージ名の行から調べる。",
       blocks: [
         {
           type: "p",
-          text: "スタックトレースは、例外が起きたときの呼び出し履歴です。at で始まる各行が、当時呼ばれていたメソッドです。",
+          text: "スタックトレースは、例外が起きたときの呼び出し履歴です。現場のログでは、次のように長く出ます。",
+        },
+        {
+          type: "diagram",
+          name: "stack-own",
+          caption: "上から見て、自分たちが書いたコードのパッケージ名がある最初の行の、その行番号を調べます。",
+        },
+        {
+          type: "p",
+          text: "申請くんなら、自分たちが書いたコードのパッケージは jp.co.example.shinsei です。org.springframework や java. はライブラリや Java 本体なので、直す場所ではありません。$$Enhancer や $Proxy も生成コードなので飛ばします。",
+        },
+        {
+          type: "h2",
+          text: "1行の読み方",
         },
         { type: "diagram", name: "stack-line", caption: "右端の括弧が、ソースのファイルと行です。" },
         {
@@ -182,11 +195,6 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           caption: "ログの :41 は、エディタ左端の行番号と同じものです。",
         },
         {
-          type: "p",
-          text: "自分たちが書いたクラスは、パッケージが会社名で始まります。申請くんなら jp.co.example。org.springframework や java. はライブラリや Java 本体なので、直す場所ではありません。上から見て、会社名で始まる最初の行から調べます。",
-        },
-        { type: "diagram", name: "stack-own" },
-        {
           type: "h2",
           text: "見る順番",
         },
@@ -195,7 +203,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           items: [
             "先頭の例外クラスとメッセージを読む",
             "Caused by があれば、いちばん下の原因例外を優先する",
-            "at 行を上から見て、会社名で始まる最初の行のソースを見る",
+            "at 行を上から見て、自分たちが書いたコードのパッケージ名がある最初の行のソースを見る",
             "その下の自作クラスは、誰から呼ばれたかの手がかり",
           ],
         },
@@ -207,7 +215,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           type: "table",
           headers: ["パッケージの先頭", "扱い"],
           rows: [
-            ["jp.co.example / com.自社 など groupId", "自作。このクラスを開く"],
+            ["jp.co.example.shinsei など、自分たちが書いたコードのパッケージ", "自作。このクラスの行番号を調べる"],
             ["org.springframework / org.apache / org.mybatis / org.hibernate", "ライブラリ。飛ばす"],
             ["java. / javax. / jakarta. / jdk. / sun.", "JDK。飛ばす"],
             ["$Proxy / CGLIB / generated", "生成コード。隣の自作クラスへ戻る"],
@@ -216,7 +224,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
         {
           type: "callout",
           kind: "tip",
-          title: "上から最初の自作",
+          title: "上から最初の自作コード",
           text: "Spring の長いクラス名の行で止まらないでください。直すのは RequestService や RequestRepository です。",
         },
         { type: "widget", name: "stack" },
@@ -253,7 +261,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           items: [
             "再現操作と時刻を控える",
             "同時刻の ERROR を取る",
-            "ライブラリの at 行は飛ばし、会社名で始まる行のソースを見る",
+            "ライブラリの at 行は飛ばし、自分たちが書いたコードのパッケージ名がある行のソースを見る",
             "その値がどこでセットされたかを上流へ辿る",
           ],
         },
@@ -374,12 +382,51 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
     {
       id: "p-slow",
       title: "パターン: 遅い",
-      minutes: 7,
-      summary: "SQL、N+1、外部 API、ロック。",
+      minutes: 9,
+      summary: "時刻差、SQL、N+1、外部 API、ロック。",
       blocks: [
         {
           type: "p",
-          text: "遅さは例外ログに出ないことが多いです。入口メソッドを特定してから、その中の I/O を数えます。",
+          text: "遅さは例外ログに出ないことが多いです。先に、同じリクエストのログのタイムスタンプを並べ、どこで時間が空いているかを見ます。",
+        },
+        {
+          type: "h2",
+          text: "タイムスタンプの差",
+        },
+        {
+          type: "p",
+          text: "連続した2行の時刻差が、その間にかかった時間です。差が大きい区間が、遅い箇所です。入口メソッドを読む前に、この差で範囲を狭めます。",
+        },
+        {
+          type: "code",
+          title: "同じスレッドの INFO（抜粋）",
+          code: `2026-08-16 04:12:03.100 INFO  ... [nio-8080-exec-3] j.c.e.s.controller.RequestController : list start
+2026-08-16 04:12:03.105 INFO  ... [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine start
+2026-08-16 04:12:08.410 INFO  ... [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine done
+2026-08-16 04:12:08.412 INFO  ... [nio-8080-exec-3] j.c.e.s.controller.RequestController : list done`,
+        },
+        {
+          type: "p",
+          text: "上の例では findMine の start と done のあいだが約 5 秒、前後は数ミリ秒です。遅いのは Service の中（SQL やその前後の I/O）です。Controller の組み立てではありません。start / done は時刻差の読み方の例で、同じ文言が必ず出るわけではありません。既存の通過点でも、見方は同じです。",
+        },
+        {
+          type: "ul",
+          items: [
+            "ミリ秒まで見る。秒だけだと差が消える",
+            "スレッド名（nio-8080-exec-3 など）やリクエスト ID で、同じリクエストの行だけを揃える。別リクエストの行が混ざると差が無意味になる",
+            "Network の待ち時間と、サーバログの最初と最後の時刻を比べる。Network だけ長いなら、アプリに入る前（待ち行列、LB、DNS）",
+            "通過点のログが少なければ、空いている区間の中を疑う。足りないときだけ、ID 付きの通過点を一時的に足す",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "ログが無い区間",
+          text: "start と done のあいだに行が無いこと自体が、範囲です。その中の SQL、外部 API、ロック、ファイル I/O を見ます。",
+        },
+        {
+          type: "h2",
+          text: "区間の中で疑うもの",
         },
         { type: "diagram", name: "n-plus-one" },
         {

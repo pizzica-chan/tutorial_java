@@ -1,6 +1,6 @@
 import type { Quiz } from "../types";
 
-export const quizzes: Record<string, Quiz> = {
+export const quizzes = {
   "ori-goal": {
     id: "ori-goal",
     question: "既存アプリで特定の画面処理を追うとき、最初にやることはどれ？",
@@ -38,7 +38,7 @@ export const quizzes: Record<string, Quiz> = {
     ],
     answer: 1,
     explanation:
-      "件数の実体は DB の行です。バックエンドはその行を SQL で読み、フロントは返ってきた結果を出します。見た目の CSS とは切り分けが違います。",
+      "一覧の件数は、DB に保存された行です。バックエンドはその行を SQL で読み、フロントは返ってきた結果を出します。見た目の CSS とは切り分けが違います。",
   },
   "web-status": {
     id: "web-status",
@@ -77,7 +77,7 @@ export const quizzes: Record<string, Quiz> = {
     ],
     answer: 1,
     explanation:
-      "API なのに HTML なら、認証リダイレクトや間違った URL で画面用の応答が来ていることが多いです。ステータスだけでなく Content-Type を見ます。",
+      "API なのに HTML なら、認証失敗や間違った URL で画面用の応答が来ていることが多いです。302 経由でログイン HTML になることも、200 のまま HTML が返ることもあります。ステータスだけでなく Content-Type を見ます。",
   },
   "java-layer": {
     id: "java-layer",
@@ -87,18 +87,31 @@ export const quizzes: Record<string, Quiz> = {
     explanation:
       "URL と HTTP メソッドの受付口は Controller です。JSON を返す RestController も同じ層です。そこから Service、Repository へ降ります。",
   },
+  "java-crosscut": {
+    id: "java-crosscut",
+    question: "Controller の approve にブレークポイントを置いたが止まらない。ソース上はボタンからこの Java メソッドに来る。先に疑うのは？",
+    choices: [
+      "CSS の class 名",
+      "Filter、Interceptor、Spring Security など、Controller に届く前の処理",
+      "entity の toString",
+      "README の作者名",
+    ],
+    answer: 1,
+    explanation:
+      "Filter と Interceptor と Security は、Controller のソースに呼び出しがありません。だから、ソースを追うだけでは見つかりません。ここで止まるとレスポンスは返っても、Controller は動いていません。",
+  },
   "trace-start": {
     id: "trace-start",
-    question: "申請一覧が遅い。最初に確認する場所として妥当なのは？",
+    question: "申請一覧画面の入口を最初に確認するとき、妥当なのは？",
     choices: [
       "pom.xml の作者名",
-      "一覧画面の URL と、対応する Controller メソッド",
+      "一覧の URL と HTTP メソッドが、どの Controller の Java メソッドに対応するか",
       "CSS の余白だけを疑う",
       "本番 DB を直接 UPDATE して試す",
     ],
     answer: 1,
     explanation:
-      "入口メソッドを特定してから、その中の DB アクセスや外部呼び出しを見ます。",
+      "入口は URL と HTTP メソッドの対応です。Java のメソッド名が list でも、パスが違えば別画面です。特定してから中の処理を見ます。",
   },
   "read-name": {
     id: "read-name",
@@ -113,18 +126,31 @@ export const quizzes: Record<string, Quiz> = {
     explanation:
       "画面に出ている言葉、パス、DB 名のどれかがヒットします。言語は一致しないことがあるので複数試します。",
   },
+  "read-debug": {
+    id: "read-debug",
+    question: "画面に「承認済み」と出る。Network の JSON は status: PENDING。次は？",
+    choices: [
+      "RequestService に IDE のブレークポイントを置く",
+      "ブラウザの開発者ツールで、JSON を画面に出している JS を見る",
+      "本番のテーブルを DROP する",
+      "CSS の余白を疑う",
+    ],
+    answer: 1,
+    explanation:
+      "サーバは PENDING を返しています。画面の文言はフロント側です。Java のデバッガを止めても、正しい応答を返す処理に届くだけです。",
+  },
   "ts-npe": {
     id: "ts-npe",
     question: "NullPointerException のスタックトレースで、最初に見るべき行は？",
     choices: [
       "一番下の java.lang.Thread",
-      "会社名で始まるパッケージのうち、上から最初の at 行",
+      "自分たちが書いたコードのパッケージ名のうち、上から最初の at 行",
       "C ドライブのパス",
       "ログの日時だけ",
     ],
     answer: 1,
     explanation:
-      "org.springframework や java. の行は飛ばして、会社名で始まるパッケージのうち、上から最初の行のソースを見ます。",
+      "org.springframework や java. の行は飛ばして、自分たちが書いたコードのパッケージ名のうち、上から最初の行のソースを見ます。",
   },
   "ts-own-class": {
     id: "ts-own-class",
@@ -178,8 +204,102 @@ export const quizzes: Record<string, Quiz> = {
     explanation:
       "Apache（httpd）と nginx が HTTPサーバ、Tomcat と Jetty がサーブレットコンテナです。名前に Apache が付いても、Tomcat とは別物です。",
   },
-};
+  "sc-how": {
+    id: "sc-how",
+    question: "「申請一覧がおかしい」だけ渡された。最初にやることは？",
+    choices: [
+      "Repository から通読する",
+      "操作・期待・実際を一文にし、Network でリクエストの有無を見る",
+      "本番 DB を UPDATE する",
+      "CSS の色を全部変える",
+    ],
+    answer: 1,
+    explanation:
+      "層が決まる前にコードを通読しません。リクエストが飛んだか、ステータスは何かを先に確認します。",
+  },
+  "sc-front": {
+    id: "sc-front",
+    question: "承認ボタンを押しても何も起きない。Network に新しい POST が無い。次は？",
+    choices: [
+      "RequestService の SQL を読む",
+      "サーバに届いていないので、フォームか JS、コンソールのエラーを見る",
+      "検証 DB の全テーブルを DROP する",
+      "pom.xml の version を上げる",
+    ],
+    answer: 1,
+    explanation:
+      "リクエストが無ければバックエンドはまだ関係ありません。",
+  },
+  "sc-back": {
+    id: "sc-back",
+    question: "承認の POST が 500。最初に見るのは？",
+    choices: [
+      "CSS の余白",
+      "操作時刻の ERROR と、自分たちが書いたコードのパッケージ名があるスタックの行",
+      "favicon.ico",
+      "ブラウザのテーマ",
+    ],
+    answer: 1,
+    explanation:
+      "5xx ならログのスタックです。見た目より先に、自作クラスの行を開きます。",
+  },
+  "sc-message": {
+    id: "sc-message",
+    question: "画面に「この申請は承認できません」と出る。操作時刻に ERROR もスタックも無い。次は？",
+    choices: [
+      "スタックが出るまで待つ",
+      "その文言でソースを検索し、表示している if やメッセージ定義を見る",
+      "CSS の色を疑う",
+      "本番のテーブルを DROP する",
+    ],
+    answer: 1,
+    explanation:
+      "例外がログに無いなら at 行は使えません。画面の固有の文言が、ソースへの入口です。ソースに無ければ DB や外部 API を疑います。",
+  },
+  "sc-db": {
+    id: "sc-db",
+    question: "検証だけ一覧が 0 件。GET は 200。コードは同じと言われている。先に疑うのは？",
+    choices: [
+      "CSS の font-size",
+      "今つないでいる DB に、ログインユーザの行があるか",
+      "Java のインデント",
+      "エディタの配色",
+    ],
+    answer: 1,
+    explanation:
+      "200 で件数が違うなら、データは DB にある。コード通読より先に、接続先と件数を見ます。",
+  },
+  "sc-net": {
+    id: "sc-net",
+    question: "検証だけ読み込み中のまま。アプリログにその時刻のアクセスが無い。読むのは？",
+    choices: [
+      "Thymeleaf の th:if",
+      "リクエストがアプリに届いていない。宛先、ポート、ファイアウォール、プロキシ",
+      "Mapper の ORDER BY",
+      "ボタンのラベル文言",
+    ],
+    answer: 1,
+    explanation:
+      "ログが無いこと自体が情報です。Controller の中を読む段階ではありません。",
+  },
+  "sc-http": {
+    id: "sc-http",
+    question: "一覧の HTML は 200。表のスタイルだけ当たっていない。次は？",
+    choices: [
+      "RequestService の null チェック",
+      "Network で CSS / JS のステータスを見る。404 ならパスか手前の HTTPサーバ",
+      "DB の文字コードだけを疑う",
+      "承認者マスタを全削除する",
+    ],
+    answer: 1,
+    explanation:
+      "HTML と CSS は別リクエストです。ドキュメントが 200 でも、静的ファイルだけ 404 のことがあります。",
+  },
+} satisfies Record<string, Quiz>;
+
+export type QuizId = keyof typeof quizzes;
 
 export function getQuiz(id: string): Quiz | undefined {
-  return quizzes[id];
+  if (id in quizzes) return quizzes[id as QuizId];
+  return undefined;
 }

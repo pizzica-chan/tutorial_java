@@ -1,5 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { getTrack } from "../data/curriculum";
+import { NotFoundPage } from "./NotFoundPage";
 import { lessonKey } from "../lib/progress";
 import { useProgress } from "../hooks/useProgress";
 import { TextWithTerms } from "../components/TextWithTerms";
@@ -11,15 +12,7 @@ export function TrackPage() {
   const completed = useProgress();
 
   if (!track) {
-    return (
-      <div className="content">
-        <p className="kicker">404</p>
-        <h1 className="serif" style={{ fontSize: 36 }}>章が見つかりません</h1>
-        <p>
-          <Link to="/">トップへ戻る</Link>
-        </p>
-      </div>
-    );
+    return <NotFoundPage title="章が見つかりません" />;
   }
 
   return (

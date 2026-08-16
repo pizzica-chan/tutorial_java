@@ -5,7 +5,7 @@ export const javaMapTrack: Track = {
   no: "02",
   title: "Javaアプリの構成",
   kicker: "STRUCTURE",
-  description: "ディレクトリ、依存関係、設定、動かし方、層、Security。",
+  description: "ディレクトリ、依存関係、設定、動かし方、層、Filter / Interceptor / AOP。",
   accent: "#d46a5c",
   lessons: [
     {
@@ -16,7 +16,7 @@ export const javaMapTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "例として、Maven + Spring Boot の社内申請アプリ「申請くん」を使います。プロジェクトごとに名前は違いますが、役割の分け方は似ています。",
+          text: "例として、架空の社内申請アプリ「申請くん」を使います。Maven + Spring Boot です。申請の一覧・詳細・承認ができる、という想定で、実在しません。プロジェクトごとに名前は違いますが、役割の分け方は似ています。",
         },
         { type: "widget", name: "explorer" },
         {
@@ -89,7 +89,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "Spring Boot を IDE や java -jar で起動すると、同じプロセスの中で Tomcat や Jetty が動きます。別途 Tomcat を入れる必要はありません。申請くんの手元起動はこれです。",
+          text: "Spring Boot を IDE や java -jar で起動すると、同じプロセスの中で Tomcat や Jetty が動きます。別途 Tomcat を入れる必要はありません。申請くんのローカル環境での起動はこれです。",
         },
         {
           type: "h2",
@@ -105,7 +105,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "ブラウザはまず Apache か nginx へリクエストを送ります。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです。SSL オフロードと呼ばれることもあります。CSS の配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろの Java は、パターン1の内蔵 Tomcat でも、パターン2の外部 WAR でも構いません。",
+          text: "ブラウザはまず Apache か nginx へリクエストを送ります。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです。SSL オフロード（HTTPS の解読を手前のサーバで行うこと）と呼ばれることもあります。CSS の配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろの Java は、パターン1の内蔵 Tomcat でも、パターン2の外部 WAR でも構いません。",
         },
         { type: "diagram", name: "arch-patterns", caption: "左から、内蔵だけ、外部 WAR、手前に HTTPサーバ。" },
         {
@@ -114,7 +114,7 @@ export const javaMapTrack: Track = {
             "静的ファイルの 404 は、手前の HTTPサーバのパス設定のことがある",
             "アプリの例外は、サーブレットコンテナ側のログを見る",
             "コンテキストパスは、手前と後ろの両方に付いていることがある",
-            "Docker の中身も、このどれかです。コンテナだから別構成、ではありません",
+            "Docker の中身も、このどれかです。コンテナだから別構成ということはありません",
           ],
         },
         {
@@ -178,7 +178,7 @@ server:
       blocks: [
         {
           type: "p",
-          text: "Controller に SQL が書いてある、Service が薄い、層の名前が違う、はよくあります。名前より、次の順で探します。",
+          text: "Controller に SQL が書いてある、Service が薄い、層の名前が違うといったことはよくあります。名前より、次の順で探します。",
         },
         { type: "diagram", name: "layers", caption: "探す順番。層の名前が違っても、この縦の線は同じです。" },
         {
@@ -195,8 +195,8 @@ server:
           title: "Controller が直接 Mapper を呼ぶ例",
           lang: "java",
           code: `@GetMapping("/requests")
-public String list(Model model) {
-  model.addAttribute("requests", requestMapper.findMine(userId()));
+public String list(Model model, @AuthenticationPrincipal LoginUser user) {
+  model.addAttribute("requests", requestMapper.findMine(user.getId()));
   return "request/list";
 }`,
         },
@@ -212,8 +212,8 @@ public String list(Model model) {
 @RequestMapping("/api/requests")
 public class RequestApiController {
   @GetMapping
-  public List<RequestResponse> list() {
-    return requestService.findMine(userId());
+  public List<RequestResponse> list(@AuthenticationPrincipal LoginUser user) {
+    return requestService.findMine(user.getId());
   }
 }`,
         },
@@ -253,18 +253,41 @@ public class RequestApiController {
     },
     {
       id: "security-filter",
-      title: "Filter と Security",
-      minutes: 8,
-      summary: "Controller に届く前に弾かれる。",
+      title: "Filter / Interceptor / AOP",
+      minutes: 11,
+      summary: "ソースの呼び出しだけ追うと、通っていない処理がある。",
       blocks: [
         {
           type: "p",
-          text: "リクエストは Controller の前にフィルタを通ります。ログイン必須、CSRF、文字コード。ここに原因があると、Controller のブレークポイントは止まりません。",
+          text: "Controller から Service を追うとき、ソースに書いてあるメソッド呼び出しだけを見ると足りないことがあります。リクエストの前後や、service.approve() の実体の手前に、別クラスが挟まります。呼び出し元のメソッドには、その名前が出ません。",
         },
-        { type: "diagram", name: "filters" },
+        { type: "diagram", name: "cross-cut", caption: "Controller や Service のソースに、これらの呼び出しは書かれていません。" },
+        {
+          type: "table",
+          headers: ["種類", "動く位置", "ソースでの見え方"],
+          rows: [
+            ["Filter", "サーブレットコンテナ。Controller の前（静的ファイルも通ることがある）", "Controller から呼ばれない。Filter 実装や SecurityConfig を別検索する"],
+            ["Interceptor", "Spring MVC。Controller メソッドの直前・直後", "HandlerInterceptor と WebMvcConfigurer の addInterceptors。Controller に呼び出しは無い"],
+            ["AOP / プロキシ", "Service などのメソッド呼び出しの手前", "見た目は requestService.approve()。実行時は $Proxy や CGLIB を経由する"],
+            ["@ControllerAdvice", "例外のあと。戻り値や画面を別クラスが決める", "throw したメソッドの return を追っても、実際の応答はここ"],
+          ],
+        },
+        {
+          type: "h2",
+          text: "Filter と Spring Security",
+        },
         {
           type: "p",
-          text: "メソッドに入らないときは、Spring Security の SecurityConfig のパス許可、CSRF、セッション、コンテキストパスを順に確認します。画面の未ログインは 302 でログイン HTML、Web API は 401 で JSON、という違いがよくあります。決まりではありません。",
+          text: "リクエストは Controller の前にフィルタを通ります。ログイン必須、CSRF、文字コード。ここに原因があると、Controller のブレークポイントは止まりません。Spring Security も、実体は Filter の連鎖です。",
+        },
+        {
+          type: "diagram",
+          name: "filters",
+          caption: "既定の並びの例。どこで止まるか、何を返すかは設定によって変わります。",
+        },
+        {
+          type: "p",
+          text: "Java メソッドに入らないときは、Spring Security の SecurityConfig のパス許可、CSRF、セッション、コンテキストパスを順に確認します。画面の未ログインは 302 でログイン HTML、Web API は 401 で JSON、という違いがよくあります。決まりではありません。",
         },
         {
           type: "code",
@@ -275,6 +298,68 @@ public class RequestApiController {
 // /images を許可し忘れ -> 画像だけ 302 でログインへ
 // 申請くんは Spring Boot 2.7。3.x では requestMatchers`,
         },
+        {
+          type: "h2",
+          text: "Interceptor",
+        },
+        {
+          type: "p",
+          text: "Spring MVC の HandlerInterceptor は、Controller のメソッドの直前（preHandle）と直後（postHandle / afterCompletion）に動きます。ログ、共通の権限、アクセス記録などで使います。Controller のソースを上から読んでも、呼び出しは出てきません。",
+        },
+        {
+          type: "code",
+          title: "登録場所（呼び出し元ではない）",
+          lang: "java",
+          code: `@Override
+public void addInterceptors(InterceptorRegistry registry) {
+  registry.addInterceptor(accessLogInterceptor)
+    .addPathPatterns("/requests/**");
+}`,
+        },
+        {
+          type: "p",
+          text: "探すときは HandlerInterceptor、addInterceptors、WebMvcConfigurer で検索します。preHandle が false を返すと、Controller に届きません。",
+        },
+        {
+          type: "h2",
+          text: "AOP とプロキシ",
+        },
+        {
+          type: "p",
+          text: "Service のメソッドを直接呼んでいるように見えても、実行時はプロキシが先に動きます。@Transactional、独自の @Aspect、メソッドの @PreAuthorize がここに載ります。スタックトレースの $Proxy や CGLIB は、この経由です。",
+        },
+        {
+          type: "code",
+          title: "Controller に書かれている呼び出し",
+          lang: "java",
+          code: `requestService.approve(id, userId);
+// この1行の手前で、トランザクション開始や @Aspect が動くことがある
+// RequestService の1行目にブレークポイントを置いても、その前で弾かれる`,
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "メソッドの1行目より前",
+          text: "Service のブレークポイントが止まらない、または @Transactional のついたメソッドの前後でだけ失敗する、ときはプロキシを疑います。Filter / Interceptor が Controller の前なら、Controller 自体が止まりません。",
+        },
+        {
+          type: "h2",
+          text: "例外の出口",
+        },
+        {
+          type: "p",
+          text: "@ControllerAdvice や HandlerExceptionResolver は、throw したあとの応答を別クラスが決めます。業務例外を投げたメソッドの return を追っても、画面メッセージや JSON の形はここにあります。",
+        },
+        {
+          type: "ul",
+          items: [
+            "Controller に届かない → Filter、Interceptor、SecurityConfig",
+            "Controller には入るが Service の本体に入らない → プロキシ、AOP、@Transactional、メソッド認可",
+            "例外の画面や JSON がメソッドに無い → @ControllerAdvice",
+            "検索語: HandlerInterceptor、addInterceptors、OncePerRequestFilter、@Aspect、@ControllerAdvice",
+          ],
+        },
+        { type: "quiz", id: "java-crosscut" },
       ],
     },
   ],

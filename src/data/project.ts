@@ -34,7 +34,7 @@ export const projectFiles: ProjectFile[] = [
   {
     path: "src/main/resources/application.yml",
     note: "Spring Boot 用。接続先とプロファイル",
-    why: "接続先、ID、ログレベル、ファイルパスは環境ごとに違います。コードを疑う前に、今どの設定で起動しているかを確認します。yml ではなく application.properties のプロジェクトもあります。",
+    why: "接続先、ID、ログレベル、ファイルパスは環境ごとに違います。コードを疑う前に、今どの設定で起動しているかを確認します。yml ではなく application.properties のプロジェクトもあります。username / password は教材用のサンプル値です。",
     code: `spring:
   profiles:
     active: dev
@@ -64,7 +64,7 @@ public class ShinseiApplication {
   {
     path: "src/main/java/.../controller/RequestController.java",
     note: "URLの受付口",
-    why: "画面のアドレスとメソッドがここに対応します。障害調査はほぼここから始まります。",
+    why: "画面のアドレスと HTTP メソッドが、ここの Java メソッドに対応します。障害調査はほぼここから始まります。",
     code: `@Controller
 @RequestMapping("/requests")
 @RequiredArgsConstructor
@@ -132,7 +132,7 @@ public class RequestService {
   {
     path: "src/main/resources/mapper/RequestMapper.xml",
     note: "実際のSQL",
-    why: "一覧が遅い、件数が合わない、更新されない、はSQLを見ないと終わりません。Javaのメソッド名と XML の id が対になっています。",
+    why: "一覧が遅い、件数が合わない、更新されないといった症状は、SQL を見ないと終わりません。Java のメソッド名と XML の id が対になっています。",
     code: `<select id="findMine" resultType="RequestEntity">
   SELECT id, title, status, applicant_id, approver_id, created_at
   FROM t_request
@@ -151,7 +151,7 @@ public class RequestService {
   {
     path: "src/main/resources/templates/request/list.html",
     note: "画面テンプレート",
-    why: "ボタンの遷移先、hidden 項目、表示条件（ステータスでボタンを出す等）はHTML側にあります。サーバだけ見ても足りないことがあります。",
+    why: "ボタンの遷移先、hidden 項目、表示条件（ステータスでボタンを出す等）は HTML 側にあります。サーバだけ見ても足りないことがあります。th:action なら CSRF 用 hidden が自動で付くことが多いです。欠けると POST が弾かれます。",
     code: `<tr th:each="req : \${requests}">
   <td th:text="\${req.title}">交通費申請</td>
   <td th:text="\${req.status}">申請中</td>
@@ -159,6 +159,7 @@ public class RequestService {
     <form th:if="\${req.status == 'PENDING'}"
           th:action="@{/requests/{id}/approve(id=\${req.id})}"
           method="post">
+      <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
       <button type="submit">承認</button>
     </form>
   </td>
@@ -183,7 +184,7 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
   {
     path: "src/main/resources/logback-spring.xml",
     note: "Spring Boot 用。ログの行き先",
-    why: "ファイルに出すか、コンソールだけか、日付で分けるか、がここに書かれていることが多いです。障害調査は、まずこの出力先を確認します。",
+    why: "ファイルに出すか、コンソールだけか、日付で分けるかといった設定がここに書かれていることが多いです。障害調査は、まずこの出力先を確認します。",
     code: `<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
   <file>logs/shinsei.log</file>
   <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">

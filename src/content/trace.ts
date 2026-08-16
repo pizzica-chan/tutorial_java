@@ -54,15 +54,20 @@ export const traceTrack: Track = {
           code: `@Controller
 @RequestMapping("/requests")
 public class RequestController {
-  @GetMapping               // GET /requests
-  @GetMapping("/{id}")      // GET /requests/12
-  @PostMapping("/{id}/approve") // POST /requests/12/approve
+  @GetMapping
+  public String list(...) { ... }           // GET /requests
+
+  @GetMapping("/{id}")
+  public String detail(...) { ... }         // GET /requests/12
+
+  @PostMapping("/{id}/approve")
+  public String approve(...) { ... }        // POST /requests/12/approve
 }`,
         },
         { type: "diagram", name: "mapping" },
         {
           type: "p",
-          text: "メソッド名 list に当たっても、今見ている画面とは限りません。HTTP メソッドとパスの両方を確認します。",
+          text: "Java のメソッド名が list でも、今見ている画面とは限りません。HTTP メソッド（GET など）とパスの両方を確認します。",
         },
         {
           type: "p",
@@ -75,9 +80,14 @@ public class RequestController {
           code: `@RestController
 @RequestMapping("/api/requests")
 public class RequestApiController {
-  @GetMapping               // GET /api/requests → JSON の配列
-  @GetMapping("/{id}")      // GET /api/requests/12 → JSON 1件
-  @PostMapping("/{id}/approve") // POST /api/requests/12/approve
+  @GetMapping
+  public List<RequestResponse> list(...) { ... }     // GET /api/requests → JSON の配列
+
+  @GetMapping("/{id}")
+  public RequestResponse detail(...) { ... }         // GET /api/requests/12 → JSON 1件
+
+  @PostMapping("/{id}/approve")
+  public void approve(...) { ... }                   // POST /api/requests/12/approve
 }`,
         },
         {
@@ -122,7 +132,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "承認はできたがメールが来ない、なら更新は成功し notify だけ失敗している可能性があります。処理は一本ではなく枝分かれします。",
+          text: "承認はできたがメールが来ないなら、更新は成功して notify だけ失敗している可能性があります。処理は一本ではなく枝分かれします。",
         },
         { type: "diagram", name: "service-fork" },
       ],
