@@ -35,7 +35,8 @@ export type DiagramName =
   | "scenario-layers"
   | "cross-cut"
   | "debug-two"
-  | "protocol-stack";
+  | "protocol-stack"
+  | "template-rendered";
 
 export type Block =
   | { type: "p"; text: string }

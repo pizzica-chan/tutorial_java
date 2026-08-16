@@ -754,6 +754,11 @@ export const terms: TermDef[] = [
     body: "JPA で SQL や JPQL をメソッドに直接書く印です。Spring Data JPA のアノテーションです。",
   },
   {
+    term: "ModelAndView",
+    aliases: ["ModelAndView"],
+    body: "画面名と Model の中身をまとめて返す型です。addObject で載せた名前が、テンプレートの ${...} になります。Spring MVC のものです。",
+  },
+  {
     term: "Model",
     aliases: ["Model", "addAttribute"],
     body: "画面へ渡すデータの入れ物。ここに載せた名前がテンプレートから参照されます。Spring MVC のものです。",

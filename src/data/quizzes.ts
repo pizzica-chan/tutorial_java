@@ -100,6 +100,19 @@ export const quizzes = {
     explanation:
       "URL と HTTP メソッドの受付口は Controller です。JSON を返す RestController も同じ層です。そこから Service、Repository へ降ります。",
   },
+  "java-template": {
+    id: "java-template",
+    question: "承認ボタンが一覧に出ない。Controller は list を返し、Model に requests は入っている。次に見るのは？",
+    choices: [
+      "templates/request/list.html の th:if など表示条件",
+      "pom.xml の groupId",
+      "MySQL のポート番号だけ",
+      "favicon.ico",
+    ],
+    answer: 0,
+    explanation:
+      "データは届いていても、テンプレートの th:if でボタンを出さない実装はあります。return から HTML を開き、表示条件と form の th:action を見ます。",
+  },
   "java-crosscut": {
     id: "java-crosscut",
     question: "Controller の approve にブレークポイントを置いたが止まらない。ソース上はボタンからこの Java メソッドに来る。先に疑うのは？",

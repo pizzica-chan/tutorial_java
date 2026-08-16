@@ -82,7 +82,7 @@ export const introTrack: Track = {
           headers: ["章", "内容"],
           rows: [
             ["Webの基礎", "HTTP、パラメータ、ステータス、Cookie、HTML の読み方"],
-            ["Javaアプリの構成", "ディレクトリ、設定、層、Filter / Interceptor / AOP"],
+            ["Javaアプリの構成", "ディレクトリ、設定、層、テンプレートの読み方、Filter / Interceptor / AOP"],
             ["ソースの読み方", "読み始めの選び方、入口、キーワード検索、デバッガ"],
             ["リクエストの追跡", "画面から SQL まで一本で追う"],
             ["トラブルシュート", "調査手順、ログ、ネットワーク、外部 API、症状別の切り分け"],

@@ -60,6 +60,37 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-security'
 }`;
 
+/** 教材用。申請くんの一覧テンプレート抜粋 */
+export const shinseiListTemplateSnippet = `<tr th:each="req : \${requests}">
+  <td th:text="\${req.title}">交通費申請</td>
+  <td th:text="\${req.status}">申請中</td>
+  <td>
+    <form th:if="\${req.status == 'PENDING'}"
+          th:action="@{/requests/{id}/approve(id=\${req.id})}"
+          method="post">
+      <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
+      <button type="submit">承認</button>
+    </form>
+  </td>
+</tr>`;
+
+/** 教材用。上のテンプレートを組み立てたあとの HTML（申請2件の例） */
+export const shinseiListRenderedSnippet = `<tr>
+  <td>交通費申請</td>
+  <td>PENDING</td>
+  <td>
+    <form action="/shinsei/requests/12/approve" method="post">
+      <input type="hidden" name="_csrf" value="8f3a2b1c-4e5f-6789-abcd-ef0123456789" />
+      <button type="submit">承認</button>
+    </form>
+  </td>
+</tr>
+<tr>
+  <td>備品購入</td>
+  <td>APPROVED</td>
+  <td></td>
+</tr>`;
+
 export const projectFiles: ProjectFile[] = [
   {
     path: "pom.xml",
@@ -181,18 +212,7 @@ public class RequestService {
     path: "src/main/resources/templates/request/list.html",
     note: "画面テンプレート",
     why: "ボタンの遷移先、hidden 項目、表示条件（ステータスでボタンを出す等）は HTML 側にあります。サーバだけ見ても足りないことがあります。th:action なら CSRF 用 hidden が自動で付くことが多いです。欠けると POST が弾かれます。",
-    code: `<tr th:each="req : \${requests}">
-  <td th:text="\${req.title}">交通費申請</td>
-  <td th:text="\${req.status}">申請中</td>
-  <td>
-    <form th:if="\${req.status == 'PENDING'}"
-          th:action="@{/requests/{id}/approve(id=\${req.id})}"
-          method="post">
-      <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
-      <button type="submit">承認</button>
-    </form>
-  </td>
-</tr>`,
+    code: shinseiListTemplateSnippet,
   },
   {
     path: "src/main/java/.../config/SecurityConfig.java",

@@ -49,6 +49,7 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "cross-cut": CrossCut,
   "debug-two": DebugTwo,
   "protocol-stack": ProtocolStack,
+  "template-rendered": TemplateRendered,
 };
 
 function Node({ kicker, title, sub }: { kicker: string; title: string; sub?: string }) {
@@ -629,6 +630,49 @@ function ViewFile() {
       <div className="d-layer">return "request/list"</div>
       <span className="d-plus">→</span>
       <div className="d-layer accent">templates/request/list.html</div>
+    </div>
+  );
+}
+
+function TemplateRendered() {
+  return (
+    <div className="d-browser-mock">
+      <div className="d-browser-chrome">
+        <span className="d-browser-dots" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+        </span>
+        <span className="d-browser-url">https://intranet.example.co.jp/shinsei/requests</span>
+      </div>
+      <div className="d-browser-page">
+        <p className="d-browser-title">申請一覧</p>
+        <table className="d-browser-table">
+          <thead>
+            <tr>
+              <th>タイトル</th>
+              <th>ステータス</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>交通費申請</td>
+              <td>PENDING</td>
+              <td>
+                <button type="button" className="d-browser-btn">
+                  承認
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>備品購入</td>
+              <td>APPROVED</td>
+              <td />
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

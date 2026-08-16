@@ -1,12 +1,12 @@
 import type { Track } from "../types";
-import { shinseiGradleSnippet, shinseiPomSnippet } from "../data/project";
+import { shinseiGradleSnippet, shinseiListRenderedSnippet, shinseiListTemplateSnippet, shinseiPomSnippet } from "../data/project";
 
 export const javaMapTrack: Track = {
   id: "java-map",
   no: "03",
   title: "Javaアプリの構成",
   kicker: "STRUCTURE",
-  description: "ディレクトリ、依存関係、設定、動かし方、層、Filter / Interceptor / AOP。",
+  description: "ディレクトリ、依存関係、設定、動かし方、層、テンプレート、Filter / Interceptor / AOP。",
   accent: "#d46a5c",
   lessons: [
     {
@@ -314,6 +314,147 @@ public class RequestApiController {
           type: "p",
           text: "Spring の @RestController や @ResponseBody は、戻り値を JSON にします。templates 配下は探しません。画面用の Controller と API 用が並んでいることがあります。",
         },
+        {
+          type: "p",
+          text: "templates 配下の HTML の中身の読み方は、次の項目です。",
+        },
+      ],
+    },
+    {
+      id: "template-read",
+      title: "テンプレートの読み方",
+      minutes: 11,
+      blocks: [
+        {
+          type: "p",
+          text: "サーバが HTML を組み立てるアプリでは、画面の文言・ボタンの有無・送信先の多くがテンプレートに書かれています。Controller や SQL だけ見ても、ボタンが出ない・リンク先が違う、は説明できないことがあります。",
+        },
+        {
+          type: "p",
+          text: "申請くんは Thymeleaf です。JSP や FreeMarker など別のテンプレートエンジンでも、Model に載せた名前と HTML 側の参照、form の action、表示条件を突き合わせる、という読み方は同じです。",
+        },
+        {
+          type: "h2",
+          text: "ファイルの特定",
+        },
+        {
+          type: "p",
+          text: "Controller の return が返す文字列が、templates 配下のパスになります。return \"request/list\" なら templates/request/list.html です。前の項目の図のとおりです。",
+        },
+        {
+          type: "h2",
+          text: "Java から渡す書き方",
+        },
+        {
+          type: "p",
+          text: "テンプレートが参照する名前は、Controller が Model に載せたキーです。書き方はいくつかありますが、テンプレート側から見ると「\${キー名}」がどこから来たか、を突き合わせれば足ります。",
+        },
+        {
+          type: "table",
+          headers: ["Controller の書き方", "テンプレートでの名前", "補足"],
+          rows: [
+            ["model.addAttribute(\"requests\", list)", "${requests}", "いちばん多い。申請くんはこの形"],
+            ["mav.addObject(\"requests\", list) と ModelAndView", "${requests}", "addAttribute と同じ。戻り値が ModelAndView"],
+            ["model.put(\"requests\", list) と Map", "${requests}", "引数が Map のとき。Model と同じ役割"],
+            ["@ModelAttribute(\"form\") RequestForm form", "${form}", "フォーム表示・送信の両方で使うことがある"],
+            ["@ModelAttribute メソッド（Controller 内）", "メソッドが返すキー名", "全画面に共通の値を載せる。各メソッドの前に実行される"],
+            ["redirectAttributes.addFlashAttribute(\"msg\", ...)", "${msg}", "リダイレクト後の1回だけ。登録完了メッセージなど"],
+          ],
+        },
+        {
+          type: "p",
+          text: "値は、リストやオブジェクト1件、文字列など何でも載せられます。テンプレートでは \${requests} のようにキー名で取り出し、オブジェクトなら \${req.title} のようにプロパティを辿ります。",
+        },
+        {
+          type: "code",
+          title: "パターン1: Model + addAttribute（申請くん）",
+          lang: "java",
+          code: `@GetMapping("/requests")
+public String list(Model model, @AuthenticationPrincipal LoginUser user) {
+  model.addAttribute("requests", requestMapper.findMine(user.getId()));
+  return "request/list";
+}`,
+        },
+        {
+          type: "code",
+          title: "パターン2: ModelAndView",
+          lang: "java",
+          code: `@GetMapping("/requests")
+public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
+  ModelAndView mav = new ModelAndView("request/list");
+  mav.addObject("requests", requestMapper.findMine(user.getId()));
+  return mav;
+}`,
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "@ModelAttribute は向きが2つ",
+          text: "メソッドの引数に付く @ModelAttribute は、フォームから画面へ値を運ぶときにも使われます。Controller 内の @ModelAttribute メソッドは、別の共通データを毎回 Model に足す書き方です。名前が紛らわしいので、テンプレートでは \${...} のキー名だけを見ます。",
+        },
+        {
+          type: "h2",
+          text: "よく見る Thymeleaf の印",
+        },
+        {
+          type: "table",
+          headers: ["印", "読み方"],
+          rows: [
+            ["th:each", "リストの繰り返し。\${requests} の1件ずつ"],
+            ["th:text", "画面に出す文字。\${req.title} など"],
+            ["th:if / th:unless", "条件が true のときだけタグを出す。ボタンが無い原因になりやすい"],
+            ["th:action / th:href", "form の送信先、リンク先。@{/requests/{id}/approve} のように URL を組み立てる"],
+            ["@{...}", "context-path を含めた URL。/shinsei が付くかはここで決まる"],
+            ["th:name / name", "フォームの項目名。Controller の @RequestParam と対応"],
+          ],
+        },
+        {
+          type: "p",
+          text: "タグの中にある「交通費申請」「申請中」などは、プレビュー用のダミーです。実行時は th:text の \${...} が使われます。",
+        },
+        {
+          type: "code",
+          title: "templates/request/list.html（抜粋）",
+          lang: "html",
+          code: shinseiListTemplateSnippet,
+        },
+        {
+          type: "p",
+          text: "サーバが組み立てたあとは、th: 属性は消え、値だけが残ります。status が PENDING の行だけ form が出ます。context-path が /shinsei なら action に付きます。",
+        },
+        {
+          type: "code",
+          title: "組み立て後の HTML（ブラウザが受け取る抜粋）",
+          lang: "html",
+          code: shinseiListRenderedSnippet,
+        },
+        {
+          type: "diagram",
+          name: "template-rendered",
+          caption: "組み立て後の HTML をブラウザが描画したイメージ。PENDING の行だけ承認ボタンが出る。",
+        },
+        {
+          type: "h2",
+          text: "読む順番",
+        },
+        {
+          type: "ol",
+          items: [
+            "Controller の return から HTML ファイルを開く",
+            "Model に載せた名前と、th:each / th:text の \${...} が一致するか見る",
+            "ボタンやリンクが無いときは th:if の条件を読む",
+            "form の th:action と method が、想定の Controller のマッピングと一致するか見る",
+            "POST なのに CSRF エラーなら、hidden の _csrf や th:action の有無を見る",
+            "テンプレートと違う HTML がブラウザに出ているなら、別テンプレートか JS の書き換えを疑う（Elements タブで確認）",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "ソースと画面の見比べ",
+          text: "テンプレートはサーバ側のファイルです。ブラウザの Elements タブは、組み立て後の HTML です。th:if で消えたボタンは、テンプレートにはあっても画面には出ません。切り分けでは、両方を見ます。",
+        },
+        { type: "quiz", id: "java-template" },
       ],
     },
     {
