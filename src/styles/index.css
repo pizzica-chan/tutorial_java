@@ -1694,10 +1694,26 @@ th {
 }
 
 .pager {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   gap: 12px;
+  align-items: center;
   margin-top: 40px;
+}
+
+.pager .btn {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  text-align: center;
+}
+
+.pager .btn:first-child {
+  justify-self: start;
+}
+
+.pager .btn:last-child {
+  justify-self: end;
 }
 
 .glossary dt {
@@ -1832,6 +1848,15 @@ th {
   .stamp {
     display: none;
   }
+
+  .pager {
+    grid-template-columns: 1fr;
+  }
+
+  .pager .btn:first-child,
+  .pager .btn:last-child {
+    justify-self: stretch;
+  }
 }
 
 @media (max-width: 480px) {
@@ -1952,15 +1977,6 @@ th {
   .lesson-mins {
     grid-column: 2;
     justify-self: start;
-  }
-
-  .pager {
-    flex-direction: column;
-  }
-
-  .pager .btn {
-    width: 100%;
-    white-space: normal;
   }
 
   .widget-actions {

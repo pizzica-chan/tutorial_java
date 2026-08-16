@@ -38,6 +38,11 @@ export function Layout() {
     setOpen(false);
   }, [location.pathname]);
 
+  useEffect(() => {
+    if (location.hash) return;
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
+
   // 目次を開いたまま広い画面になると、常時表示のサイドバーと本文の inert が食い違う
   useEffect(() => {
     const wide = window.matchMedia("(min-width: 901px)");
