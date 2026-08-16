@@ -8,7 +8,7 @@ export function HttpInspector() {
       <div className="widget-head">
         <div>
           <p className="kicker">HTTP</p>
-          <strong>承認ボタンを押した瞬間</strong>
+          <strong>申請一覧を開いた瞬間</strong>
         </div>
       </div>
       <div className="http-grid">

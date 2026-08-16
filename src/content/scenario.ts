@@ -312,7 +312,7 @@ requestService.approve(id, userId);`,
         },
         {
           type: "p",
-          text: "アプリに届いていなければ、Controller も SQL もまだ関係ありません。宛先、ポート、ファイアウォール、プロキシを見ます。",
+          text: "アプリに届いていなければ、Controller も SQL もまだ関係ありません。宛先、ポート、ファイアウォール、プロキシを見ます。ping や curl の打ち方は、トラブルシュートの「ネットワークの疎通確認」です。",
         },
         { type: "diagram", name: "env-diff", caption: "コードが同じでも、届く道が違うことがあります。" },
         {

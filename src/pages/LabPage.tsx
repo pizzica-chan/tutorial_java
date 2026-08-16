@@ -20,7 +20,7 @@ export function LabPage() {
 
       <h2 className="serif">2. HTTP</h2>
       <p>
-        <TextWithTerms text="承認時のリクエストとレスポンスです。HTTP メソッド、Cookie、リダイレクト、CSRF。" />
+        <TextWithTerms text="申請一覧を開いたときのリクエストとレスポンスです。HTTP メソッド、Cookie、Content-Type、本文。" />
       </p>
       <HttpInspector />
 

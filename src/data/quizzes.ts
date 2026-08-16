@@ -178,6 +178,19 @@ export const quizzes = {
     explanation:
       "アプリはもともとログを出すのが一般的です。行き先を確認し、時刻を合わせて読みます。足すのは足りないときです。",
   },
+  "ts-http-log": {
+    id: "ts-http-log",
+    question: "HTML は 200 で一覧の INFO はアプリログにある。CSS だけ 404。次に見るログは？",
+    choices: [
+      "Mapper の SQL ログだけ",
+      "HTTPサーバの access.log / error.log。静的ファイルは手前で返していることが多い",
+      "DB のスロークエリログだけ",
+      "Git のコミット履歴",
+    ],
+    answer: 1,
+    explanation:
+      "動的処理は Java まで届いています。CSS の 404 は手前の HTTPサーバで止まっていることが多く、アプリログには出ません。",
+  },
   "ts-log-pick": {
     id: "ts-log-pick",
     question: "本番の同じ秒に INFO が大量。userId=7 の一覧処理を追う。次は？",
@@ -216,6 +229,19 @@ export const quizzes = {
     answer: 2,
     explanation:
       "環境差は設定・データ・権限・ネットワークが定番です。",
+  },
+  "ts-net-check": {
+    id: "ts-net-check",
+    question: "検証ホストへ ping は通るが、Test-NetConnection の 8080 は失敗。まず疑うのは？",
+    choices: [
+      "Mapper の XML のインデント",
+      "8080 が FW で閉じている、またはアプリがそのポートで待ち受けていない",
+      "Thymeleaf の th:if",
+      "ORDER BY の列名",
+    ],
+    answer: 1,
+    explanation:
+      "ping はホスト到達、TCP はポート到達です。層が違います。TCP が失敗すると HTTP も届きません。FW と listen ポートを見ます。",
   },
   "java-arch": {
     id: "java-arch",

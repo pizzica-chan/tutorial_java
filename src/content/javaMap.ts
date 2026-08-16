@@ -58,7 +58,7 @@ export const javaMapTrack: Track = {
       id: "arch",
       title: "よくある構成",
       minutes: 10,
-      summary: "HTTPサーバとサーブレットコンテナ。重ね方が違う。",
+      summary: "HTTPサーバとサーブレットコンテナの重ね方。手前の LB・CDN・WAF も。",
       blocks: [
         {
           type: "p",
@@ -85,43 +85,77 @@ export const javaMapTrack: Track = {
         },
         {
           type: "h2",
-          text: "パターン1: 内蔵だけ",
+          text: "重ね方のパターン",
         },
         {
           type: "p",
-          text: "Spring Boot を IDE や java -jar で起動すると、同じプロセスの中で Tomcat や Jetty が動きます。別途 Tomcat を入れる必要はありません。申請くんのローカル環境での起動はこれです。",
+          text: "よく見る重ね方は次の3つです。ローカルの申請くんは「内蔵だけ」です。",
         },
+        {
+          type: "steps",
+          items: [
+            {
+              title: "内蔵だけ",
+              text: "Spring Boot を IDE や java -jar で起動すると、同じプロセスの中で Tomcat や Jetty が動きます。別途 Tomcat を入れる必要はありません。",
+            },
+            {
+              title: "外部に WAR",
+              text: "アプリを WAR にして、すでに動いている Tomcat や Jetty に載せます。ログは catalina.out など、Tomcat 側の置き場を見ます。",
+            },
+            {
+              title: "手前に Apache / nginx",
+              text: "ブラウザはまず Apache か nginx へ送ります。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです（SSL オフロード）。静的ファイルの配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろは内蔵でも外部 WAR でも構いません。",
+            },
+          ],
+        },
+        { type: "diagram", name: "arch-patterns", caption: "左から、パターン1 内蔵だけ、パターン2 外部 WAR、パターン3 手前に HTTPサーバ。" },
         {
           type: "h2",
-          text: "パターン2: 外部に WAR",
+          text: "重ね方で変わる切り分け",
         },
         {
           type: "p",
-          text: "アプリを WAR にして、すでに動いている Tomcat や Jetty に載せます。ログは catalina.out など、Tomcat 側の置き場を見ます。",
+          text: "上の3パターンのどれかかで、ログの見る場所が変わります。",
         },
-        {
-          type: "h2",
-          text: "パターン3: 手前に Apache / nginx",
-        },
-        {
-          type: "p",
-          text: "ブラウザはまず Apache か nginx へリクエストを送ります。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです。SSL オフロード（HTTPS の解読を手前のサーバで行うこと）と呼ばれることもあります。CSS の配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろの Java は、パターン1の内蔵 Tomcat でも、パターン2の外部 WAR でも構いません。",
-        },
-        { type: "diagram", name: "arch-patterns", caption: "左から、内蔵だけ、外部 WAR、手前に HTTPサーバ。" },
         {
           type: "ul",
           items: [
-            "静的ファイルの 404 は、手前の HTTPサーバのパス設定のことがある",
+            "静的ファイルの 404 は、手前の HTTPサーバのパス設定のことがある（パターン3）",
             "アプリの例外は、サーブレットコンテナ側のログを見る",
-            "コンテキストパスは、手前と後ろの両方に付いていることがある",
-            "Docker の中身も、このどれかです。コンテナだから別構成ということはありません",
+            "コンテキストパスは、手前と後ろの両方に付いていることがある（パターン3）",
           ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Docker",
+          text: "コンテナの中身も、上の3パターンのどれかです。Docker だから別構成ということはありません。",
         },
         {
           type: "callout",
           kind: "note",
           title: "APサーバ",
           text: "古い現場では WebLogic など APサーバに載せることもあります。Java が動く箱が Tomcat ではない、というだけです。",
+        },
+        {
+          type: "h2",
+          text: "さらに手前の箱",
+        },
+        {
+          type: "p",
+          text: "上のどの重ね方でも、さらに手前に別の箱が置かれることがあります。いずれも Java のコードより手前です。パターン3なら Apache / nginx の外側、パターン1・2なら Tomcat や Spring Boot の手前、という位置づけです。",
+        },
+        {
+          type: "ul",
+          items: [
+            "ロードバランサ（LB）… 複数台へ振り分け。SSL 終端をここで行うこともある",
+            "CDN … 静的ファイルを近い拠点から配る。キャッシュや SSL 終端を担うこともある",
+            "WAF … HTTP リクエストを検査し、攻撃らしいパターンを遮断する",
+          ],
+        },
+        {
+          type: "p",
+          text: "ログの出る場所や、ブロックされたときの応答は環境次第です。切り分けでは「アプリに届いたか」を先に確認します。",
         },
         { type: "quiz", id: "java-arch" },
       ],

@@ -379,6 +379,16 @@ export const terms: TermDef[] = [
     body: "複数サーバへリクエストを振り分ける装置。ログが別インスタンスに出ることがあります。",
   },
   {
+    term: "CDN",
+    aliases: ["CDN"],
+    body: "Content Delivery Network。静的ファイルをキャッシュして近くから配る仕組み。SSL 終端やキャッシュの都合で、ブラウザが当たる先がアプリ本体とずれることがあります。",
+  },
+  {
+    term: "WAF",
+    aliases: ["WAF"],
+    body: "Web Application Firewall。HTTP リクエストを検査し、攻撃らしいパターンを遮断する装置。ブロックされたリクエストはアプリまで届かないことが多いです。",
+  },
+  {
     term: "ファイアウォール",
     aliases: ["ファイアウォール", "FW"],
     body: "通信の許可・拒否を制御する壁。接続タイムアウトの原因になることがあります。",
@@ -386,7 +396,42 @@ export const terms: TermDef[] = [
   {
     term: "DNS",
     aliases: ["DNS"],
-    body: "名前（ホスト名）をIPアドレスに変換する仕組みです。",
+    body: "名前（ホスト名）を IP アドレスに変換する仕組みです。",
+  },
+  {
+    term: "名前解決",
+    aliases: ["名前解決"],
+    body: "ホスト名を IP アドレスに変換すること。多くの環境では DNS が担当します。名前解決に失敗すると、ping や curl の前段で止まります。",
+  },
+  {
+    term: "TCP/IP",
+    aliases: ["TCP/IP", "TCP"],
+    body: "インターネットでデータを届ける約束の組み合わせ。IP がホストまで、TCP がポートまで届ける役割を持ちます。HTTP はその上で動きます。",
+  },
+  {
+    term: "ping",
+    aliases: ["ping"],
+    body: "ICMP で相手ホストが応答するかを見るコマンド。名前解決やホスト到達の手がかりになります。ping が通らなくても HTTP は通ることもあります。",
+  },
+  {
+    term: "traceroute",
+    aliases: ["traceroute", "tracert", "tracepath"],
+    body: "パケットが途中のどの機器を通るかを見るコマンド。どこで止まったかの手がかりになります。",
+  },
+  {
+    term: "curl",
+    aliases: ["curl"],
+    body: "コマンドから HTTP リクエストを送るツール。ステータスとヘッダを確認できます。Windows 10 以降にも入っていることが多いです。",
+  },
+  {
+    term: "access.log",
+    aliases: ["access.log", "access_log", "アクセスログ"],
+    body: "HTTPサーバが受けたリクエストの記録。URL、ステータス、時刻が並びます。静的ファイルの 404 もここに残ることが多いです。",
+  },
+  {
+    term: "error.log",
+    aliases: ["error.log", "error_log", "エラーログ"],
+    body: "HTTPサーバ側のエラー記録。設定ミス、後ろのアプリへの接続失敗、SSL の問題など。",
   },
   {
     term: "ブレークポイント",
@@ -436,7 +481,7 @@ export const terms: TermDef[] = [
   {
     term: "HTTPサーバ",
     aliases: ["HTTPサーバ"],
-    body: "ブラウザの手前でリクエストを受ける箱。Apache や nginx。ブラウザとの HTTPS をここで解き、静的ファイルや後ろへの中継を担うことが多いです。",
+    body: "ブラウザの手前でリクエストを受ける箱。Apache や nginx。静的ファイルの配信や後ろへの中継を担うことが多く、access.log と error.log を持ちます。",
   },
   {
     term: "Apache",

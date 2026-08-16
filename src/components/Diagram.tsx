@@ -47,6 +47,7 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "scenario-layers": ScenarioLayers,
   "cross-cut": CrossCut,
   "debug-two": DebugTwo,
+  "protocol-stack": ProtocolStack,
 };
 
 function Node({ kicker, title, sub }: { kicker: string; title: string; sub?: string }) {
@@ -218,6 +219,31 @@ function Filters() {
       <div className="d-layer accent">ログイン / 権限</div>
       <Arrow down label="例: 未ログインならここで止まる" />
       <div className="d-layer">Controller</div>
+    </div>
+  );
+}
+
+function ProtocolStack() {
+  return (
+    <div className="d-stack d-protocol-stack">
+      <Node
+        kicker="LAYER7 アプリケーション層"
+        title="HTTP"
+        sub="Network タブ・curl … URL・ステータス・Content-Type"
+      />
+      <Arrow down label="TCP で載せる" />
+      <Node
+        kicker="LAYER4 トランスポート層"
+        title="TCP"
+        sub="Test-NetConnection・nc・telnet … ポート 8080 まで"
+      />
+      <Arrow down label="IP で届ける" />
+      <Node
+        kicker="LAYER3 ネットワーク層"
+        title="IP"
+        sub="ping・traceroute … ホスト intranet.example.co.jp まで"
+      />
+      <div className="d-layer warn">ping は ICMP。HTTP とは別の話で、通否も連動しません</div>
     </div>
   );
 }
@@ -619,7 +645,7 @@ function ArchPatterns() {
   return (
     <div className="d-cols">
       <div className="d-col">
-        <h4>内蔵だけ</h4>
+        <h4>パターン1: 内蔵だけ</h4>
         <div className="d-stack">
           <Layer icon="browser">ブラウザ</Layer>
           <Arrow down label="HTTP/HTTPS リクエスト" />
@@ -631,7 +657,7 @@ function ArchPatterns() {
         </div>
       </div>
       <div className="d-col">
-        <h4>外部 WAR</h4>
+        <h4>パターン2: 外部 WAR</h4>
         <div className="d-stack">
           <Layer icon="browser">ブラウザ</Layer>
           <Arrow down label="HTTP/HTTPS リクエスト" />
@@ -643,7 +669,7 @@ function ArchPatterns() {
         </div>
       </div>
       <div className="d-col">
-        <h4>手前に HTTPサーバ</h4>
+        <h4>パターン3: 手前に HTTPサーバ</h4>
         <div className="d-stack">
           <Layer icon="browser">ブラウザ</Layer>
           <Arrow down label="HTTP/HTTPS リクエスト" />

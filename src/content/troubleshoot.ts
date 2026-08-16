@@ -5,7 +5,7 @@ export const troubleshootTrack: Track = {
   no: "05",
   title: "トラブルシュート",
   kicker: "PATTERNS",
-  description: "調査手順、ログの場所、ログで処理を追う、症状別の切り分け。",
+  description: "調査手順、ログの場所、ログで処理を追う、ネットワーク疎通、症状別の切り分け。",
   accent: "#d46a5c",
   lessons: [
     {
@@ -61,7 +61,7 @@ export const troubleshootTrack: Track = {
       id: "logs",
       title: "ログの場所と読み方",
       minutes: 12,
-      summary: "アプリはもともとログを出す。行き先を確認し、時刻とレベルで読む。",
+      summary: "アプリと HTTPサーバのログ。行き先を確認し、時刻とレベルで読む。",
       blocks: [
         {
           type: "p",
@@ -93,7 +93,56 @@ export const troubleshootTrack: Track = {
             ["Tomcat の logs/、catalina.out", "外部 Tomcat に WAR を載せている"],
             ["日付で分かれた .log ファイル", "logback などでローテートしている"],
             ["コンテナの標準出力", "Docker や Kubernetes。docker logs や同等のコマンド"],
+            ["nginx の access.log / error.log", "手前に nginx がある。静的ファイルやプロキシの切り分け"],
+            ["Apache の access_log / error_log", "手前に Apache（httpd）がある。同上"],
           ],
+        },
+        {
+          type: "h2",
+          text: "HTTPサーバのログ（Apache / nginx）",
+        },
+        {
+          type: "p",
+          text: "手前に Apache や nginx がある構成では、ブラウザが最初に当たるのは HTTPサーバです。logback のアプリログに載るのは、後ろの Java まで転送されたリクエストだけです。CSS や JS を HTTPサーバが直接返しているとき、Controller のログには出ません。",
+        },
+        {
+          type: "ul",
+          items: [
+            "access.log（アクセスログ）… 届いた URL、ステータス、時刻。静的ファイルの 404 もここに残ることが多い",
+            "error.log（エラーログ）… 設定ミス、後ろの Tomcat への接続失敗、SSL の問題",
+          ],
+        },
+        {
+          type: "table",
+          headers: ["症状", "アプリログ", "HTTPサーバログを見る理由"],
+          rows: [
+            ["HTML は 200、CSS / JS だけ 404", "一覧の INFO は出る", "静的ファイルは手前で返している。パスや alias / location のずれ"],
+            ["ブラウザは 502 / 503", "無い、または少ない", "後ろのアプリに届いていない。upstream 接続失敗"],
+            ["操作したのにアプリログが無い", "無い", "手前で止まった、別ホストに振られた、静的だけ返した、など"],
+            ["HTTPS の証明書エラー", "関係ないことが多い", "TLS の終端はアプリより手前（HTTPサーバ、LB など）"],
+            ["URL は合っているのに 404", "無いことがある", "手前の location が別ディレクトリを見ている"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "SSL 終端の位置",
+          text: "SSL 終端は、必ずしも Apache / nginx で行われるとは限りません。ロードバランサや CDN など、HTTPサーバより前のレイヤで TLS を解読する構成もあります。WAF で遮断されたリクエストもアプリまで届かないことが多いです。証明書エラーはその手前で起きていることが多く、アプリの logback には出ません。",
+        },
+        {
+          type: "code",
+          title: "nginx の access.log の例（combined 形式）",
+          code: `192.0.2.10 - - [16/Aug/2026:04:12:03 +0900] "GET /shinsei/css/app.css HTTP/1.1" 404 153 "-" "Mozilla/5.0 ..."`,
+        },
+        {
+          type: "p",
+          text: "上の例なら、/shinsei/css/app.css への GET が 404 です。同じ時刻に /shinsei/requests は 200 なら、動的処理は Java に届き、CSS だけ手前の設定がずれている、と切り分けできます。置き場所と書式は環境次第です。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "内蔵 Tomcat だけのとき",
+          text: "Spring Boot を java -jar だけで動かし、手前に Apache / nginx が無い環境では、HTTPサーバ用のログはありません。静的ファイルもアプリが返すことが多く、切り分けは Network タブとアプリログで足りることが多いです。",
         },
         {
           type: "callout",
@@ -139,7 +188,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           type: "callout",
           kind: "trap",
           title: "ログが無い",
-          text: "操作時刻に何も無いこと自体が情報です。別インスタンス、別ファイル、リクエストがサーバに届いていないことを疑います。",
+          text: "操作時刻にアプリログが無いこと自体が情報です。別インスタンス、別ファイル、リクエストが Java まで届いていないことを疑います。手前に HTTPサーバがあるなら、access.log に行があるかも見ます。",
         },
         {
           type: "h2",
@@ -162,6 +211,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           code: `log.info("approve start requestId={} userId={}", id, userId);`,
         },
         { type: "quiz", id: "ts-log" },
+        { type: "quiz", id: "ts-http-log" },
       ],
     },
     {
@@ -574,6 +624,165 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       ],
     },
     {
+      id: "net-check",
+      title: "ネットワークの疎通確認",
+      minutes: 14,
+      summary: "TCP/IP と HTTP の層。ping、経路、ポート、curl で届く箱を切る。",
+      blocks: [
+        {
+          type: "p",
+          text: "アプリのログにリクエストが無い、ブラウザがタイムアウトする、といったときは、Java のコードより手前を疑います。ここでは、自分の PC からコマンドで届く箱を切り分けます。",
+        },
+        {
+          type: "h2",
+          text: "TCP/IP と HTTP の層",
+        },
+        {
+          type: "p",
+          text: "ブラウザの Network タブが見ているのは HTTP です。その下に TCP（ポートまで届くか）があり、さらに下に IP（ホストまで届くか）があります。コマンドごとに見ている層が違います。",
+        },
+        {
+          type: "diagram",
+          name: "protocol-stack",
+          caption: "上ほどアプリに近い。下の層が通らなければ、上の HTTP も届きません。",
+        },
+        {
+          type: "ul",
+          items: [
+            "ping … ホストが応答するか（ICMP）。HTTP とは別の話",
+            "traceroute / tracert … 途中のどこで止まったか",
+            "Test-NetConnection / nc / telnet … TCP でポートが開いているか",
+            "curl … HTTP でパスまで届き、どんな応答が返るか",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "打つ場所で結果が変わる",
+          text: "自分の PC からと、サーバからでは通る道が違います。ブラウザが届くのに開発 PC から届かない、ということもあります。再現に近い場所から打ちます。",
+        },
+        {
+          type: "h2",
+          text: "ホストまで届くか（ping）",
+        },
+        {
+          type: "code",
+          title: "例（検証ホスト intranet.example.co.jp）",
+          code: `# Windows（PowerShell または cmd）
+ping intranet.example.co.jp
+
+# Linux
+ping -c 4 intranet.example.co.jp`,
+        },
+        {
+          type: "ul",
+          items: [
+            "応答がある … 名前解決でき、ホスト自体には届いている（ICMP が許可されている）",
+            "要求がタイムアウト … ホストダウン、経路の遮断、ICMP が FW で拒否、など",
+            "名前解決できない … DNS の設定や向き先を疑う",
+          ],
+        },
+        {
+          type: "p",
+          text: "ping が通らなくても HTTP は通ること、逆に ping は通るがアプリのポートは閉じていることもあります。ping だけで決め打ちしません。",
+        },
+        {
+          type: "h2",
+          text: "経路（traceroute）",
+        },
+        {
+          type: "code",
+          title: "例",
+          code: `# Windows
+tracert intranet.example.co.jp
+
+# Linux（環境により traceroute または tracepath）
+traceroute intranet.example.co.jp`,
+        },
+        {
+          type: "p",
+          text: "途中のホップが表示され、どこで * やタイムアウトが続くかを見ます。社内のどの境界で止まっているかの手がかりになります。",
+        },
+        {
+          type: "h2",
+          text: "ポートまで開いているか（TCP）",
+        },
+        {
+          type: "p",
+          text: "申請くんの検証が 8080 なら、HTTP の前に TCP で 8080 が開いているかを見ます。アプリが起動していない、別ポートで待ち受けている、FW で閉じている、などが分かれます。",
+        },
+        {
+          type: "code",
+          title: "例（ポート 8080）",
+          code: `# Windows（PowerShell）
+Test-NetConnection -ComputerName intranet.example.co.jp -Port 8080
+# TcpTestSucceeded : True なら TCP 接続できた
+
+# Linux（nc が入っている環境）
+nc -zv intranet.example.co.jp 8080
+
+# Linux / Windows（telnet クライアントが入っている場合）
+telnet intranet.example.co.jp 8080`,
+        },
+        {
+          type: "ul",
+          items: [
+            "TCP 接続成功 … そのポートで何かが待ち受けている。アプリ未起動ならすぐ切れることもある",
+            "接続拒否（connection refused）… ホストまでは届いたが、そのポートで待ち受けが無い",
+            "タイムアウト … FW、ルータ、セキュリティグループ、経路のどこかで止まっていることが多い",
+          ],
+        },
+        {
+          type: "h2",
+          text: "HTTP まで届くか（curl）",
+        },
+        {
+          type: "p",
+          text: "TCP が通っても、URL パスやコンテキストパスが違えば HTTP は 404 になります。curl はブラウザに近い形で HTTP を送れます。",
+        },
+        {
+          type: "code",
+          title: "例（申請一覧）",
+          code: `# ヘッダだけ見る（本文は捨てる）
+curl -I http://intranet.example.co.jp:8080/shinsei/requests
+
+# 詳細（TLS 証明書の検証を緩める例。社内検証のみ）
+curl -vk https://intranet.example.co.jp/shinsei/requests`,
+        },
+        {
+          type: "ul",
+          items: [
+            "200 や 302 … HTTP までは届き、アプリか前段の HTTP サーバが応答した",
+            "404 … 届いているがパスやマッピングが違う",
+            "接続できない / タイムアウト … TCP 以前、または TLS・プロキシの手前",
+            "ブラウザだけ失敗 … Cookie、プロキシ設定、別ネットワークからのアクセス制限も疑う",
+          ],
+        },
+        {
+          type: "h2",
+          text: "結果から切り分ける",
+        },
+        {
+          type: "table",
+          headers: ["結果の型", "よくある意味", "次に見るもの"],
+          rows: [
+            ["ping 不可", "DNS、ホスト停止、ICMP 拒否", "名前解決、別経路からの ping、ICMP 以外の確認"],
+            ["ping 可、TCP 不可", "ポート閉鎖、アプリ未起動、FW", "プロセス、listen ポート、FW ルール、LB の向き先"],
+            ["TCP 可、curl で HTTP エラー", "パス違い、コンテキストパス、リダイレクト", "URL、server.servlet.context-path、Controller のマッピング"],
+            ["curl 可、ブラウザだけ不可", "クライアント側の設定差", "プロキシ、VPN、Cookie、別マシンからの再現"],
+            ["すべて可、ログだけ無い", "別インスタンス、別ログファイル", "LB の振り分け、ログの出力先"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "1つ成功ですべて OK ではない",
+          text: "ping が通ったから HTTP も通る、TCP が通ったから業務的に正しい応答、とは限りません。層ごとに確認し、最後に Network タブやアプリログと突き合わせます。",
+        },
+        { type: "quiz", id: "ts-net-check" },
+      ],
+    },
+    {
       id: "divide",
       title: "届いていない切り分け",
       minutes: 7,
@@ -581,7 +790,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       blocks: [
         {
           type: "p",
-          text: "Java の分岐を読む前に、リクエストがサーバに届いているかを確認します。",
+          text: "Java の分岐を読む前に、リクエストがサーバに届いているかを確認します。コマンドの打ち方は前の項目です。ここでは症状と意味の対応だけまとめます。",
         },
         { type: "diagram", name: "divide", caption: "先に「どの箱まで届いたか」を切る。" },
         {

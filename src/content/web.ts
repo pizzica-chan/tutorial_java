@@ -62,7 +62,7 @@ export const webTrack: Track = {
           type: "callout",
           kind: "note",
           title: "コード例：申請くん",
-          text: "この教材の例は、架空の社内申請アプリ「申請くん」です。社員が申請を出し、承認者が承認する、という想定です。実在しません。下の HTTP は、その承認ボタンを押した瞬間です。",
+          text: "この教材の例は、架空の社内申請アプリ「申請くん」です。社員が申請を出し、承認者が承認する、という想定です。実在しません。下の HTTP は、申請一覧を開いた瞬間です。",
         },
         { type: "widget", name: "http" },
       ],
@@ -186,11 +186,15 @@ export const webTrack: Track = {
       id: "headers",
       title: "ヘッダ",
       minutes: 8,
-      summary: "Content-Type、Cookie、Location、Referer。",
+      summary: "リクエストとレスポンスのヘッダ。Content-Type、Cookie、Location、Referer。",
       blocks: [
         {
           type: "p",
-          text: "本文より先に、ヘッダで状況が分かることがあります。HTML か JSON かは Content-Type を見ます。",
+          text: "ヘッダはリクエスト側とレスポンス側の両方にあります。Network タブでは、行を選んで Headers 欄の Request Headers と Response Headers を切り替えて見ます。切り分けでは、まず返ってきたレスポンスのヘッダを見ることが多いです。",
+        },
+        {
+          type: "p",
+          text: "HTML か JSON かは、レスポンスの Content-Type を見ます。",
         },
         {
           type: "table",
@@ -203,17 +207,12 @@ export const webTrack: Track = {
         {
           type: "ul",
           items: [
-            "Content-Type … HTML か JSON か。API なのに HTML のログイン画面なら、認証リダイレクトの可能性が高い",
-            "Location … リダイレクト先。意図しない /login ならセッションか権限",
-            "Set-Cookie / Cookie … ログイン状態の識別子",
-            "Referer … どの画面から POST されたか",
+            "Content-Type（レスポンス）… HTML か JSON か。API なのに HTML のログイン画面なら、認証リダイレクトの可能性が高い",
+            "Location（レスポンス）… リダイレクト先。意図しない /login ならセッションか権限",
+            "Set-Cookie（レスポンス）… サーバがブラウザへ渡す Cookie",
+            "Cookie（リクエスト）… ブラウザが送る Cookie。ログイン状態の識別子",
+            "Referer（リクエスト）… どの画面から POST されたか",
           ],
-        },
-        {
-          type: "callout",
-          kind: "trap",
-          title: "Ajax と 302",
-          text: "JSON を期待しているのに 302 で HTML が返ると、フロントはパースエラーとだけ出ることがあります。Network タブでステータスと Content-Type を見ます。",
         },
         { type: "quiz", id: "web-api" },
       ],

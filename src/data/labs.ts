@@ -238,33 +238,39 @@ export const stackCases: StackCase[] = [
 ];
 
 export const httpSample = {
-  request: `POST /shinsei/requests/12/approve HTTP/1.1
+  request: `GET /shinsei/requests HTTP/1.1
 Host: intranet.example.co.jp
 Cookie: JSESSIONID=AB12CD34
-Content-Type: application/x-www-form-urlencoded
-Origin: https://intranet.example.co.jp
-Referer: https://intranet.example.co.jp/shinsei/requests
+Accept: text/html`,
+  response: `HTTP/1.1 200 OK
+Content-Type: text/html;charset=UTF-8
 
-_csrf=f8a1...&`,
-  response: `HTTP/1.1 302 Found
-Location: /shinsei/requests
-Set-Cookie: JSESSIONID=AB12CD34; Path=/shinsei; HttpOnly`,
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>申請一覧</h1>
+    <table>
+      <tr><td>交通費申請</td><td>申請中</td></tr>
+      <tr><td>備品購入</td><td>承認済み</td></tr>
+    </table>
+  </body>
+</html>`,
   notes: [
     {
-      label: "POST",
-      text: "データを変える操作は POST が多いです。GET で承認すると、再読込やクローラで二重承認の危険があります。",
+      label: "GET",
+      text: "一覧を開く取得です。ブラウザのアドレスバーやリンクから飛ぶときも、だいたい GET です。",
     },
     {
       label: "Cookie",
       text: "ログイン状態はサーバのセッションにあり、ブラウザはその鍵（JSESSIONID）を持っています。",
     },
     {
-      label: "302 + Location",
-      text: "PRG パターン。POST のあとリダイレクトして、再読込で二重送信しにくくします。",
+      label: "200",
+      text: "サーバは応答を返せた、という意味です。本文に HTML が載っていれば、ブラウザはそれを画面にします。",
     },
     {
-      label: "_csrf",
-      text: "見知らぬサイトからのフォーム送信を防ぐトークンです。欠けると 403 になることが多いです。設定によってはログイン画面へ誘導されます。",
+      label: "Content-Type",
+      text: "text/html なら画面用の HTML です。application/json ならデータで、Web API の応答に多いです。",
     },
   ],
 };
