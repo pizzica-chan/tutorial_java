@@ -1,3 +1,8 @@
+import {
+  requestControllerPath,
+  requestControllerSample,
+} from "./entryPoint";
+
 export type ProjectFile = {
   path: string;
   note: string;
@@ -62,27 +67,10 @@ public class ShinseiApplication {
 }`,
   },
   {
-    path: "src/main/java/.../controller/RequestController.java",
-    note: "URLの受付口",
-    why: "画面のアドレスと HTTP メソッドが、ここの Java メソッドに対応します。障害調査はほぼここから始まります。",
-    code: `@Controller
-@RequestMapping("/requests")
-@RequiredArgsConstructor
-public class RequestController {
-  private final RequestService requestService;
-
-  @GetMapping
-  public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("requests", requestService.findMine(user.getId()));
-    return "request/list";
-  }
-
-  @PostMapping("/{id}/approve")
-  public String approve(@PathVariable Long id, @AuthenticationPrincipal LoginUser user) {
-    requestService.approve(id, user.getId());
-    return "redirect:/requests";
-  }
-}`,
+    path: requestControllerPath,
+    note: "処理の入口（画面）",
+    why: "GET /shinsei/requests など、画面の URL と HTTP メソッドがここの Java メソッドに対応します。調べたい画面の処理の入口は、ほぼここから始まります。",
+    code: requestControllerSample,
   },
   {
     path: "src/main/java/.../controller/RequestApiController.java",

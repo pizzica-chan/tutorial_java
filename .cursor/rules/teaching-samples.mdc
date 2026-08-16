@@ -34,4 +34,4 @@ public class RequestController {
 
 Spring Security を使う POST フォームには CSRF 用 hidden を書く。`th:action` なら自動挿入が多い、と補足してよい。
 
-クイズは、その項目が教えたことの確認にする。入口特定の項で「遅さ」を問わない。
+クイズは、その項目が教えたことの確認にする。処理の入口の特定の項で「遅さ」を問わない。

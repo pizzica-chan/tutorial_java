@@ -1,4 +1,5 @@
 import type { Track } from "../types";
+import { requestListEntryPointSnippet } from "../data/entryPoint";
 
 export const traceTrack: Track = {
   id: "trace",
@@ -10,14 +11,14 @@ export const traceTrack: Track = {
   lessons: [
     {
       id: "from-screen",
-      title: "画面から入口を特定する",
+      title: "画面から処理の入口を特定する",
       minutes: 8,
       blocks: [
         {
           type: "p",
-          text: "入口の探し方は「ソースの読み方」と同じです。この章では、特定した入口から SQL と応答まで、一本の線の区間を追います。画面遷移しない操作は、アドレスバーではなく Network タブの XHR / fetch を見ます。",
+          text: "処理の入口の探し方は「ソースの読み方」と同じです。この章では、特定した処理の入口から SQL と応答まで、一本の線の区間を追います。画面遷移しない操作は、アドレスバーではなく Network タブの XHR / fetch を見ます。",
         },
-        { type: "diagram", name: "read-entry", caption: "画面の URL から、サーバ側の入口へ。" },
+        { type: "diagram", name: "read-entry", caption: "画面の URL から、サーバ側の処理の入口へ。" },
         {
           type: "ol",
           items: [
@@ -26,6 +27,12 @@ export const traceTrack: Track = {
             "HTML またはテンプレートで form / a / fetch の行き先を見る",
             "そのパスで Java を検索する",
           ],
+        },
+        {
+          type: "code",
+          title: "RequestController.java（抜粋）",
+          lang: "java",
+          code: requestListEntryPointSnippet,
         },
         {
           type: "callout",

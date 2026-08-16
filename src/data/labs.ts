@@ -194,7 +194,7 @@ export const stackCases: StackCase[] = [
       {
         kind: "app",
         text: "    at jp.co.example.shinsei.repository.RequestRepository.findMine(RequestRepository.java:18)",
-        note: "自作クラス。対応する XML の findMine を開きます。ライブラリの行より、この行が入口です。",
+        note: "自作クラス。対応する XML の findMine を開きます。ライブラリの行より、この行が処理の入口です。",
       },
       {
         kind: "app",
@@ -204,7 +204,7 @@ export const stackCases: StackCase[] = [
       {
         kind: "app",
         text: "    at jp.co.example.shinsei.controller.RequestController.list(RequestController.java:31)",
-        note: "画面の入口。一覧を開いた操作から来ている、と確認できます。",
+        note: "画面の処理の入口。一覧を開いた操作から来ている、と確認できます。",
       },
       {
         kind: "framework",

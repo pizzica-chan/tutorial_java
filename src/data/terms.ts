@@ -101,6 +101,11 @@ export const terms: TermDef[] = [
     body: "URL と HTTP メソッドを受けて、次の処理へ渡す層。画面処理を追うときの起点です。Spring ではこの名前が多いです。",
   },
   {
+    term: "処理の入口",
+    aliases: ["処理の入口"],
+    body: "調べたい画面や機能で、サーバ側の処理が始まる場所。多くは URL に対応する Controller のメソッドです。申請くんでは RequestController.java の @GetMapping などが該当します。",
+  },
+  {
     term: "RestController",
     aliases: ["@RestController", "RestController"],
     body: "Controller の一種。戻り値を HTML ではなく JSON にします。templates は使いません。Spring のアノテーションです。",
@@ -281,7 +286,7 @@ export const terms: TermDef[] = [
   {
     term: "@SpringBootApplication",
     aliases: ["@SpringBootApplication"],
-    body: "Spring Boot アプリの起動入口クラスに付ける印です。コンポーネントスキャンと自動設定がまとめて有効になります。",
+    body: "Spring Boot アプリの起動の入口クラスに付ける印です。コンポーネントスキャンと自動設定がまとめて有効になります。",
   },
   {
     term: "@RequiredArgsConstructor",
@@ -976,12 +981,12 @@ export const terms: TermDef[] = [
   {
     term: "バッチ",
     aliases: ["バッチ"],
-    body: "画面を使わず、決まった時刻や指示で動く処理です。画面用と入口が違うことがあります。",
+    body: "画面を使わず、決まった時刻や指示で動く処理です。画面用と処理の入口が違うことがあります。",
   },
   {
     term: "アドレスバー",
     aliases: ["アドレスバー"],
-    body: "ブラウザ上部の URL 表示欄。画面の入口を特定するときに見ます。",
+    body: "ブラウザ上部の URL 表示欄。処理の入口を特定するときに見ます。",
   },
   {
     term: "開発者ツール",

@@ -1,4 +1,5 @@
 import type { Track } from "../types";
+import { requestListEntryPointReadingSnippet } from "../data/entryPoint";
 
 export const readingTrack: Track = {
   id: "reading",
@@ -10,35 +11,64 @@ export const readingTrack: Track = {
   lessons: [
     {
       id: "dont-read-all",
-      title: "入口から読む",
+      title: "処理の入口から読む",
       minutes: 6,
       blocks: [
         {
           type: "p",
-          text: "リポジトリを上から読む必要はありません。調べたい画面や機能に対して、URL または画面上の文字列から入口を特定します。画面が遷移しない Web API は、アドレスバーではなく Network タブの XHR / fetch の URL を使います。",
+          text: "リポジトリを上から読む必要はありません。調べたい画面や機能について、処理の入口だけを開き、そこから下へ降ります。",
         },
         {
-          type: "figure",
-          src: "/images/code-screen.jpg",
-          alt: "ソースを開いたエディタ",
-          caption: "入口のファイルを開いたら、その処理だけを追います。全体は読みません。",
+          type: "p",
+          text: "処理の入口とは、サーバ側でその操作の処理が始まる場所です。画面なら URL と HTTP メソッドに対応する Controller のメソッドが多いです。",
         },
-        { type: "diagram", name: "read-entry" },
+        {
+          type: "h2",
+          text: "手順",
+        },
         {
           type: "ol",
           items: [
-            "対象の URL を確認する（画面ならアドレスバー、API なら Network タブ）",
-            "同じパス文字列をソース検索する",
-            "ヒットした Controller から Service、SQL へ降りる",
-            "テンプレートのボタン、または JS の fetch 先と突き合わせる",
+            "対象の URL を確認する（画面ならアドレスバー、Web API なら Network タブの XHR / fetch）",
+            "パス文字列（requests など）でソースを検索する",
+            "ヒットした Controller のメソッドが処理の入口。ここから Service、SQL へ降りる",
+            "ボタンやリンクの行き先が URL と一致するか、テンプレートや JS で突き合わせる",
           ],
+        },
+        {
+          type: "h2",
+          text: "申請くんの例",
+        },
+        {
+          type: "p",
+          text: "申請一覧を開くと GET /shinsei/requests が飛びます。処理の入口は RequestController の list です。",
+        },
+        {
+          type: "table",
+          headers: ["画面", "URL", "処理の入口"],
+          rows: [
+            ["申請一覧", "GET /shinsei/requests", "RequestController.list"],
+            ["承認ボタン", "POST /shinsei/requests/12/approve", "RequestController.approve"],
+          ],
+        },
+        { type: "diagram", name: "read-entry", caption: "URL から Controller へ。ここが処理の入口です。" },
+        {
+          type: "code",
+          title: "RequestController.java（抜粋）",
+          lang: "java",
+          code: requestListEntryPointReadingSnippet,
+        },
+        {
+          type: "h2",
+          text: "後回しにするもの",
         },
         {
           type: "ul",
           items: [
-            "テストコードがあれば、呼び出し方の例として読む",
+            "処理の入口が決まるまで、Repository や Mapper から通読しない",
             "生成コード、ライブラリ本体、圧縮された JS は後回し",
-            "同じ処理が二つあるなら、今の URL につながっている方を見る",
+            "同じパスが二つヒットしたら、今の URL と HTTP メソッドに合う方を見る",
+            "テストコードがあれば、呼び出し方の例として読む",
           ],
         },
         { type: "quiz", id: "ori-goal" },
@@ -94,7 +124,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "メソッドの中身は正しく見えても結果が違うときは、別の入口から呼ばれていることがあります。画面用とバッチ用で実装が二つ、など。",
+          text: "メソッドの中身は正しく見えても結果が違うときは、別の処理の入口から呼ばれていることがあります。画面用とバッチ用で実装が二つ、など。",
         },
       ],
     },
@@ -202,7 +232,7 @@ request.getApproverId().equals(userId); // NPE`,
         {
           type: "ol",
           items: [
-            "入口のメソッド（申請くんなら Controller の approve など）にブレークポイントを置く",
+            "処理の入口のメソッド（申請くんなら Controller の approve など）にブレークポイントを置く",
             "デバッグ実行でアプリを起動する",
             "ブラウザで、調べたい操作をする",
             "止まったら引数と変数を見る。1行ずつ進める",
@@ -227,7 +257,7 @@ request.getApproverId().equals(userId); // NPE`,
         {
           type: "ul",
           items: [
-            "Console … JS の例外。赤い行が、ボタンを押しても何も起きないときの入口になる",
+            "Console … JS の例外。赤い行が、ボタンを押しても何も起きないときの手がかりになる",
             "Sources（ソース）… JS にブレークポイント。click や fetch の直前で止める",
             "Elements（要素）… いま画面にある HTML と CSS。サーバが返した HTML のあと、JS が書き換えていることがある",
             "Network タブ … 通信。デバッガではないが、同じ開発者ツール。リクエストが飛んだかを先に見る",
@@ -295,13 +325,13 @@ request.getApproverId().equals(userId); // NPE`,
       blocks: [
         {
           type: "p",
-          text: "読む順番は、現象 → 入口 → 分岐 → 永続化 → 出口 です。",
+          text: "読む順番は、現象 → 処理の入口 → 分岐 → 永続化 → 出口 です。",
         },
         {
           type: "steps",
           items: [
             { title: "現象", text: "誰が、どの画面で、何をすると、何が起きるか。" },
-            { title: "入口", text: "URL と HTTP メソッド。Controller またはバッチの入口。" },
+            { title: "処理の入口", text: "URL と HTTP メソッド。Controller またはバッチから読み始める。" },
             { title: "分岐", text: "権限、ステータス、null。該当する if を特定。止められるならデバッガで値を見る。" },
             { title: "永続化", text: "SQL、ファイル、外部 API。" },
             { title: "出口", text: "画面メッセージ、リダイレクト、非同期の後処理。" },

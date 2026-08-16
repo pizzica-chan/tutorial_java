@@ -719,6 +719,10 @@ h3,
   color: #b7c4ff;
 }
 
+.codeblock .tok-guide {
+  color: var(--amber-2);
+}
+
 .codeblock .tok-method,
 .codeblock .hljs-title.function_,
 .codeblock .hljs-function,

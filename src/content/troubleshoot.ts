@@ -294,7 +294,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           items: [
             "アプリが userId をログに出していないこともある。そのときは申請 ID、画面の固有メッセージ、URL",
             "セッション ID は、MDC やメッセージに出ているときだけ使える。Cookie の値そのものがログに無いことも多い",
-            "アクセスログ（URL と時刻）とアプリログの時刻を合わせると、入口の特定に使える",
+            "アクセスログ（URL と時刻）とアプリログの時刻を合わせると、処理の入口の特定に使える",
           ],
         },
         {
@@ -563,7 +563,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "連続した2行の時刻差が、その間にかかった時間です。差が大きい区間が、遅い箇所です。入口メソッドを読む前に、この差で範囲を狭めます。",
+          text: "連続した2行の時刻差が、その間にかかった時間です。差が大きい区間が、遅い箇所です。処理の入口のメソッドを読む前に、この差で範囲を狭めます。",
         },
         {
           type: "code",

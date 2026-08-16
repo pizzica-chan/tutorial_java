@@ -85,6 +85,7 @@ const JAVA_LITERALS = new Set(["true", "false", "null"]);
 export type JavaTokenKind =
   | "plain"
   | "comment"
+  | "guide"
   | "string"
   | "annotation"
   | "number"
@@ -105,6 +106,8 @@ export function javaTokenClass(kind: JavaTokenKind): string | undefined {
   switch (kind) {
     case "comment":
       return "hljs-comment";
+    case "guide":
+      return "tok-guide";
     case "string":
       return "hljs-string";
     case "annotation":
@@ -186,7 +189,11 @@ export function tokenizeJava(code: string): JavaToken[] {
       const start = i;
       i += 2;
       while (i < n && code[i] !== "\n") i += 1;
-      tokens.push({ kind: "comment", text: code.slice(start, i) });
+      const text = code.slice(start, i);
+      tokens.push({
+        kind: text.startsWith("// →") ? "guide" : "comment",
+        text,
+      });
       continue;
     }
 

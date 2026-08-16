@@ -102,7 +102,7 @@ export const quizzes = {
   },
   "trace-start": {
     id: "trace-start",
-    question: "申請一覧画面の入口を最初に確認するとき、妥当なのは？",
+    question: "申請一覧画面の処理の入口を最初に確認するとき、妥当なのは？",
     choices: [
       "pom.xml の作者名",
       "一覧の URL と HTTP メソッドが、どの Controller の Java メソッドに対応するか",
@@ -111,7 +111,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "入口は URL と HTTP メソッドの対応です。Java のメソッド名が list でも、パスが違えば別画面です。特定してから中の処理を見ます。",
+      "処理の入口は URL と HTTP メソッドの対応です。Java のメソッド名が list でも、パスが違えば別画面です。特定してから中の処理を見ます。",
   },
   "read-name": {
     id: "read-name",
@@ -154,7 +154,7 @@ export const quizzes = {
   },
   "ts-own-class": {
     id: "ts-own-class",
-    question: "次のうち、スタックトレースで原因調査の入口にしやすいのはどれ？",
+    question: "次のうち、スタックトレースで原因調査の起点にしやすいのはどれ？",
     choices: [
       "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod",
       "jp.co.example.shinsei.service.RequestService.approve(RequestService.java:41)",
@@ -306,7 +306,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "例外がログに無いなら at 行は使えません。画面の固有の文言が、ソースへの入口です。ソースに無ければ DB や外部 API を疑います。",
+      "例外がログに無いなら at 行は使えません。画面の固有の文言が、ソース検索の手がかりです。ソースに無ければ DB や外部 API を疑います。",
   },
   "sc-db": {
     id: "sc-db",
@@ -362,7 +362,7 @@ export const quizzes = {
   },
   "sc-impact-search": {
     id: "sc-impact-search",
-    question: "一覧に部署の絞り込みを足す影響調査。入口として先に決めるのは？",
+    question: "一覧に部署の絞り込みを足す影響調査。処理の入口として先に決めるのは？",
     choices: [
       "Mapper XML を上から通読する",
       "一覧の URL（/shinsei/requests）から Controller を特定し、同じ一覧を使う export が無いかも見る",
@@ -371,7 +371,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "影響調査も入口は URL です。Controller → Service → Mapper に降り、一覧と同じ条件の別経路（CSV など）を見落としません。",
+      "影響調査も処理の入口は URL です。Controller → Service → Mapper に降り、一覧と同じ条件の別経路（CSV など）を見落としません。",
   },
 } satisfies Record<string, Quiz>;
 

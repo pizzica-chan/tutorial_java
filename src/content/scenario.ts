@@ -1,4 +1,5 @@
 import type { Track } from "../types";
+import { requestControllerSample } from "../data/entryPoint";
 
 export const scenarioTrack: Track = {
   id: "scenario",
@@ -84,7 +85,7 @@ export const scenarioTrack: Track = {
           type: "callout",
           kind: "note",
           title: "検索のやり方",
-          text: "文字列検索と、型・メソッドの参照検索は別です。詳しい手順は「ソースの読み方」の入口と名前で探すを見ます。",
+          text: "文字列検索と、型・メソッドの参照検索は別です。詳しい手順は「ソースの読み方」の処理の入口から読むと名前で探すを見ます。",
         },
         { type: "quiz", id: "sc-how" },
       ],
@@ -515,9 +516,9 @@ requestService.approve(id, userId);`,
         },
         {
           type: "p",
-          text: "変更の入口は一覧の URL です。/shinsei/requests で検索し、Controller のメソッドから Service、Mapper へ降ります。同じ一覧を別経路から出していないかも見ます。",
+          text: "処理の入口は一覧の URL です。/shinsei/requests で検索し、Controller のメソッドから Service、Mapper へ降ります。同じ一覧を別経路から出していないかも見ます。",
         },
-        { type: "diagram", name: "read-entry", caption: "URL → Controller → Service → SQL。影響調査も入口は同じです。" },
+        { type: "diagram", name: "read-entry", caption: "URL → Controller → Service → SQL。影響調査も処理の入口は同じです。" },
         {
           type: "table",
           headers: ["確認すること", "理由"],
@@ -540,6 +541,12 @@ requestService.approve(id, userId);`,
             "クエリパラメータ名は、テンプレートと Controller で一致しているか確認する",
             "影響一覧は「ファイル + 何を変えるか」で十分なことが多い",
           ],
+        },
+        {
+          type: "code",
+          title: "RequestController.java（一覧の処理の入口）",
+          lang: "java",
+          code: requestControllerSample,
         },
         { type: "quiz", id: "sc-impact-search" },
       ],
