@@ -1,0 +1,98 @@
+import { useEffect, useId, useRef, useState, type KeyboardEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { searchSite, type SearchHit } from "../lib/search";
+import { Icon } from "./Icon";
+
+export function SiteSearch() {
+  const navigate = useNavigate();
+  const listId = useId();
+  const root = useRef<HTMLDivElement>(null);
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(0);
+  const hits = query.trim() ? searchSite(query) : [];
+  const show = open && query.trim().length > 0;
+
+  useEffect(() => {
+    setActive(0);
+  }, [query]);
+
+  useEffect(() => {
+    function onPointer(event: MouseEvent) {
+      if (!root.current?.contains(event.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onPointer);
+    return () => document.removeEventListener("mousedown", onPointer);
+  }, []);
+
+  function go(hit: SearchHit) {
+    setOpen(false);
+    setQuery("");
+    navigate(hit.href);
+  }
+
+  function onKey(event: KeyboardEvent<HTMLInputElement>) {
+    if (!show) return;
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActive((index) => Math.min(index + 1, Math.max(hits.length - 1, 0)));
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActive((index) => Math.max(index - 1, 0));
+    } else if (event.key === "Enter" && hits[active]) {
+      event.preventDefault();
+      go(hits[active]);
+    } else if (event.key === "Escape") {
+      setOpen(false);
+    }
+  }
+
+  return (
+    <div className="site-search" ref={root}>
+      <label className="sr-only" htmlFor="site-search-input">
+        サイト内検索
+      </label>
+      <div className="search-field">
+      <Icon name="search" className="search-icon" size={16} />
+      <input
+        id="site-search-input"
+        type="search"
+        placeholder="サイト内を検索"
+        value={query}
+        autoComplete="off"
+        aria-autocomplete="list"
+        aria-controls={listId}
+        aria-expanded={show}
+        onChange={(event) => {
+          setQuery(event.target.value);
+          setOpen(true);
+        }}
+        onFocus={() => setOpen(true)}
+        onKeyDown={onKey}
+      />
+      </div>
+      {show ? (
+        <ul className="search-results" id={listId} role="listbox">
+          {hits.length === 0 ? (
+            <li className="search-empty">一致する項目はありません</li>
+          ) : (
+            hits.map((hit, index) => (
+              <li key={hit.href + hit.title} role="option" aria-selected={index === active}>
+                <button
+                  className={index === active ? "active" : ""}
+                  type="button"
+                  onMouseEnter={() => setActive(index)}
+                  onClick={() => go(hit)}
+                >
+                  <span className="search-crumb">{hit.crumb}</span>
+                  <strong>{hit.title}</strong>
+                  <span className="search-snip">{hit.snippet}</span>
+                </button>
+              </li>
+            ))
+          )}
+        </ul>
+      ) : null}
+    </div>
+  );
+}

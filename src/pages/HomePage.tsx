@@ -1,0 +1,90 @@
+import { Link } from "react-router-dom";
+import { tracks, totalLessons, firstLessonPath } from "../data/curriculum";
+import { continueHref, hasStarted } from "../lib/progress";
+import { useProgress } from "../hooks/useProgress";
+import { TextWithTerms } from "../components/TextWithTerms";
+import { Icon, trackIcon } from "../components/Icon";
+
+export function HomePage() {
+  const completed = useProgress();
+  const resume = hasStarted(completed) ? continueHref(completed) : undefined;
+
+  return (
+    <div className="content">
+      <section className="hero">
+        <p className="kicker">JAVA WEB / TROUBLESHOOTING</p>
+        <h1>基礎知識と、症状別の切り分け。</h1>
+        <p className="lede">
+          <TextWithTerms
+            highlight={false}
+            text="HTTP と Java Web アプリの構成、既存コードの追い方、よくある不具合パターン。ゼロからアプリを作る教材ではありません。例として Spring Boot の申請アプリを使います。"
+          />
+        </p>
+        <div className="hero-actions">
+          {resume ? (
+            <Link className="btn btn-primary" to={resume}>
+              続きから
+            </Link>
+          ) : (
+            <Link className="btn btn-primary" to={firstLessonPath("web")}>
+              Webの基礎から始める
+            </Link>
+          )}
+          <Link className="btn btn-ghost" to={resume ? firstLessonPath("web") : "/tracks/troubleshoot"}>
+            {resume ? "最初から" : "パターン別トラブルシュート"}
+          </Link>
+        </div>
+        <div className="stats">
+          <div className="stat">
+            <b>{tracks.length}</b>
+            <span>章</span>
+          </div>
+          <div className="stat">
+            <b>{totalLessons}</b>
+            <span>項目</span>
+          </div>
+          <div className="stat">
+            <b>{completed.length}</b>
+            <span>読了</span>
+          </div>
+        </div>
+      </section>
+
+      <div className="section-head">
+        <h2>目次</h2>
+      </div>
+      <div className="grid">
+        {tracks.map((track) => (
+          <Link className="card" to={`/tracks/${track.id}`} key={track.id}>
+            <div className="meta">
+              <span className="card-kicker">
+                <Icon name={trackIcon(track.id)} size={16} />
+                {track.kicker}
+              </span>
+              <span>{track.no}</span>
+            </div>
+            <h3>{track.title}</h3>
+            <p>
+              <TextWithTerms highlight={false} text={track.description} />
+            </p>
+          </Link>
+        ))}
+      </div>
+
+      <div className="section-head">
+        <h2>コード例：申請くん</h2>
+      </div>
+      <p>
+        <TextWithTerms
+          highlight={false}
+          text="Spring Boot、Thymeleaf、MyBatis、MySQL、Spring Security の構成例です。ディレクトリやリクエスト追跡の説明で参照します。"
+        />
+      </p>
+      <p>
+        <Link className="btn btn-ghost" to="/lab">
+          ラボでソースを開く
+        </Link>
+      </p>
+    </div>
+  );
+}
