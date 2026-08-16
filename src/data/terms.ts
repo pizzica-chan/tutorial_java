@@ -168,12 +168,12 @@ export const terms: TermDef[] = [
   {
     term: "MyBatis",
     aliases: ["MyBatis"],
-    body: "SQLをXMLやアノテーションで書き、Javaから実行するライブラリです。",
+    body: "SQLをXMLやアノテーションで書き、Javaから実行するライブラリです。ログに出た文に近い SQL が、プロジェクト内のファイルにあることが多いです。",
   },
   {
     term: "JPA",
     aliases: ["JPA", "JPQL"],
-    body: "Java Persistence API。オブジェクトとテーブルを対応づけてDBアクセスします。",
+    body: "Java Persistence API。オブジェクトとテーブルを対応づけてDBアクセスします。実行される SQL はライブラリが組み立てることが多く、ソースに書いてないことがあります。",
   },
   {
     term: "JDBC",
@@ -354,6 +354,16 @@ export const terms: TermDef[] = [
     body: "画面の入力やSQLの ? に、実際の値をはめ込むことです。",
   },
   {
+    term: "プレースホルダ",
+    aliases: ["プレースホルダ"],
+    body: "SQL の値の穴です。ログでは ? 、MyBatis の XML では #{userId} のように書きます。実行時に実際の値が入ります。",
+  },
+  {
+    term: "スロークエリ",
+    aliases: ["スロークエリ", "スロークエリログ"],
+    body: "実行に時間がかかった SQL です。DB のスロークエリログに残ることがあります。何秒から記録するかは設定次第です。",
+  },
+  {
     term: "論理削除",
     aliases: ["論理削除"],
     body: "行を物理的に消さず、削除フラグで「無いもの」として扱う方式です。",
@@ -391,7 +401,7 @@ export const terms: TermDef[] = [
   {
     term: "WAF",
     aliases: ["WAF"],
-    body: "Web Application Firewall。HTTP リクエストを検査し、攻撃らしいパターンを遮断する装置。ブロックされたリクエストはアプリまで届かないことが多いです。",
+    body: "Web Application Firewall。HTTP リクエストを検査し、攻撃と判定したものを遮断する装置。ブロックされたリクエストはアプリまで届かないことが多いです。",
   },
   {
     term: "ファイアウォール",
@@ -569,9 +579,9 @@ export const terms: TermDef[] = [
     body: "Cookieをどのサイト経由のリクエストに付けるかの制限。緩いとCSRF、厳しいとログイン切れの原因になります。",
   },
   {
-    term: "Find Usages",
-    aliases: ["Find Usages"],
-    body: "IDEの機能。そのメソッドや型がどこから呼ばれているかを一覧します。",
+    term: "参照検索",
+    aliases: ["参照検索", "Find Usages", "References", "Find References"],
+    body: "IDEの機能。そのメソッドや型がどこから呼ばれているかを一覧します。IntelliJ では Find Usages、Eclipse では References という名前です。",
   },
   {
     term: "Networkタブ",
@@ -711,7 +721,7 @@ export const terms: TermDef[] = [
   {
     term: "Secure",
     aliases: ["Secure"],
-    body: "Cookie の属性。HTTPS のときだけブラウザが付けます。http で見るとログインが切れて見えることがあります。",
+    body: "Cookie の属性。HTTPS のときだけブラウザが付けます。http で開くと、ログインが切れて見えることがあります。",
   },
   {
     term: "ドメイン",

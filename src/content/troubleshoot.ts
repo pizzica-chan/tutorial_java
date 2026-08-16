@@ -15,7 +15,7 @@ export const troubleshootTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "先に現象を固定し、線のどこで期待と違うかを狭めます。",
+          text: "先に現象を固定し、線のどこで期待と違うかを狭めましょう。",
         },
         {
           type: "steps",
@@ -30,11 +30,11 @@ export const troubleshootTrack: Track = {
             },
             {
               title: "仮説を1つにする",
-              text: "権限と SQL と JS が同時に怪しいのは、切り分けになっていません。確認コストが低いものから潰します。",
+              text: "権限と SQL と JS が同時に怪しいのは、切り分けになっていません。確認コストが低いものから潰しましょう。",
             },
             {
               title: "変更は最小",
-              text: "既存のログを先に読む。確認用のログ追加と、修正を混ぜない。切り分け用の変更は後で戻します。",
+              text: "既存のログを先に読む。確認用のログ追加と、修正を混ぜない。切り分け用の変更は後で戻しましょう。",
             },
           ],
         },
@@ -63,7 +63,7 @@ export const troubleshootTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "障害調査では、まず既存のログを見ます。アプリは最初からログが出るように作られているのが一般的です。調査用の log.info を足すのは、既存ログで足りないときです。",
+          text: "障害調査では、まず既存のログを見ましょう。アプリは最初からログが出るように作られているのが一般的です。調査用の log.info を足すのは、既存ログで足りないときです。",
         },
         {
           type: "h2",
@@ -71,7 +71,7 @@ export const troubleshootTrack: Track = {
         },
         {
           type: "p",
-          text: "行き先はアプリと環境で違います。決まった一箇所はありません。次の順で探します。",
+          text: "行き先はアプリと環境で違います。決まった一箇所はありません。次の順で探しましょう。",
         },
         {
           type: "ol",
@@ -146,7 +146,7 @@ export const troubleshootTrack: Track = {
           type: "callout",
           kind: "tip",
           title: "複数台",
-          text: "ロードバランサの後ろだと、ログは別インスタンスに出ることがあります。操作が当たったサーバを特定してから読みます。",
+          text: "ロードバランサの後ろだと、ログは別インスタンスに出ることがあります。操作が当たったサーバを特定してから読みましょう。",
         },
         {
           type: "h2",
@@ -176,7 +176,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
         },
         {
           type: "p",
-          text: "DEBUG は量が多いので、普段は出していないことが多いです。必要なときだけ、そのパッケージのレベルを上げます。上げたら調査後に戻します。",
+          text: "DEBUG は量が多いので、普段は出していないことが多いです。必要なときだけ、そのパッケージのレベルを上げましょう。上げたら調査後に戻しましょう。",
         },
         {
           type: "p",
@@ -186,7 +186,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           type: "callout",
           kind: "trap",
           title: "ログが無い",
-          text: "操作時刻にアプリログが無いこと自体が情報です。別インスタンス、別ファイル、リクエストが Java まで届いていないことを疑います。手前に HTTPサーバがあるなら、access.log に行があるかも見ます。",
+          text: "操作時刻にアプリログが無いこと自体が情報です。別インスタンス、別ファイル、リクエストが Java まで届いていないことを疑いましょう。手前に HTTPサーバがあるなら、access.log に行があるかも見ましょう。",
         },
         {
           type: "h2",
@@ -194,13 +194,13 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
         },
         {
           type: "p",
-          text: "既存ログで到達も例外も分からないとき、一時的に ID と通過点を出します。パスワードやトークンは出しません。調査が終わったら戻します。値を今の行で見たいだけなら、ログを足すよりデバッガです。止められない環境ではログです。",
+          text: "既存ログで到達も例外も分からないとき、一時的に ID と通過点を出しましょう。パスワードやトークンは出しません。調査が終わったら戻しましょう。値を今の行で見たいだけなら、ログを足すよりデバッガです。止められない環境ではログです。",
         },
         {
           type: "callout",
           kind: "warn",
           title: "共有環境",
-          text: "検証用環境など他人と使っている場合、ログレベルの変更や調査用の出力は、他の人の調査やディスクを圧迫することがあります。足す前に、その環境でよいか確認します。",
+          text: "検証用環境など他人と使っている場合、ログレベルの変更や調査用の出力は、他の人の調査やディスクを圧迫することがあります。足す前に、その環境でよいか確認しましょう。",
         },
         {
           type: "code",
@@ -219,7 +219,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
       blocks: [
         {
           type: "p",
-          text: "出力先と 1 行の読み方は前の項目です。ここでは、並んだ行から今の操作だけを取り出し、通った Java メソッドの順を見ます。ログ例は申請くんです。",
+          text: "出力先と 1 行の読み方は前の項目です。ここでは、並んだ行から今の操作だけを取り出し、通った Java メソッドの順を見ましょう。ログ例は申請くんです。",
         },
         {
           type: "h2",
@@ -271,7 +271,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
         },
         {
           type: "p",
-          text: "userId=7 の一覧なら、まず 7 で検索します。ヒットした行のスレッド名は nio-8080-exec-3 です。その名前と、操作の前後数秒で再検索すると、上の list → findMine → Mapper の行が揃います。Parameters の書き方は MyBatis の例です。exec-5 は別の人の詳細です。",
+          text: "userId=7 の一覧なら、まず 7 で検索しましょう。ヒットした行のスレッド名は nio-8080-exec-3 です。その名前と、操作の前後数秒で再検索すると、上の list → findMine → Mapper の行が揃います。Parameters の書き方は MyBatis の例です。exec-5 は別の人の詳細です。",
         },
         {
           type: "ol",
@@ -287,7 +287,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           type: "callout",
           kind: "trap",
           title: "スレッド名は使い回される",
-          text: "Tomcat の exec-3 は、前のリクエストが終わったあと、別のリクエストに使われます。スレッド名だけで日付を問わず拾うと、別操作が混ざります。時刻の幅を付けます。",
+          text: "Tomcat の exec-3 は、前のリクエストが終わったあと、別のリクエストに使われます。スレッド名だけで日付を問わず拾うと、別操作が混ざります。時刻の幅を付けましょう。",
         },
         {
           type: "ul",
@@ -303,7 +303,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
         },
         {
           type: "p",
-          text: "ここからは MyBatis の DEBUG に限った話です。Mapper の DEBUG を出すと、実行された SQL が見えます。本番では普段 DEBUG を出していないことが多いです。検証用環境では、または調査のあいだだけレベルを上げます。終わったら戻します。",
+          text: "ここからは MyBatis の DEBUG に限った話です。Mapper の DEBUG を出すと、実行された SQL が見えます。本番では普段 DEBUG を出していないことが多いです。検証用環境では、または調査のあいだだけレベルを上げましょう。終わったら戻しましょう。",
         },
         {
           type: "code",
@@ -323,7 +323,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "出す先は logging.level です。申請くんなら Mapper のパッケージ（jp.co.example.shinsei.mapper など）に DEBUG を付けます。XML の id と Java のメソッド名が Logger に出ることがあります。",
+          text: "出す先は logging.level です。申請くんなら Mapper のパッケージ（jp.co.example.shinsei.mapper など）に DEBUG を付けましょう。XML の id と Java のメソッド名が Logger に出ることがあります。その SQL をソースで探す手順は、「リクエストの追跡」の「SQL の突き合わせ」です。",
         },
         {
           type: "callout",
@@ -347,11 +347,11 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         {
           type: "diagram",
           name: "stack-own",
-          caption: "上から見て、自分たちが書いたコードのパッケージ名がある最初の行の、その行番号を調べます。",
+          caption: "上から見て、自分たちが書いたコードのパッケージ名がある最初の行の、その行番号を調べましょう。",
         },
         {
           type: "p",
-          text: "申請くんなら、自分たちが書いたコードのパッケージは jp.co.example.shinsei です。org.springframework や java. はライブラリや Java 本体なので、直す場所ではありません。$$Enhancer や $Proxy も生成コードなので飛ばします。",
+          text: "申請くんなら、自分たちが書いたコードのパッケージは jp.co.example.shinsei です。org.springframework や java. はライブラリや Java 本体なので、直す場所ではありません。$$Enhancer や $Proxy も生成コードなので飛ばしましょう。",
         },
         {
           type: "h2",
@@ -360,7 +360,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         { type: "diagram", name: "stack-line", caption: "右端の括弧が、ソースのファイルと行です。" },
         {
           type: "p",
-          text: "RequestService.java:41 なら、プロジェクト内の RequestService.java の 41 行目です。Unknown Source とだけある行は、ソースが無いので飛ばします。",
+          text: "RequestService.java:41 なら、プロジェクト内の RequestService.java の 41 行目です。Unknown Source とだけある行は、ソースが無いので飛ばしましょう。",
         },
         {
           type: "figure",
@@ -413,7 +413,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       blocks: [
         {
           type: "p",
-          text: "利用者には「エラーが発生しました」としか出なくても、サーバログには例外があります。画面操作の時刻とログの時刻を合わせます。",
+          text: "利用者には「エラーが発生しました」としか出なくても、サーバログには例外があります。画面操作の時刻とログの時刻を合わせましょう。",
         },
         {
           type: "table",
@@ -427,7 +427,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "フロントが JSON を期待しているのに、500 の HTML エラーページが返ると、画面にはパースエラーとだけ出ることがあります。Network タブのステータスと Content-Type を先に見ます。",
+          text: "フロントが JSON を期待しているのに、500 の HTML エラーページが返ると、画面にはパースエラーとだけ出ることがあります。Network タブのステータスと Content-Type を先に見ましょう。",
         },
         {
           type: "ol",
@@ -506,21 +506,22 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       blocks: [
         {
           type: "p",
-          text: "画面は 200 で、例外も無い。データだけ期待と違う場合は SQL と投入データを見ます。",
+          text: "画面は 200 で、例外も無い。データだけ期待と違う場合は SQL と、DB に入っている行を見ましょう。",
         },
         {
           type: "table",
           headers: ["症状", "確認"],
           rows: [
-            ["件数が少ない", "WHERE、削除フラグ、ログインユーザ条件"],
+            ["件数が少ない", "WHERE、削除フラグ、ログインユーザ条件。その条件の行が無い"],
             ["他人の行が見える", "ユーザ ID 条件の漏れ"],
             ["更新したつもりで戻る", "別 ID を更新、トランザクション未コミット、読み取り別 DB"],
             ["画面の値と DB が違う", "キャッシュ、画面の別項目を見ている、タイムゾーン"],
+            ["SQL の結果は画面と同じなのに、期待と違う", "行の値がおかしい、マスタのずれ、別の DB"],
           ],
         },
         {
           type: "p",
-          text: "ログに SQL とバインド値を出せるなら、それを検証用環境の DB で再実行します。コード上のメソッド名と、実際に飛んでいる SQL が一致しているかも確認します。",
+          text: "ログに SQL とバインド値を出せるなら、検証用環境の DB で再実行しましょう。SELECT ならそのまま試せます。UPDATE や DELETE はデータを書き換えるので、「リクエストの追跡」の「SQL の突き合わせ」の注意を見ましょう。結果が画面と同じなら、SQL は合っています。コード上のメソッド名と、実際に飛んでいる SQL が一致しているかも確認しましょう。",
         },
       ],
     },
@@ -531,7 +532,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       blocks: [
         {
           type: "p",
-          text: "ある環境だけで再現するときは、コード差分より環境差分を先に表にします。",
+          text: "ある環境だけで再現するときは、コード差分より環境差分を先に表にしましょう。",
         },
         { type: "diagram", name: "env-diff", caption: "コードが同じでも、設定とデータと権限は別物です。" },
         {
@@ -555,7 +556,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       blocks: [
         {
           type: "p",
-          text: "遅さは例外ログに出ないことが多いです。先に、同じリクエストのログのタイムスタンプを並べ、どこで時間が空いているかを見ます。",
+          text: "遅さは例外ログに出ないことが多いです。先に、同じリクエストのログのタイムスタンプを並べ、どこで時間が空いているかを見ましょう。",
         },
         {
           type: "h2",
@@ -563,7 +564,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "連続した2行の時刻差が、その間にかかった時間です。差が大きい区間が、遅い箇所です。処理の入口のメソッドを読む前に、この差で範囲を狭めます。",
+          text: "連続した2行の時刻差が、その間にかかった時間です。差が大きい区間が、遅い箇所です。処理の入口のメソッドを読む前に、この差で範囲を狭めましょう。",
         },
         {
           type: "code",
@@ -590,7 +591,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
           type: "callout",
           kind: "note",
           title: "ログが無い区間",
-          text: "start と done のあいだに行が無いこと自体が、範囲です。その中の SQL、外部 API、ロック、ファイル I/O を見ます。",
+          text: "start と done のあいだに行が無いこと自体が、範囲です。その中の SQL、外部 API、ロック、ファイル I/O を見ましょう。",
         },
         {
           type: "h2",
@@ -609,7 +610,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "SQL ログの回数を見ます。一覧の行数だけ SELECT が増えるなら N+1 です。",
+          text: "SQL ログの回数を見ましょう。一覧の行数だけ SELECT が増えるなら N+1 です。",
         },
       ],
     },
@@ -679,7 +680,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
           type: "callout",
           kind: "note",
           title: "ブラウザの Network タブだけでは足りない",
-          text: "Network タブで見えるのは、ブラウザと自社アプリの間です。アプリから外部 API へ出る通信は、通常そこでは確認できません。サーバ側のログ、または調査用に URL とステータスだけ一時的に出します。",
+          text: "Network タブで見えるのは、ブラウザと自社アプリの間です。アプリから外部 API へ出る通信は、通常そこでは確認できません。サーバ側のログ、または調査用に URL とステータスだけ一時的に出しましょう。",
         },
         {
           type: "h2",
@@ -687,7 +688,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
         },
         {
           type: "p",
-          text: "承認処理は DB を更新したあと、MailService で申請者へメールを送る想定です。画面は承認済みなのにメールが来ないときは、Mapper の更新ログのあとに MailService の行があるかを見ます。SMTP サーバや通知 API の向き先は application.yml にあることが多いです。",
+          text: "承認処理は DB を更新したあと、MailService で申請者へメールを送る想定です。画面は承認済みなのにメールが来ないときは、Mapper の更新ログのあとに MailService の行があるかを見ましょう。SMTP サーバや通知 API の向き先は application.yml にあることが多いです。",
         },
         {
           type: "callout",
@@ -701,7 +702,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
         },
         {
           type: "p",
-          text: "ログと設定で「どの外部へ出ているか」まで分かったあと、接続そのものが疑われるときは、次のレッスン「ネットワークの疎通確認」へ進みます。",
+          text: "ログと設定で「どの外部へ出ているか」まで分かったあと、接続そのものが疑われるときは、次のレッスン「ネットワークの疎通確認」へ進みましょう。",
         },
         {
           type: "table",
@@ -740,13 +741,13 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
       blocks: [
         {
           type: "p",
-          text: "アプリのログにリクエストが無い、ブラウザがタイムアウトする、外部 API への接続エラーがログに出る、といったときは、Java のコードより手前や外側の経路を疑います。ここでは、OS のコマンドで届く箱を切り分けます。",
+          text: "アプリのログにリクエストが無い、ブラウザがタイムアウトする、外部 API への接続エラーがログに出る、といったときは、Java のコードより手前や外側の経路を疑いましょう。ここでは、OS のコマンドで届く箱を切り分けましょう。",
         },
         {
           type: "callout",
           kind: "note",
           title: "どこから来るか",
-          text: "ブラウザから自社アプリへ届かないときは、この章のあとにある「届いていない切り分け」とセットです。自社アプリから外部システムへ届かないときは、前の「パターン: 外部システム / 外部 API」で URL とログを確認したあと、ここへ進みます。",
+          text: "ブラウザから自社アプリへ届かないときは、この章のあとにある「届いていない切り分け」とセットです。自社アプリから外部システムへ届かないときは、前の「パターン: 外部システム / 外部 API」で URL とログを確認したあと、ここへ進みましょう。",
         },
         {
           type: "h2",
@@ -774,7 +775,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
           type: "callout",
           kind: "note",
           title: "打つ場所で結果が変わる",
-          text: "打つ場所で結果が変わります。自分の PC からと、サーバからでは通る道が違います。ブラウザが届くのに開発 PC から届かない、サーバ上のアプリだけ外部 API に失敗する、ということもあります。再現に近い場所から打ちます。",
+          text: "打つ場所で結果が変わります。自分の PC からと、サーバからでは通る道が違います。ブラウザが届くのに開発 PC から届かない、サーバ上のアプリだけ外部 API に失敗する、ということもあります。再現に近い場所から打ちましょう。",
         },
         {
           type: "h2",
@@ -816,7 +817,7 @@ traceroute intranet.example.co.jp`,
         },
         {
           type: "p",
-          text: "途中のホップが表示され、どこで * やタイムアウトが続くかを見ます。社内のどの境界で止まっているかの手がかりになります。",
+          text: "途中のホップが表示され、どこで * やタイムアウトが続くかを見ましょう。社内のどの境界で止まっているかの手がかりになります。",
         },
         {
           type: "h2",
@@ -824,7 +825,7 @@ traceroute intranet.example.co.jp`,
         },
         {
           type: "p",
-          text: "申請くんの検証用環境が 8080 なら、HTTP の前に TCP で 8080 が開いているかを見ます。アプリが起動していない、別ポートで待ち受けている、FW で閉じている、などが分かれます。",
+          text: "申請くんの検証用環境が 8080 なら、HTTP の前に TCP で 8080 が開いているかを見ましょう。アプリが起動していない、別ポートで待ち受けている、FW で閉じている、などが分かれます。",
         },
         {
           type: "code",
@@ -892,7 +893,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
           type: "callout",
           kind: "trap",
           title: "1つ成功ですべて OK ではない",
-          text: "ping が通ったから HTTP も通る、TCP が通ったから業務的に正しい応答、とは限りません。層ごとに確認し、最後に Network タブやアプリログと突き合わせます。",
+          text: "ping が通ったから HTTP も通る、TCP が通ったから業務的に正しい応答、とは限りません。層ごとに確認し、最後に Network タブやアプリログと突き合わせましょう。",
         },
         { type: "quiz", id: "ts-net-check" },
       ],
@@ -904,7 +905,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
       blocks: [
         {
           type: "p",
-          text: "Java の分岐を読む前に、リクエストがサーバに届いているかを確認します。コマンドの打ち方は「ネットワークの疎通確認」です。ここでは症状と意味の対応だけまとめます。",
+          text: "Java の分岐を読む前に、リクエストがサーバに届いているかを確認しましょう。コマンドの打ち方は「ネットワークの疎通確認」です。ここでは症状と意味の対応だけまとめます。",
         },
         { type: "diagram", name: "divide", caption: "先に「どの箱まで届いたか」を切る。" },
         {

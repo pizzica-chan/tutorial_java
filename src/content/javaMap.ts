@@ -56,12 +56,13 @@ export const javaMapTrack: Track = {
             "thymeleaf / jsp / freemarker … 画面の種類",
             "mybatis / jpa / jdbc … DB アクセスの種類",
             "spring-security … 認証・認可の有無",
+            "社内の自作ライブラリ … jar だけだとソース検索に出ないことがある",
             "war パッケージ … 外部 Tomcat に載せる構成",
           ],
         },
         {
           type: "p",
-          text: "Spring Boot 2.7 と 3.x では javax と jakarta が違います。参照するサンプルは、対象プロジェクトの版に合わせます。",
+          text: "Spring Boot 2.7 と 3.x では javax と jakarta が違います。参照するサンプルは、対象プロジェクトの版に合わせましょう。",
         },
         {
           type: "h2",
@@ -134,7 +135,7 @@ export const javaMapTrack: Track = {
             },
             {
               title: "外部に WAR",
-              text: "アプリを WAR にして、すでに動いている Tomcat や Jetty に載せます。ログは catalina.out など、Tomcat 側の置き場を見ます。",
+              text: "アプリを WAR にして、すでに動いている Tomcat や Jetty に載せます。ログは catalina.out など、Tomcat 側の置き場を見ましょう。",
             },
             {
               title: "手前に Apache / nginx",
@@ -184,12 +185,12 @@ export const javaMapTrack: Track = {
           items: [
             "ロードバランサ（LB）… 複数台へ振り分け。SSL 終端をここで行うこともある",
             "CDN … 静的ファイルを近い拠点から配る。キャッシュや SSL 終端を担うこともある",
-            "WAF … HTTP リクエストを検査し、攻撃らしいパターンを遮断する",
+            "WAF … HTTP リクエストを検査し、攻撃と判定したものを遮断する",
           ],
         },
         {
           type: "p",
-          text: "ログの出る場所や、ブロックされたときの応答は環境次第です。切り分けでは「アプリに届いたか」を先に確認します。",
+          text: "ログの出る場所や、ブロックされたときの応答は環境次第です。切り分けでは「アプリに届いたか」を先に確認しましょう。",
         },
         { type: "quiz", id: "java-arch" },
       ],
@@ -218,7 +219,7 @@ server:
         },
         {
           type: "p",
-          text: "ローカルでは動き、別環境では落ちる場合、まず設定差を見ます。URL、ユーザ、プロファイル、コンテキストパス、ファイルパス、メールサーバ。",
+          text: "ローカルでは動き、別環境では落ちる場合、まず設定差を見ましょう。URL、ユーザ、プロファイル、コンテキストパス、ファイルパス、メールサーバ。",
         },
         {
           type: "ul",
@@ -233,7 +234,7 @@ server:
           type: "callout",
           kind: "warn",
           title: "接続情報",
-          text: "接続文字列には本番相当の情報があることがあります。共有するときはマスクします。",
+          text: "接続文字列には本番相当の情報があることがあります。共有するときはマスクしましょう。",
         },
       ],
     },
@@ -244,7 +245,7 @@ server:
       blocks: [
         {
           type: "p",
-          text: "Controller に SQL が書いてある、Service が薄い、層の名前が違うといったことはよくあります。名前より、次の順で探します。",
+          text: "Controller に SQL が書いてある、Service が薄い、層の名前が違うといったことはよくあります。名前より、次の順で探しましょう。",
         },
         { type: "diagram", name: "layers", caption: "探す順番。層の名前が違っても、この縦の線は同じです。" },
         {
@@ -308,7 +309,7 @@ public class RequestApiController {
           type: "callout",
           kind: "trap",
           title: "見た目だけ壊れる",
-          text: "画面が白い、スタイルが当たっていないのは、Java 例外ではなく静的ファイルのパス違いであることが多いです。Network タブで 404 を探します。",
+          text: "画面が白い、スタイルが当たっていないのは、Java 例外ではなく静的ファイルのパス違いであることが多いです。Network タブで 404 を探しましょう。",
         },
         {
           type: "p",
@@ -390,7 +391,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "callout",
           kind: "note",
           title: "@ModelAttribute は向きが2つ",
-          text: "メソッドの引数に付く @ModelAttribute は、フォームから画面へ値を運ぶときにも使われます。Controller 内の @ModelAttribute メソッドは、別の共通データを毎回 Model に足す書き方です。名前が紛らわしいので、テンプレートでは \${...} のキー名だけを見ます。",
+          text: "メソッドの引数に付く @ModelAttribute は、フォームから画面へ値を運ぶときにも使われます。Controller 内の @ModelAttribute メソッドは、別の共通データを毎回 Model に足す書き方です。名前が紛らわしいので、テンプレートでは \${...} のキー名だけを見ましょう。",
         },
         {
           type: "h2",
@@ -452,7 +453,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "callout",
           kind: "note",
           title: "ソースと画面の見比べ",
-          text: "テンプレートはサーバ側のファイルです。ブラウザの Elements タブは、組み立て後の HTML です。th:if で消えたボタンは、テンプレートにはあっても画面には出ません。切り分けでは、両方を見ます。",
+          text: "テンプレートはサーバ側のファイルです。ブラウザの Elements タブは、組み立て後の HTML です。th:if で消えたボタンは、テンプレートにはあっても画面には出ません。切り分けでは、両方を見ましょう。",
         },
         { type: "quiz", id: "java-template" },
       ],
@@ -492,7 +493,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "Java メソッドに入らないときは、Spring Security の SecurityConfig のパス許可、CSRF、セッション、コンテキストパスを順に確認します。画面の未ログインは 302 でログイン HTML、Web API は 401 で JSON、という違いがよくあります。決まりではありません。",
+          text: "Java メソッドに入らないときは、Spring Security の SecurityConfig のパス許可、CSRF、セッション、コンテキストパスを順に確認しましょう。画面の未ログインは 302 でログイン HTML、Web API は 401 で JSON、という違いがよくあります。決まりではありません。",
         },
         {
           type: "code",
@@ -523,7 +524,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "探すときは HandlerInterceptor、addInterceptors、WebMvcConfigurer で検索します。preHandle が false を返すと、Controller に届きません。",
+          text: "探すときは HandlerInterceptor、addInterceptors、WebMvcConfigurer で検索しましょう。preHandle が false を返すと、Controller に届きません。",
         },
         {
           type: "h2",
@@ -545,7 +546,7 @@ public void addInterceptors(InterceptorRegistry registry) {
           type: "callout",
           kind: "trap",
           title: "メソッドの1行目より前",
-          text: "Service のブレークポイントが止まらない、または @Transactional のついたメソッドの前後でだけ失敗するときは、プロキシを疑います。Filter / Interceptor が Controller の前なら、Controller 自体が止まりません。",
+          text: "Service のブレークポイントが止まらない、または @Transactional のついたメソッドの前後でだけ失敗するときは、プロキシを疑いましょう。Filter / Interceptor が Controller の前なら、Controller 自体が止まりません。",
         },
         {
           type: "h2",

@@ -244,8 +244,6 @@ pre {
 
 .main {
   min-width: 0;
-  overflow-x: hidden;
-  overflow-x: clip;
 }
 
 .main:focus {
@@ -257,12 +255,17 @@ pre {
 }
 
 .topbar {
+  position: sticky;
+  top: 0;
+  z-index: 12;
   display: flex;
   justify-content: space-between;
   gap: 16px;
   align-items: center;
   padding: 18px 32px;
   border-bottom: 1px solid var(--line);
+  background: rgba(10, 22, 34, 0.94);
+  backdrop-filter: blur(16px);
 }
 
 .topbar p {
@@ -378,14 +381,16 @@ pre {
   border: 0;
 }
 
+:target,
 .glossary [id] {
-  scroll-margin-top: 24px;
+  scroll-margin-top: 5.5rem;
 }
 
 .content {
   max-width: 980px;
   margin-inline: auto;
   padding: 36px 40px 80px;
+  overflow-x: clip;
 }
 
 .hero {

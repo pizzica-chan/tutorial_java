@@ -29,7 +29,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "画面に見えるのは、返ってきた HTML をブラウザが表示したものです。不具合のときは、画面そのものより先に、このリクエストとレスポンスを見ます。",
+          text: "画面に出ているのは、返ってきた HTML をブラウザが表示したものです。不具合のときは、画面そのものより先に、このリクエストとレスポンスを確認しましょう。",
         },
         { type: "diagram", name: "http-roundtrip", caption: "ブラウザが送り、サーバが返す。画面は、返ってきた HTML を表示したものです。" },
         {
@@ -50,7 +50,7 @@ export const webTrack: Track = {
           type: "callout",
           kind: "tip",
           title: "Network タブ",
-          text: "不具合のときは、該当リクエストのステータスと応答本文を先に確認します。Java のコードを見るのはそのあとです。",
+          text: "不具合のときは、該当リクエストのステータスと応答本文を先に確認しましょう。Java のコードを見るのはそのあとです。",
         },
         {
           type: "p",
@@ -73,7 +73,7 @@ export const webTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "Web アプリは、動く場所で二つに分けて見ます。フロントエンドはブラウザ側、バックエンドはサーバ側です。境目は HTTP の往復です。一覧に何件あるか、申請の中身は何かは、その奥の DB に保存されています。",
+          text: "Web アプリは、動く場所で二つに分けて見ましょう。フロントエンドはブラウザ側、バックエンドはサーバ側です。境目は HTTP の往復です。一覧に何件あるか、申請の中身は何かは、その奥の DB に保存されています。",
         },
         { type: "diagram", name: "front-back", caption: "フロントとバックの境目は HTTP。データは DB にあります。" },
         {
@@ -88,7 +88,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "申請くんのようにサーバで HTML を組み立てる場合、テンプレートはバックエンドにあります。ブラウザが描画するので、画面に出た結果だけ見るとフロントの問題に見えます。ボタンが出ないのは、th:if や権限のことが多いです。",
+          text: "申請くんのようにサーバで HTML を組み立てる場合、テンプレートはバックエンドにあります。ブラウザが描画するので、画面に出た結果だけだとフロントの問題に見えます。ボタンが出ないのは、th:if や権限のことが多いです。",
         },
         {
           type: "callout",
@@ -102,13 +102,13 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "画面がおかしく見えても、原因はフロントとは限りません。症状で、先に見る場所を決めます。",
+          text: "画面がおかしく見えても、原因はフロントとは限りません。症状で、先に見る場所を決めましょう。",
         },
         {
           type: "ul",
           items: [
             "見た目だけおかしい（色、位置、CSS の 404）→ フロント側を先に見る",
-            "件数や中身がおかしい → 実行された SQL を見て、同じ条件で DB の行を見る",
+            "件数や中身がおかしい → 実行された SQL を見て、同じ条件で DB の行を数える",
             "500 が出る → バックエンドのログとスタックトレース",
             "ボタンを押しても画面が変わらない → Network タブで、リクエストが飛んだか、応答は HTML か JSON かを見る",
           ],
@@ -127,7 +127,7 @@ export const webTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "切り分けは、URL のパスとステータス番号から始めます。",
+          text: "切り分けは、URL のパスとステータス番号から始めましょう。",
         },
         {
           type: "h2",
@@ -154,7 +154,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "HTTP メソッドは、操作の意味を表す約束です。GET は取得、POST は登録や送信、PUT / PATCH は更新、DELETE は削除、と読むことが多いです。ただし、更新を POST だけで送る、削除を GET で呼ぶといった、約束と違う実装も現場では多いです。同じ URL でも HTTP メソッドが違えば、別の処理が呼ばれることがあります。切り分けでは、教科書どおりの意味より、実際に送っている HTTP メソッドと URL を見ます。",
+          text: "HTTP メソッドは、操作の意味を表す約束です。GET は取得、POST は登録や送信、PUT / PATCH は更新、DELETE は削除、と読むことが多いです。ただし、更新を POST だけで送る、削除を GET で呼ぶといった、約束と違う実装も現場では多いです。同じ URL でも HTTP メソッドが違えば、別の処理が呼ばれることがあります。切り分けでは、教科書どおりの意味より、実際に送っている HTTP メソッドと URL を見ましょう。",
         },
         { type: "diagram", name: "get-post" },
         {
@@ -178,7 +178,7 @@ export const webTrack: Track = {
           type: "callout",
           kind: "note",
           title: "番号の読み方と、アプリの応答",
-          text: "403 は「権限が無い」と読む番号です。権限不足が必ず 403 になるわけではありません。未ログインも 401 とは限らず、ログイン画面へ飛ばす実装が多いです。切り分けでは Network タブの番号と本文を見ます。",
+          text: "403 は「権限が無い」と読む番号です。権限不足が必ず 403 になるわけではありません。未ログインも 401 とは限らず、ログイン画面へ飛ばす実装が多いです。切り分けでは Network タブの番号と本文を見ましょう。",
         },
         { type: "quiz", id: "web-status" },
       ],
@@ -194,7 +194,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "値が届かない、想定と違うときは、Network タブで「どこに何が載っているか」を先に確認します。",
+          text: "値が届かない、想定と違うときは、Network タブで「どこに何が載っているか」を先に確認しましょう。",
         },
         {
           type: "diagram",
@@ -237,7 +237,7 @@ export const webTrack: Track = {
           items: [
             "GET は、クエリに載せることが多い。一覧の絞り込みやページ番号など",
             "POST は、フォーム本文か JSON 本文に載せることが多い。登録・承認など",
-            "現場では、更新を GET のクエリで送る実装もあります。約束より、実際に送っている内容を見ます",
+            "現場では、更新を GET のクエリで送る実装もあります。約束より、実際に送っている内容を見ましょう",
           ],
         },
         {
@@ -252,13 +252,13 @@ export const webTrack: Track = {
           type: "callout",
           kind: "trap",
           title: "名前の不一致",
-          text: "フォームの name と Controller の @RequestParam の名前が違うと、値が null のまま届くことがあります。400 やバリデーションエラーになることもあります。画面、Network タブ、Java の引数を並べて見ます。",
+          text: "フォームの name と Controller の @RequestParam の名前が違うと、値が null のまま届くことがあります。400 やバリデーションエラーになることもあります。画面、Network タブ、Java の引数を並べて見ましょう。",
         },
         {
           type: "callout",
           kind: "note",
           title: "本文の読み方はフレームワーク次第",
-          text: "@RequestBody や @RequestParam など、引数への取り出し方は Spring の書き方です。JSON かフォームかで使う印が変わります。切り分けでは、まず Network タブでキーと値を確認します。",
+          text: "@RequestBody や @RequestParam など、引数への取り出し方は Spring の書き方です。JSON かフォームかで使う印が変わります。切り分けでは、まず Network タブでキーと値を確認しましょう。",
         },
         { type: "quiz", id: "web-params" },
       ],
@@ -270,11 +270,11 @@ export const webTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "ヘッダはリクエスト側とレスポンス側の両方にあります。Network タブでは、行を選んで Headers 欄の Request Headers と Response Headers を切り替えて見ます。切り分けでは、まず返ってきたレスポンスのヘッダを見ることが多いです。",
+          text: "ヘッダはリクエスト側とレスポンス側の両方にあります。Network タブでは、行を選んで Headers 欄の Request Headers と Response Headers を切り替えて見ましょう。切り分けでは、まず返ってきたレスポンスのヘッダを見ることが多いです。",
         },
         {
           type: "p",
-          text: "HTML か JSON かは、レスポンスの Content-Type を見ます。",
+          text: "HTML か JSON かは、レスポンスの Content-Type を見ましょう。",
         },
         {
           type: "table",
@@ -341,7 +341,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "画面遷移しない操作は、JS が別 URL（/api/requests など）へ JSON を取りに行きます。アドレスバーは変わらないので、Network タブの XHR / fetch を見ます。",
+          text: "画面遷移しない操作は、JS が別 URL（/api/requests など）へ JSON を取りに行きます。アドレスバーは変わらないので、Network タブの XHR / fetch を見ましょう。",
         },
         {
           type: "p",

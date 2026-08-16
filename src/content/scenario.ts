@@ -25,7 +25,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "手間の少ない確認で、フロント、バックエンド、DB、ネットワーク、HTTPサーバのどれかを先に決めます。",
+          text: "手間の少ない確認で、フロント、バックエンド、DB、ネットワーク、HTTPサーバのどれかを先に決めましょう。",
         },
         {
           type: "ol",
@@ -52,7 +52,7 @@ export const scenarioTrack: Track = {
           type: "callout",
           kind: "tip",
           title: "仮説は1つ",
-          text: "JS と SQL とファイアウォールが同時に怪しいのは、切り分けになっていません。確認コストが低いものから潰します。",
+          text: "JS と SQL とファイアウォールが同時に怪しいのは、切り分けになっていません。確認コストが低いものから潰しましょう。",
         },
         {
           type: "h2",
@@ -60,7 +60,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "壊れている場所を探すのではなく、変更の波及先を一覧にします。見積もりやレビュー用なら、ファイル名と概要で足りることが多く、全部を読み切る必要はありません。",
+          text: "壊れている場所を探すのではなく、変更の波及先を一覧にしましょう。見積もりやレビュー用なら、ファイル名と概要で足りることが多く、全部を読み切る必要はありません。",
         },
         {
           type: "ol",
@@ -85,7 +85,7 @@ export const scenarioTrack: Track = {
           type: "callout",
           kind: "note",
           title: "検索のやり方",
-          text: "文字列検索と、型・メソッドの参照検索は別です。手がかりの選び方は「ソースの読み方」の「どこから読み始めるか」を見ます。詳しい手順は「処理の入口から読む」と「キーワードで探す」です。",
+          text: "文字列検索と、型・メソッドの参照検索は別です。手がかりの選び方は「ソースの読み方」の「どこから読み始めるか」を見ましょう。詳しい手順は「処理の入口から読む」と「キーワードで探す」です。",
         },
         { type: "quiz", id: "sc-how" },
       ],
@@ -119,9 +119,9 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "押した瞬間の Network タブを見ます。新しい POST が無ければ、バックエンドにも DB にも届いていません。",
+          text: "押した瞬間の Network タブを見ましょう。新しい POST が無ければ、バックエンドにも DB にも届いていません。",
         },
-        { type: "diagram", name: "page-assets", caption: "画面1つでも、通信は複数行です。ボタン用の行が無いかを見ます。" },
+        { type: "diagram", name: "page-assets", caption: "画面1つでも、通信は複数行です。ボタン用の行が無いかを見ましょう。" },
         {
           type: "table",
           headers: ["観測", "読む"],
@@ -175,9 +175,9 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "リクエストはサーバに届いています。CSS やボタンの JS ではありません。操作時刻の ERROR とスタックトレースを見ます。",
+          text: "リクエストはサーバに届いています。CSS やボタンの JS ではありません。操作時刻の ERROR とスタックトレースを見ましょう。",
         },
-        { type: "diagram", name: "stack-own", caption: "ログは長い。そのファイルの行番号を最初に調べます。" },
+        { type: "diagram", name: "stack-own", caption: "ログは長い。そのファイルの行番号を最初に調べましょう。" },
         {
           type: "p",
           text: "RequestService.java:41 で NullPointerException。approverId が null のオブジェクトに equals していました。",
@@ -222,7 +222,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "例外が出ていないので、スタックの at 行は使えません。画面に出ている文言そのものを、ソース全体から検索します。",
+          text: "例外が出ていないので、スタックの at 行は使えません。画面に出ている文言そのものを、ソース全体から検索しましょう。",
         },
         {
           type: "ol",
@@ -230,7 +230,7 @@ export const scenarioTrack: Track = {
             "「この申請は承認できません」で全文検索する",
             "ヒットがプロパティファイルなら、そのキー（error.cannotApprove など）で参照を辿る",
             "ヒットが Java やテンプレートなら、その if と、誰が呼んでいるかを見る",
-            "ソースに無ければ、文言の一部でも再検索する。それでも無ければ DB や外部 API を疑う",
+            "ソースに無ければ、文言の一部でも再検索する。それでも無ければ DB、外部 API、jar の自作ライブラリを疑う",
             "申請 ID 12 のステータスなど、分岐の条件になるデータを DB で確認する",
           ],
         },
@@ -261,13 +261,13 @@ requestService.approve(id, userId);`,
           type: "callout",
           kind: "note",
           title: "ソースに無い文言",
-          text: "画面の文が、コードにもプロパティファイルにも無いときは、Java が直書きしていません。メッセージ用のテーブル、ワークフローや認証サーバの応答 JSON を、Network タブと DB で見ます。応答の message をそのまま出していることがあります。",
+          text: "画面の文が、コードにもプロパティファイルにも無いときは、Java が直書きしていません。メッセージ用のテーブル、ワークフローや認証サーバの応答 JSON を、Network タブと DB で見ましょう。応答の message をそのまま出していることがあります。",
         },
         {
           type: "callout",
           kind: "note",
           title: "前のシナリオとの違い",
-          text: "「エラーが発生しました」で POST が 500 なら、先にスタックです。画面に業務の一文があり ERROR が無いなら、先にその一文で検索します。",
+          text: "「エラーが発生しました」で POST が 500 なら、先にスタックです。画面に業務の一文があり ERROR が無いなら、先にその一文で検索しましょう。",
         },
         { type: "quiz", id: "sc-message" },
       ],
@@ -301,7 +301,7 @@ requestService.approve(id, userId);`,
         },
         {
           type: "p",
-          text: "応答は成功しています。フロントや CSS の問題でも、500 でもありません。実行された SQL を見て、同じ条件で今つないでいる DB の行を数えます。",
+          text: "応答は成功しています。フロントや CSS の問題でも、500 でもありません。実行された SQL を見て、同じ条件で今つないでいる DB の行を数えましょう。",
         },
         { type: "diagram", name: "front-back", caption: "データは DB にある。実行された SQL の条件で、今の DB を見る。" },
         {
@@ -348,7 +348,7 @@ requestService.approve(id, userId);`,
         },
         {
           type: "p",
-          text: "アプリに届いていなければ、Controller も SQL もまだ関係ありません。宛先、ポート、ファイアウォール、プロキシを見ます。ping や curl の打ち方は、トラブルシュートの「ネットワークの疎通確認」です。",
+          text: "アプリに届いていなければ、Controller も SQL もまだ関係ありません。宛先、ポート、ファイアウォール、プロキシを見ましょう。ping や curl の打ち方は、トラブルシュートの「ネットワークの疎通確認」です。",
         },
         { type: "diagram", name: "env-diff", caption: "コードが同じでも、届く道が違うことがあります。" },
         {
@@ -395,7 +395,7 @@ requestService.approve(id, userId);`,
         },
         {
           type: "p",
-          text: "HTML が 200 なら、一覧の Controller は動いています。Network タブで CSS / JS の行を見ます。",
+          text: "HTML が 200 なら、一覧の Controller は動いています。Network タブで CSS / JS の行を見ましょう。",
         },
         { type: "diagram", name: "not-found", caption: "HTML が 200 でも、静的ファイルだけ 404 のことがあります。" },
         {
@@ -414,7 +414,7 @@ requestService.approve(id, userId);`,
           type: "callout",
           kind: "note",
           title: "テンプレート側のこともある",
-          text: "href が /css/app.css のままで、コンテキストパス /shinsei が付いていない、というずれもあります。それでも先に Network タブの 404 URL を見ます。",
+          text: "href が /css/app.css のままで、コンテキストパス /shinsei が付いていない、というずれもあります。それでも先に Network タブの 404 URL を見ましょう。",
         },
         { type: "quiz", id: "sc-http" },
       ],
@@ -448,7 +448,7 @@ requestService.approve(id, userId);`,
         },
         {
           type: "p",
-          text: "Network タブやログは、壊れているかどうかの確認用です。影響調査では、まず既存の識別子でソースを検索し、ヒットを分類します。",
+          text: "Network タブやログは、壊れているかどうかの確認用です。影響調査では、まず既存の識別子でソースを検索し、ヒットを分類しましょう。",
         },
         {
           type: "ol",
@@ -516,7 +516,7 @@ requestService.approve(id, userId);`,
         },
         {
           type: "p",
-          text: "処理の入口は一覧の URL です。/shinsei/requests で検索し、Controller のメソッドから Service、Mapper へ降ります。同じ一覧を別経路から出していないかも見ます。",
+          text: "処理の入口は一覧の URL です。/shinsei/requests で検索し、Controller のメソッドから Service、Mapper へ降りましょう。同じ一覧を別経路から出していないかも見ましょう。",
         },
         { type: "diagram", name: "read-entry", caption: "URL → Controller → Service → SQL。影響調査も処理の入口は同じです。" },
         {

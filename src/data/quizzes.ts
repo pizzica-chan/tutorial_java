@@ -399,6 +399,20 @@ export const quizzes = {
     explanation:
       "不具合ではなく波及先の洗い出しです。既存の値名から逆引きし、表示・分岐・永続化に分類します。",
   },
+  "trace-sql-source": {
+    id: "trace-sql-source",
+    question:
+      "スロークエリに SELECT ... FROM t_request WHERE applicant_id = ? と出た。JPA のプロジェクトで、この文を全文検索してもヒットしない。次は？",
+    choices: [
+      "Mapper XML が必ずあるので、XML だけを探す",
+      "テーブル名や Entity、Repository から呼び出し元を辿る",
+      "SQL がソースに無いなら、調査はできない",
+      "pom.xml の作者名を疑う",
+    ],
+    answer: 1,
+    explanation:
+      "JPA では、実行される SQL をライブラリが組み立てることが多く、ソースに無いことがあります。テーブル名や Entity から Repository を見つけ、参照検索で呼び出し元を辿ります。MyBatis なら XML や @Select に近い文があることが多いです。",
+  },
   "sc-impact-search": {
     id: "sc-impact-search",
     question: "一覧に部署の絞り込みを足す影響調査。処理の入口として先に決めるのは？",
