@@ -1,4 +1,5 @@
 import type { Track } from "../types";
+import { shinseiGradleSnippet, shinseiPomSnippet } from "../data/project";
 
 export const javaMapTrack: Track = {
   id: "java-map",
@@ -29,11 +30,23 @@ export const javaMapTrack: Track = {
     {
       id: "build",
       title: "pom.xml / Gradle",
-      minutes: 7,
+      minutes: 9,
       blocks: [
         {
           type: "p",
-          text: "ビルドファイルで確認する項目です。",
+          text: "Java プロジェクトには、ソースをまとめて動かすための設定ファイルがあります。Maven なら pom.xml、Gradle なら build.gradle（と settings.gradle）です。",
+        },
+        {
+          type: "p",
+          text: "どちらも、使うライブラリの一覧と、ビルドの仕方を書いたファイルです。プロジェクトによって Maven か Gradle かは決まっています。申請くんは Maven なので pom.xml があります。",
+        },
+        {
+          type: "p",
+          text: "切り分けでは、ファイルを上から通読する必要はありません。どのフレームワークや DB ライブラリを使っているかが分かれば、以降の検索語やログの読み方が決まります。",
+        },
+        {
+          type: "h2",
+          text: "何を見るか",
         },
         {
           type: "ul",
@@ -49,6 +62,30 @@ export const javaMapTrack: Track = {
         {
           type: "p",
           text: "Spring Boot 2.7 と 3.x では javax と jakarta が違います。参照するサンプルは、対象プロジェクトの版に合わせます。",
+        },
+        {
+          type: "h2",
+          text: "申請くんの例",
+        },
+        {
+          type: "p",
+          text: "申請くんは Maven です。上の項目が、dependencies では次のとおりです。",
+        },
+        {
+          type: "code",
+          title: "pom.xml（抜粋）",
+          lang: "xml",
+          code: shinseiPomSnippet,
+        },
+        {
+          type: "p",
+          text: "Gradle のプロジェクトなら、同じライブラリが build.gradle の dependencies に書かれています。書き方は違いますが、見る目的は同じです。",
+        },
+        {
+          type: "code",
+          title: "build.gradle（同じ依存の例）",
+          lang: "gradle",
+          code: shinseiGradleSnippet,
         },
       ],
     },

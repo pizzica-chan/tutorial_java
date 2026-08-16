@@ -11,16 +11,17 @@ export type ProjectFile = {
   code: string;
 };
 
-export const projectFiles: ProjectFile[] = [
-  {
-    path: "pom.xml",
-    note: "何のライブラリで動いているか",
-    why: "Spring Boot の版、Thymeleaf、MyBatis、MySQL ドライバなど、使っているライブラリがここに並びます。知らない依存を全部理解する必要はありません。画面と DB に直結するものから見ます。",
-    code: `<parent>
+/** 教材用。申請くんの pom.xml 抜粋 */
+export const shinseiPomSnippet = `<parent>
   <groupId>org.springframework.boot</groupId>
   <artifactId>spring-boot-starter-parent</artifactId>
   <version>2.7.18</version>
 </parent>
+
+<properties>
+  <java.version>17</java.version>
+</properties>
+
 <dependencies>
   <dependency>
     <groupId>org.springframework.boot</groupId>
@@ -35,7 +36,36 @@ export const projectFiles: ProjectFile[] = [
     <artifactId>mybatis-spring-boot-starter</artifactId>
     <version>2.3.2</version>
   </dependency>
-</dependencies>`,
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+  </dependency>
+</dependencies>`;
+
+/** 教材用。上の pom.xml と同じ依存を Gradle で書いた例 */
+export const shinseiGradleSnippet = `plugins {
+  id 'org.springframework.boot' version '2.7.18'
+  id 'io.spring.dependency-management' version '1.1.4'
+  id 'java'
+}
+
+java {
+  sourceCompatibility = JavaVersion.VERSION_17
+}
+
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+  implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.2'
+  implementation 'org.springframework.boot:spring-boot-starter-security'
+}`;
+
+export const projectFiles: ProjectFile[] = [
+  {
+    path: "pom.xml",
+    note: "何のライブラリで動いているか",
+    why: "Spring Boot の版、Thymeleaf、MyBatis、MySQL ドライバなど、使っているライブラリがここに並びます。知らない依存を全部理解する必要はありません。画面と DB に直結するものから見ます。",
+    code: shinseiPomSnippet,
   },
   {
     path: "src/main/resources/application.yml",
