@@ -21,7 +21,7 @@ export function TrackPage() {
         <Link to="/">トップ</Link> / {track.title}
       </p>
       <p className="kicker">{track.kicker}</p>
-      <h1 className="serif" style={{ fontSize: 42, marginTop: 8 }}>
+      <h1 className="serif page-title">
         {track.no} {track.title}
       </h1>
       <p className="lede">

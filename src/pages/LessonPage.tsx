@@ -34,9 +34,7 @@ export function LessonPage() {
       <p className="kicker">
         {track.kicker} · {lesson.minutes} min
       </p>
-      <h1 className="serif" style={{ fontSize: 40, marginTop: 8 }}>
-        {lesson.title}
-      </h1>
+      <h1 className="serif page-title">{lesson.title}</h1>
       <Article blocks={lesson.blocks} />
       <div className="pager">
         {prev ? (

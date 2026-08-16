@@ -9,7 +9,7 @@ export function LabPage() {
   return (
     <div className="content lab-page">
       <p className="kicker">LAB</p>
-      <h1 className="serif" style={{ fontSize: 42 }}>ラボ</h1>
+      <h1 className="serif page-title">ラボ</h1>
       <p className="lede">
         <TextWithTerms text="申請くんのファイル構成、HTTP、リクエスト区間、スタックトレースを、教材の順と独立して確認できます。" />
       </p>

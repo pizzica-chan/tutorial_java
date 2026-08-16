@@ -15,7 +15,7 @@ export function GlossaryPage() {
   return (
     <div className="content">
       <p className="kicker">GLOSSARY</p>
-      <h1 className="serif" style={{ fontSize: 42 }}>用語集</h1>
+      <h1 className="serif page-title">用語集</h1>
       <p className="lede">
         本文の点線の語は、ホバーやキーボードフォーカスで説明が出ます。タップやクリックでこの用語集の該当項目へ飛びます。
       </p>

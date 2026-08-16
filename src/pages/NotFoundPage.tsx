@@ -10,9 +10,7 @@ export function NotFoundPage({
   return (
     <div className="content">
       <p className="kicker">404</p>
-      <h1 className="serif" style={{ fontSize: 42, marginTop: 8 }}>
-        {title}
-      </h1>
+      <h1 className="serif page-title">{title}</h1>
       <p className="lede">{lead}</p>
       <p>
         <Link className="btn btn-primary" to="/">
