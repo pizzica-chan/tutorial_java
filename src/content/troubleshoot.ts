@@ -46,7 +46,7 @@ export const troubleshootTrack: Track = {
           type: "table",
           headers: ["項目", "例"],
           rows: [
-            ["操作", "検証環境で申請 ID 12 を承認した"],
+            ["操作", "検証用環境で申請 ID 12 を承認した"],
             ["期待", "一覧に戻り、ステータスが承認済み"],
             ["実際", "ログイン画面に戻った"],
             ["観測", "画面 URL、ステータス、コンソールの WARN、該当メソッド"],
@@ -200,7 +200,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           type: "callout",
           kind: "warn",
           title: "共有環境",
-          text: "検証環境など他人と使っている場合、ログレベルの変更や調査用の出力は、他の人の調査やディスクを圧迫することがあります。足す前に、その環境でよいか確認します。",
+          text: "検証用環境など他人と使っている場合、ログレベルの変更や調査用の出力は、他の人の調査やディスクを圧迫することがあります。足す前に、その環境でよいか確認します。",
         },
         {
           type: "code",
@@ -303,7 +303,7 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
         },
         {
           type: "p",
-          text: "ここからは MyBatis の DEBUG に限った話です。Mapper の DEBUG を出すと、実行された SQL が見えます。本番では普段 DEBUG を出していないことが多いです。検証環境では、または調査のあいだだけレベルを上げます。終わったら戻します。",
+          text: "ここからは MyBatis の DEBUG に限った話です。Mapper の DEBUG を出すと、実行された SQL が見えます。本番では普段 DEBUG を出していないことが多いです。検証用環境では、または調査のあいだだけレベルを上げます。終わったら戻します。",
         },
         {
           type: "code",
@@ -520,7 +520,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "ログに SQL とバインド値を出せるなら、それを検証 DB で再実行します。コード上のメソッド名と、実際に飛んでいる SQL が一致しているかも確認します。",
+          text: "ログに SQL とバインド値を出せるなら、それを検証用環境の DB で再実行します。コード上のメソッド名と、実際に飛んでいる SQL が一致しているかも確認します。",
         },
       ],
     },
@@ -632,7 +632,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
           rows: [
             ["画面がずっと待つ、タイムアウト", "ログの2行のあいだだけ数秒〜数十秒空く。DB の SQL はすぐ終わっている"],
             ["業務エラー文だけ出て、スタックが短い", "メッセージに外部サービス名や連携失敗の文言がある"],
-            ["検証だけ成功、本番だけ失敗", "接続先 URL、認証情報、FW、モックの有無が環境で違う"],
+            ["検証用環境だけ成功、本番だけ失敗", "接続先 URL、認証情報、FW、モックの有無が環境で違う"],
             ["データの一部だけ古い・空", "DB は更新されたが、表示用に別 API から取った値が失敗している"],
             ["承認は成功したのに通知が来ない", "DB 更新のログはある。そのあと MailService や通知 API の行が無い、または ERROR"],
           ],
@@ -669,7 +669,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
           rows: [
             ["ソースで外部呼び出し箇所を特定する", "RestTemplate、WebClient、Feign、HttpClient、メール送信クラスなど。名前はプロジェクト次第"],
             ["application.yml の URL・タイムアウト・認証", "プロファイルごとに向き先が違うことがある"],
-            ["モックやスタブの有無", "ローカルだけ偽の応答を返し、検証では本物に繋ぐ構成がある"],
+            ["モックやスタブの有無", "ローカルだけ偽の応答を返し、検証用環境では本物に繋ぐ構成がある"],
             ["アプリサーバからの疎通", "開発 PC の curl が通っても、サーバからは FW で閉じていることがある → 「ネットワークの疎通確認」"],
             ["外部の応答本文", "200 でも JSON の形が違うと、パース例外になる。Network タブではアプリ⇔外部 API の通信は確認できない。サーバログや一時的なログ出力で見る"],
             ["リトライや非同期", "画面には成功と出たが、あとから通知だけ失敗している"],
@@ -725,7 +725,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
           items: [
             "再現操作の時刻で、Controller → Service → Mapper の順をログで確認する",
             "SQL のあとに時間が空く、または ERROR が外部クライアント付近なら、範囲を外部に絞る",
-            "設定の URL と、検証・本番の差分を見る",
+            "設定の URL と、検証用環境と本番の差分を見る",
             "接続エラー・タイムアウトなら「ネットワークの疎通確認」。アプリサーバから外部へ ping / TCP / curl する",
             "外部側の障害情報やメンテナンス予定も確認する",
           ],
@@ -782,7 +782,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
         },
         {
           type: "code",
-          title: "例（検証ホスト intranet.example.co.jp）",
+          title: "例（検証用環境のホスト intranet.example.co.jp）",
           code: `# Windows（PowerShell または cmd）
 ping intranet.example.co.jp
 
@@ -824,7 +824,7 @@ traceroute intranet.example.co.jp`,
         },
         {
           type: "p",
-          text: "申請くんの検証が 8080 なら、HTTP の前に TCP で 8080 が開いているかを見ます。アプリが起動していない、別ポートで待ち受けている、FW で閉じている、などが分かれます。",
+          text: "申請くんの検証用環境が 8080 なら、HTTP の前に TCP で 8080 が開いているかを見ます。アプリが起動していない、別ポートで待ち受けている、FW で閉じている、などが分かれます。",
         },
         {
           type: "code",

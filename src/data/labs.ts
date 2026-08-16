@@ -66,7 +66,7 @@ public String list(Model model, LoginUser user) {
     layer: "MySQL",
     title: "テーブル t_request",
     detail:
-      "実データは DB にあります。検証環境に該当データが無い、権限用のマスタが違うといったことは、コードではなくデータの問題です。",
+      "実データは DB にあります。検証用環境に該当データが無い、権限用のマスタが違うといったことは、コードではなくデータの問題です。",
   },
   {
     id: "view",
@@ -214,7 +214,7 @@ export const stackCases: StackCase[] = [
       {
         kind: "exception",
         text: "Caused by: java.sql.SQLSyntaxErrorException: Unknown column 'priority' in 'field list'",
-        note: "Caused by が根因です。Mapper に priority を足したのに、検証 DB で ALTER が未実施なのが典型です。",
+        note: "Caused by が根因です。Mapper に priority を足したのに、検証用環境の DB で ALTER が未実施なのが典型です。",
       },
     ],
   },

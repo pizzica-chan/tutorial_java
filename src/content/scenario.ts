@@ -108,7 +108,7 @@ export const scenarioTrack: Track = {
         {
           type: "ul",
           items: [
-            "検証環境。自分の申請が一覧に出ている",
+            "検証用環境。自分の申請が一覧に出ている",
             "ボタンは画面上に見える",
             "サーバのログは、まだ見ていない",
           ],
@@ -164,7 +164,7 @@ export const scenarioTrack: Track = {
         {
           type: "ul",
           items: [
-            "申請 ID 12。検証環境",
+            "申請 ID 12。検証用環境",
             "Network タブで POST /shinsei/requests/12/approve が 500",
             "Content-Type は text/html",
           ],
@@ -211,7 +211,7 @@ export const scenarioTrack: Track = {
         {
           type: "ul",
           items: [
-            "申請 ID 12。検証環境。ステータスは承認済みに見える",
+            "申請 ID 12。検証用環境。ステータスは承認済みに見える",
             "Network タブで POST /shinsei/requests/12/approve は飛んでいる。500 ではない",
             "操作時刻のログに ERROR もスタックトレースも無い",
           ],
@@ -274,14 +274,14 @@ requestService.approve(id, userId);`,
     },
     {
       id: "db",
-      title: "[障害調査] 検証だけ、申請一覧が 0 件",
+      title: "[障害調査] 検証用環境だけ、申請一覧が 0 件",
       minutes: 8,
       blocks: [
         {
           type: "callout",
           kind: "note",
           title: "シナリオ",
-          text: "申請一覧画面が、検証環境だけ 0 件になる。ローカル環境の起動では、同じログインユーザで 3 件出る。",
+          text: "申請一覧画面が、検証用環境だけ 0 件になる。ローカル環境の起動では、同じログインユーザで 3 件出る。",
         },
         {
           type: "h2",
@@ -306,13 +306,13 @@ requestService.approve(id, userId);`,
         { type: "diagram", name: "front-back", caption: "データは DB にある。実行された SQL の条件で、今の DB を見る。" },
         {
           type: "p",
-          text: "検証の t_request を、ログインユーザの ID で検索すると 0 件でした。ローカル環境の DB には 3 件あります。SQL の WHERE は同じでも、行が無ければ一覧は空です。",
+          text: "検証用環境の t_request を、ログインユーザの ID で検索すると 0 件でした。ローカル環境の DB には 3 件あります。SQL の WHERE は同じでも、行が無ければ一覧は空です。",
         },
         {
           type: "ul",
           items: [
             "200 で件数が違うなら、コード通読より先に、実行された SQL とその条件の行",
-            "今見ている接続先が、思っている検証 DB かを確認する",
+            "今見ている接続先が、思っている検証用環境の DB かを確認する",
             "論理削除フラグが立っている、別のログインユーザの行しか無い、といった場合も同じ型",
           ],
         },
@@ -321,14 +321,14 @@ requestService.approve(id, userId);`,
     },
     {
       id: "net",
-      title: "[障害調査] 検証だけ、画面がいつまでも読み込み中",
+      title: "[障害調査] 検証用環境だけ、画面がいつまでも読み込み中",
       minutes: 8,
       blocks: [
         {
           type: "callout",
           kind: "note",
           title: "シナリオ",
-          text: "検証の申請一覧 URL を開くと、いつまでも読み込み中になる。ローカル環境では同じ URL で 200 になる。",
+          text: "検証用環境の申請一覧 URL を開くと、いつまでも読み込み中になる。ローカル環境では同じ URL で 200 になる。",
         },
         {
           type: "h2",
@@ -353,13 +353,13 @@ requestService.approve(id, userId);`,
         { type: "diagram", name: "env-diff", caption: "コードが同じでも、届く道が違うことがあります。" },
         {
           type: "p",
-          text: "検証サーバのポート 8080 が、社内ネットワークから閉じられていました。ブラウザはサーバまで届かず、アプリは何も記録しません。",
+          text: "検証用環境のサーバのポート 8080 が、社内ネットワークから閉じられていました。ブラウザはサーバまで届かず、アプリは何も記録しません。",
         },
         {
           type: "ul",
           items: [
             "ログが無い = アプリが動いていないか、リクエストが届いていない",
-            "ローカル環境で動くことと、検証のホストへ届くことは別",
+            "ローカル環境で動くことと、検証用環境のホストへ届くことは別",
             "DNS の向き先、ポート、HTTPS の終端、プロキシの有無を表にする",
           ],
         },

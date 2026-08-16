@@ -616,7 +616,7 @@ function EnvDiff() {
         <PhotoCard src="/images/home-desk.jpg" alt="入力している机" title="ローカル環境">
           dev プロファイル、ローカル環境の DB
         </PhotoCard>
-        <PhotoCard src="/images/server-racks.jpg" alt="検証や本番のサーバ" title="検証 / 本番">
+        <PhotoCard src="/images/server-racks.jpg" alt="検証用環境や本番のサーバ" title="検証用環境 / 本番">
           設定、データ、権限、プロキシ
         </PhotoCard>
       </div>

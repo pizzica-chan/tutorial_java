@@ -245,12 +245,12 @@ export const quizzes = {
   },
   "ts-env": {
     id: "ts-env",
-    question: "ローカルでは動き、検証環境では落ちる。仮説として弱いのは？",
+    question: "ローカルでは動き、検証用環境では落ちる。仮説として弱いのは？",
     choices: [
       "application.yml（または .properties）の接続先が違う",
-      "検証だけデータ件数が桁違い",
+      "検証用環境だけデータ件数が桁違い",
       "エディタのフォントが違う",
-      "検証の権限やファイアウォールが違う",
+      "検証用環境の権限やファイアウォールが違う",
     ],
     answer: 2,
     explanation:
@@ -271,7 +271,7 @@ export const quizzes = {
   },
   "ts-net-check": {
     id: "ts-net-check",
-    question: "検証ホストへ ping は通るが、Test-NetConnection の 8080 は失敗。まず疑うのは？",
+    question: "検証用環境のホストへ ping は通るが、Test-NetConnection の 8080 は失敗。まず疑うのは？",
     choices: [
       "Mapper の XML のインデント",
       "8080 が FW で閉じている、またはアプリがそのポートで待ち受けていない",
@@ -314,7 +314,7 @@ export const quizzes = {
     choices: [
       "RequestService の SQL を読む",
       "サーバに届いていないので、フォームか JS、コンソールのエラーを見る",
-      "検証 DB の全テーブルを DROP する",
+      "検証用環境の DB の全テーブルを DROP する",
       "pom.xml の version を上げる",
     ],
     answer: 1,
@@ -349,7 +349,7 @@ export const quizzes = {
   },
   "sc-db": {
     id: "sc-db",
-    question: "検証だけ一覧が 0 件。GET は 200。コードは同じと言われている。先に疑うのは？",
+    question: "検証用環境だけ一覧が 0 件。GET は 200。コードは同じと言われている。先に疑うのは？",
     choices: [
       "CSS の font-size",
       "今つないでいる DB を、実行された SQL と同じ条件で見る",
@@ -362,7 +362,7 @@ export const quizzes = {
   },
   "sc-net": {
     id: "sc-net",
-    question: "検証だけ読み込み中のまま。アプリログにその時刻のアクセスが無い。読むのは？",
+    question: "検証用環境だけ読み込み中のまま。アプリログにその時刻のアクセスが無い。読むのは？",
     choices: [
       "Thymeleaf の th:if",
       "リクエストがアプリに届いていない。宛先、ポート、ファイアウォール、プロキシ",
