@@ -4,6 +4,7 @@ import xml from "highlight.js/lib/languages/xml";
 import yaml from "highlight.js/lib/languages/yaml";
 import http from "highlight.js/lib/languages/http";
 import sql from "highlight.js/lib/languages/sql";
+import { lookupTerm, type TermDef } from "../data/terms";
 
 hljs.registerLanguage("java", java);
 hljs.registerLanguage("xml", xml);
@@ -81,6 +82,52 @@ const JAVA_KEYWORDS = new Set([
 
 const JAVA_LITERALS = new Set(["true", "false", "null"]);
 
+export type JavaTokenKind =
+  | "plain"
+  | "comment"
+  | "string"
+  | "annotation"
+  | "number"
+  | "keyword"
+  | "literal"
+  | "type"
+  | "method"
+  | "variable"
+  | "punctuation";
+
+export type JavaToken = {
+  kind: JavaTokenKind;
+  text: string;
+  term?: TermDef;
+};
+
+export function javaTokenClass(kind: JavaTokenKind): string | undefined {
+  switch (kind) {
+    case "comment":
+      return "hljs-comment";
+    case "string":
+      return "hljs-string";
+    case "annotation":
+      return "hljs-meta";
+    case "number":
+      return "hljs-number";
+    case "keyword":
+      return "hljs-keyword";
+    case "literal":
+      return "hljs-literal";
+    case "type":
+      return "hljs-type";
+    case "method":
+      return "tok-method";
+    case "variable":
+      return "tok-variable";
+    case "punctuation":
+      return "hljs-punctuation";
+    default:
+      return undefined;
+  }
+}
+
 export function inferLang(code: string, hint?: string, path?: string): string | undefined {
   const fromHint = hint ? aliases[hint.toLowerCase()] : undefined;
   if (fromHint) return fromHint;
@@ -121,16 +168,16 @@ function nextNonSpace(code: string, index: number): string | undefined {
   return code[i];
 }
 
-function highlightJava(code: string): string {
+export function tokenizeJava(code: string): JavaToken[] {
+  const tokens: JavaToken[] = [];
   let i = 0;
-  let out = "";
   const n = code.length;
 
   while (i < n) {
     const ch = code[i];
 
     if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r") {
-      out += ch;
+      tokens.push({ kind: "plain", text: ch });
       i += 1;
       continue;
     }
@@ -139,7 +186,7 @@ function highlightJava(code: string): string {
       const start = i;
       i += 2;
       while (i < n && code[i] !== "\n") i += 1;
-      out += span("hljs-comment", code.slice(start, i));
+      tokens.push({ kind: "comment", text: code.slice(start, i) });
       continue;
     }
 
@@ -148,7 +195,7 @@ function highlightJava(code: string): string {
       i += 2;
       while (i < n && !(code[i] === "*" && code[i + 1] === "/")) i += 1;
       i = Math.min(n, i + 2);
-      out += span("hljs-comment", code.slice(start, i));
+      tokens.push({ kind: "comment", text: code.slice(start, i) });
       continue;
     }
 
@@ -160,7 +207,7 @@ function highlightJava(code: string): string {
         i += 1;
       }
       if (i < n) i += 1;
-      out += span("hljs-string", code.slice(start, i));
+      tokens.push({ kind: "string", text: code.slice(start, i) });
       continue;
     }
 
@@ -172,7 +219,7 @@ function highlightJava(code: string): string {
         i += 1;
       }
       if (i < n) i += 1;
-      out += span("hljs-string", code.slice(start, i));
+      tokens.push({ kind: "string", text: code.slice(start, i) });
       continue;
     }
 
@@ -180,14 +227,15 @@ function highlightJava(code: string): string {
       const start = i;
       i += 1;
       while (i < n && /[A-Za-z0-9_]/.test(code[i])) i += 1;
-      out += span("hljs-meta", code.slice(start, i));
+      const text = code.slice(start, i);
+      tokens.push({ kind: "annotation", text, term: lookupTerm(text) });
       continue;
     }
 
     if (/[0-9]/.test(ch)) {
       const start = i;
       while (i < n && /[0-9a-fA-FxXlL._]/.test(code[i])) i += 1;
-      out += span("hljs-number", code.slice(start, i));
+      tokens.push({ kind: "number", text: code.slice(start, i) });
       continue;
     }
 
@@ -199,24 +247,33 @@ function highlightJava(code: string): string {
       const call = nextNonSpace(code, i) === "(";
 
       if (JAVA_LITERALS.has(ident)) {
-        out += span("hljs-literal", ident);
+        tokens.push({ kind: "literal", text: ident });
       } else if (JAVA_KEYWORDS.has(ident)) {
-        out += span("hljs-keyword", ident);
+        tokens.push({ kind: "keyword", text: ident });
       } else if (/^[A-Z]/.test(ident)) {
-        out += span("hljs-type", ident);
+        tokens.push({ kind: "type", text: ident });
       } else if (call) {
-        out += span("tok-method", ident);
+        tokens.push({ kind: "method", text: ident });
       } else {
-        out += span("tok-variable", ident);
+        tokens.push({ kind: "variable", text: ident });
       }
       continue;
     }
 
-    out += span("hljs-punctuation", ch);
+    tokens.push({ kind: "punctuation", text: ch });
     i += 1;
   }
 
-  return out;
+  return tokens;
+}
+
+export function highlightJava(code: string): string {
+  return tokenizeJava(code)
+    .map((token) => {
+      const cls = javaTokenClass(token.kind);
+      return cls ? span(cls, token.text) : escapeHtml(token.text);
+    })
+    .join("");
 }
 
 export function highlightCode(code: string, lang?: string): string {

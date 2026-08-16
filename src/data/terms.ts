@@ -23,7 +23,7 @@ export const terms: TermDef[] = [
   {
     term: "GET / POST",
     aliases: ["GET", "POST"],
-    body: "HTTP メソッド。GET は取得、POST は登録・更新など状態を変える操作に使います。",
+    body: "HTTP メソッドの代表例。GET は取得、POST は登録や状態を変える操作に使われることが多いです。PUT / PATCH / DELETE も API でよく使います。約束と実装がずれることもあるので、Network タブで確認します。",
   },
   {
     term: "ステータスコード",
@@ -259,6 +259,41 @@ export const terms: TermDef[] = [
     body: "複数の Controller の例外や共通処理をまとめる印です。throw したメソッドの return ではなく、こちらが画面や JSON を決めることがあります。",
   },
   {
+    term: "@Controller",
+    aliases: ["@Controller"],
+    body: "このクラスが画面用の Controller だと Spring に伝える印です。戻り値はテンプレート名として解釈されます。Spring のアノテーションです。",
+  },
+  {
+    term: "@Service",
+    aliases: ["@Service"],
+    body: "このクラスが Service 層だと Spring に伝える印です。業務ルールを置く層としてコンテナに登録されます。Spring のアノテーションです。",
+  },
+  {
+    term: "@Async",
+    aliases: ["@Async"],
+    body: "別スレッドで非同期実行する印です。ログの続きが別のスレッド名になることがあります。Spring のアノテーションです。",
+  },
+  {
+    term: "@PreAuthorize",
+    aliases: ["@PreAuthorize"],
+    body: "メソッドやクラスに必要な権限を書く印です。Spring Security のアノテーションです。実行時は AOP プロキシが先に判定します。",
+  },
+  {
+    term: "@SpringBootApplication",
+    aliases: ["@SpringBootApplication"],
+    body: "Spring Boot アプリの起動入口クラスに付ける印です。コンポーネントスキャンと自動設定がまとめて有効になります。",
+  },
+  {
+    term: "@RequiredArgsConstructor",
+    aliases: ["@RequiredArgsConstructor"],
+    body: "final フィールドだけを引数に取るコンストラクタを自動生成する印です。Lombok のアノテーションです。",
+  },
+  {
+    term: "@Bean",
+    aliases: ["@Bean"],
+    body: "メソッドの戻り値を Spring のコンテナに登録する印です。SecurityConfig の filterChain などで使います。Spring のアノテーションです。",
+  },
+  {
     term: "アノテーション",
     aliases: ["アノテーション"],
     body: "クラスやメソッドに付ける印。SpringではURLの対応づけなどに使います。",
@@ -454,6 +489,16 @@ export const terms: TermDef[] = [
     body: "Javaでよく使うログ出力のライブラリです。行き先は logback-spring.xml や logback.xml に書くことが多いです。logback-spring.xml は Spring Boot 用です。",
   },
   {
+    term: "MDC",
+    aliases: ["MDC"],
+    body: "ログの各行に userId やセッション ID を載せる仕組み。アプリがセットし、パターンに %X があるときだけ出ます。",
+  },
+  {
+    term: "スレッド",
+    aliases: ["スレッド名", "スレッド"],
+    body: "同時に動く処理の単位。Tomcat ならログの [nio-8080-exec-3] が名前です。同じリクエストの行を揃える手がかりですが、使い回されます。",
+  },
+  {
     term: "ThreadLocal",
     aliases: ["ThreadLocal"],
     body: "スレッドごとに値を持つ入れ物。フィルタでセットし、後段で読む使い方があります。",
@@ -601,7 +646,7 @@ export const terms: TermDef[] = [
   {
     term: "PUT / PATCH / DELETE",
     aliases: ["PUT", "PATCH", "DELETE"],
-    body: "HTTP メソッド。API で更新や削除に使うことが多いです。GET は見る、POST は送る、の仲間です。",
+    body: "HTTP メソッド。PUT は置き換え、PATCH は一部更新、DELETE は削除、と読むことが多いです。POST にまとめている実装もあります。",
   },
   {
     term: "Location",
@@ -681,7 +726,7 @@ export const terms: TermDef[] = [
   {
     term: "メソッド",
     aliases: ["メソッド"],
-    body: "クラスの中の処理のまとまりです。HTTP の GET / POST も現場では「メソッド」と呼びますが、別物です。前後で HTTP か Java かを見分けます。",
+    body: "HTTP の GET / POST / PUT などと Java の処理のまとまりのどちらも「メソッド」と呼ばれます。まず前後の文脈でどちらの話かを見分けます。Network タブや URL なら HTTP メソッド、list() やクラス名なら Java メソッドです。",
   },
   {
     term: "オブジェクト",
@@ -979,6 +1024,10 @@ const termRegex = new RegExp(matchers.map((item) => item.pattern).join("|"), "gi
 const aliasLookup = new Map<string, TermDef>();
 for (const item of matchers) {
   aliasLookup.set(item.alias.toLowerCase(), item.def);
+}
+
+export function lookupTerm(alias: string): TermDef | undefined {
+  return aliasLookup.get(alias.toLowerCase());
 }
 
 export type TextPart =

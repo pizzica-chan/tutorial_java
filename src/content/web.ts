@@ -117,7 +117,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "件数や中身は DB にあります。どの行が対象かは、飛んだ SQL の WHERE で決まります。コードが正しくても、その条件の行が無い、マスタが違う、別の DB を見ていると、画面は空や古い値になります。",
+          text: "件数や中身は DB にあります。どの行が対象かは、実行された SQL の WHERE で決まります。コードが正しくても、その条件の行が無い、マスタが違う、別の DB を見ていると、画面は空や古い値になります。",
         },
         { type: "quiz", id: "web-front-back" },
       ],
@@ -149,11 +149,11 @@ export const webTrack: Track = {
         },
         {
           type: "h2",
-          text: "GET と POST",
+          text: "HTTP メソッド",
         },
         {
           type: "p",
-          text: "GET は取得が基本で、再読込してもデータを変えにくい（副作用が小さい）ことが期待されます。POST は登録・更新・削除など、状態を変える操作に使います。画面のフォームでも、JSON を返す Web API でも、この意味は同じです。API では PUT / PATCH / DELETE もよく使います。",
+          text: "HTTP メソッドは、操作の意味を表す約束です。GET は取得、POST は登録や送信、PUT / PATCH は更新、DELETE は削除、と読むことが多いです。ただし、更新を POST だけで送る、削除を GET で呼ぶといった、約束と違う実装も現場では多いです。同じ URL でも HTTP メソッドが違えば、別の処理が呼ばれることがあります。切り分けでは、教科書どおりの意味より、実際に送っているメソッドと URL を見ます。",
         },
         { type: "diagram", name: "get-post" },
         {

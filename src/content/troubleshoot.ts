@@ -5,7 +5,7 @@ export const troubleshootTrack: Track = {
   no: "05",
   title: "トラブルシュート",
   kicker: "PATTERNS",
-  description: "調査手順、ログの読み方、症状別の切り分け。",
+  description: "調査手順、ログの場所、ログで処理を追う、症状別の切り分け。",
   accent: "#d46a5c",
   lessons: [
     {
@@ -132,6 +132,10 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           text: "DEBUG は量が多いので、普段は出していないことが多いです。必要なときだけ、そのパッケージのレベルを上げます。上げたら調査後に戻します。",
         },
         {
+          type: "p",
+          text: "角括弧 [ ] のなかの nio-8080-exec-3 はスレッド名です。同じ操作の行を揃える手順は次の項目です。",
+        },
+        {
           type: "callout",
           kind: "trap",
           title: "ログが無い",
@@ -158,6 +162,130 @@ java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
           code: `log.info("approve start requestId={} userId={}", id, userId);`,
         },
         { type: "quiz", id: "ts-log" },
+      ],
+    },
+    {
+      id: "log-follow",
+      title: "ログで処理を追う",
+      minutes: 12,
+      summary: "Java メソッドの順、MyBatis の SQL、混在した本番ログから一本を拾う。",
+      blocks: [
+        {
+          type: "p",
+          text: "出力先と 1 行の読み方は前の項目です。ここでは、並んだ行から今の操作だけを取り出し、通った Java メソッドの順を見ます。ログ例は申請くんです。",
+        },
+        {
+          type: "h2",
+          text: "Java メソッドの順番",
+        },
+        {
+          type: "p",
+          text: "同じリクエストの行を時刻順に並べると、通ったクラスの順が見えます。行のクラス名は Logger で出力したクラスです。",
+        },
+        {
+          type: "code",
+          title: "同じスレッドの通過点（申請くん・MyBatis）",
+          code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.controller.RequestController : list start userId=7
+04:12:03.105 INFO  [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine start userId=7
+04:12:03.110 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper : ==>  Preparing: SELECT ... WHERE applicant_id = ? OR approver_id = ?
+04:12:03.112 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper : ==> Parameters: 7(Long), 7(Long)
+04:12:03.115 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper : <==      Total: 3
+04:12:03.118 INFO  [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine done count=3
+04:12:03.120 INFO  [nio-8080-exec-3] j.c.e.s.controller.RequestController : list done`,
+        },
+        {
+          type: "p",
+          text: "Controller の list のあと Service の findMine、そのあと Mapper です。この並びはライブラリが違っても同じ型です。Mapper の 3 行（Preparing / Parameters / Total）は MyBatis の DEBUG の書き方で、JPA や JDBC なら文言は違います。間に Filter や Interceptor の行が挟まることもあります。Java のメソッド名は、メッセージに書いてあるときだけ分かります。",
+        },
+        {
+          type: "ul",
+          items: [
+            "同じクラスの別の Java メソッドは、メッセージで見分ける",
+            "@Async やキューに渡すと、続きは別のスレッド名になる。メール送信の行が exec-3 に無い、など",
+            "start と done が対になっていれば、そのあいだがその Java メソッドの中",
+          ],
+        },
+        {
+          type: "h2",
+          text: "混在した本番ログから一本を拾う",
+        },
+        {
+          type: "p",
+          text: "本番は同時に何本もリクエストが動きます。時刻だけで拾うと、他人の行が混ざります。",
+        },
+        {
+          type: "code",
+          title: "同じ秒に混ざった行（MyBatis の Parameters 例）",
+          code: `04:12:03.100 INFO  [nio-8080-exec-3] ...RequestController : list start userId=7
+04:12:03.102 INFO  [nio-8080-exec-5] ...RequestController : detail start userId=22
+04:12:03.105 INFO  [nio-8080-exec-3] ...RequestService : findMine start userId=7
+04:12:03.108 INFO  [nio-8080-exec-5] ...RequestService : findById start userId=22
+04:12:03.110 DEBUG [nio-8080-exec-3] ...RequestMapper : ==> Parameters: 7(Long)`,
+        },
+        {
+          type: "p",
+          text: "userId=7 の一覧なら、まず 7 で検索します。ヒットした行のスレッド名は nio-8080-exec-3 です。その名前と、操作の前後数秒で再検索すると、上の list → findMine → Mapper の行が揃います。Parameters の書き方は MyBatis の例です。exec-5 は別の人の詳細です。",
+        },
+        {
+          type: "ol",
+          items: [
+            "操作した時刻を決める。サーバログのタイムゾーンと、画面を見た側の時計がずれていないか",
+            "複数台なら、操作が当たったインスタンスのファイルを開く",
+            "メッセージや MDC に userId、申請 ID、セッション ID があれば、それで絞る",
+            "ヒットした行のスレッド名（[nio-8080-exec-3]）を控える",
+            "そのスレッド名と、操作の前後の時刻で再検索する",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "スレッド名は使い回される",
+          text: "Tomcat の exec-3 は、前のリクエストが終わったあと、別のリクエストに使われます。スレッド名だけで日付を問わず拾うと、別操作が混ざります。時刻の幅を付けます。",
+        },
+        {
+          type: "ul",
+          items: [
+            "アプリが userId をログに出していないこともある。そのときは申請 ID、画面の固有メッセージ、URL",
+            "セッション ID は、MDC やメッセージに出ているときだけ使える。Cookie の値そのものがログに無いことも多い",
+            "アクセスログ（URL と時刻）とアプリログの時刻を合わせると、入口の特定に使える",
+          ],
+        },
+        {
+          type: "h2",
+          text: "MyBatis の SQL",
+        },
+        {
+          type: "p",
+          text: "ここからは MyBatis の DEBUG に限った話です。Mapper の DEBUG を出すと、実行された SQL が見えます。本番では普段 DEBUG を出していないことが多いです。検証環境では、または調査のあいだだけレベルを上げます。終わったら戻します。",
+        },
+        {
+          type: "code",
+          title: "MyBatis の DEBUG（申請くんの findMine）",
+          code: `==>  Preparing: SELECT id, title, status, applicant_id, approver_id, created_at
+FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DESC
+==> Parameters: 7(Long), 7(Long)
+<==      Total: 3`,
+        },
+        {
+          type: "ul",
+          items: [
+            "Preparing が SQL 文。? がプレースホルダ",
+            "Parameters がバインドした値。上の例なら applicant_id も approver_id も 7",
+            "Total がその SQL の件数。0 なら、その条件に合う行が無かった",
+          ],
+        },
+        {
+          type: "p",
+          text: "出す先は logging.level です。申請くんなら Mapper のパッケージ（jp.co.example.shinsei.mapper など）に DEBUG を付けます。XML の id と Java のメソッド名が Logger に出ることがあります。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "形式は設定次第",
+          text: "Preparing / Parameters は MyBatis の DEBUG で多い形です。JDBC のログや別ライブラリだと書き方が違います。見るのは文、バインド値、件数です。",
+        },
+        { type: "quiz", id: "ts-log-pick" },
+        { type: "quiz", id: "ts-log-sql" },
       ],
     },
     {

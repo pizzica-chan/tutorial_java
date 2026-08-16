@@ -739,6 +739,11 @@ h3,
   color: #d2b8f0;
 }
 
+.codeblock .term.code-term {
+  color: #d2b8f0;
+  text-decoration: none;
+}
+
 .codeblock .hljs-tag {
   color: #9aa8b8;
 }

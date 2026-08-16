@@ -38,7 +38,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "一覧の件数は、SQL が読んだ DB の行です。先に飛んだ SQL を見て、同じ条件で行を数えます。見た目の CSS とは切り分けが違います。",
+      "一覧の件数は、SQL が読んだ DB の行です。先に実行された SQL を見て、同じ条件で行を数えます。見た目の CSS とは切り分けが違います。",
   },
   "web-status": {
     id: "web-status",
@@ -178,6 +178,32 @@ export const quizzes = {
     explanation:
       "アプリはもともとログを出すのが一般的です。行き先を確認し、時刻を合わせて読みます。足すのは足りないときです。",
   },
+  "ts-log-pick": {
+    id: "ts-log-pick",
+    question: "本番の同じ秒に INFO が大量。userId=7 の一覧処理を追う。次は？",
+    choices: [
+      "ERROR だけを日付無視で全部読む",
+      "userId=7 で絞り、その行のスレッド名と前後の時刻で同じリクエストを揃える",
+      "スレッド名 exec-3 だけで、日付を問わず全部見る",
+      "CSS の余白を疑う",
+    ],
+    answer: 1,
+    explanation:
+      "同時刻には他人のリクエストも混ざります。userId や申請 ID で当たりをつけ、スレッド名と時刻の幅で一本にします。スレッド名は使い回されます。",
+  },
+  "ts-log-sql": {
+    id: "ts-log-sql",
+    question: "MyBatis の DEBUG に Preparing と Parameters、Total: 0 と出た。読み方は？",
+    choices: [
+      "SQL は実行されていない",
+      "その SQL は実行され、条件に合う行が 0 件だった",
+      "Controller が無い",
+      "CSS が 404",
+    ],
+    answer: 1,
+    explanation:
+      "Preparing が文、Parameters がバインド値、Total が件数です。0 は実行失敗ではなく、その条件の行が無かった、と読みます。",
+  },
   "ts-env": {
     id: "ts-env",
     question: "ローカルでは動き、検証環境では落ちる。仮説として弱いのは？",
@@ -261,13 +287,13 @@ export const quizzes = {
     question: "検証だけ一覧が 0 件。GET は 200。コードは同じと言われている。先に疑うのは？",
     choices: [
       "CSS の font-size",
-      "今つないでいる DB を、飛んだ SQL と同じ条件で見る",
+      "今つないでいる DB を、実行された SQL と同じ条件で見る",
       "Java のインデント",
       "エディタの配色",
     ],
     answer: 1,
     explanation:
-      "200 で件数が違うなら、データは DB にある。コード通読より先に、飛んだ SQL と、その条件での件数を見ます。",
+      "200 で件数が違うなら、データは DB にある。コード通読より先に、実行された SQL と、その条件での件数を見ます。",
   },
   "sc-net": {
     id: "sc-net",

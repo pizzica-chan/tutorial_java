@@ -238,7 +238,7 @@ requestService.approve(id, userId);`,
       id: "db",
       title: "検証だけ、申請一覧が 0 件",
       minutes: 8,
-      summary: "200 で中身が違うなら、飛んだ SQL とその条件の行。",
+      summary: "200 で中身が違うなら、実行された SQL とその条件の行。",
       blocks: [
         {
           type: "callout",
@@ -266,7 +266,7 @@ requestService.approve(id, userId);`,
           type: "p",
           text: "応答は成功しています。フロントや CSS の問題でも、500 でもありません。実行された SQL を見て、同じ条件で今つないでいる DB の行を数えます。",
         },
-        { type: "diagram", name: "front-back", caption: "データは DB にある。飛んだ SQL の条件で、今の DB を見る。" },
+        { type: "diagram", name: "front-back", caption: "データは DB にある。実行された SQL の条件で、今の DB を見る。" },
         {
           type: "p",
           text: "検証の t_request を、ログインユーザの ID で検索すると 0 件でした。ローカル環境の DB には 3 件あります。SQL の WHERE は同じでも、行が無ければ一覧は空です。",
@@ -274,7 +274,7 @@ requestService.approve(id, userId);`,
         {
           type: "ul",
           items: [
-            "200 で件数が違うなら、コード通読より先に、飛んだ SQL とその条件の行",
+            "200 で件数が違うなら、コード通読より先に、実行された SQL とその条件の行",
             "今見ている接続先が、思っている検証 DB かを確認する",
             "論理削除フラグが立っている、別のログインユーザの行しか無い、といった場合も同じ型",
           ],
