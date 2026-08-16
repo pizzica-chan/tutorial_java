@@ -103,7 +103,7 @@ export const terms: TermDef[] = [
   {
     term: "処理の入口",
     aliases: ["処理の入口"],
-    body: "調べたい画面や機能で、サーバ側の処理が始まる場所。多くは URL に対応する Controller のメソッドです。申請くんでは RequestController.java の @GetMapping などが該当します。",
+    body: "調べたい画面や機能で、サーバ側の処理が始まる場所。多くは URL に対応する Controller の Java メソッドです。申請くんでは RequestController.java の @GetMapping などが該当します。",
   },
   {
     term: "RestController",
@@ -123,7 +123,7 @@ export const terms: TermDef[] = [
   {
     term: "Repository",
     aliases: ["Repository"],
-    body: "DBアクセスを担当する層。テーブルの読み書きをここに寄せます。Spring ではこの名前が多いです。",
+    body: "DB アクセスを担当する層。テーブルの読み書きをここに寄せます。Spring Data JPA ではこの名前が多いです。申請くんは MyBatis の Mapper です。",
   },
   {
     term: "Mapper",

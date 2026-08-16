@@ -26,11 +26,11 @@ export function HomePage() {
               続きから
             </Link>
           ) : (
-            <Link className="btn btn-primary" to={firstLessonPath("web")}>
-              Webの基礎から始める
+            <Link className="btn btn-primary" to={firstLessonPath("intro")}>
+              はじめにから始める
             </Link>
           )}
-          <Link className="btn btn-ghost" to={resume ? firstLessonPath("web") : "/tracks/troubleshoot"}>
+          <Link className="btn btn-ghost" to={resume ? firstLessonPath("intro") : "/tracks/troubleshoot"}>
             {resume ? "最初から" : "経験者向け: パターン別へ"}
           </Link>
         </div>

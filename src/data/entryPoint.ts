@@ -25,7 +25,7 @@ public class RequestController {
     return "request/list";
   }
 
-  // 承認は POST /shinsei/requests/12/approve → approve メソッド（同じ要領）
+  // 承認は POST /shinsei/requests/12/approve → approve の Java メソッド（同じ要領）
 }`;
 
 /** 教材本文用の短い抜粋 */

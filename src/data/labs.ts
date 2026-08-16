@@ -47,7 +47,7 @@ public String list(Model model, LoginUser user) {
     detail:
       "「自分に関係する申請だけ返す」といった業務ルールは Service に置かれることが多いです。Controller に寄っている構成もあります。",
     code: `public List<RequestEntity> findMine(Long userId) {
-  return requestRepository.findMine(userId);
+  return requestMapper.findMine(userId);
 }`,
   },
   {
@@ -184,7 +184,7 @@ export const stackCases: StackCase[] = [
       {
         kind: "framework",
         text: "    at org.apache.ibatis.session.defaults.DefaultSqlSession.selectList(DefaultSqlSession.java:154)",
-        note: "MyBatis 内部です。自作の Repository / Mapper を探します。",
+        note: "MyBatis 内部です。自作の Mapper を探します。",
       },
       {
         kind: "jdk",
@@ -193,13 +193,13 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "app",
-        text: "    at jp.co.example.shinsei.repository.RequestRepository.findMine(RequestRepository.java:18)",
+        text: "    at jp.co.example.shinsei.mapper.RequestMapper.findMine(RequestMapper.java:18)",
         note: "自作クラス。対応する XML の findMine を開きます。ライブラリの行より、この行が処理の入口です。",
       },
       {
         kind: "app",
         text: "    at jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:22)",
-        note: "呼び出し元の Service。SQL の中身は Repository / Mapper 側にあります。",
+        note: "呼び出し元の Service。SQL の中身は Mapper 側にあります。",
       },
       {
         kind: "app",

@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { getTrack } from "../data/curriculum";
+import { getTrack, lessonLead } from "../data/curriculum";
 import { NotFoundPage } from "./NotFoundPage";
 import { lessonKey } from "../lib/progress";
 import { useProgress } from "../hooks/useProgress";
@@ -41,6 +41,7 @@ export function TrackPage() {
                 <strong>
                   {String(index + 1).padStart(2, "0")} {lesson.title}
                 </strong>
+                <p className="lesson-lead">{lessonLead(lesson)}</p>
               </div>
               <span className="lesson-mins">
                 <Icon name="clock" size={14} />

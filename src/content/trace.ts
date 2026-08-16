@@ -3,7 +3,7 @@ import { requestListEntryPointSnippet } from "../data/entryPoint";
 
 export const traceTrack: Track = {
   id: "trace",
-  no: "04",
+  no: "05",
   title: "リクエストの追跡",
   kicker: "TRACE",
   description: "画面や Web API から Controller、Service、SQL、応答まで一本で追う。",
@@ -131,7 +131,7 @@ public class RequestApiController {
 if (!request.getApproverId().equals(approverId))
   throw new ForbiddenException(...);
 request.setStatus("APPROVED");
-requestRepository.update(request);
+requestMapper.update(request);
 mailService.notifyApplicant(request);`,
         },
         {

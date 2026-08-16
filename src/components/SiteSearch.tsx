@@ -12,7 +12,9 @@ export function SiteSearch() {
   const [active, setActive] = useState(0);
   const hits = query.trim() ? searchSite(query) : [];
   const show = open && query.trim().length > 0;
-  const activeId = show && hits[active] ? `${listId}-opt-${active}` : undefined;
+  const showList = show && hits.length > 0;
+  const showEmpty = show && hits.length === 0;
+  const activeId = showList && hits[active] ? `${listId}-opt-${active}` : undefined;
 
   useEffect(() => {
     setActive(0);
@@ -64,8 +66,8 @@ export function SiteSearch() {
         autoComplete="off"
         aria-autocomplete="list"
         aria-haspopup="listbox"
-        aria-controls={listId}
-        aria-expanded={show}
+        aria-controls={showList ? listId : undefined}
+        aria-expanded={showList}
         aria-activedescendant={activeId}
         onChange={(event) => {
           setQuery(event.target.value);
@@ -75,33 +77,33 @@ export function SiteSearch() {
         onKeyDown={onKey}
       />
       </div>
-      {show ? (
+      {showList ? (
         <ul className="search-results" id={listId} role="listbox">
-          {hits.length === 0 ? (
-            <li className="search-empty">一致する項目はありません</li>
-          ) : (
-            hits.map((hit, index) => (
-              <li
-                key={hit.href + hit.title}
-                id={`${listId}-opt-${index}`}
-                role="option"
-                aria-selected={index === active}
+          {hits.map((hit, index) => (
+            <li
+              key={hit.href + hit.title}
+              id={`${listId}-opt-${index}`}
+              role="option"
+              aria-selected={index === active}
+            >
+              <button
+                className={index === active ? "active" : ""}
+                type="button"
+                tabIndex={-1}
+                onMouseEnter={() => setActive(index)}
+                onClick={() => go(hit)}
               >
-                <button
-                  className={index === active ? "active" : ""}
-                  type="button"
-                  tabIndex={-1}
-                  onMouseEnter={() => setActive(index)}
-                  onClick={() => go(hit)}
-                >
-                  <span className="search-crumb">{hit.crumb}</span>
-                  <strong>{hit.title}</strong>
-                  <span className="search-snip">{hit.snippet}</span>
-                </button>
-              </li>
-            ))
-          )}
+                <span className="search-crumb">{hit.crumb}</span>
+                <strong>{hit.title}</strong>
+                <span className="search-snip">{hit.snippet}</span>
+              </button>
+            </li>
+          ))}
         </ul>
+      ) : showEmpty ? (
+        <p className="search-results search-empty" role="status">
+          一致する項目はありません
+        </p>
       ) : null}
     </div>
   );

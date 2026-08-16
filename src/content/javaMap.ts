@@ -2,7 +2,7 @@ import type { Track } from "../types";
 
 export const javaMapTrack: Track = {
   id: "java-map",
-  no: "02",
+  no: "03",
   title: "Javaアプリの構成",
   kicker: "STRUCTURE",
   description: "ディレクトリ、依存関係、設定、動かし方、層、Filter / Interceptor / AOP。",
@@ -213,8 +213,8 @@ server:
         {
           type: "ol",
           items: [
-            "URL を受けるメソッド（Spring の @GetMapping など）",
-            "それが呼ぶメソッド（業務判断）",
+            "URL を受ける Java メソッド（Spring の @GetMapping など）",
+            "それが呼ぶ Java メソッド（業務判断）",
             "DB または外部 API",
             "戻り値を画面または JSON に載せる場所",
           ],
@@ -271,7 +271,7 @@ public class RequestApiController {
           type: "callout",
           kind: "trap",
           title: "見た目だけ壊れる",
-          text: "画面が白い、スタイルが当たっていない、は Java 例外ではなく静的ファイルのパス違いであることが多いです。Network タブで 404 を探します。",
+          text: "画面が白い、スタイルが当たっていないのは、Java 例外ではなく静的ファイルのパス違いであることが多いです。Network タブで 404 を探します。",
         },
         {
           type: "p",
@@ -367,7 +367,7 @@ public void addInterceptors(InterceptorRegistry registry) {
           type: "callout",
           kind: "trap",
           title: "メソッドの1行目より前",
-          text: "Service のブレークポイントが止まらない、または @Transactional のついたメソッドの前後でだけ失敗する、ときはプロキシを疑います。Filter / Interceptor が Controller の前なら、Controller 自体が止まりません。",
+          text: "Service のブレークポイントが止まらない、または @Transactional のついたメソッドの前後でだけ失敗するときは、プロキシを疑います。Filter / Interceptor が Controller の前なら、Controller 自体が止まりません。",
         },
         {
           type: "h2",

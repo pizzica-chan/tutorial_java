@@ -5,13 +5,22 @@ const LAST_KEY = "genba-trace-last-v1";
 
 export type LessonRef = { trackId: string; lessonId: string };
 
+function knownLessonKeys(): Set<string> {
+  return new Set(tracks.flatMap((track) => track.lessons.map((lesson) => lessonKey(track.id, lesson.id))));
+}
+
+function lessonExists(trackId: string, lessonId: string): boolean {
+  return tracks.some((track) => track.id === trackId && track.lessons.some((lesson) => lesson.id === lessonId));
+}
+
 function read(): string[] {
   try {
     const raw = localStorage.getItem(KEY);
     if (!raw) return [];
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter((item): item is string => typeof item === "string");
+    const known = knownLessonKeys();
+    return parsed.filter((item): item is string => typeof item === "string" && known.has(item));
   } catch {
     return [];
   }
@@ -28,7 +37,7 @@ export function isCompleted(id: string): boolean {
 export function toggleCompleted(id: string): string[] {
   const current = new Set(read());
   if (current.has(id)) current.delete(id);
-  else current.add(id);
+  else if (knownLessonKeys().has(id)) current.add(id);
   const next = [...current];
   let saved = next;
   try {
@@ -46,6 +55,7 @@ export function lessonKey(trackId: string, lessonId: string): string {
 }
 
 export function setLastLesson(trackId: string, lessonId: string) {
+  if (!lessonExists(trackId, lessonId)) return;
   try {
     localStorage.setItem(LAST_KEY, JSON.stringify({ trackId, lessonId } satisfies LessonRef));
   } catch {
@@ -60,7 +70,9 @@ export function getLastLesson(): LessonRef | null {
     const parsed: unknown = JSON.parse(raw);
     if (parsed && typeof parsed === "object") {
       const { trackId, lessonId } = parsed as Partial<LessonRef>;
-      if (typeof trackId === "string" && typeof lessonId === "string") return { trackId, lessonId };
+      if (typeof trackId === "string" && typeof lessonId === "string" && lessonExists(trackId, lessonId)) {
+        return { trackId, lessonId };
+      }
     }
     return null;
   } catch {

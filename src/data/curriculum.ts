@@ -1,4 +1,5 @@
-import type { Lesson, Track, TrackId } from "../types";
+import type { Block, Lesson, Track, TrackId } from "../types";
+import { introTrack } from "../content/intro";
 import { webTrack } from "../content/web";
 import { javaMapTrack } from "../content/javaMap";
 import { readingTrack } from "../content/reading";
@@ -7,6 +8,7 @@ import { troubleshootTrack } from "../content/troubleshoot";
 import { scenarioTrack } from "../content/scenario";
 
 export const tracks: Track[] = [
+  introTrack,
   webTrack,
   javaMapTrack,
   readingTrack,
@@ -16,6 +18,16 @@ export const tracks: Track[] = [
 ];
 
 export const totalLessons = tracks.reduce((sum, track) => sum + track.lessons.length, 0);
+
+/** 項目の先頭段落から、メタ説明や章一覧用の短いリードを取る */
+export function lessonLead(lesson: Lesson, max = 72): string {
+  const block = lesson.blocks.find((item): item is Extract<Block, { type: "p" }> => item.type === "p");
+  if (!block) return lesson.title;
+  const sentence = block.text.split("。")[0] ?? block.text;
+  const lead = block.text.includes("。") ? `${sentence}。` : sentence;
+  if (lead.length <= max) return lead;
+  return `${lead.slice(0, max)}…`;
+}
 
 export type LessonNav = {
   trackId: string;
@@ -77,7 +89,7 @@ export function pageDescription(pathname: string): string {
   const parts = pathname.split("/").filter(Boolean);
   if (parts[0] === "tracks" && parts[1] && parts[2]) {
     const found = getLesson(parts[1], parts[2]);
-    if (found) return `${found.track.title} — ${found.lesson.title}`;
+    if (found) return lessonLead(found.lesson, 110);
     return fallback;
   }
   if (parts[0] === "tracks" && parts[1]) {

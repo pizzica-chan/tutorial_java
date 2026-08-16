@@ -3,7 +3,7 @@ import { requestControllerSample } from "../data/entryPoint";
 
 export const scenarioTrack: Track = {
   id: "scenario",
-  no: "06",
+  no: "07",
   title: "実務のシナリオで追う",
   kicker: "SCENARIO",
   description: "障害対応と改修の影響調査。限られた情報から、次に見る層を決める。",
@@ -85,7 +85,7 @@ export const scenarioTrack: Track = {
           type: "callout",
           kind: "note",
           title: "検索のやり方",
-          text: "文字列検索と、型・メソッドの参照検索は別です。手がかりの選び方は「ソースの読み方」の「どこから読み始める」を見ます。詳しい手順は「処理の入口から読む」と「キーワードで探す」です。",
+          text: "文字列検索と、型・メソッドの参照検索は別です。手がかりの選び方は「ソースの読み方」の「どこから読み始めるか」を見ます。詳しい手順は「処理の入口から読む」と「キーワードで探す」です。",
         },
         { type: "quiz", id: "sc-how" },
       ],
@@ -532,7 +532,7 @@ requestService.approve(id, userId);`,
         },
         {
           type: "p",
-          text: "検索で RequestController.list と RequestMapper.selectByApplicant だけでなく、CSV 用の export メソッドも同じ Mapper を呼んでいる、と分かれば、一覧とエクスポートの両方を直す必要がある、と書けます。",
+          text: "検索で RequestController.list と RequestMapper.findMine だけでなく、CSV 用の export メソッドも同じ Mapper を呼んでいる、と分かれば、一覧とエクスポートの両方を直す必要がある、と書けます。",
         },
         {
           type: "ul",

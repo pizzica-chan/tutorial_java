@@ -1,6 +1,7 @@
 import {
   requestControllerPath,
   requestControllerSample,
+  requestListEntryPoint,
 } from "./entryPoint";
 
 export type ProjectFile = {
@@ -69,7 +70,7 @@ public class ShinseiApplication {
   {
     path: requestControllerPath,
     note: "処理の入口（画面）",
-    why: "GET /shinsei/requests など、画面の URL と HTTP メソッドがここの Java メソッドに対応します。調べたい画面の処理の入口は、ほぼここから始まります。",
+    why: `${requestListEntryPoint.httpMethod} ${requestListEntryPoint.url} など、画面の URL と HTTP メソッドがここの Java メソッド（${requestListEntryPoint.javaMethod}）に対応します。調べたい画面の処理の入口は、ほぼここから始まります。`,
     code: requestControllerSample,
   },
   {
@@ -100,11 +101,11 @@ public class RequestApiController {
     code: `@Service
 @RequiredArgsConstructor
 public class RequestService {
-  private final RequestRepository requestRepository;
+  private final RequestMapper requestMapper;
   private final MailService mailService;
 
   public void approve(Long requestId, Long approverId) {
-    RequestEntity request = requestRepository.findById(requestId);
+    RequestEntity request = requestMapper.findById(requestId);
     if (request == null) {
       throw new NotFoundException("申請がありません");
     }
@@ -112,14 +113,24 @@ public class RequestService {
       throw new ForbiddenException("承認権限がありません");
     }
     request.setStatus("APPROVED");
-    requestRepository.update(request);
+    requestMapper.update(request);
     mailService.notifyApplicant(request);
   }
 }`,
   },
   {
+    path: "src/main/java/.../mapper/RequestMapper.java",
+    note: "SQL との対応（インタフェース）",
+    why: "Java のメソッド名と、XML の id が対になります。申請くんは MyBatis なので、Spring Data の Repository ではなく Mapper です。",
+    code: `public interface RequestMapper {
+  List<RequestEntity> findMine(@Param("userId") Long userId);
+  RequestEntity findById(Long id);
+  int update(RequestEntity request);
+}`,
+  },
+  {
     path: "src/main/resources/mapper/RequestMapper.xml",
-    note: "実際のSQL",
+    note: "実際の SQL",
     why: "一覧が遅い、件数が合わない、更新されないといった症状は、SQL を見ないと終わりません。Java のメソッド名と XML の id が対になっています。",
     code: `<select id="findMine" resultType="RequestEntity">
   SELECT id, title, status, applicant_id, approver_id, created_at
@@ -193,7 +204,7 @@ export const projectTree = [
     "    controller/LoginController.java",
   "    service/RequestService.java",
   "    service/MailService.java",
-  "    repository/RequestRepository.java",
+  "    mapper/RequestMapper.java",
   "    entity/RequestEntity.java",
   "  src/main/resources/",
     "    application.yml",

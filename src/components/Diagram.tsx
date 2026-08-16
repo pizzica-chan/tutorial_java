@@ -256,7 +256,7 @@ function CrossCut() {
       <div className="d-layer accent">Filter</div>
       <Arrow down label="Spring MVC" />
       <div className="d-layer accent">Interceptor</div>
-      <Arrow down label="メソッド本体" />
+      <Arrow down label="Java メソッド本体" />
       <div className="d-layer">Controller</div>
       <Arrow down label="見た目は service.approve()" />
       <div className="d-layer accent">AOP / プロキシ</div>

@@ -3,7 +3,7 @@ import { requestListEntryPointReadingSnippet } from "../data/entryPoint";
 
 export const readingTrack: Track = {
   id: "reading",
-  no: "03",
+  no: "04",
   title: "ソースの読み方",
   kicker: "READING",
   description: "読み始めの選び方、処理の入口、キーワード検索、呼び出しの追跡、値の源流、デバッガ、仕様とコードの差。",
@@ -11,7 +11,7 @@ export const readingTrack: Track = {
   lessons: [
     {
       id: "where-start",
-      title: "どこから読み始める",
+      title: "どこから読み始めるか",
       minutes: 5,
       blocks: [
         {
@@ -19,15 +19,11 @@ export const readingTrack: Track = {
           text: "この章では、ソースの読み方をいくつかの手法に分けています。仕組みを掴むときも、直す場所を探すときも、同じ手法を組み合わせて使います。知りたいことと、すでに分かっていることが違えば、最初に使う手法も変わります。",
         },
         {
-          type: "p",
-          text: "入口とキーワードは排他的ではありません。文言で場所を当ててから、入口の手順で下へ降りることが多いです。",
-        },
-        {
           type: "table",
           headers: ["知りたいこと・分かっていること", "先に読むレッスン"],
           rows: [
             [
-              "この画面や API の処理の流れを追いたい。URL やパスが分かる",
+              "特定の画面や API の処理の流れを追いたい。URL やパスが分かる",
               "処理の入口から読む",
             ],
             [
@@ -330,7 +326,7 @@ request.getApproverId().equals(userId); // NPE`,
           type: "callout",
           kind: "warn",
           title: "止めると待つ",
-          text: "デバッガで止めたスレッドは待ちます。外部 API のタイムアウトや、検証の他ユーザに影響することがあります。",
+          text: "デバッガで止めたスレッドは待ちます。外部 API のタイムアウトや、検証環境の他の利用者に影響することがあります。",
         },
         { type: "quiz", id: "read-debug" },
       ],

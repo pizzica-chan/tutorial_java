@@ -2,7 +2,7 @@ import type { Track } from "../types";
 
 export const troubleshootTrack: Track = {
   id: "troubleshoot",
-  no: "05",
+  no: "06",
   title: "トラブルシュート",
   kicker: "PATTERNS",
   description: "調査手順、ログの場所、ログで処理を追う、ネットワーク疎通、症状別の切り分け。",
@@ -399,7 +399,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
           type: "callout",
           kind: "tip",
           title: "上から最初の自作コード",
-          text: "Spring の長いクラス名の行で止まらないでください。直すのは RequestService や RequestRepository です。",
+          text: "Spring の長いクラス名の行で止まらないでください。直すのは RequestService や RequestMapper です。",
         },
         { type: "widget", name: "stack" },
         { type: "quiz", id: "ts-npe" },
@@ -457,7 +457,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
             ["HTML ごと 404", "Controller のパス、context-path、末尾スラッシュ"],
             ["Web API が 404", "パス、HTTP メソッド、Spring の @RestController のプレフィックス"],
             ["画面は出るが CSS/JS だけ 404", "static の置き場所、許可パス、context-path"],
-            ["GET では出るが POST で 404", "メソッドのマッピング。Spring の @GetMapping しか無いなど"],
+            ["GET では出るが POST で 404", "HTTP メソッドのマッピング。Spring の @GetMapping しか無いなど"],
             ["リンク先だけ 404", "テンプレートの th:href / action と、実際のマッピング"],
           ],
         },

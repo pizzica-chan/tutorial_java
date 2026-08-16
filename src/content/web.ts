@@ -2,7 +2,7 @@ import type { Track } from "../types";
 
 export const webTrack: Track = {
   id: "web",
-  no: "01",
+  no: "02",
   title: "Webの基礎",
   kicker: "HTTP",
   description: "リクエスト、レスポンス、フロントとバック、ステータス、Cookie。",
@@ -35,7 +35,7 @@ export const webTrack: Track = {
         {
           type: "ul",
           items: [
-            "宛先は URL、操作の種類はメソッド（GET / POST など）",
+            "宛先は URL、操作の種類は HTTP メソッド（GET / POST など）",
             "付加情報はヘッダ（Cookie、Content-Type など）",
             "成否の概略はステータスコード（200、404、500 など）",
             "本文は HTML、JSON、ファイルなど",
@@ -88,7 +88,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "申請くんのようにサーバで HTML を組み立てる場合、テンプレートはバックエンドにあります。ブラウザが描画するので、画面に出た結果だけ見るとフロントの問題に見えます。ボタンが出ない、は th:if や権限のことが多いです。",
+          text: "申請くんのようにサーバで HTML を組み立てる場合、テンプレートはバックエンドにあります。ブラウザが描画するので、画面に出た結果だけ見るとフロントの問題に見えます。ボタンが出ないのは、th:if や権限のことが多いです。",
         },
         {
           type: "callout",
@@ -154,7 +154,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "HTTP メソッドは、操作の意味を表す約束です。GET は取得、POST は登録や送信、PUT / PATCH は更新、DELETE は削除、と読むことが多いです。ただし、更新を POST だけで送る、削除を GET で呼ぶといった、約束と違う実装も現場では多いです。同じ URL でも HTTP メソッドが違えば、別の処理が呼ばれることがあります。切り分けでは、教科書どおりの意味より、実際に送っているメソッドと URL を見ます。",
+          text: "HTTP メソッドは、操作の意味を表す約束です。GET は取得、POST は登録や送信、PUT / PATCH は更新、DELETE は削除、と読むことが多いです。ただし、更新を POST だけで送る、削除を GET で呼ぶといった、約束と違う実装も現場では多いです。同じ URL でも HTTP メソッドが違えば、別の処理が呼ばれることがあります。切り分けでは、教科書どおりの意味より、実際に送っている HTTP メソッドと URL を見ます。",
         },
         { type: "diagram", name: "get-post" },
         {
