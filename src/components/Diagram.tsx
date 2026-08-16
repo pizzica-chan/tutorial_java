@@ -1,4 +1,4 @@
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 import type { DiagramName } from "../types";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon, type IconName } from "./Icon";
@@ -20,6 +20,7 @@ export function Diagram({ name, caption }: { name: DiagramName; caption?: string
 const diagrams: Record<DiagramName, () => ReactElement> = {
   "http-roundtrip": HttpRoundtrip,
   "url-parts": UrlParts,
+  "request-params": RequestParams,
   "get-post": GetPost,
   "status-codes": StatusCodes,
   "page-assets": PageAssets,
@@ -176,6 +177,68 @@ function UrlParts() {
           ?tab=history
           <em>クエリ</em>
         </span>
+      </div>
+    </div>
+  );
+}
+
+function RequestParamUrl({ children }: { children: ReactNode }) {
+  return (
+    <div className="request-param-zone request-param-zone-url">
+      <span className="request-param-zone-label">URL</span>
+      <code className="request-param-line">{children}</code>
+    </div>
+  );
+}
+
+function RequestParamPayload({ children }: { children: ReactNode }) {
+  return (
+    <div className="request-param-zone request-param-zone-payload">
+      <div className="request-param-zone-head">
+        <span className="request-param-zone-label">本文</span>
+        <span className="request-param-zone-note">URL に含まれない</span>
+      </div>
+      <code className="request-param-line">{children}</code>
+    </div>
+  );
+}
+
+function RequestParams() {
+  return (
+    <div className="request-params">
+      <div className="request-param-row">
+        <span className="request-param-label">パス</span>
+        <div className="request-param-body">
+          <RequestParamUrl>
+            GET /shinsei/requests/<mark className="url-hit">12</mark>
+          </RequestParamUrl>
+        </div>
+      </div>
+      <div className="request-param-row">
+        <span className="request-param-label">クエリ</span>
+        <div className="request-param-body">
+          <RequestParamUrl>
+            GET /shinsei/requests<mark className="url-hit">?departmentId=5</mark>
+          </RequestParamUrl>
+        </div>
+      </div>
+      <div className="request-param-row">
+        <span className="request-param-label">フォーム</span>
+        <div className="request-param-body">
+          <RequestParamUrl>POST /shinsei/requests</RequestParamUrl>
+          <RequestParamPayload>
+            {"title="}<mark className="url-hit">休暇申請</mark>{"&approverId="}<mark className="url-hit">3</mark>{"&applicantId="}<mark className="url-hit">7</mark>{"&_csrf=8f3a2b1c"}
+          </RequestParamPayload>
+        </div>
+      </div>
+      <div className="request-param-row">
+        <span className="request-param-label">JSON</span>
+        <div className="request-param-body">
+          <RequestParamUrl>POST /shinsei/requests/12/approve</RequestParamUrl>
+          <RequestParamPayload>
+            {'{"status":"'}<mark className="url-hit">APPROVED</mark>{'","comment":"'}<mark className="url-hit">了解しました</mark>{'"}'}
+          </RequestParamPayload>
+        </div>
       </div>
     </div>
   );

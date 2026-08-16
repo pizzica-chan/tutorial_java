@@ -5,7 +5,7 @@ export const webTrack: Track = {
   no: "02",
   title: "Webの基礎",
   kicker: "HTTP",
-  description: "リクエスト、レスポンス、フロントとバック、ステータス、Cookie。",
+  description: "リクエスト、パラメータ、フロントとバック、ステータス、Cookie。",
   accent: "#6ec8c0",
   lessons: [
     {
@@ -184,6 +184,86 @@ export const webTrack: Track = {
       ],
     },
     {
+      id: "params",
+      title: "リクエストのパラメータ",
+      minutes: 9,
+      blocks: [
+        {
+          type: "p",
+          text: "リクエストには、操作の対象や条件を伝える値が付きます。これをパラメータと呼びます。URL のパスだけでは足りないとき、クエリ・フォーム・本文に載せます。",
+        },
+        {
+          type: "p",
+          text: "値が届かない、想定と違うときは、Network タブで「どこに何が載っているか」を先に確認します。",
+        },
+        {
+          type: "diagram",
+          name: "request-params",
+          caption: "載せ方はいくつかある。GET と POST でよく使う場所が違う。",
+        },
+        {
+          type: "table",
+          headers: ["種類", "載る場所", "例"],
+          rows: [
+            ["パス", "URL の /12 の部分", "/shinsei/requests/12"],
+            ["クエリ", "URL の ? 以降", "?status=PENDING&page=2"],
+            ["フォーム", "POST の本文（form）", "title=休暇申請&approverId=3"],
+            ["JSON", "POST / PUT の本文", '{"status":"APPROVED"}'],
+          ],
+        },
+        {
+          type: "h2",
+          text: "Network タブでの見方",
+        },
+        {
+          type: "table",
+          headers: ["欄の名前（例）", "中身"],
+          rows: [
+            ["Query String Parameters", "GET の ? 以降。検索条件やページ番号"],
+            ["Form Data", "フォーム送信の name と値"],
+            ["Request Payload", "JSON 本文。fetch で送る Web API で多い"],
+          ],
+        },
+        {
+          type: "p",
+          text: "ブラウザやバージョンで欄の表示名は少し違います。載っているキーと値を見れば十分です。",
+        },
+        {
+          type: "h2",
+          text: "GET と POST",
+        },
+        {
+          type: "ul",
+          items: [
+            "GET は、クエリに載せることが多い。一覧の絞り込みやページ番号など",
+            "POST は、フォーム本文か JSON 本文に載せることが多い。登録・承認など",
+            "現場では、更新を GET のクエリで送る実装もあります。約束より、実際に送っている内容を見ます",
+          ],
+        },
+        {
+          type: "h2",
+          text: "申請くんの例",
+        },
+        {
+          type: "p",
+          text: "申請 12 件の承認は POST /shinsei/requests/12/approve です。12 はパスに入っています。一覧に絞り込みを足すなら、GET /shinsei/requests?departmentId=5 のようにクエリに載せることが多いです。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "名前の不一致",
+          text: "フォームの name と Controller の @RequestParam の名前が違うと、値が null のまま届くことがあります。400 やバリデーションエラーになることもあります。画面、Network タブ、Java の引数を並べて見ます。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "本文の読み方はフレームワーク次第",
+          text: "@RequestBody や @RequestParam など、引数への取り出し方は Spring の書き方です。JSON かフォームかで使う印が変わります。切り分けでは、まず Network タブでキーと値を確認します。",
+        },
+        { type: "quiz", id: "web-params" },
+      ],
+    },
+    {
       id: "headers",
       title: "ヘッダ",
       minutes: 8,
@@ -255,7 +335,7 @@ export const webTrack: Track = {
             ["form の action / method", "どの Controller に飛ぶか"],
             ["hidden 項目", "ID や CSRF トークンの有無"],
             ["th:if / c:if", "ボタンが出ないのは表示条件かもしれない"],
-            ["name 属性", "サーバの Spring の @RequestParam と一致しているか"],
+            ["name 属性", "サーバの Spring の @RequestParam と一致しているか（「リクエストのパラメータ」参照）"],
             ["fetch / XMLHttpRequest", "画面遷移しない更新。JSON の Web API が多い。ステータスと Content-Type を Network タブで見る"],
           ],
         },

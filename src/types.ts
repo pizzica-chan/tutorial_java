@@ -7,6 +7,7 @@ export type WidgetName = "explorer" | "flow" | "stack" | "http";
 export type DiagramName =
   | "http-roundtrip"
   | "url-parts"
+  | "request-params"
   | "get-post"
   | "status-codes"
   | "page-assets"

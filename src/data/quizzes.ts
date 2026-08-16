@@ -53,6 +53,19 @@ export const quizzes = {
     explanation:
       "403 は権限不足と読む番号です。画面に「権限がありません」と出ても、200 のエラー画面や別の番号のことがあります。番号の意味と、そのアプリが何を返すかは別です。",
   },
+  "web-params": {
+    id: "web-params",
+    question: "GET /shinsei/requests?status=PENDING で一覧を絞り込んでいる。status=PENDING はどこに載っている？",
+    choices: [
+      "クエリパラメータ（URL の ? 以降）",
+      "パス /requests の一部",
+      "レスポンスの HTML 本文",
+      "CSS ファイル",
+    ],
+    answer: 0,
+    explanation:
+      "? 以降がクエリです。Network タブでは Query String Parameters に出ることが多いです。Controller では @RequestParam で受け取ることが多いです。",
+  },
   "web-cookie": {
     id: "web-cookie",
     question: "セッション ID は通常どこに載って、次のリクエストに引き継がれる？",
@@ -229,6 +242,19 @@ export const quizzes = {
     answer: 2,
     explanation:
       "環境差は設定・データ・権限・ネットワークが定番です。",
+  },
+  "ts-external": {
+    id: "ts-external",
+    question: "承認は成功したが通知メールだけ来ない。Mapper の更新ログはある。次に疑うのは？",
+    choices: [
+      "テンプレートの CSS だけ",
+      "DB 更新のあとに動く MailService や外部通知 API の呼び出し",
+      "ブラウザの favicon",
+      "pom.xml の groupId",
+    ],
+    answer: 1,
+    explanation:
+      "DB まで届いているなら、その後の外部 I/O を見ます。ログの時刻差や、MailService 付近の ERROR が手がかりです。",
   },
   "ts-net-check": {
     id: "ts-net-check",

@@ -5,7 +5,7 @@ export const troubleshootTrack: Track = {
   no: "06",
   title: "トラブルシュート",
   kicker: "PATTERNS",
-  description: "調査手順、ログの場所、ログで処理を追う、ネットワーク疎通、症状別の切り分け。",
+  description: "調査手順、ログの場所、ログで処理を追う、ネットワーク疎通、外部 API、症状別の切り分け。",
   accent: "#d46a5c",
   lessons: [
     {
@@ -614,13 +614,139 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       ],
     },
     {
+      id: "p-external",
+      title: "パターン: 外部システム / 外部 API",
+      minutes: 10,
+      blocks: [
+        {
+          type: "p",
+          text: "DB 以外にも、別システムへ HTTP で問い合わせたり、メール送信やファイル連携をしたりする箇所があります。画面の操作は自分のアプリまで届いていても、外部の応答待ちや接続失敗で止まることがあります。",
+        },
+        {
+          type: "p",
+          text: "外部 API とは、自社アプリの外にある HTTP の API や、SMTP・SFTP など別プロセスへの接続をまとめて呼ぶ言い方です。社内の人事マスタ API も、クラウドの通知 API も同じ切り分けです。",
+        },
+        {
+          type: "table",
+          headers: ["症状", "外部を疑う手がかり"],
+          rows: [
+            ["画面がずっと待つ、タイムアウト", "ログの2行のあいだだけ数秒〜数十秒空く。DB の SQL はすぐ終わっている"],
+            ["業務エラー文だけ出て、スタックが短い", "メッセージに外部サービス名や連携失敗の文言がある"],
+            ["検証だけ成功、本番だけ失敗", "接続先 URL、認証情報、FW、モックの有無が環境で違う"],
+            ["データの一部だけ古い・空", "DB は更新されたが、表示用に別 API から取った値が失敗している"],
+            ["承認は成功したのに通知が来ない", "DB 更新のログはある。そのあと MailService や通知 API の行が無い、または ERROR"],
+          ],
+        },
+        {
+          type: "h2",
+          text: "ログで範囲を切る",
+        },
+        {
+          type: "p",
+          text: "処理の入口から Service へ降りたあと、Mapper の SQL が終わった時刻と、次のログの時刻のあいだが空いていれば、その間で外部 I/O をしていることが多いです。",
+        },
+        {
+          type: "code",
+          title: "承認後に通知 API を呼ぶ例（抜粋）",
+          code: `04:12:03.200 INFO  ... RequestService : approve start requestId=12
+04:12:03.205 DEBUG ... RequestMapper : <==      Total: 1
+04:12:03.206 INFO  ... RequestService : db updated requestId=12
+04:12:08.910 ERROR ... NotificationClient : POST https://notify.example.internal/api/send failed
+org.springframework.web.client.ResourceAccessException: I/O error on POST request ...
+04:12:08.912 INFO  ... RequestService : approve done`,
+        },
+        {
+          type: "p",
+          text: "DB 更新は 03.206 で終わっています。ERROR は 08.910 です。あいだは外部への POST 待ちです。例外クラス名はライブラリごとに違いますが、接続失敗・タイムアウト・HTTP 4xx / 5xx を示すことが多いです。",
+        },
+        {
+          type: "h2",
+          text: "確認すること",
+        },
+        {
+          type: "table",
+          headers: ["確認", "理由"],
+          rows: [
+            ["ソースで外部呼び出し箇所を特定する", "RestTemplate、WebClient、Feign、HttpClient、メール送信クラスなど。名前はプロジェクト次第"],
+            ["application.yml の URL・タイムアウト・認証", "プロファイルごとに向き先が違うことがある"],
+            ["モックやスタブの有無", "ローカルだけ偽の応答を返し、検証では本物に繋ぐ構成がある"],
+            ["アプリサーバからの疎通", "開発 PC の curl が通っても、サーバからは FW で閉じていることがある → 「ネットワークの疎通確認」"],
+            ["外部の応答本文", "200 でも JSON の形が違うと、パース例外になる。Network タブではアプリ⇔外部 API の通信は確認できない。サーバログや一時的なログ出力で見る"],
+            ["リトライや非同期", "画面には成功と出たが、あとから通知だけ失敗している"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "ブラウザの Network タブだけでは足りない",
+          text: "Network タブで見えるのは、ブラウザと自社アプリの間です。アプリから外部 API へ出る通信は、通常そこでは確認できません。サーバ側のログ、または調査用に URL とステータスだけ一時的に出します。",
+        },
+        {
+          type: "h2",
+          text: "申請くんの例",
+        },
+        {
+          type: "p",
+          text: "承認処理は DB を更新したあと、MailService で申請者へメールを送る想定です。画面は承認済みなのにメールが来ないときは、Mapper の更新ログのあとに MailService の行があるかを見ます。SMTP サーバや通知 API の向き先は application.yml にあることが多いです。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "DB を直しても直らない",
+          text: "一覧の件数やステータスは DB で説明できるのに、社員名や部署名だけ空、といったときは、別システムのマスタ API が失敗していることがあります。SQL だけを見続けないでください。",
+        },
+        {
+          type: "h2",
+          text: "疎通確認へ進むとき",
+        },
+        {
+          type: "p",
+          text: "ログと設定で「どの外部へ出ているか」まで分かったあと、接続そのものが疑われるときは、次のレッスン「ネットワークの疎通確認」へ進みます。",
+        },
+        {
+          type: "table",
+          headers: ["ログや症状", "疎通確認でやること"],
+          rows: [
+            ["connection timed out、Read timed out", "アプリが動いているホストから、外部のホスト名・ポートへ TCP が開くか"],
+            ["Connection refused", "ホストまでは届いたが、そのポートで待ち受けが無い。URL のポート番号と向き先を再確認"],
+            ["UnknownHostException、名前解決できない", "ping や nslookup でホスト名が引けるか"],
+            ["SSLHandshakeException、証明書エラー", "curl -vk で HTTPS まで届くか。TLS はアプリより手前で失敗することもある"],
+            ["開発 PC の curl は 200、サーバ上のアプリだけ失敗", "打つ場所をアプリサーバに変える。経路と FW が PC と違う"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "tip",
+          title: "順番",
+          text: "URL とポートが分かってからコマンドです。application.yml の接続先を特定する前に ping しても、当たる先が定まりません。",
+        },
+        {
+          type: "ol",
+          items: [
+            "再現操作の時刻で、Controller → Service → Mapper の順をログで確認する",
+            "SQL のあとに時間が空く、または ERROR が外部クライアント付近なら、範囲を外部に絞る",
+            "設定の URL と、検証・本番の差分を見る",
+            "接続エラー・タイムアウトなら「ネットワークの疎通確認」。アプリサーバから外部へ ping / TCP / curl する",
+            "外部側の障害情報やメンテナンス予定も確認する",
+          ],
+        },
+        { type: "quiz", id: "ts-external" },
+      ],
+    },
+    {
       id: "net-check",
       title: "ネットワークの疎通確認",
       minutes: 14,
       blocks: [
         {
           type: "p",
-          text: "アプリのログにリクエストが無い、ブラウザがタイムアウトする、といったときは、Java のコードより手前を疑います。ここでは、自分の PC からコマンドで届く箱を切り分けます。",
+          text: "アプリのログにリクエストが無い、ブラウザがタイムアウトする、外部 API への接続エラーがログに出る、といったときは、Java のコードより手前や外側の経路を疑います。ここでは、OS のコマンドで届く箱を切り分けます。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "どこから来るか",
+          text: "ブラウザから自社アプリへ届かないときは、この章のあとにある「届いていない切り分け」とセットです。自社アプリから外部システムへ届かないときは、前の「パターン: 外部システム / 外部 API」で URL とログを確認したあと、ここへ進みます。",
         },
         {
           type: "h2",
@@ -648,7 +774,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
           type: "callout",
           kind: "note",
           title: "打つ場所で結果が変わる",
-          text: "自分の PC からと、サーバからでは通る道が違います。ブラウザが届くのに開発 PC から届かない、ということもあります。再現に近い場所から打ちます。",
+          text: "打つ場所で結果が変わります。自分の PC からと、サーバからでは通る道が違います。ブラウザが届くのに開発 PC から届かない、サーバ上のアプリだけ外部 API に失敗する、ということもあります。再現に近い場所から打ちます。",
         },
         {
           type: "h2",
@@ -778,7 +904,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
       blocks: [
         {
           type: "p",
-          text: "Java の分岐を読む前に、リクエストがサーバに届いているかを確認します。コマンドの打ち方は前の項目です。ここでは症状と意味の対応だけまとめます。",
+          text: "Java の分岐を読む前に、リクエストがサーバに届いているかを確認します。コマンドの打ち方は「ネットワークの疎通確認」です。ここでは症状と意味の対応だけまとめます。",
         },
         { type: "diagram", name: "divide", caption: "先に「どの箱まで届いたか」を切る。" },
         {
@@ -788,7 +914,8 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
             ["Network タブにリクエストが無い", "ボタンの JS、二重送信防止、別ウィンドウ"],
             ["リクエストはあるがサーバログが無い", "別インスタンス、パス違い、LB"],
             ["SQLException", "DB 接続、SQL、ロック、DB ユーザ権限"],
-            ["接続タイムアウト", "FW、DNS、接続先設定"],
+            ["接続タイムアウト", "FW、DNS、接続先設定。外部 API なら前のパターンから疎通確認へ"],
+            ["外部 API の ResourceAccessException", "自社アプリは動いている。アプリサーバから外部ホスト・ポートへの TCP / curl"],
             ["権限エラーなのにコードは permit", "DB のロール、グループマスタ"],
           ],
         },
