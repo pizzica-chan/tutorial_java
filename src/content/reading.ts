@@ -1,5 +1,6 @@
 import type { Track } from "../types";
 import { requestListEntryPointReadingSnippet } from "../data/entryPoint";
+import { requestServiceSample } from "../data/project";
 
 export const readingTrack: Track = {
   id: "reading",
@@ -153,7 +154,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "IDE では、文字列の検索と、型やメソッドの参照検索は別です。文言を探すときは文字列検索を使いましょう。呼び出し元を知るときは参照検索です。",
+          text: "IDE では、文字列の検索と、型やメソッドの参照検索は別です。文言を探すときは文字列検索を使いましょう。呼び出し元を知るときは参照検索です。呼び出し先の中身を開くときは定義へジャンプです。詳しい手順は次のレッスンです。",
         },
         {
           type: "p",
@@ -165,13 +166,136 @@ export const readingTrack: Track = {
     {
       id: "call-chain",
       title: "呼び出し元と呼び出し先",
-      minutes: 8,
+      minutes: 11,
       blocks: [
         {
           type: "p",
-          text: "メソッドを開いたら、中身の前に境界を見ましょう。",
+          text: "Java のメソッドを開いたら、中身より先に、誰が呼んでいるか（呼び出し元）と、次に誰を呼ぶか（呼び出し先）を見ましょう。",
         },
         { type: "diagram", name: "call-chain", caption: "中身より先に、誰から来て誰へ行くか。" },
+        {
+          type: "h2",
+          text: "申請くんの例",
+        },
+        {
+          type: "p",
+          text: "承認ボタンは POST /shinsei/requests/12/approve です。処理の入口は RequestController.approve で、そこから RequestService.approve へ降ります。",
+        },
+        {
+          type: "code",
+          title: "RequestController.java（呼び出し元・抜粋）",
+          lang: "java",
+          code: `@Controller
+@RequestMapping("/requests")
+@RequiredArgsConstructor
+public class RequestController {
+  private final RequestService requestService;
+
+  @PostMapping("/{id}/approve")
+  public String approve(@PathVariable Long id, @AuthenticationPrincipal LoginUser user) {
+    // → この approve にカーソルを置いて定義へジャンプすると、RequestService.approve へ着く
+    requestService.approve(id, user.getId());
+    return "redirect:/requests";
+  }
+}`,
+        },
+        {
+          type: "code",
+          title: "RequestService.java（呼び出し先）",
+          lang: "java",
+          code: requestServiceSample,
+        },
+        {
+          type: "p",
+          text: "Controller の approve から見ると、Service の approve が呼び出し先です。Service から見ると、Controller が呼び出し元で、Mapper と MailService が呼び出し先です。今どのファイルを開いているかで、向きが変わります。",
+        },
+        {
+          type: "h2",
+          text: "呼び出し先へ降りる",
+        },
+        {
+          type: "p",
+          text: "呼ばれている側の中身を開くときは、定義へジャンプです。文字列検索ではありません。",
+        },
+        {
+          type: "ol",
+          items: [
+            "呼び出しのメソッド名にカーソルを置く。上の例なら requestService.approve の approve。クラス名ではない",
+            "定義へジャンプする。IntelliJ では「宣言または使用箇所に移動」、Eclipse では「宣言を開く」。メソッド名を Ctrl+クリックしても同じことが多い",
+            "着いた先で、また次の呼び出しに同じ操作をする。Service の requestMapper.findById なら、Mapper の宣言へ着く",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "キーはキーマップで違う",
+          text: "ショートカットは、IDE の種類やキーマップの設定で変わります。メニューの名前で覚えましょう。ここでの名前は、日本語化した IDE での表記です。IntelliJ の「宣言または使用箇所に移動」は、カーソルが呼び出しなら宣言へ、宣言なら使用箇所の一覧です。先にカーソル位置を合わせましょう。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Mapper はインタフェース",
+          text: "定義へジャンプは、Java の宣言に着きます。RequestMapper はインタフェースなので、着くのはメソッドの宣言です。SQL の文は XML 側です。手順は「リクエストの追跡」の「SQL の突き合わせ」です。",
+        },
+        {
+          type: "h2",
+          text: "呼び出し元を一覧する",
+        },
+        {
+          type: "p",
+          text: "今のメソッドを誰が呼んでいるかを知るときは、参照検索です。前のレッスンの文字列検索とは別です。",
+        },
+        {
+          type: "ol",
+          items: [
+            "メソッドの宣言の名前にカーソルを置く。上の例なら public void approve の approve",
+            "参照検索する。IntelliJ では「使用箇所の検索」、Eclipse では「ワークスペース内の参照」（右クリックなら「参照」）",
+            "一覧の行を開いて、引数に何を渡しているかを見る",
+          ],
+        },
+        {
+          type: "p",
+          text: "申請くんでは、画面用の RequestController と、JSON 用の RequestApiController の両方が、同じ RequestService.approve を呼びます。文字列検索で approve を拾うと、URL のパスや別クラスの同名メソッドも混ざります。参照検索は、この Java メソッドを呼んでいる箇所に絞れます。",
+        },
+        {
+          type: "code",
+          title: "同じ Service を呼ぶ箇所（例）",
+          lang: "java",
+          code: `// RequestController（画面）
+requestService.approve(id, user.getId());
+
+// RequestApiController（JSON）
+requestService.approve(id, user.getId());`,
+        },
+        {
+          type: "p",
+          text: "一覧にバッチやテストが出ることがあります。メソッドの中身は正しく見えても結果が違うときは、今見ている処理の入口とは別の呼び出し元を疑いましょう。画面用とバッチ用で実装が二つ、など。",
+        },
+        {
+          type: "h2",
+          text: "呼び出しを階層で見る",
+        },
+        {
+          type: "p",
+          text: "呼び出し元や呼び出し先が複数あるときは、呼び出し階層が使えます。今のメソッドを起点に、上（誰が呼ぶか）と下（誰を呼ぶか）が階層（ツリー）になります。1段だけなら、参照検索と定義へジャンプで足ります。",
+        },
+        {
+          type: "table",
+          headers: ["やりたいこと", "IntelliJ", "Eclipse"],
+          rows: [
+            ["呼ばれている側の中身を開く", "宣言または使用箇所に移動", "宣言を開く"],
+            ["誰が呼んでいるかを一覧する", "使用箇所の検索", "ワークスペース内の参照"],
+            ["呼び出しを階層で見る", "呼び出し階層", "呼び出し階層を開く"],
+          ],
+        },
+        {
+          type: "h2",
+          text: "中身の前に見ること",
+        },
+        {
+          type: "p",
+          text: "辿れるようになったら、中身の前に次を見ましょう。",
+        },
         {
           type: "ul",
           items: [
@@ -179,13 +303,19 @@ export const readingTrack: Track = {
             "戻り値は画面に出るか、次の更新に使われるか",
             "例外はどこで catch され、どのメッセージになるか（@ControllerAdvice のこともある）",
             "同じ型（インタフェース）の別実装が無いか（モックなど、プロファイルで切り替わることがある）",
-            "Filter、Interceptor、AOP は、このメソッドのソースに呼び出しが無い",
           ],
         },
         {
           type: "p",
-          text: "メソッドの中身は正しく見えても結果が違うときは、別の処理の入口から呼ばれていることがあります。画面用とバッチ用で実装が二つ、など。",
+          text: "実装へジャンプは、同じインタフェースの実体クラスを開く操作です。モックや、プロファイルで切り替わる実装を見るときに使います。IntelliJ では「実装に移動」、Eclipse では「実装を開く」です。MyBatis の Mapper は Java の実装クラスが無いことが多いので、ここでは使いません。SQL は XML 側です。",
         },
+        {
+          type: "callout",
+          kind: "note",
+          title: "ソースに呼び出しが無いもの",
+          text: "Filter、Interceptor、AOP は、このメソッドのソースに呼び出しが無く、参照検索の一覧にも出ません。探し方は「アプリの地図」の「Filter / Interceptor / AOP」です。",
+        },
+        { type: "quiz", id: "read-call" },
       ],
     },
     {

@@ -11,6 +11,27 @@ export type ProjectFile = {
   code: string;
 };
 
+/** 申請くんの RequestService。ソースツリーと「呼び出し元と呼び出し先」で同じ抜粋を使う */
+export const requestServiceSample = `@Service
+@RequiredArgsConstructor
+public class RequestService {
+  private final RequestMapper requestMapper;
+  private final MailService mailService;
+
+  public void approve(Long requestId, Long approverId) {
+    RequestEntity request = requestMapper.findById(requestId);
+    if (request == null) {
+      throw new NotFoundException("申請がありません");
+    }
+    if (!request.getApproverId().equals(approverId)) {
+      throw new ForbiddenException("承認権限がありません");
+    }
+    request.setStatus("APPROVED");
+    requestMapper.update(request);
+    mailService.notifyApplicant(request);
+  }
+}`;
+
 /** 教材用。申請くんの pom.xml 抜粋 */
 export const shinseiPomSnippet = `<parent>
   <groupId>org.springframework.boot</groupId>
@@ -159,25 +180,7 @@ public class RequestApiController {
     path: "src/main/java/.../service/RequestService.java",
     note: "業務の判断",
     why: "権限チェック、ステータス遷移、メール送信など「何をしてよいか」がここに集まります。バグの本体もここに多いです。",
-    code: `@Service
-@RequiredArgsConstructor
-public class RequestService {
-  private final RequestMapper requestMapper;
-  private final MailService mailService;
-
-  public void approve(Long requestId, Long approverId) {
-    RequestEntity request = requestMapper.findById(requestId);
-    if (request == null) {
-      throw new NotFoundException("申請がありません");
-    }
-    if (!request.getApproverId().equals(approverId)) {
-      throw new ForbiddenException("承認権限がありません");
-    }
-    request.setStatus("APPROVED");
-    requestMapper.update(request);
-    mailService.notifyApplicant(request);
-  }
-}`,
+    code: requestServiceSample,
   },
   {
     path: "src/main/java/.../mapper/RequestMapper.java",

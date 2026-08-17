@@ -152,6 +152,19 @@ export const quizzes = {
     explanation:
       "画面に出ている言葉、パス、DB 名のどれかがヒットします。言語は一致しないことがあるので複数試します。",
   },
+  "read-call": {
+    id: "read-call",
+    question: "Controller の requestService.approve(...) の approve にカーソルがある。呼ばれている側の中身を開く操作は？",
+    choices: [
+      "文字列検索で approve を全ファイルから探す",
+      "定義へジャンプ（宣言または使用箇所に移動 / 宣言を開く）",
+      "参照検索（使用箇所の検索 / ワークスペース内の参照）",
+      "Network タブでリクエストを見る",
+    ],
+    answer: 1,
+    explanation:
+      "呼び出し先の中身は定義へジャンプです。参照検索は、今のメソッドを誰が呼んでいるかの一覧です。文字列検索だと同名が混ざります。",
+  },
   "read-debug": {
     id: "read-debug",
     question: "画面に「承認済み」と出る。Network タブの JSON は status: PENDING。次は？",

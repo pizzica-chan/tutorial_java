@@ -580,8 +580,23 @@ export const terms: TermDef[] = [
   },
   {
     term: "参照検索",
-    aliases: ["参照検索", "Find Usages", "References", "Find References"],
-    body: "IDEの機能。そのメソッドや型がどこから呼ばれているかを一覧します。IntelliJ では Find Usages、Eclipse では References という名前です。",
+    aliases: ["参照検索", "使用箇所の検索", "ワークスペース内の参照", "Find Usages", "References", "Find References"],
+    body: "IDEの機能。そのメソッドや型がどこから呼ばれているかを一覧します。日本語化した IntelliJ では「使用箇所の検索」、Eclipse では「ワークスペース内の参照」という名前です。",
+  },
+  {
+    term: "定義へジャンプ",
+    aliases: ["定義へジャンプ", "宣言または使用箇所に移動", "宣言を開く", "宣言へジャンプ", "Go to Declaration", "Open Declaration"],
+    body: "IDEの機能。呼び出しのメソッド名から、その宣言（呼ばれている側）を開きます。日本語化した IntelliJ では「宣言または使用箇所に移動」、Eclipse では「宣言を開く」という名前です。",
+  },
+  {
+    term: "呼び出し階層",
+    aliases: ["呼び出し階層", "呼び出し階層を開く", "Call Hierarchy"],
+    body: "IDEの機能。今のメソッドを起点に、呼び出し元と呼び出し先を階層（ツリー）で出します。日本語化した IntelliJ では「呼び出し階層」、Eclipse では「呼び出し階層を開く」です。1段だけなら参照検索と定義へジャンプで足ります。",
+  },
+  {
+    term: "実装へジャンプ",
+    aliases: ["実装へジャンプ", "実装に移動", "実装を開く", "Go to Implementation"],
+    body: "IDEの機能。インタフェースの宣言から、実体のクラスを開きます。日本語化した IntelliJ では「実装に移動」、Eclipse では「実装を開く」という名前です。MyBatis の Mapper は Java の実装クラスが無いことが多いです。",
   },
   {
     term: "Networkタブ",
