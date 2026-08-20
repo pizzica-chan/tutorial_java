@@ -1,5 +1,14 @@
 import type { Track } from "../types";
-import { shinseiGradleSnippet, shinseiListRenderedSnippet, shinseiListTemplateSnippet, shinseiPomSnippet } from "../data/project";
+import { requestControllerSample } from "../data/entryPoint";
+import {
+  shinseiAppCssSnippet,
+  shinseiAppJsSnippet,
+  shinseiGradleSnippet,
+  shinseiLayoutStaticSnippet,
+  shinseiListRenderedSnippet,
+  shinseiListTemplateSnippet,
+  shinseiPomSnippet,
+} from "../data/project";
 
 export const javaMapTrack: Track = {
   id: "java-map",
@@ -18,7 +27,15 @@ export const javaMapTrack: Track = {
           type: "p",
           text: "例として、架空の社内申請アプリ「申請くん」を使います。Maven + Spring Boot です。申請の一覧・詳細・承認ができる、という想定で、実在しません。プロジェクトごとに名前は違いますが、役割の分け方は似ています。",
         },
+        {
+          type: "p",
+          text: "Maven + Spring Boot では、おおむね次の並びです。左のツリーが申請くんの例です。ファイル名をクリックすると、右に役割と抜粋が出ます。",
+        },
         { type: "widget", name: "explorer" },
+        {
+          type: "p",
+          text: "java 配下の jp/co/example/shinsei は、IDE でパッケージを折りたたんだ表示と同じです。実体のフォルダは jp、co、example、shinsei に分かれます。",
+        },
         {
           type: "callout",
           kind: "tip",
@@ -219,7 +236,18 @@ server:
         },
         {
           type: "p",
-          text: "ローカルでは動き、別環境では落ちる場合、まず設定差を見ましょう。URL、ユーザ、プロファイル、コンテキストパス、ファイルパス、メールサーバ。",
+          text: "ローカルでは動き、別環境では落ちる場合、まず設定差を見ましょう。",
+        },
+        {
+          type: "ul",
+          items: [
+            "URL",
+            "ユーザ",
+            "プロファイル",
+            "コンテキストパス",
+            "ファイルパス",
+            "メールサーバ",
+          ],
         },
         {
           type: "ul",
@@ -245,21 +273,54 @@ server:
       blocks: [
         {
           type: "p",
-          text: "Controller に SQL が書いてある、Service が薄い、層の名前が違うといったことはよくあります。名前より、次の順で探しましょう。",
+          text: "画面の URL や API のパスから、処理がどこで動いているかを追うときの型です。まずは層の役割と、開く順番だけを押さえます。",
         },
-        { type: "diagram", name: "layers", caption: "探す順番。層の名前が違っても、この縦の線は同じです。" },
+        {
+          type: "h2",
+          text: "層の役割とたどり方",
+        },
+        {
+          type: "ul",
+          items: [
+            "Controller … リクエストの受付と応答",
+            "Service … ビジネスロジック（業務として何をするか）",
+            "Repository / Mapper … データベースとのやり取り",
+          ],
+        },
+        {
+          type: "p",
+          text: "申請くんの承認を例にすると、承認可否の判定、ステータスの更新、メール送信が Service にあります。",
+        },
+        { type: "diagram", name: "layers", caption: "探す順番。クラス名が違っても、受付 → ビジネスロジック → DB の流れは同じです。" },
         {
           type: "ol",
           items: [
             "URL を受ける Java メソッド（Spring の @GetMapping など）",
-            "それが呼ぶ Java メソッド（業務判断）",
+            "それが呼ぶ Java メソッド（ビジネスロジック）",
             "DB または外部 API",
-            "戻り値を画面または JSON に載せる場所",
           ],
         },
         {
+          type: "p",
+          text: "ここまでは、Controller → Service → Mapper と分かれている想定です。実際には Service を飛ばして Controller から Mapper を呼ぶなど、並びがずれることがあります。ずれていても、上の順番（受付 → ビジネスロジック → DB）で、今のメソッドから呼ばれている先を開いていけば十分です。",
+        },
+        {
           type: "code",
-          title: "Controller が直接 Mapper を呼ぶ例",
+          title: "たどる例（Controller → Service、抜粋）",
+          lang: "java",
+          code: `@GetMapping
+public String list(Model model, @AuthenticationPrincipal LoginUser user) {
+  model.addAttribute("requests", requestService.findMine(user.getId()));
+  return "request/list";
+}`,
+        },
+        {
+          type: "p",
+          text: "list が URL の受付です。requestService.findMine が次に開く先です。return の意味は、このあと別の話として見ます。",
+        },
+        {
+          type: "code",
+          title: "並びがずれる例（Controller → Mapper、抜粋）",
           lang: "java",
           code: `@GetMapping("/requests")
 public String list(Model model, @AuthenticationPrincipal LoginUser user) {
@@ -269,11 +330,41 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "JSON を返す Web API でも、探す順番は同じです。違うのは出口です。テンプレート名ではなく、オブジェクトを返します。",
+          text: "Service を飛ばして Mapper を直呼びしている例です。たどり方は同じで、list から requestMapper.findMine を開きます。",
+        },
+        {
+          type: "h2",
+          text: "Controller の返し方（出口の 2 パターン）",
+        },
+        {
+          type: "p",
+          text: "画面用はテンプレート名（文字列）を返します。Web API 用はオブジェクトを返し、JSON になります。",
         },
         {
           type: "code",
-          title: "RestController（JSON）",
+          title: "パターン1: テンプレート名を返す（画面）",
+          lang: "java",
+          code: `@Controller
+@RequestMapping("/requests")
+public class RequestController {
+  @GetMapping
+  public String list(Model model, @AuthenticationPrincipal LoginUser user) {
+    model.addAttribute("requests", requestService.findMine(user.getId()));
+    return "request/list";
+  }
+}`,
+        },
+        {
+          type: "ul",
+          items: [
+            "return \"request/list\" は HTML テンプレートの場所を指す",
+            "サーバが templates/request/list.html を組み立て、ブラウザに HTML が届く",
+            "表示がおかしいときは templates も見ましょう",
+          ],
+        },
+        {
+          type: "code",
+          title: "パターン2: オブジェクトを返す（Web API）",
           lang: "java",
           code: `@RestController
 @RequestMapping("/api/requests")
@@ -284,40 +375,112 @@ public class RequestApiController {
   }
 }`,
         },
+        {
+          type: "ul",
+          items: [
+            "return のオブジェクトが JSON に変換されて届く",
+            "templates は使わない",
+            "データの中身だけおかしいときは Network タブの JSON を確認しましょう",
+          ],
+        },
+        {
+          type: "p",
+          text: "同じ RequestService を呼んでも、出口が HTML か JSON かで、クライアントが受け取るものが変わります。たどる順番は同じです。最後に見る場所だけ切り替えましょう。",
+        },
         { type: "quiz", id: "java-layer" },
       ],
     },
     {
       id: "view-static",
       title: "テンプレートと静的ファイル",
-      minutes: 7,
+      minutes: 8,
       blocks: [
         {
           type: "p",
-          text: "Spring MVC + Thymeleaf では、Controller が返す文字列が templates 配下のファイル名になります。request/list なら templates/request/list.html です。",
+          text: "申請くんの一覧画面を例に、templates と static の役割を見ます。Controller が返す文字列がテンプレートの場所になり、CSS や JS は多くの場合 static から読み込まれます。",
         },
-        { type: "diagram", name: "view-file" },
+        {
+          type: "h2",
+          text: "テンプレート（templates）",
+        },
+        {
+          type: "p",
+          text: "Controller は Model にデータを載せ、テンプレート名を return します。中身の th:each や th:if は、次の項目で読みます。",
+        },
+        {
+          type: "code",
+          title: "RequestController.java（抜粋）",
+          lang: "java",
+          code: requestControllerSample,
+        },
+        { type: "diagram", name: "view-file", caption: "return \"request/list\" が templates/request/list.html を指します。" },
+        {
+          type: "h2",
+          text: "静的ファイル（static）",
+        },
+        {
+          type: "p",
+          text: "CSS や JS は Java ではなく src/main/resources/static 配下に置きます。テンプレートの head から読み込みます。",
+        },
+        {
+          type: "code",
+          title: "templates から static を読み込む（抜粋）",
+          lang: "html",
+          code: shinseiLayoutStaticSnippet,
+        },
+        {
+          type: "p",
+          text: "th:href=\"@{/css/app.css}\" は、context-path を含めた URL に変換されます。申請くんでは /shinsei/css/app.css のように見えます。",
+        },
+        {
+          type: "code",
+          title: "static/css/app.css（抜粋）",
+          lang: "css",
+          code: shinseiAppCssSnippet,
+        },
+        {
+          type: "code",
+          title: "static/js/app.js（抜粋）",
+          lang: "javascript",
+          code: shinseiAppJsSnippet,
+        },
+        {
+          type: "p",
+          text: "ブラウザは HTML のあと、CSS と JS を別リクエストで取りに行きます。Java の処理は通りません。",
+        },
+        {
+          type: "p",
+          text: "一方で、テンプレートや HTML に直接書いている画面もあります。申請くんは static に分けて置いていますが、見た目や動きを直すときは templates 内も見ましょう。",
+        },
         {
           type: "ul",
           items: [
-            "templates … サーバが組み立てる HTML",
-            "static … CSS / JS / 画像。URL が /css/app.css のように直接見える",
-            "JSP なら webapp/WEB-INF/views が多い",
+            "<style>",
+            "<script>",
+            "onclick などの属性",
           ],
+        },
+        {
+          type: "code",
+          title: "HTML に直接書く例",
+          lang: "html",
+          code: `<style>
+  .warn { color: #c00; }
+</style>
+<button type="button" onclick="return confirm('承認してよいですか？')">承認</button>
+<script>
+  function confirmApprove() { /* ... */ }
+</script>`,
         },
         {
           type: "callout",
           kind: "trap",
           title: "見た目だけ壊れる",
-          text: "画面が白い、スタイルが当たっていないのは、Java 例外ではなく静的ファイルのパス違いであることが多いです。Network タブで 404 を探しましょう。",
+          text: "画面は出るのにスタイルだけ当たらないときは、Network タブで /shinsei/css/app.css が 404 になっていないかを見ましょう。ファイルの有無と URL のずれが多いです。",
         },
         {
           type: "p",
-          text: "Spring の @RestController や @ResponseBody は、戻り値を JSON にします。templates 配下は探しません。画面用の Controller と API 用が並んでいることがあります。",
-        },
-        {
-          type: "p",
-          text: "templates 配下の HTML の中身の読み方は、次の項目です。",
+          text: "@RestController は templates を使いません。JSON を返す Web API は、前の項目のとおり出口が JSON です。",
         },
       ],
     },
@@ -484,7 +647,15 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "リクエストは Controller の前にフィルタを通ります。ログイン必須、CSRF、文字コード。ここに原因があると、Controller のブレークポイントは止まりません。Spring Security も、実体は Filter の連鎖です。",
+          text: "リクエストは Controller の前にフィルタを通ります。ここに原因があると、Controller のブレークポイントは止まりません。Spring Security も、実体は Filter の連鎖です。",
+        },
+        {
+          type: "ul",
+          items: [
+            "ログイン必須",
+            "CSRF",
+            "文字コード",
+          ],
         },
         {
           type: "diagram",
@@ -493,7 +664,20 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "Java メソッドに入らないときは、Spring Security の SecurityConfig のパス許可、CSRF、セッション、コンテキストパスを順に確認しましょう。画面の未ログインは 302 でログイン HTML、Web API は 401 で JSON、という違いがよくあります。決まりではありません。",
+          text: "Java メソッドに入らないときは、Spring Security の設定を順に確認しましょう。",
+        },
+        {
+          type: "ol",
+          items: [
+            "パス許可",
+            "CSRF",
+            "セッション",
+            "コンテキストパス",
+          ],
+        },
+        {
+          type: "p",
+          text: "画面の未ログインは 302 でログイン HTML、Web API は 401 で JSON、という違いがよくあります。決まりではありません。",
         },
         {
           type: "code",
@@ -524,7 +708,19 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "探すときは HandlerInterceptor、addInterceptors、WebMvcConfigurer で検索しましょう。preHandle が false を返すと、Controller に届きません。",
+          text: "探すときは次の語で検索しましょう。",
+        },
+        {
+          type: "ul",
+          items: [
+            "HandlerInterceptor",
+            "addInterceptors",
+            "WebMvcConfigurer",
+          ],
+        },
+        {
+          type: "p",
+          text: "preHandle が false を返すと、Controller に届きません。",
         },
         {
           type: "h2",
@@ -532,7 +728,15 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "Service のメソッドを直接呼んでいるように見えても、実行時はプロキシが先に動きます。@Transactional、独自の @Aspect、メソッドの @PreAuthorize がここに載ります。スタックトレースの $Proxy や CGLIB は、この経由です。",
+          text: "Service のメソッドを直接呼んでいるように見えても、実行時はプロキシが先に動きます。スタックトレースの $Proxy や CGLIB は、この経由です。",
+        },
+        {
+          type: "ul",
+          items: [
+            "@Transactional",
+            "独自の @Aspect",
+            "メソッドの @PreAuthorize",
+          ],
         },
         {
           type: "code",

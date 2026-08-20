@@ -112,7 +112,7 @@ public class RequestApiController {
       blocks: [
         {
           type: "p",
-          text: "Controller の次に、業務判断があるメソッドを見ましょう。次の印を追いましょう。",
+          text: "Controller の次に、ビジネスロジックのメソッドを見ましょう。次の印を追いましょう。",
         },
         {
           type: "ul",

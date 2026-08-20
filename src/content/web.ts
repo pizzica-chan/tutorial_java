@@ -44,7 +44,7 @@ export const webTrack: Track = {
         { type: "diagram", name: "html-json", caption: "同じ HTTP の往復。違うのは本文の形です。" },
         {
           type: "p",
-          text: "HTML はブラウザが画面にする応答です。JSON はデータで、画面の JS や他システムが読みます。Web API と呼ばれます。",
+          text: "HTML はブラウザが画面にする応答です。JSON はデータの形式で、画面の JS や他システムが読みます。JSON を返す HTTP の窓口は Web API と呼ばれることが多いです。",
         },
         {
           type: "callout",
@@ -154,7 +154,20 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "HTTP メソッドは、操作の意味を表す約束です。GET は取得、POST は登録や送信、PUT / PATCH は更新、DELETE は削除、と読むことが多いです。ただし、更新を POST だけで送る、削除を GET で呼ぶといった、約束と違う実装も現場では多いです。同じ URL でも HTTP メソッドが違えば、別の処理が呼ばれることがあります。切り分けでは、教科書どおりの意味より、実際に送っている HTTP メソッドと URL を見ましょう。",
+          text: "HTTP メソッドは、操作の意味を表す約束です。",
+        },
+        {
+          type: "ul",
+          items: [
+            "GET … 取得",
+            "POST … 登録や送信",
+            "PUT / PATCH … 更新",
+            "DELETE … 削除",
+          ],
+        },
+        {
+          type: "p",
+          text: "ただし、更新を POST だけで送る、削除を GET で呼ぶといった、約束と違う実装も現場では多いです。同じ URL でも HTTP メソッドが違えば、別の処理が呼ばれることがあります。切り分けでは、教科書どおりの意味より、実際に送っている HTTP メソッドと URL を見ましょう。",
         },
         { type: "diagram", name: "get-post" },
         {

@@ -4,6 +4,8 @@ import xml from "highlight.js/lib/languages/xml";
 import yaml from "highlight.js/lib/languages/yaml";
 import http from "highlight.js/lib/languages/http";
 import sql from "highlight.js/lib/languages/sql";
+import javascript from "highlight.js/lib/languages/javascript";
+import css from "highlight.js/lib/languages/css";
 import { lookupTerm, type TermDef } from "../data/terms";
 
 hljs.registerLanguage("java", java);
@@ -12,6 +14,8 @@ hljs.registerLanguage("html", xml);
 hljs.registerLanguage("yaml", yaml);
 hljs.registerLanguage("http", http);
 hljs.registerLanguage("sql", sql);
+hljs.registerLanguage("javascript", javascript);
+hljs.registerLanguage("css", css);
 
 const aliases: Record<string, string> = {
   java: "java",
@@ -22,6 +26,9 @@ const aliases: Record<string, string> = {
   markup: "html",
   http: "http",
   sql: "sql",
+  javascript: "javascript",
+  js: "javascript",
+  css: "css",
 };
 
 const JAVA_KEYWORDS = new Set([
@@ -140,6 +147,8 @@ export function inferLang(code: string, hint?: string, path?: string): string | 
   if (file.endsWith(".yml") || file.endsWith(".yaml")) return "yaml";
   if (file.endsWith(".xml")) return "xml";
   if (file.endsWith(".html")) return "html";
+  if (file.endsWith(".js")) return "javascript";
+  if (file.endsWith(".css")) return "css";
 
   const trimmed = code.trim();
   if (/^(GET|POST|PUT|DELETE|PATCH|HEAD|HTTP\/)\b/i.test(trimmed)) return "http";

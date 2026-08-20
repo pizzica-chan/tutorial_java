@@ -62,6 +62,48 @@ function Node({ kicker, title, sub }: { kicker: string; title: string; sub?: str
   );
 }
 
+function IconNode({
+  icon,
+  kicker,
+  title,
+  sub,
+}: {
+  icon: IconName;
+  kicker: string;
+  title: string;
+  sub?: string;
+}) {
+  return (
+    <div className="d-node has-icon">
+      <Icon name={icon} size={20} className="d-node-icon" />
+      <span>{kicker}</span>
+      <strong>{title}</strong>
+      {sub ? <small>{sub}</small> : null}
+    </div>
+  );
+}
+
+function ColCard({ icon, title, children }: { icon: IconName; title: string; children: string }) {
+  return (
+    <div className="d-col">
+      <h4>
+        <Icon name={icon} size={16} />
+        {title}
+      </h4>
+      <p>{children}</p>
+    </div>
+  );
+}
+
+function Chip({ icon, children }: { icon: IconName; children: string }) {
+  return (
+    <span className="d-chip">
+      <Icon name={icon} size={14} />
+      {children}
+    </span>
+  );
+}
+
 function Arrow({ label, down, reverse }: { label: string; down?: boolean; reverse?: boolean }) {
   return (
     <div className={`d-arrow ${down ? "down" : ""} ${reverse ? "reverse" : ""}`} aria-hidden="true">
@@ -123,11 +165,11 @@ function ScenarioLayers() {
 function FrontBack() {
   return (
     <div className="d-row wrap">
-      <Node kicker="FRONT" title="フロントエンド" sub="ブラウザ・画面" />
+      <IconNode icon="browser" kicker="FRONT" title="フロントエンド" sub="ブラウザ・画面" />
       <Arrow label="HTTP" />
-      <Node kicker="BACK" title="バックエンド" sub="Java・SQL を投げる" />
+      <IconNode icon="inbox" kicker="BACK" title="バックエンド" sub="Java・SQL を投げる" />
       <Arrow label="SQL" />
-      <Node kicker="DATA" title="DB" sub="データを保存する" />
+      <IconNode icon="database" kicker="DATA" title="DB" sub="データを保存する" />
     </div>
   );
 }
@@ -260,15 +302,21 @@ function SessionCookie() {
 function Layers() {
   return (
     <div className="d-stack">
-      <div className="d-layer">画面 / URL</div>
+      <Layer icon="browser">画面 / URL</Layer>
       <Arrow down label="受け口" />
-      <div className="d-layer accent">Controller</div>
-      <Arrow down label="業務判断" />
-      <div className="d-layer accent">Service</div>
+      <Layer icon="inbox" accent>
+        Controller
+      </Layer>
+      <Arrow down label="ビジネスロジック" />
+      <Layer icon="cog" accent>
+        Service
+      </Layer>
       <Arrow down label="永続化" />
-      <div className="d-layer accent">Repository / Mapper</div>
+      <Layer icon="file" accent>
+        Repository / Mapper
+      </Layer>
       <Arrow down label="SQL" />
-      <div className="d-layer">DB</div>
+      <Layer icon="database">DB</Layer>
     </div>
   );
 }
@@ -276,13 +324,17 @@ function Layers() {
 function Filters() {
   return (
     <div className="d-stack">
-      <div className="d-layer">リクエスト</div>
+      <Layer icon="globe">リクエスト</Layer>
       <Arrow down label="Security の Filter Chain" />
-      <div className="d-layer accent">CSRF</div>
+      <Layer icon="shield" accent>
+        CSRF
+      </Layer>
       <Arrow down label="例: トークン不正ならここで止まる" />
-      <div className="d-layer accent">ログイン / 権限</div>
+      <Layer icon="lock" accent>
+        ログイン / 権限
+      </Layer>
       <Arrow down label="例: 未ログインならここで止まる" />
-      <div className="d-layer">Controller</div>
+      <Layer icon="inbox">Controller</Layer>
     </div>
   );
 }
@@ -290,19 +342,22 @@ function Filters() {
 function ProtocolStack() {
   return (
     <div className="d-stack d-protocol-stack">
-      <Node
+      <IconNode
+        icon="globe"
         kicker="LAYER7 アプリケーション層"
         title="HTTP"
         sub="Network タブ・curl … URL・ステータス・Content-Type"
       />
       <Arrow down label="TCP で載せる" />
-      <Node
+      <IconNode
+        icon="route"
         kicker="LAYER4 トランスポート層"
         title="TCP"
         sub="Test-NetConnection・nc・telnet … ポート 8080 まで"
       />
       <Arrow down label="IP で届ける" />
-      <Node
+      <IconNode
+        icon="server"
         kicker="LAYER3 ネットワーク層"
         title="IP"
         sub="ping・traceroute … ホスト intranet.example.co.jp まで"
@@ -315,17 +370,23 @@ function ProtocolStack() {
 function CrossCut() {
   return (
     <div className="d-stack">
-      <div className="d-layer">リクエスト</div>
+      <Layer icon="globe">リクエスト</Layer>
       <Arrow down label="サーブレットの仕組み" />
-      <div className="d-layer accent">Filter</div>
+      <Layer icon="shield" accent>
+        Filter
+      </Layer>
       <Arrow down label="Spring MVC" />
-      <div className="d-layer accent">Interceptor</div>
+      <Layer icon="route" accent>
+        Interceptor
+      </Layer>
       <Arrow down label="Java メソッド本体" />
-      <div className="d-layer">Controller</div>
+      <Layer icon="inbox">Controller</Layer>
       <Arrow down label="見た目は service.approve()" />
-      <div className="d-layer accent">AOP / プロキシ</div>
+      <Layer icon="wrench" accent>
+        AOP / プロキシ
+      </Layer>
       <Arrow down label="実体" />
-      <div className="d-layer">Service</div>
+      <Layer icon="cog">Service</Layer>
     </div>
   );
 }
@@ -333,25 +394,27 @@ function CrossCut() {
 function Mapping() {
   return (
     <div className="d-formula">
-      <div className="d-layer">@RequestMapping("/requests")</div>
+      <Layer icon="file">@RequestMapping("/requests")</Layer>
       <span className="d-plus">+</span>
-      <div className="d-layer">{'@GetMapping("/{id}")'}</div>
+      <Layer icon="link">{'@GetMapping("/{id}")'}</Layer>
       <span className="d-plus">=</span>
-      <div className="d-layer accent">GET /requests/12</div>
+      <Layer icon="route" accent>
+        GET /requests/12
+      </Layer>
     </div>
   );
 }
 
 function ReadEntry() {
   return (
-    <div className="d-row wrap">
-      <Node kicker="1" title="画面の URL" />
+    <div className="d-row d-flow-4">
+      <IconNode icon="link" kicker="1" title="画面の URL" />
       <Arrow label="検索" />
-      <Node kicker="2" title="Controller" />
+      <IconNode icon="inbox" kicker="2" title="Controller" />
       <Arrow label="降りる" />
-      <Node kicker="3" title="Service / SQL" />
+      <IconNode icon="cog" kicker="3" title="Service / SQL" />
       <Arrow label="突き合わせ" />
-      <Node kicker="4" title="テンプレート" />
+      <IconNode icon="file" kicker="4" title="テンプレート" />
     </div>
   );
 }
@@ -360,9 +423,9 @@ function ValueOrigin() {
   return (
     <div className="d-origin">
       <div className="d-origin-src">
-        <Node kicker="FORM" title="画面入力" sub="name=approverId" />
-        <Node kicker="DB" title="テーブル" sub="approver_id" />
-        <Node kicker="SESSION" title="ログイン情報" />
+        <IconNode icon="browser" kicker="FORM" title="画面入力" sub="name=approverId" />
+        <IconNode icon="database" kicker="DB" title="テーブル" sub="approver_id" />
+        <IconNode icon="user" kicker="SESSION" title="ログイン情報" />
       </div>
       <Arrow down label="セットされる場所を辿る" />
       <div className="d-layer warn">request.getApproverId() が null → NPE</div>
@@ -497,14 +560,12 @@ function Divide() {
 function GetPost() {
   return (
     <div className="d-cols">
-      <div className="d-col">
-        <h4>GET</h4>
-        <p>見る。再読込しても副作用が小さいことが期待される</p>
-      </div>
-      <div className="d-col">
-        <h4>POST</h4>
-        <p>変える。登録・更新・削除・承認</p>
-      </div>
+      <ColCard icon="eye" title="GET">
+        見る。再読込しても副作用が小さいことが期待される
+      </ColCard>
+      <ColCard icon="send" title="POST">
+        変える。登録・更新・削除・承認
+      </ColCard>
     </div>
   );
 }
@@ -512,22 +573,18 @@ function GetPost() {
 function StatusCodes() {
   return (
     <div className="d-cols">
-      <div className="d-col">
-        <h4>2xx</h4>
-        <p>応答を返せた。業務として正しいかは別</p>
-      </div>
-      <div className="d-col">
-        <h4>3xx</h4>
-        <p>別 URL へ誘導。ログイン画面や POST 後のリダイレクト</p>
-      </div>
-      <div className="d-col">
-        <h4>4xx</h4>
-        <p>送り方・権限・行き先。クライアント側を疑う</p>
-      </div>
-      <div className="d-col">
-        <h4>5xx</h4>
-        <p>サーバ例外。スタックトレースを見る</p>
-      </div>
+      <ColCard icon="check" title="2xx">
+        応答を返せた。業務として正しいかは別
+      </ColCard>
+      <ColCard icon="route" title="3xx">
+        別 URL へ誘導。ログイン画面や POST 後のリダイレクト
+      </ColCard>
+      <ColCard icon="warn" title="4xx">
+        送り方・権限・行き先。クライアント側を疑う
+      </ColCard>
+      <ColCard icon="server" title="5xx">
+        サーバ例外。スタックトレースを見る
+      </ColCard>
     </div>
   );
 }
@@ -535,14 +592,12 @@ function StatusCodes() {
 function HtmlJson() {
   return (
     <div className="d-cols">
-      <div className="d-col">
-        <h4>HTML（画面）</h4>
-        <p>ブラウザが描画する。Controller がテンプレート名を返す</p>
-      </div>
-      <div className="d-col">
-        <h4>JSON（Web API）</h4>
-        <p>JS や他システムが読むデータ。RestController がオブジェクトを返す</p>
-      </div>
+      <ColCard icon="browser" title="HTML（画面）">
+        ブラウザが描画する。Controller がテンプレート名を返す
+      </ColCard>
+      <ColCard icon="braces" title="JSON（データ）">
+        JS や他システムが読む。Web API ではこの形が多い
+      </ColCard>
     </div>
   );
 }
@@ -550,12 +605,14 @@ function HtmlJson() {
 function PageAssets() {
   return (
     <div className="d-n1">
-      <div className="d-layer accent">GET /requests → HTML</div>
+      <Layer icon="browser" accent>
+        GET /requests → HTML
+      </Layer>
       <Arrow down label="ブラウザが追加で取る" />
       <div className="d-n1-rows">
-        <span>CSS</span>
-        <span>JS</span>
-        <span>画像</span>
+        <Chip icon="file">CSS</Chip>
+        <Chip icon="braces">JS</Chip>
+        <Chip icon="image">画像</Chip>
       </div>
     </div>
   );
@@ -564,11 +621,11 @@ function PageAssets() {
 function CallChain() {
   return (
     <div className="d-row wrap">
-      <Node kicker="CALLER" title="呼び出し元" sub="Controller / バッチ" />
+      <IconNode icon="inbox" kicker="CALLER" title="呼び出し元" sub="Controller / バッチ" />
       <Arrow label="引数を渡す" />
-      <Node kicker="HERE" title="今のメソッド" />
+      <IconNode icon="cog" kicker="HERE" title="今のメソッド" />
       <Arrow label="呼ぶ" />
-      <Node kicker="CALLEE" title="呼び出し先" sub="Mapper / メール" />
+      <IconNode icon="file" kicker="CALLEE" title="呼び出し先" sub="Mapper / メール" />
     </div>
   );
 }
@@ -576,17 +633,17 @@ function CallChain() {
 function ServiceFork() {
   return (
     <div className="d-n1">
-      <div className="d-layer accent">RequestService.approve</div>
+      <Layer icon="cog" accent>
+        RequestService.approve
+      </Layer>
       <Arrow down label="成功したあと枝が分かれる" />
       <div className="d-cols">
-        <div className="d-col">
-          <h4>DB 更新</h4>
-          <p>status = APPROVED</p>
-        </div>
-        <div className="d-col">
-          <h4>メール</h4>
-          <p>ここだけ失敗すると「承認できたが通知が無い」</p>
-        </div>
+        <ColCard icon="database" title="DB 更新">
+          status = APPROVED
+        </ColCard>
+        <ColCard icon="mail" title="メール">
+          ここだけ失敗すると「承認できたが通知が無い」
+        </ColCard>
       </div>
     </div>
   );
@@ -595,14 +652,12 @@ function ServiceFork() {
 function NotFound() {
   return (
     <div className="d-cols">
-      <div className="d-col">
-        <h4>404</h4>
-        <p>行き先が無い。マッピング、パス、静的ファイル</p>
-      </div>
-      <div className="d-col">
-        <h4>500</h4>
-        <p>行き先はある。処理の途中で例外</p>
-      </div>
+      <ColCard icon="search" title="404">
+        行き先が無い。マッピング、パス、静的ファイル
+      </ColCard>
+      <ColCard icon="warn" title="500">
+        行き先はある。処理の途中で例外
+      </ColCard>
     </div>
   );
 }
@@ -610,7 +665,7 @@ function NotFound() {
 function EnvDiff() {
   return (
     <div className="d-n1">
-      <div className="d-layer">同じコード</div>
+      <Layer icon="file">同じコード</Layer>
       <Arrow down label="環境が違う" />
       <div className="d-cols">
         <PhotoCard src="/images/home-desk.jpg" alt="入力している机" title="ローカル環境">
@@ -627,9 +682,11 @@ function EnvDiff() {
 function ViewFile() {
   return (
     <div className="d-formula">
-      <div className="d-layer">return "request/list"</div>
+      <Layer icon="inbox">return "request/list"</Layer>
       <span className="d-plus">→</span>
-      <div className="d-layer accent">templates/request/list.html</div>
+      <Layer icon="file" accent>
+        templates/request/list.html
+      </Layer>
     </div>
   );
 }
@@ -680,18 +737,15 @@ function TemplateRendered() {
 function LogWhere() {
   return (
     <div className="d-cols">
-      <div className="d-col">
-        <h4>ローカル環境</h4>
-        <p>起動したコンソール。ローカル開発で多い</p>
-      </div>
-      <div className="d-col">
-        <h4>ファイル</h4>
-        <p>logs/ や日付付きの .log。設定にパスが書いてある</p>
-      </div>
-      <div className="d-col">
-        <h4>標準出力</h4>
-        <p>コンテナや AP サーバが集める先。中身は同じログ</p>
-      </div>
+      <ColCard icon="terminal" title="ローカル環境">
+        起動したコンソール。ローカル開発で多い
+      </ColCard>
+      <ColCard icon="folder" title="ファイル">
+        logs/ や日付付きの .log。設定にパスが書いてある
+      </ColCard>
+      <ColCard icon="server" title="標準出力">
+        コンテナや AP サーバが集める先。中身は同じログ
+      </ColCard>
     </div>
   );
 }
@@ -798,13 +852,13 @@ function ArchPatterns() {
 function NPlusOne() {
   return (
     <div className="d-n1">
-      <div className="d-layer">一覧 1 回 SELECT（10 件）</div>
+      <Layer icon="database">一覧 1 回 SELECT（10 件）</Layer>
       <Arrow down label="各行で追加" />
       <div className="d-n1-rows">
-        <span>SELECT #1</span>
-        <span>SELECT #2</span>
-        <span>…</span>
-        <span>SELECT #10</span>
+        <Chip icon="terminal">SELECT #1</Chip>
+        <Chip icon="terminal">SELECT #2</Chip>
+        <Chip icon="terminal">…</Chip>
+        <Chip icon="terminal">SELECT #10</Chip>
       </div>
       <p className="diagram-note">件数だけ SQL が増えるのが N+1。</p>
     </div>

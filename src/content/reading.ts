@@ -7,7 +7,7 @@ export const readingTrack: Track = {
   no: "04",
   title: "ソースの読み方",
   kicker: "READING",
-  description: "読み始めの選び方、処理の入口、キーワード検索、呼び出しの追跡、値の源流、デバッガ、仕様とコードの差。",
+  description: "読み始めの選び方、処理の入口、キーワード検索、正規表現、呼び出しの追跡、値の源流、デバッガ、仕様とコードの差。",
   accent: "#6ec8c0",
   lessons: [
     {
@@ -30,6 +30,10 @@ export const readingTrack: Track = {
             [
               "文言やログ名の出どころを知りたい。入口の場所はまだ分からない",
               "キーワードで探す",
+            ],
+            [
+              "文字列検索のヒットが多すぎる。形で絞りたい",
+              "正規表現で探す",
             ],
             [
               "入口は分かった。誰が呼び、何に渡すかを追いたい",
@@ -123,7 +127,7 @@ export const readingTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "処理の入口がまだ分からないときは、画面やログに出ている言葉でソースを検索しましょう。手がかりは、見出し、ボタン、エラー文、ログのクラス名です。",
+          text: "処理の入口がまだ分からないときは、画面やログに出ている言葉でソースを検索しましょう。",
         },
         {
           type: "p",
@@ -154,7 +158,15 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "IDE では、文字列の検索と、型やメソッドの参照検索は別です。文言を探すときは文字列検索を使いましょう。呼び出し元を知るときは参照検索です。呼び出し先の中身を開くときは定義へジャンプです。詳しい手順は次のレッスンです。",
+          text: "IDE では、文字列の検索と、型やメソッドの参照検索は別です。",
+        },
+        {
+          type: "ul",
+          items: [
+            "文言を探すときは文字列検索",
+            "ヒットが多すぎるときは、次のレッスン「正規表現で探す」",
+            "呼び出し元を知るときは参照検索。手順は「呼び出し元と呼び出し先」",
+          ],
         },
         {
           type: "p",
@@ -164,15 +176,223 @@ export const readingTrack: Track = {
       ],
     },
     {
+      id: "search-regex",
+      title: "正規表現で探す",
+      minutes: 10,
+      blocks: [
+        {
+          type: "p",
+          text: "前のレッスンのように approve や request だけで探すと、ヒットが多すぎることがあります。IDE の正規表現を使うと、形で絞れます。",
+        },
+        {
+          type: "p",
+          text: "正規表現は、文字の並びのパターンを表す書き方です。まずは下の例をそのまま貼って試し、必要になった記号だけ覚えれば足ります。",
+        },
+        {
+          type: "h2",
+          text: "IDE で使う",
+        },
+        {
+          type: "p",
+          text: "ここでのメニュー名は、日本語化した IDE での表記です。ショートカットはキーマップやバージョンで変わります。",
+        },
+        {
+          type: "table",
+          headers: ["操作", "IntelliJ IDEA（日本語UI）", "Eclipse（日本語UI）"],
+          rows: [
+            [
+              "ファイル内検索",
+              "「編集」→「検索」→「検索...」（Ctrl+F）。検索バー右の「.*」（正規表現）をオンにする",
+              "「編集」→「検索/置換...」（Ctrl+F）。「正規表現」にチェックを入れる",
+            ],
+            [
+              "プロジェクト全体",
+              "「編集」→「検索」→「ファイル内を検索...」（Ctrl+Shift+F）。「正規表現」にチェックを入れる",
+              "「検索」→「検索...」（Ctrl+H）→「ファイルの検索」タブ。「正規表現」にチェックを入れる",
+            ],
+            [
+              "検索語の入力",
+              "検索欄に正規表現を入力して Enter。ファイル内なら次の一致へは F3",
+              "検索欄に正規表現を入力して「検索」。次の一致へは Ctrl+. など（キー割り当ては環境次第）",
+            ],
+          ],
+        },
+        {
+          type: "h2",
+          text: "よくある形の例",
+        },
+        {
+          type: "p",
+          text: "まずはこの表の例をそのまま貼って試してください。パターンは左から右へ読みます。",
+        },
+        {
+          type: "table",
+          headers: ["やりたいこと", "パターン", "ヒットする行の例"],
+          rows: [
+            [
+              "approve を含む行（広め）",
+              "approve",
+              "「requestService.approve」— ヒットする。「disapprove」— approve を含むのでヒットする",
+            ],
+            [
+              "approve という単語だけ",
+              "\\bapprove\\b",
+              "「requestService.approve」— ヒットする。「disapprove」— 単語としてはヒットしない",
+            ],
+            [
+              "@GetMapping と requests が同じ行",
+              "@GetMapping.*requests",
+              "「@GetMapping(\"/requests\")」— ヒットする",
+            ],
+            [
+              "承認の POST マッピング",
+              "@PostMapping.*approve",
+              "「@PostMapping(\"/{id}/approve\")」— ヒットする",
+            ],
+            [
+              "list( の呼び出し",
+              "\\blist\\s*\\(",
+              "「requestService.list(」— ヒットする",
+            ],
+            [
+              "import Request の行",
+              "^import .+Request",
+              "「import jp.co.example.shinsei.entity.RequestEntity;」— 行頭の import でヒットする",
+            ],
+          ],
+        },
+        {
+          type: "h2",
+          text: "記号の読み方（チートシート）",
+        },
+        {
+          type: "p",
+          text: "上のパターンを組み立てるための部品です。",
+        },
+        {
+          type: "ul",
+          items: [".", "*", "\\b", "^", "\\."],
+        },
+        {
+          type: "p",
+          text: "つなげて書く — request と approve のあいだに何かあってもよい、といった書き方です。",
+        },
+        {
+          type: "table",
+          headers: ["書き方", "意味", "ヒットする例"],
+          rows: [
+            [
+              "approve",
+              "そのままの文字",
+              "「approve」— 行内のこの文字列。「disapprove」— approve を含むのでヒットする",
+            ],
+            [
+              "request.*approve",
+              "request のあと、あとに approve",
+              "「requestService.approve」— 同じ行ならヒットする",
+            ],
+            ["a.c", ". は任意の1文字", "「abc」— ヒットする。「a1c」— ヒットする"],
+            [
+              "request.*",
+              "request のあとなら何でもよい",
+              "「requestMapper」— ヒットする。「requests」— ヒットする",
+            ],
+          ],
+        },
+        {
+          type: "p",
+          text: "単語と行の位置 — approve だけに絞る、行頭の import、行末の ; だけ、など。",
+        },
+        {
+          type: "table",
+          headers: ["書き方", "意味", "ヒットする例"],
+          rows: [
+            [
+              "\\bapprove\\b",
+              "単語としての approve",
+              "「approve」— ヒットする。「disapprove」— 単語としてはヒットしない",
+            ],
+            [
+              "^import",
+              "行の先頭が import",
+              "「import org.springframework...」— 行頭ならヒットする",
+            ],
+            [
+              "^\\s*@",
+              "行頭の空白のあとに @",
+              "「  @GetMapping」— インデントのあとの @ でヒットする",
+            ],
+            [
+              ";\\s*$",
+              "行の末尾が ;（そのあと空白のみ可）",
+              "「return \"request/list\";」— 行末の ; でヒットする",
+            ],
+            [
+              "approve\\(id, user\\.getId\\(\\)\\);\\s*$",
+              "行末まで含めて一致",
+              "「requestService.approve(id, user.getId());」— この1行だけに絞れる",
+            ],
+            [
+              "\\blist\\s*\\(",
+              "list のあと (",
+              "「list(」— ヒットする",
+            ],
+          ],
+        },
+        {
+          type: "p",
+          text: "そのまま探す・数字 — ドットやスラッシュを特別扱いしないで探すときに使います。",
+        },
+        {
+          type: "table",
+          headers: ["書き方", "意味", "ヒットする例"],
+          rows: [
+            [
+              "application\\.yml",
+              "\\. でドットをそのまま",
+              "「application.yml」— ヒットする。「application-yml」— . だけだとこちらもヒットしてしまう",
+            ],
+            [
+              "\\s",
+              "空白1つ分",
+              "「public void」— public と void のあいだの空白にヒットする",
+            ],
+            [
+              "\\d+",
+              "数字が1つ以上",
+              "「/requests/12/approve」— 12 の部分にヒットする",
+            ],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "ヒットが0件",
+          text: ". や ( は特別な意味があります。そのまま探すときは \\ でエスケープします。application.yml なら application\\.yml です。[ ] の中では . は普通のドットとして扱われることが多いです。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "まずは単純に",
+          text: "正規表現で見つからないときは、いったん通常の文字列検索に戻しましょう。パターンが厳しすぎることがあります。",
+        },
+        {
+          type: "p",
+          text: "メソッドの呼び出し元や呼び出し先を追うのは、参照検索と定義へジャンプです。次のレッスンです。",
+        },
+        { type: "quiz", id: "read-regex" },
+      ],
+    },
+    {
       id: "call-chain",
       title: "呼び出し元と呼び出し先",
       minutes: 11,
       blocks: [
         {
           type: "p",
-          text: "Java のメソッドを開いたら、中身より先に、誰が呼んでいるか（呼び出し元）と、次に誰を呼ぶか（呼び出し先）を見ましょう。",
+          text: "今開いている Java メソッドを起点に、前後を見ましょう。誰が呼んでいるかが呼び出し元、次に呼ぶ先が呼び出し先です。",
         },
-        { type: "diagram", name: "call-chain", caption: "中身より先に、誰から来て誰へ行くか。" },
+        { type: "diagram", name: "call-chain", caption: "今のメソッドを真ん中に、誰から来て誰へ行くか。" },
         {
           type: "h2",
           text: "申請くんの例",
@@ -207,7 +427,14 @@ public class RequestController {
         },
         {
           type: "p",
-          text: "Controller の approve から見ると、Service の approve が呼び出し先です。Service から見ると、Controller が呼び出し元で、Mapper と MailService が呼び出し先です。今どのファイルを開いているかで、向きが変わります。",
+          text: "今どのファイルを開いているかで、向きが変わります。",
+        },
+        {
+          type: "ul",
+          items: [
+            "Controller の approve から見ると、Service の approve が呼び出し先",
+            "Service から見ると、Controller が呼び出し元、Mapper と MailService が呼び出し先",
+          ],
         },
         {
           type: "h2",
@@ -307,7 +534,18 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "実装へジャンプは、同じインタフェースの実体クラスを開く操作です。モックや、プロファイルで切り替わる実装を見るときに使います。IntelliJ では「実装に移動」、Eclipse では「実装を開く」です。MyBatis の Mapper は Java の実装クラスが無いことが多いので、ここでは使いません。SQL は XML 側です。",
+          text: "実装へジャンプは、同じインタフェースの実体クラスを開く操作です。モックや、プロファイルで切り替わる実装を見るときに使います。",
+        },
+        {
+          type: "ul",
+          items: [
+            "IntelliJ … 「実装に移動」",
+            "Eclipse … 「実装を開く」",
+          ],
+        },
+        {
+          type: "p",
+          text: "MyBatis の Mapper は Java の実装クラスが無いことが多いので、ここでは使いません。SQL は XML 側です。",
         },
         {
           type: "callout",

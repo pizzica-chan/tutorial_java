@@ -118,7 +118,7 @@ export const terms: TermDef[] = [
   {
     term: "Service",
     aliases: ["Service"],
-    body: "業務ルールを置く層。権限チェックや更新、他サービス呼び出しが集まりやすいです。Spring ではこの名前が多いです。",
+    body: "ビジネスロジックを置く層。業務として何をするかを書きます。申請くんの承認を例にすると、承認可否の判定、ステータスの更新、メール送信がここにあります。Spring ではこの名前が多いです。",
   },
   {
     term: "Repository",
@@ -271,7 +271,7 @@ export const terms: TermDef[] = [
   {
     term: "@Service",
     aliases: ["@Service"],
-    body: "このクラスが Service 層だと Spring に伝える印です。業務ルールを置く層としてコンテナに登録されます。Spring のアノテーションです。",
+    body: "このクラスが Service 層だと Spring に伝える印です。Spring のアノテーションです。",
   },
   {
     term: "@Async",
@@ -466,7 +466,7 @@ export const terms: TermDef[] = [
   {
     term: "JSON",
     aliases: ["JSON"],
-    body: "データを文字列で表す形式。Web API の応答でよく使います。画面の HTML ではありません。",
+    body: "名前と値のペアを波括弧で書いたデータ形式です。例: {\"status\":\"APPROVED\"}。Network タブの Response や Request Payload に載ります。HTML のように画面にはなりません。",
   },
   {
     term: "Web API",
@@ -721,7 +721,7 @@ export const terms: TermDef[] = [
   {
     term: "PUT / PATCH / DELETE",
     aliases: ["PUT", "PATCH", "DELETE"],
-    body: "HTTP メソッド。PUT は置き換え、PATCH は一部更新、DELETE は削除、と読むことが多いです。POST にまとめている実装もあります。",
+    body: "HTTP メソッド。PUT は置き換え、PATCH は一部更新、DELETE は削除です。POST にまとめている実装もあります。",
   },
   {
     term: "Location",

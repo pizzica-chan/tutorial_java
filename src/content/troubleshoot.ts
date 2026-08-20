@@ -621,7 +621,15 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
       blocks: [
         {
           type: "p",
-          text: "DB 以外にも、別システムへ HTTP で問い合わせたり、メール送信やファイル連携をしたりする箇所があります。画面の操作は自分のアプリまで届いていても、外部の応答待ちや接続失敗で止まることがあります。",
+          text: "DB 以外にも、画面の外へ出る処理があります。画面の操作は自分のアプリまで届いていても、外部の応答待ちや接続失敗で止まることがあります。",
+        },
+        {
+          type: "ul",
+          items: [
+            "別システムへの HTTP",
+            "メール送信",
+            "ファイル連携",
+          ],
         },
         {
           type: "p",
@@ -741,7 +749,15 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
       blocks: [
         {
           type: "p",
-          text: "アプリのログにリクエストが無い、ブラウザがタイムアウトする、外部 API への接続エラーがログに出る、といったときは、Java のコードより手前や外側の経路を疑いましょう。ここでは、OS のコマンドで届く箱を切り分けましょう。",
+          text: "次のようなときは、Java のコードより手前や外側の経路を疑いましょう。ここでは、OS のコマンドで届く箱を切り分けましょう。",
+        },
+        {
+          type: "ul",
+          items: [
+            "アプリのログにリクエストが無い",
+            "ブラウザがタイムアウトする",
+            "外部 API への接続エラーがログに出る",
+          ],
         },
         {
           type: "callout",

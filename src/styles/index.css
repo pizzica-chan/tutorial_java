@@ -921,29 +921,89 @@ th {
 
 .widget-body {
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: minmax(240px, 320px) minmax(0, 1fr);
+  align-items: stretch;
 }
 
 .tree {
-  padding: 12px;
+  min-width: 0;
+  padding: 12px 12px 16px;
   border-right: 1px solid var(--line);
   overflow: auto;
   font-family: var(--mono);
   font-size: 12px;
+  line-height: 1;
+  max-height: 560px;
+  background: rgba(7, 16, 24, 0.45);
 }
 
-.tree button {
-  display: block;
+.tree-row {
+  display: flex;
+  align-items: center;
+  min-height: 24px;
   width: 100%;
-  padding: 4px 6px;
+  min-width: 0;
+  padding: 0 4px;
   border: 0;
+  white-space: nowrap;
+}
+
+.tree-root {
+  margin-bottom: 2px;
+  color: var(--amber-2);
+  font-weight: 600;
+}
+
+.tree-guides {
+  display: flex;
+  flex-shrink: 0;
+  font-family: "Cascadia Mono", "Cascadia Code", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+.tree-gutter {
+  display: inline-block;
+  width: 0.55em;
+  text-align: center;
+  flex-shrink: 0;
+  color: var(--quiet);
+  user-select: none;
+}
+
+.tree-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  margin-right: 4px;
+}
+
+.tree-root .icon,
+.tree-dir .icon,
+.tree-file .icon,
+.tree-file-dim .icon {
+  color: var(--amber-2);
+}
+
+.tree-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tree-file {
   color: var(--paper-dim);
   text-align: left;
   background: transparent;
+  cursor: pointer;
 }
 
-.tree button.active,
-.tree button:hover {
+.tree-file-dim {
+  color: var(--quiet);
+  opacity: 0.8;
+}
+
+.tree-file.active,
+.tree-file:hover {
   background: rgba(232, 165, 75, 0.12);
   color: var(--amber-2);
 }
@@ -1195,6 +1255,24 @@ th {
   font-size: 12px;
 }
 
+.d-node.has-icon {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  align-items: center;
+}
+
+.d-node.has-icon .d-node-icon {
+  grid-row: 1 / span 3;
+  color: var(--amber-2);
+}
+
+.d-node.has-icon span,
+.d-node.has-icon strong,
+.d-node.has-icon small {
+  grid-column: 2;
+}
+
 .d-layer {
   text-align: center;
 }
@@ -1234,6 +1312,36 @@ th {
 
 .d-split {
   align-items: stretch;
+}
+
+.d-flow-4 {
+  flex-wrap: nowrap;
+}
+
+.d-flow-4 > .d-node {
+  flex: 1 1 0;
+}
+
+.d-flow-4 .d-arrow i {
+  width: 36px;
+}
+
+.d-flow-4 .d-node.has-icon {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  text-align: center;
+  row-gap: 4px;
+  padding: 10px 8px;
+}
+
+.d-flow-4 .d-node.has-icon .d-node-icon {
+  grid-row: auto;
+}
+
+.d-flow-4 .d-node.has-icon span,
+.d-flow-4 .d-node.has-icon strong,
+.d-flow-4 .d-node.has-icon small {
+  grid-column: 1;
 }
 
 .d-split > .d-node,
@@ -1688,6 +1796,25 @@ th {
   border: 1px solid var(--line);
   font-family: var(--mono);
   font-size: 12px;
+}
+
+.d-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
+.d-chip .icon {
+  color: var(--amber-2);
+}
+
+.d-formula .d-layer.has-icon {
+  font-size: 14px;
+  padding: 10px 12px;
 }
 
 .lab-page {

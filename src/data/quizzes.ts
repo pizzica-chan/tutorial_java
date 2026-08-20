@@ -152,6 +152,14 @@ export const quizzes = {
     explanation:
       "画面に出ている言葉、パス、DB 名のどれかがヒットします。言語は一致しないことがあるので複数試します。",
   },
+  "read-regex": {
+    id: "read-regex",
+    question: "disapprove を除き、approve という単語だけにマッチさせたい。適切なパターンは？",
+    choices: ["approve", "\\bapprove\\b", ".*approve.*", "approve$"],
+    answer: 1,
+    explanation:
+      "\\b は単語の境目です。\\bapprove\\b なら approve だけにマッチし、disapprove は除外できます。approve だけだと部分一致で disapprove にも当たります。",
+  },
   "read-call": {
     id: "read-call",
     question: "Controller の requestService.approve(...) の approve にカーソルがある。呼ばれている側の中身を開く操作は？",
