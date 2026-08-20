@@ -12,7 +12,7 @@ export const requestFlow: FlowStep[] = [
     layer: "Browser",
     title: "一覧を開く",
     detail:
-      "利用者が /shinsei/requests にアクセスします。ブラウザは Cookie に入っているセッションIDも一緒に送ります。",
+      "利用者が /shinsei/requests にアクセスします。ブラウザは Cookie に入っているセッションIDも一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引く鍵になります。",
     code: `GET /shinsei/requests HTTP/1.1
 Host: intranet.example.co.jp
 Cookie: JSESSIONID=AB12CD34
@@ -23,19 +23,21 @@ Accept: text/html`,
     layer: "Filter",
     title: "セキュリティフィルタ",
     detail:
-      "Spring Security が「ログイン済みか」「このURLを見てよいか」を先に判定します。ここで弾かれると Controller まで届きません。番号や遷移先は実装次第です。",
-    code: `authenticated?
-  no  -> 例: 302 /login（401 や HTML のことも）
-  yes -> 次へ`,
+      "Spring Security が、Cookie のセッションIDでサーバ側のセッションを引きます。そこにログインユーザがいれば「ログイン済み」です。この URL へのアクセスが許可されているかも、ここで判定します。弾かれると Controller まで届きません。番号や遷移先は実装次第です。",
+    code: `Cookie: JSESSIONID=AB12CD34
+  -> セッションを引く
+  -> ログインユーザあり?  このURLはアクセス許可?
+no  -> 例: 302 /login（401 や HTML のことも）
+yes -> ログインユーザを次へ渡す`,
   },
   {
     id: "controller",
     layer: "Controller",
     title: "RequestController#list",
     detail:
-      "URL と HTTP メソッドが一致する Java メソッドが呼ばれます。Spring では @GetMapping などで受けます。ここでは画面用のデータを Model に載せ、テンプレート名を返します。",
+      "引数の LoginUser は、フィルタがセッションから復元したログインユーザです。その ID を Service に渡し、自分の申請を取ります。画面用のデータを Model に載せ、テンプレート名を返します。",
     code: `@GetMapping
-public String list(Model model, LoginUser user) {
+public String list(Model model, @AuthenticationPrincipal LoginUser user) {
   model.addAttribute("requests", requestService.findMine(user.getId()));
   return "request/list";
 }`,
@@ -45,7 +47,7 @@ public String list(Model model, LoginUser user) {
     layer: "Service",
     title: "RequestService#findMine",
     detail:
-      "「自分に関係する申請だけ返す」といった業務ルールは Service に置かれることが多いです。Controller に寄っている構成もあります。",
+      "渡された userId は、Cookie から辿ったログインユーザの ID です。自分に関係する申請だけ返す、といった判定は Service に置かれることが多いです。Controller に寄っている構成もあります。",
     code: `public List<RequestEntity> findMine(Long userId) {
   return requestMapper.findMine(userId);
 }`,
@@ -55,7 +57,7 @@ public String list(Model model, LoginUser user) {
     layer: "MyBatis",
     title: "RequestMapper#findMine",
     detail:
-      "メソッド名や XML の id が SQL に接続されます。件数がおかしい、遅い、エラーになるといった症状は、ここで実体を見ます。",
+      "SQL の ? に、その userId が入ります。申請者または承認者である行だけが対象です。件数がおかしい、遅い、エラーになるといった症状は、この SQL の実体を見ます。",
     code: `SELECT ... FROM t_request
  WHERE applicant_id = ?
     OR approver_id = ?

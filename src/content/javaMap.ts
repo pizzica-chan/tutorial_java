@@ -739,6 +739,10 @@ public void addInterceptors(InterceptorRegistry registry) {
           ],
         },
         {
+          type: "p",
+          text: "これらのアノテーションはメソッドに付いていますが、処理の呼び出しはソースに出ません。読み飛ばさず確認しましょう。",
+        },
+        {
           type: "code",
           title: "Controller に書かれている呼び出し",
           lang: "java",

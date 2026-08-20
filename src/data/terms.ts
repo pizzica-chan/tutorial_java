@@ -301,7 +301,7 @@ export const terms: TermDef[] = [
   {
     term: "アノテーション",
     aliases: ["アノテーション"],
-    body: "クラスやメソッドに付ける印。SpringではURLの対応づけなどに使います。",
+    body: "クラスやメソッドに付けます。Spring では URL の対応づけなどに使います。種類によっては、本体に書いていない処理が動きます。読み飛ばさず確認しましょう。",
   },
   {
     term: "@GetMapping",

@@ -306,7 +306,7 @@ public class Request {
     },
     {
       id: "full-flow",
-      title: "一覧表示の全区間",
+      title: "申請一覧を開く処理を追う",
       minutes: 10,
       blocks: [
         {
