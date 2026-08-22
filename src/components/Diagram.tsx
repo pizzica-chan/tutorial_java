@@ -798,47 +798,52 @@ function ArchRoles() {
 
 function ArchPatterns() {
   return (
-    <div className="d-cols">
-      <div className="d-col">
-        <h4>パターン1: 内蔵だけ</h4>
-        <div className="d-stack">
-          <Layer icon="browser">ブラウザ</Layer>
-          <Arrow down label="HTTP/HTTPS リクエスト" />
-          <Layer icon="box" accent>
-            内蔵 Tomcat / Jetty
-          </Layer>
-          <Arrow down label="同じプロセス" />
-          <Layer icon="inbox">アプリ</Layer>
+    <div>
+      <div className="d-cols">
+        <div className="d-col">
+          <h4>パターン1: 内蔵だけ</h4>
+          <div className="d-stack">
+            <Layer icon="browser">ブラウザ</Layer>
+            <Arrow down label="HTTP/HTTPS リクエスト" />
+            <Layer icon="box" accent>
+              内蔵 Tomcat / Jetty
+            </Layer>
+            <Arrow down label="同じプロセス" />
+            <Layer icon="inbox">アプリ</Layer>
+          </div>
+        </div>
+        <div className="d-col">
+          <h4>パターン2: 外部 WAR</h4>
+          <div className="d-stack">
+            <Layer icon="browser">ブラウザ</Layer>
+            <Arrow down label="HTTP/HTTPS リクエスト" />
+            <Layer icon="box" accent>
+              外部 Tomcat / Jetty
+            </Layer>
+            <Arrow down label="載せる" />
+            <Layer icon="package">WAR</Layer>
+          </div>
+        </div>
+        <div className="d-col">
+          <h4>パターン3: 手前に HTTP サーバ</h4>
+          <div className="d-stack">
+            <Layer icon="browser">ブラウザ</Layer>
+            <Arrow down label="HTTP/HTTPS リクエスト" />
+            <Layer icon="server" accent>
+              Apache / nginx
+            </Layer>
+            <Arrow down label="中継" />
+            <Layer icon="box" accent>
+              Tomcat / Jetty
+            </Layer>
+            <Arrow down label="Java" />
+            <Layer icon="inbox">アプリ</Layer>
+          </div>
         </div>
       </div>
-      <div className="d-col">
-        <h4>パターン2: 外部 WAR</h4>
-        <div className="d-stack">
-          <Layer icon="browser">ブラウザ</Layer>
-          <Arrow down label="HTTP/HTTPS リクエスト" />
-          <Layer icon="box" accent>
-            外部 Tomcat / Jetty
-          </Layer>
-          <Arrow down label="載せる" />
-          <Layer icon="package">WAR</Layer>
-        </div>
-      </div>
-      <div className="d-col">
-        <h4>パターン3: 手前に HTTP サーバ</h4>
-        <div className="d-stack">
-          <Layer icon="browser">ブラウザ</Layer>
-          <Arrow down label="HTTP/HTTPS リクエスト" />
-          <Layer icon="server" accent>
-            Apache / nginx
-          </Layer>
-          <Arrow down label="中継" />
-          <Layer icon="box" accent>
-            Tomcat / Jetty
-          </Layer>
-          <Arrow down label="Java" />
-          <Layer icon="inbox">アプリ</Layer>
-        </div>
-      </div>
+      <p className="diagram-note">
+        <TextWithTerms text="コンテナ（Docker など）で動かしても、重ね方は上の3パターンに収まることが多いです。" />
+      </p>
     </div>
   );
 }

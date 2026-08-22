@@ -687,16 +687,12 @@ public void addInterceptors(InterceptorRegistry registry) {
     },
     {
       id: "arch",
-      title: "HTTP サーバとコンテナ",
+      title: "HTTP サーバとサーブレットコンテナ",
       minutes: 10,
       blocks: [
         {
           type: "p",
-          text: "ここまでは、リポジトリの中の役割です。ブラウザから見た「サーバ」は、箱が重なっていることがあります。",
-        },
-        {
-          type: "p",
-          text: "Controller の手前に、HTTP サーバとサーブレットコンテナがあります。",
+          text: "ここまでは、自分たちが書くソースの話です。ここからは、その外側でリクエストが通るプログラムの話です。ブラウザからのリクエストは、HTTP サーバやサーブレットコンテナを通ってから Controller に届きます。",
         },
         {
           type: "h2",
@@ -742,7 +738,7 @@ public void addInterceptors(InterceptorRegistry registry) {
             },
           ],
         },
-        { type: "diagram", name: "arch-patterns", caption: "左から、パターン1 内蔵だけ、パターン2 外部 WAR、パターン3 手前に HTTP サーバ。" },
+        { type: "diagram", name: "arch-patterns" },
         {
           type: "h2",
           text: "重ね方で変わる切り分け",
@@ -758,12 +754,6 @@ public void addInterceptors(InterceptorRegistry registry) {
             "アプリのエラーログは、サーブレットコンテナ側を見る",
             "コンテキストパスは、手前と後ろの両方に付いていることがある（パターン3）",
           ],
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "Docker",
-          text: "コンテナの中身も、上の3パターンのどれかです。Docker だから別構成ということはありません。",
         },
         {
           type: "callout",

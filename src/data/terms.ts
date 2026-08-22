@@ -526,7 +526,7 @@ export const terms: TermDef[] = [
   {
     term: "サーブレットコンテナ",
     aliases: ["サーブレットコンテナ"],
-    body: "Java の画面や API を動かす実行基盤です。Tomcat や Jetty。Controller が動く場所です。",
+    body: "Java の画面や API を動かす実行基盤です。Tomcat や Jetty。Controller が動く場所です。いわゆる Docker などのコンテナとは別物です。",
   },
   {
     term: "Tomcat",
@@ -976,12 +976,12 @@ export const terms: TermDef[] = [
   {
     term: "コンテナ",
     aliases: ["コンテナ"],
-    body: "アプリを、ホストOSから切り離した箱として動かす単位です。中の標準出力を集めてログにすることが多いです。サーブレットコンテナとは別物です。",
+    body: "アプリを、ホストOSから切り離した箱として動かす単位です。Docker とは限りません。中の標準出力を集めてログにすることが多いです。サーブレットコンテナとは別物です。",
   },
   {
     term: "Docker",
     aliases: ["Docker", "docker"],
-    body: "アプリをコンテナとして動かす仕組みです。ログはコンテナの標準出力に出ることが多く、docker logs で見ます。",
+    body: "コンテナを動かす仕組みのひとつです。コンテナそのものではありません。ログはコンテナの標準出力に出ることが多く、docker logs で見ることがあります。",
   },
   {
     term: "Kubernetes",
