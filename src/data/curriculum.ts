@@ -74,11 +74,11 @@ export function getLesson(trackId: string | undefined, lessonId: string | undefi
 
 export function pageDescription(pathname: string): string {
   const fallback =
-    "既存の Java Web を、処理の入口から追い、届いた箱から切り分ける教材です。ゼロからアプリを作る入門ではありません。";
+    "既存の Java Web アプリを、処理の入口から追い、届いた箱から切り分ける教材です。ゼロからアプリを作る入門ではありません。";
   if (pathname === "/") return fallback;
   if (pathname === "/lab") return "通読とは独立して、申請くんの HTTP とソース、リクエストの区間を確認できます。";
   if (pathname === "/glossary" || pathname.startsWith("/glossary")) {
-    return "HTTP、Java Web、Spring まわりの用語。本文の点線から飛びます。";
+    return "HTTP、Java Web アプリ、Spring まわりの用語。本文の点線から飛びます。";
   }
   const parts = pathname.split("/").filter(Boolean);
   if (parts[0] === "tracks" && parts[1] && parts[2]) {
@@ -98,7 +98,7 @@ export function pageDescription(pathname: string): string {
 }
 
 export function pageTitle(pathname: string): string {
-  const site = "参画前に知っておきたい Java Web";
+  const site = "参画前に知っておきたい Java Web アプリ";
   if (pathname === "/") return site;
   if (pathname === "/lab") return `ラボ — ${site}`;
   if (pathname === "/glossary" || pathname.startsWith("/glossary")) return `用語集 — ${site}`;

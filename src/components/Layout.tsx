@@ -107,7 +107,7 @@ export function Layout() {
         </button>
         <NavLink to="/" className="brand" onClick={() => setOpen(false)}>
           <img className="brand-mark" src="/favicon.svg" width={42} height={42} alt="" />
-          <span className="brand-name">参画前に知っておきたい Java Web</span>
+          <span className="brand-name">参画前に知っておきたい Java Web アプリ</span>
         </NavLink>
 
         <div className="nav-label">CONTENTS</div>
