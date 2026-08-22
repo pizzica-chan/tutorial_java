@@ -701,6 +701,20 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
           caption: "例：一覧は残ったまま、画面にエラーが出ています。新しい POST は増えていません。コンソールにエラーの印が出ています。",
         },
         {
+          type: "p",
+          text: "Console に例外があれば、クラスとメッセージを読みましょう。その行が指す JS を見て、click や submit の手前で止まっていないかを確認しましょう。",
+        },
+        {
+          type: "p",
+          text: "Console にも何も無ければ、例外では止まっていません。開発者ツールで、いま画面にある HTML からエラーの文言を検索しましょう。click が付いているか、ボタンが無効になっていないかも確認しましょう。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "テンプレートと画面の HTML",
+          text: "テンプレートは、画面に出る前のひな形です。モデルの値やメッセージ定義、JS の書き換えがあると、画面の文言はテンプレートのファイルに無いことがあります。",
+        },
+        {
           type: "h2",
           text: "新しいリクエストがある",
         },
