@@ -311,7 +311,7 @@ export const terms: TermDef[] = [
   {
     term: "@PostMapping",
     aliases: ["@PostMapping"],
-    body: "指定した URL への POST を、この Java メソッドが受け取るという印です。登録・更新・承認など、状態を変える操作で使います。Spring のアノテーションです。",
+    body: "指定した URL への POST を、この Java メソッドが受け取るという印です。登録・更新・承認など、状態を変える操作で使うことが多いです。参照だけの操作にも POST を使うアプリもあります。Spring のアノテーションです。",
   },
   {
     term: "@RequestMapping",
