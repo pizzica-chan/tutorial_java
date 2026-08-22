@@ -100,7 +100,7 @@ export function pageDescription(pathname: string): string {
 }
 
 export function pageTitle(pathname: string): string {
-  const site = "Java Web の読み方";
+  const site = "現場で読む Java Web";
   if (pathname === "/") return `${site} — 基礎と切り分け`;
   if (pathname === "/lab") return `ラボ — ${site}`;
   if (pathname === "/glossary" || pathname.startsWith("/glossary")) return `用語集 — ${site}`;

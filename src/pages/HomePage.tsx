@@ -12,7 +12,7 @@ export function HomePage() {
   return (
     <div className="content">
       <section className="hero">
-        <p className="kicker">JAVA WEB / TROUBLESHOOTING</p>
+        <p className="kicker">既存コード / 切り分け</p>
         <h1>基礎知識と、症状別の切り分け。</h1>
         <p className="lede">
           <TextWithTerms

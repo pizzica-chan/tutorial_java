@@ -14,7 +14,7 @@
   <artifactId>shinsei-kun</artifactId>
   <version>1.0.0</version>
   <name>申請くん</name>
-  <description>教材「Java Web の読み方」の社内申請サンプル</description>
+  <description>教材「現場で読む Java Web」の社内申請サンプル</description>
 
   <properties>
     <java.version>17</java.version>

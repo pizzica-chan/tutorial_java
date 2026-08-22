@@ -120,14 +120,9 @@ pre {
 .brand-mark {
   width: 42px;
   height: 42px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--line-strong);
-  background: #101c2c;
-  color: var(--amber);
-  font-family: var(--serif);
-  font-weight: 700;
-  letter-spacing: 0.04em;
+  flex-shrink: 0;
+  display: block;
+  border-radius: 8px;
 }
 
 .brand-name {
@@ -139,7 +134,7 @@ pre {
 .brand-sub {
   color: var(--quiet);
   font-size: 11px;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.06em;
 }
 
 .nav-label {
