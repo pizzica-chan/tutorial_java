@@ -7,7 +7,7 @@ export const readingTrack: Track = {
   no: "04",
   title: "ソースの読み方",
   kicker: "READING",
-  description: "読み始めの選び方、処理の入口、キーワード検索、正規表現、呼び出しの追跡、値の源流、デバッガ、仕様とコードの差。",
+  description: "どこから読み始めるか、処理の入口、キーワード検索、正規表現、呼び出しの追跡、値の源流、デバッガ、仕様とコードの差。",
   accent: "#6ec8c0",
   lessons: [
     {
@@ -66,7 +66,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "処理の入口とは、サーバ側でその操作の処理が始まる場所です。画面なら URL と HTTP メソッドに対応する Controller のメソッドが多いです。",
+          text: "処理の入口とは、サーバ側でその操作の処理が始まる場所です。画面なら URL と HTTP メソッドに対応する Controller の Java メソッドが多いです。",
         },
         {
           type: "h2",
@@ -77,7 +77,7 @@ export const readingTrack: Track = {
           items: [
             "対象の URL を確認する（画面ならアドレスバー、Web API なら Network タブの XHR / fetch）",
             "パス文字列（requests など）でソースを検索する",
-            "ヒットした Controller のメソッドが処理の入口。ここから Service、SQL へ降りる",
+            "ヒットした Controller の Java メソッドが処理の入口。ここから Service、SQL へ降りる",
             "ボタンやリンクの行き先が URL と一致するか、テンプレートや JS で突き合わせる",
           ],
         },
@@ -223,7 +223,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "まずはこの表の例をそのまま貼って試してください。パターンは左から右へ読みます。",
+          text: "まずはこの表の上から 4 行をそのまま貼って試してください。記号の表は、パターンを自分で組むときだけ見れば足ります。パターンは左から右へ読みます。",
         },
         {
           type: "table",

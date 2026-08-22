@@ -26,6 +26,7 @@ public class RequestController {
   }
 
   // 承認は POST /shinsei/requests/12/approve → approve の Java メソッド（同じ要領）
+  // 詳細は GET /shinsei/requests/12 → detail の Java メソッド
 }`;
 
 /** 教材本文用の短い抜粋 */
@@ -38,6 +39,12 @@ public class RequestController {
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     model.addAttribute("requests", requestService.findMine(user.getId()));
     return "request/list";
+  }
+
+  @GetMapping("/{id}")  // ← 処理の入口（詳細）
+  public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
+    model.addAttribute("request", requestService.findById(id, user.getId()));
+    return "request/detail";
   }
 
   @PostMapping("/{id}/approve")  // ← 処理の入口（承認）
@@ -59,6 +66,13 @@ public class RequestController {
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     model.addAttribute("requests", requestService.findMine(user.getId()));
     return "request/list";
+  }
+
+  // 処理の入口: GET /shinsei/requests/12
+  @GetMapping("/{id}")
+  public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
+    model.addAttribute("request", requestService.findById(id, user.getId()));
+    return "request/detail";
   }
 
   // 処理の入口: POST /shinsei/requests/12/approve

@@ -169,7 +169,14 @@ export function Layout() {
 
         <div className="progress-card">
           <strong>読了 {Math.min(completed.length, totalLessons)} / {totalLessons}</strong>
-          <div className="progress-track">
+          <div
+            className="progress-track"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={percent}
+            aria-label={`読了 ${Math.min(completed.length, totalLessons)} / ${totalLessons}`}
+          >
             <div className="progress-fill" style={{ width: `${percent}%` }} />
           </div>
           <span style={{ color: "var(--quiet)", fontSize: 12 }}>進捗はブラウザ内にだけ保存されます</span>

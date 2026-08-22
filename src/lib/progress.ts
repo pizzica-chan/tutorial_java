@@ -5,8 +5,16 @@ const LAST_KEY = "genba-trace-last-v1";
 
 export type LessonRef = { trackId: string; lessonId: string };
 
+export function lessonKey(trackId: string, lessonId: string): string {
+  return `${trackId}/${lessonId}`;
+}
+
+const KNOWN_LESSON_KEYS = new Set(
+  tracks.flatMap((track) => track.lessons.map((lesson) => lessonKey(track.id, lesson.id))),
+);
+
 function knownLessonKeys(): Set<string> {
-  return new Set(tracks.flatMap((track) => track.lessons.map((lesson) => lessonKey(track.id, lesson.id))));
+  return KNOWN_LESSON_KEYS;
 }
 
 function lessonExists(trackId: string, lessonId: string): boolean {
@@ -48,10 +56,6 @@ export function toggleCompleted(id: string): string[] {
   }
   window.dispatchEvent(new Event("genba-progress"));
   return saved;
-}
-
-export function lessonKey(trackId: string, lessonId: string): string {
-  return `${trackId}/${lessonId}`;
 }
 
 export function setLastLesson(trackId: string, lessonId: string) {

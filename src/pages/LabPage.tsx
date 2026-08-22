@@ -3,11 +3,12 @@ import { RequestFlow } from "../components/RequestFlow";
 import { StackLab } from "../components/StackLab";
 import { HttpInspector } from "../components/HttpInspector";
 import { QuizBlock } from "../components/QuizBlock";
-import { TextWithTerms } from "../components/TextWithTerms";
+import { TermHighlightScope, TextWithTerms } from "../components/TextWithTerms";
 
 export function LabPage() {
   return (
-    <div className="content lab-page">
+    <TermHighlightScope>
+      <div className="content lab-page">
       <p className="kicker">LAB</p>
       <h1 className="serif page-title">ラボ</h1>
       <p className="lede">
@@ -32,10 +33,10 @@ export function LabPage() {
 
       <h2 className="serif">4. スタックトレース</h2>
       <p>
-        <TextWithTerms text="at 行の右端が、ソースの位置です。RequestService.java:41 なら、そのファイルの 41 行目を見ます。" />
+        <TextWithTerms text="at 行の右端が、ソースの位置です。RequestService.java:41 なら、そのファイルの 41 行目を見ましょう。教材の抜粋では行を省略しているので、数字は教材上の位置です。" />
       </p>
       <p>
-        <TextWithTerms text="org.springframework や java. で始まる行は、自分たちが書いたコードではありません。申請くんなら、パッケージ名 jp.co.example.shinsei で始まる行を、上から最初に見つけたところから調べます。" />
+        <TextWithTerms text="org.springframework や java. で始まる行は、自分たちが書いたコードではありません。申請くんなら、パッケージ名 jp.co.example.shinsei で始まる行を、上から最初に見つけたところから調べましょう。" />
       </p>
       <StackLab />
 
@@ -46,6 +47,7 @@ export function LabPage() {
       <QuizBlock id="ts-own-class" />
       <QuizBlock id="ts-log" />
       <QuizBlock id="java-layer" />
-    </div>
+      </div>
+    </TermHighlightScope>
   );
 }

@@ -114,7 +114,7 @@ export const javaMapTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "ブラウザから見た「サーバ」は、箱が重なっていることがあります。Controller の手前に、HTTPサーバとサーブレットコンテナがあります。",
+          text: "ブラウザから見た「サーバ」は、箱が重なっていることがあります。Controller の手前に、HTTP サーバとサーブレットコンテナがあります。",
         },
         {
           type: "h2",
@@ -124,7 +124,7 @@ export const javaMapTrack: Track = {
           type: "table",
           headers: ["種類", "例", "すること"],
           rows: [
-            ["HTTPサーバ", "Apache、nginx", "手前で受ける。ブラウザとの HTTPS をここで解き、静的ファイル、後ろへの中継"],
+            ["HTTP サーバ", "Apache、nginx", "手前で受ける。ブラウザとの HTTPS をここで解き、静的ファイル、後ろへの中継"],
             ["サーブレットコンテナ", "Tomcat、Jetty", "Java の画面や API を動かす"],
           ],
         },
@@ -133,7 +133,7 @@ export const javaMapTrack: Track = {
           type: "callout",
           kind: "trap",
           title: "Apache と Tomcat",
-          text: "Apache（httpd）は HTTPサーバ、Tomcat はサーブレットコンテナです。名前に Apache が付きますが、別物です。",
+          text: "Apache（httpd）は HTTP サーバ、Tomcat はサーブレットコンテナです。名前に Apache が付きますが、別物です。",
         },
         {
           type: "h2",
@@ -160,7 +160,7 @@ export const javaMapTrack: Track = {
             },
           ],
         },
-        { type: "diagram", name: "arch-patterns", caption: "左から、パターン1 内蔵だけ、パターン2 外部 WAR、パターン3 手前に HTTPサーバ。" },
+        { type: "diagram", name: "arch-patterns", caption: "左から、パターン1 内蔵だけ、パターン2 外部 WAR、パターン3 手前に HTTP サーバ。" },
         {
           type: "h2",
           text: "重ね方で変わる切り分け",
@@ -172,7 +172,7 @@ export const javaMapTrack: Track = {
         {
           type: "ul",
           items: [
-            "静的ファイルの 404 は、手前の HTTPサーバのパス設定のことがある（パターン3）",
+            "静的ファイルの 404 は、手前の HTTP サーバのパス設定のことがある（パターン3）",
             "アプリの例外は、サーブレットコンテナ側のログを見る",
             "コンテキストパスは、手前と後ろの両方に付いていることがある（パターン3）",
           ],
@@ -242,7 +242,7 @@ server:
           type: "ul",
           items: [
             "URL",
-            "ユーザ",
+            "接続ユーザ",
             "プロファイル",
             "コンテキストパス",
             "ファイルパス",
@@ -253,7 +253,7 @@ server:
           type: "ul",
           items: [
             "active プロファイルは起動引数で上書きされることがある",
-            "application-dev.yml（または .properties）と prod でログ量が違う。行き先は logging.file や、Spring Boot 用の logback-spring.xml に書いてあることが多い",
+            "application-dev.yml（または .properties）と prod でログ量が違う。出力先は logging.file や、Spring Boot 用の logback-spring.xml に書いてあることが多い",
             "context-path が違うと CSS が 404 になり、画面だけ崩れる",
             "パスワードは環境変数や別ファイルのことがある",
           ],
@@ -306,12 +306,16 @@ server:
         },
         {
           type: "code",
-          title: "たどる例（Controller → Service、抜粋）",
+          title: "たどる例（RequestController 抜粋）",
           lang: "java",
-          code: `@GetMapping
-public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-  model.addAttribute("requests", requestService.findMine(user.getId()));
-  return "request/list";
+          code: `@Controller
+@RequestMapping("/requests")
+public class RequestController {
+  @GetMapping
+  public String list(Model model, @AuthenticationPrincipal LoginUser user) {
+    model.addAttribute("requests", requestService.findMine(user.getId()));
+    return "request/list";
+  }
 }`,
         },
         {
@@ -320,12 +324,15 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "code",
-          title: "並びがずれる例（Controller → Mapper、抜粋）",
+          title: "並びがずれる例（Controller が Mapper を直呼び、抜粋）",
           lang: "java",
-          code: `@GetMapping("/requests")
-public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-  model.addAttribute("requests", requestMapper.findMine(user.getId()));
-  return "request/list";
+          code: `@Controller
+public class RequestController {
+  @GetMapping("/requests")
+  public String list(Model model, @AuthenticationPrincipal LoginUser user) {
+    model.addAttribute("requests", requestMapper.findMine(user.getId()));
+    return "request/list";
+  }
 }`,
         },
         {
@@ -574,7 +581,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "タグの中にある「交通費申請」「申請中」などは、プレビュー用のダミーです。実行時は th:text の \${...} が使われます。",
+          text: "タグの中にある「交通費申請」「PENDING」などは、プレビュー用のダミーです。実行時は th:text の \${...} が使われます。",
         },
         {
           type: "code",
@@ -636,7 +643,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           headers: ["種類", "動く位置", "ソースでの見え方"],
           rows: [
             ["Filter", "サーブレットコンテナ。Controller の前（静的ファイルも通ることがある）", "Controller から呼ばれない。Filter 実装や SecurityConfig を別検索する"],
-            ["Interceptor", "Spring MVC。Controller メソッドの直前・直後", "HandlerInterceptor と WebMvcConfigurer の addInterceptors。Controller に呼び出しは無い"],
+            ["Interceptor", "Spring MVC。Controller の Java メソッドの直前・直後", "HandlerInterceptor と WebMvcConfigurer の addInterceptors。Controller に呼び出しは無い"],
             ["AOP / プロキシ", "Service などのメソッド呼び出しの手前", "見た目は requestService.approve()。実行時は $Proxy や CGLIB を経由する"],
             ["@ControllerAdvice", "例外のあと。戻り値や画面を別クラスが決める", "throw したメソッドの return を追っても、実際の応答はここ"],
           ],
@@ -694,7 +701,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "Spring MVC の HandlerInterceptor は、Controller のメソッドの直前（preHandle）と直後（postHandle / afterCompletion）に動きます。ログ、共通の権限、アクセス記録などで使います。Controller のソースを上から読んでも、呼び出しは出てきません。",
+          text: "Spring MVC の HandlerInterceptor は、Controller の Java メソッドの直前（preHandle）と直後（postHandle / afterCompletion）に動きます。ログ、共通の権限、アクセス記録などで使います。Controller のソースを上から読んでも、呼び出しは出てきません。",
         },
         {
           type: "code",

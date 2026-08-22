@@ -32,15 +32,15 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "手間の少ない確認で、フロント、バックエンド、DB、ネットワーク、HTTPサーバのどれかを先に決めましょう。",
+          text: "手間の少ない確認で、フロント、バックエンド、DB、ネットワーク、HTTP サーバのどれかを先に決めましょう。",
         },
         {
           type: "ol",
           items: [
             "操作、期待、実際を一文にする",
-            "Network タブで、リクエストが飛んだか、ステータスと Content-Type を見る",
-            "アプリのログに、その時刻の行があるかを見る",
-            "層が決まってから、その層だけを深く見る",
+            "Network タブで、リクエストが飛んだか、ステータスコードと Content-Type を確認しましょう",
+            "アプリのログに、その時刻の行があるかを確認しましょう",
+            "層が決まってから、その層だけを深く確認しましょう",
           ],
         },
         {
@@ -52,7 +52,7 @@ export const scenarioTrack: Track = {
             ["画面に業務メッセージ、ERROR もスタックも無い", "文言でソース検索。無ければ DB / 外部 API"],
             ["200 なのに件数や中身が違う", "実行された SQL と、その条件の DB"],
             ["ログにリクエストが無い、タイムアウト", "ネットワーク"],
-            ["HTML は 200、CSS/JS だけ 404", "HTTPサーバ（または静的ファイルのパス）"],
+            ["HTML は 200、CSS/JS だけ 404", "HTTP サーバ（または静的ファイルのパス）"],
           ],
         },
         {
@@ -75,7 +75,7 @@ export const scenarioTrack: Track = {
             "依頼文を一文にする（何を変えるか、触らない範囲）",
             "既存の識別子で検索する（カラム名、定数名、URL、画面の文言）",
             "ヒットごとに「表示」「分岐」「永続化」に分類する",
-            "画面・API・バッチが同じデータを触っていないかを見る",
+            "画面・API・バッチが同じデータを触っていないかを確認しましょう",
           ],
         },
         {
@@ -355,7 +355,7 @@ requestService.approve(id, userId);`,
         },
         {
           type: "p",
-          text: "アプリに届いていなければ、Controller も SQL もまだ関係ありません。次を見ましょう。ping や curl の打ち方は、トラブルシュートの「ネットワークの疎通確認」です。",
+          text: "アプリに届いていなければ、Controller も SQL もまだ関係ありません。次を見ましょう。ping や curl の打ち方は、トラブルシューティング手法の「ネットワークの疎通確認」です。",
         },
         {
           type: "ul",
@@ -374,7 +374,7 @@ requestService.approve(id, userId);`,
         {
           type: "ul",
           items: [
-            "ログが無い = アプリが動いていないか、リクエストが届いていない",
+            "ログが無いときは、アプリ未到達か、見ているログが違うことが多いです",
             "ローカル環境で動くことと、検証用環境のホストへ届くことは別",
             "DNS の向き先、ポート、HTTPS の終端、プロキシの有無を表にする",
           ],
@@ -421,7 +421,7 @@ requestService.approve(id, userId);`,
         {
           type: "ul",
           items: [
-            "見た目の崩れは、先に静的ファイルのステータスを見る",
+            "見た目の崩れは、先に静的ファイルのステータスコードを確認しましょう",
             "HTML 200 と CSS 404 が同時にある。層が違う",
             "手前に Apache / nginx があるなら、location や alias を疑う",
           ],
@@ -541,7 +541,7 @@ requestService.approve(id, userId);`,
         },
         {
           type: "p",
-          text: "処理の入口は一覧の URL です。/shinsei/requests で検索し、Controller のメソッドから Service、Mapper へ降りましょう。同じ一覧を別経路から出していないかも見ましょう。",
+          text: "処理の入口は一覧の URL です。/shinsei/requests で検索し、Controller の Java メソッドから Service、Mapper へ降りましょう。同じ一覧を別経路から出していないかも確認しましょう。",
         },
         { type: "diagram", name: "read-entry", caption: "URL → Controller → Service → SQL。影響調査も処理の入口は同じです。" },
         {

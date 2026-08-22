@@ -26,8 +26,8 @@ export const terms: TermDef[] = [
     body: "HTTP メソッドの代表例。GET は取得、POST は登録や状態を変える操作に使われることが多いです。PUT / PATCH / DELETE も API でよく使います。約束と実装がずれることもあるので、Network タブで確認します。",
   },
   {
-    term: "ステータスコード",
-    aliases: ["ステータスコード", "ステータス番号", "2xx", "3xx", "4xx", "5xx"],
+    term: "HTTPステータスコード",
+    aliases: ["HTTPステータスコード", "HTTP ステータスコード", "ステータスコード", "2xx", "3xx", "4xx", "5xx"],
     body: "応答の結果を表す 3 桁の番号。2xx は成功、3xx は別 URL へ、4xx はクライアント側、5xx はサーバ側の問題です。",
   },
   {
@@ -38,7 +38,7 @@ export const terms: TermDef[] = [
   {
     term: "401 / 403",
     aliases: ["401", "403"],
-    body: "番号の読み方として、401 は未ログイン、403 は権限が無い。画面にそう出ても、実際の番号や遷移はアプリによって違います。Network タブで確認します。",
+    body: "ステータスコードの読み方として、401 は未ログイン、403 は権限が無い。画面にそう出ても、実際のステータスコードや遷移はアプリによって違います。Network タブで確認します。",
   },
   {
     term: "400",
@@ -48,7 +48,7 @@ export const terms: TermDef[] = [
   {
     term: "500",
     aliases: ["500"],
-    body: "Internal Server Error。サーバ側で例外が起きた、という応答です。",
+    body: "Internal Server Error。サーバ側の失敗と読む応答です。",
   },
   {
     term: "302",
@@ -72,8 +72,8 @@ export const terms: TermDef[] = [
   },
   {
     term: "セッション",
-    aliases: ["セッションタイムアウト", "セッションID", "JSESSIONID", "セッション"],
-    body: "サーバ側に置く「この人の状態」。ブラウザはCookieでIDだけ持ち、サーバがそのIDでログインユーザなどを思い出します。",
+    aliases: ["セッションタイムアウト", "セッション ID", "セッションID", "JSESSIONID", "セッション"],
+    body: "サーバ側に置く「この人の状態」。ブラウザは Cookie で ID だけ持ち、サーバがその ID でログインユーザなどを思い出します。",
   },
   {
     term: "リダイレクト",
@@ -246,7 +246,7 @@ export const terms: TermDef[] = [
   {
     term: "Interceptor",
     aliases: ["Interceptor", "HandlerInterceptor", "addInterceptors"],
-    body: "Spring MVC で、Controller メソッドの直前・直後に動く処理。preHandle / postHandle。WebMvcConfigurer の addInterceptors で登録します。Controller のソースに呼び出しは出ません。",
+    body: "Spring MVC で、Controller の Java メソッドの直前・直後に動く処理。preHandle / postHandle。WebMvcConfigurer の addInterceptors で登録します。Controller のソースに呼び出しは出ません。",
   },
   {
     term: "AOP",
@@ -436,17 +436,17 @@ export const terms: TermDef[] = [
   {
     term: "curl",
     aliases: ["curl"],
-    body: "コマンドから HTTP リクエストを送るツール。ステータスとヘッダを確認できます。Windows 10 以降にも入っていることが多いです。",
+    body: "コマンドから HTTP リクエストを送るツール。ステータスコードとヘッダを確認できます。Windows 10 以降にも入っていることが多いです。",
   },
   {
     term: "access.log",
     aliases: ["access.log", "access_log", "アクセスログ"],
-    body: "HTTPサーバが受けたリクエストの記録。URL、ステータス、時刻が並びます。静的ファイルの 404 もここに残ることが多いです。",
+    body: "HTTP サーバが受けたリクエストの記録。URL、ステータスコード、時刻が並びます。静的ファイルの 404 もここに残ることが多いです。",
   },
   {
     term: "error.log",
     aliases: ["error.log", "error_log", "エラーログ"],
-    body: "HTTPサーバ側のエラー記録。設定ミス、後ろのアプリへの接続失敗、SSL の問題など。",
+    body: "HTTP サーバ側のエラー記録。設定ミス、後ろのアプリへの接続失敗、SSL の問題など。",
   },
   {
     term: "ブレークポイント",
@@ -494,19 +494,19 @@ export const terms: TermDef[] = [
     body: "Java Web アプリの配布形式。外部の Tomcat などに載せるときに使います。",
   },
   {
-    term: "HTTPサーバ",
-    aliases: ["HTTPサーバ"],
+    term: "HTTP サーバ",
+    aliases: ["HTTP サーバ", "HTTPサーバ"],
     body: "ブラウザの手前でリクエストを受ける箱。Apache や nginx。静的ファイルの配信や後ろへの中継を担うことが多く、access.log と error.log を持ちます。",
   },
   {
     term: "Apache",
     aliases: ["Apache", "httpd"],
-    body: "HTTPサーバのひとつです。Tomcat とは別物です。",
+    body: "HTTP サーバのひとつです。Tomcat とは別物です。",
   },
   {
     term: "nginx",
     aliases: ["nginx", "Nginx"],
-    body: "HTTPサーバのひとつです。リバースプロキシや静的ファイルの配信でよく使います。",
+    body: "HTTP サーバのひとつです。リバースプロキシや静的ファイルの配信でよく使います。",
   },
   {
     term: "サーブレットコンテナ",
@@ -546,7 +546,7 @@ export const terms: TermDef[] = [
   {
     term: "logback",
     aliases: ["logback", "logback-spring.xml", "logback.xml"],
-    body: "Javaでよく使うログ出力のライブラリです。行き先は logback-spring.xml や logback.xml に書くことが多いです。logback-spring.xml は Spring Boot 用です。",
+    body: "Javaでよく使うログ出力のライブラリです。出力先は logback-spring.xml や logback.xml に書くことが多いです。logback-spring.xml は Spring Boot 用です。",
   },
   {
     term: "MDC",
@@ -646,7 +646,7 @@ export const terms: TermDef[] = [
   {
     term: "レスポンス",
     aliases: ["レスポンス"],
-    body: "サーバから返る応答。ステータス、ヘッダ、本文がセットです。",
+    body: "サーバから返る応答。ステータスコード、ヘッダ、本文がセットです。",
   },
   {
     term: "ブラウザ",
@@ -881,7 +881,7 @@ export const terms: TermDef[] = [
   {
     term: "権限",
     aliases: ["権限"],
-    body: "その人に、その操作やデータを扱ってよいか。承認者かどうかのチェックもこれです。足りないときの画面やステータスは、アプリによって違います。",
+    body: "その人に、その操作やデータを扱ってよいか。承認者かどうかのチェックもこれです。足りないときの画面やステータスコードは、アプリによって違います。",
   },
   {
     term: "ロール",
@@ -1045,8 +1045,9 @@ export const terms: TermDef[] = [
   },
 ];
 
+/** `%` を使うと hash が復号され id とずれるので、`.` に置き換える */
 export function glossaryAnchor(term: string) {
-  return `g-${encodeURIComponent(term)}`;
+  return `g-${encodeURIComponent(term).replace(/%/g, ".")}`;
 }
 
 export type GlossaryItem = {
@@ -1116,10 +1117,10 @@ export type TextPart =
 
 export function splitByTerms(text: string): TextPart[] {
   const parts: TextPart[] = [];
-  const re = new RegExp(termRegex.source, termRegex.flags);
+  termRegex.lastIndex = 0;
   let last = 0;
   let match: RegExpExecArray | null;
-  while ((match = re.exec(text)) !== null) {
+  while ((match = termRegex.exec(text)) !== null) {
     if (match.index > last) {
       parts.push({ type: "text", value: text.slice(last, match.index) });
     }
@@ -1135,5 +1136,6 @@ export function splitByTerms(text: string): TextPart[] {
   if (last < text.length) {
     parts.push({ type: "text", value: text.slice(last) });
   }
+  termRegex.lastIndex = 0;
   return parts;
 }

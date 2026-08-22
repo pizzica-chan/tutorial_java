@@ -37,6 +37,7 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "stack-line": StackLine,
   "not-found": NotFound,
   "env-diff": EnvDiff,
+  "cause-sides": CauseSides,
   divide: Divide,
   "n-plus-one": NPlusOne,
   "view-file": ViewFile,
@@ -150,7 +151,7 @@ function ScenarioLayers() {
       <Layer icon="browser">フロントエンド（ブラウザ・JS）</Layer>
       <Arrow down label="届く道（ネットワーク）" />
       <Layer icon="server" accent>
-        HTTPサーバ（任意）Apache / nginx
+        HTTP サーバ（任意）Apache / nginx
       </Layer>
       <Arrow down label="中継" />
       <Layer icon="inbox" accent>
@@ -277,9 +278,9 @@ function RequestParams() {
       <div className="request-param-row">
         <span className="request-param-label">JSON</span>
         <div className="request-param-body">
-          <RequestParamUrl>POST /shinsei/requests/12/approve</RequestParamUrl>
+          <RequestParamUrl>POST /shinsei/api/requests</RequestParamUrl>
           <RequestParamPayload>
-            {'{"status":"'}<mark className="url-hit">APPROVED</mark>{'","comment":"'}<mark className="url-hit">了解しました</mark>{'"}'}
+            {'{"title":"'}<mark className="url-hit">休暇申請</mark>{'","approverId":'}<mark className="url-hit">3</mark>{'}'}
           </RequestParamPayload>
         </div>
       </div>
@@ -346,7 +347,7 @@ function ProtocolStack() {
         icon="globe"
         kicker="LAYER7 アプリケーション層"
         title="HTTP"
-        sub="Network タブ・curl … URL・ステータス・Content-Type"
+        sub="Network タブ・curl … URL・ステータスコード・Content-Type"
       />
       <Arrow down label="TCP で載せる" />
       <IconNode
@@ -495,10 +496,6 @@ const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: stri
     text: "    at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)",
   },
   {
-    kind: "dim",
-    text: "    at jdk.proxy2.$Proxy128.approve(Unknown Source)",
-  },
-  {
     kind: "own",
     text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:58)",
     note: "呼び出し元。このファイルの 58 行目",
@@ -540,6 +537,22 @@ const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: stri
     text: "    ... 42 more",
   },
 ];
+
+function CauseSides() {
+  return (
+    <div className="d-cols">
+      <ColCard icon="browser" title="クライアント">
+        ブラウザ、画面、その PC
+      </ColCard>
+      <ColCard icon="globe" title="ネットワーク">
+        届くまでの経路
+      </ColCard>
+      <ColCard icon="server" title="サーバ">
+        アプリ、DB、ログ
+      </ColCard>
+    </div>
+  );
+}
 
 function Divide() {
   return (
@@ -606,7 +619,7 @@ function PageAssets() {
   return (
     <div className="d-n1">
       <Layer icon="browser" accent>
-        GET /requests → HTML
+        GET /shinsei/requests → HTML
       </Layer>
       <Arrow down label="ブラウザが追加で取る" />
       <div className="d-n1-rows">
@@ -790,7 +803,7 @@ function ArchRoles() {
       <Layer icon="browser">ブラウザ</Layer>
       <Arrow down label="HTTP/HTTPS リクエスト" />
       <Layer icon="server" accent>
-        HTTPサーバ（任意）Apache / nginx
+        HTTP サーバ（任意）Apache / nginx
       </Layer>
       <Arrow down label="中継" />
       <Layer icon="box" accent>
@@ -830,7 +843,7 @@ function ArchPatterns() {
         </div>
       </div>
       <div className="d-col">
-        <h4>パターン3: 手前に HTTPサーバ</h4>
+        <h4>パターン3: 手前に HTTP サーバ</h4>
         <div className="d-stack">
           <Layer icon="browser">ブラウザ</Layer>
           <Arrow down label="HTTP/HTTPS リクエスト" />

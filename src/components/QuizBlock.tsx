@@ -82,7 +82,7 @@ export function QuizBlock({ id }: { id: string }) {
               tabIndex={picked === null ? (index === 0 ? 0 : -1) : selected ? 0 : -1}
               onClick={() => choose(index)}
             >
-              <TextWithTerms text={choice} />
+              <TextWithTerms highlight={false} text={choice} />
             </button>
           );
         })}

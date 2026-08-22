@@ -17,14 +17,14 @@ export function GlossaryPage() {
       <p className="kicker">GLOSSARY</p>
       <h1 className="serif page-title">用語集</h1>
       <p className="lede">
-        本文の点線の語は、ホバーやキーボードフォーカスで説明が出ます。タップやクリックでこの用語集の該当項目へ飛びます。
+        本文の点線の語は、ホバーで説明が出ます。初出は Tab でも説明が出ます。クリックやタップでこの用語集の該当項目へ飛びます。
       </p>
       <dl className="glossary">
         {glossary.map((item) => (
           <div key={item.term} id={glossaryAnchor(item.term)}>
             <dt>{item.term}</dt>
             <dd>
-              <TextWithTerms text={item.body} />
+              <TextWithTerms highlight={false} text={item.body} />
             </dd>
           </div>
         ))}

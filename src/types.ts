@@ -24,6 +24,7 @@ export type DiagramName =
   | "stack-line"
   | "not-found"
   | "env-diff"
+  | "cause-sides"
   | "divide"
   | "n-plus-one"
   | "view-file"

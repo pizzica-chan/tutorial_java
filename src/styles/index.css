@@ -19,7 +19,7 @@
   --sans: "IBM Plex Sans JP", "Hiragino Sans", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, monospace;
   --radius: 18px;
-  --sidebar: 280px;
+  --sidebar: 320px;
 }
 
 * {
@@ -156,6 +156,7 @@ pre {
   padding: 9px 10px;
   border-radius: 10px;
   color: var(--muted);
+  white-space: nowrap;
 }
 
 .nav-link:hover,
@@ -335,7 +336,7 @@ pre {
   overflow: auto;
 }
 
-.search-results button {
+.search-results [role="option"] {
   display: grid;
   gap: 2px;
   width: 100%;
@@ -345,10 +346,11 @@ pre {
   color: inherit;
   text-align: left;
   font: inherit;
+  cursor: pointer;
 }
 
-.search-results button.active,
-.search-results button:hover {
+.search-results [role="option"].active,
+.search-results [role="option"]:hover {
   background: rgba(232, 165, 75, 0.12);
 }
 
@@ -1866,6 +1868,7 @@ th {
   cursor: help;
 }
 
+
 .term-tip {
   position: fixed;
   z-index: 40;
@@ -1928,7 +1931,7 @@ th {
   .sidebar {
     position: fixed;
     z-index: 20;
-    width: min(86vw, 320px);
+    width: min(86vw, 360px);
     transform: translateX(-105%);
     visibility: hidden;
     transition: transform 0.2s ease, visibility 0.2s ease;

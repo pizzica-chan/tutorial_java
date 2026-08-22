@@ -18,8 +18,26 @@ public class RequestService {
   private final RequestMapper requestMapper;
   private final MailService mailService;
 
+  public List<RequestEntity> findMine(Long userId) {
+    return requestMapper.findMine(userId);
+  }
+
+  public RequestEntity findById(Long id, Long userId) {
+    return requestMapper.findById(id, userId);
+  }
+
+  public RequestEntity create(Long applicantId, String title, Long approverId) {
+    RequestEntity request = new RequestEntity();
+    request.setTitle(title);
+    request.setApplicantId(applicantId);
+    request.setApproverId(approverId);
+    request.setStatus("PENDING");
+    requestMapper.insert(request);
+    return request;
+  }
+
   public void approve(Long requestId, Long approverId) {
-    RequestEntity request = requestMapper.findById(requestId);
+    RequestEntity request = requestMapper.findById(requestId, approverId);
     if (request == null) {
       throw new NotFoundException("申請がありません");
     }
@@ -61,6 +79,20 @@ export const shinseiPomSnippet = `<parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-security</artifactId>
   </dependency>
+  <dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <scope>runtime</scope>
+  </dependency>
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-mail</artifactId>
+  </dependency>
+  <dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <optional>true</optional>
+  </dependency>
 </dependencies>`;
 
 /** 教材用。上の pom.xml と同じ依存を Gradle で書いた例 */
@@ -79,12 +111,16 @@ dependencies {
   implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
   implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.2'
   implementation 'org.springframework.boot:spring-boot-starter-security'
+  runtimeOnly 'mysql:mysql-connector-java'
+  implementation 'org.springframework.boot:spring-boot-starter-mail'
+  compileOnly 'org.projectlombok:lombok'
+  annotationProcessor 'org.projectlombok:lombok'
 }`;
 
 /** 教材用。申請くんの一覧テンプレート抜粋 */
 export const shinseiListTemplateSnippet = `<tr th:each="req : \${requests}">
   <td th:text="\${req.title}">交通費申請</td>
-  <td th:text="\${req.status}">申請中</td>
+  <td th:text="\${req.status}">PENDING</td>
   <td>
     <form th:if="\${req.status == 'PENDING'}"
           th:action="@{/requests/{id}/approve(id=\${req.id})}"
@@ -221,10 +257,17 @@ public class RequestApiController {
     return requestService.findMine(user.getId());
   }
 
+  @PostMapping
+  public RequestEntity create(@RequestBody NewRequest body, @AuthenticationPrincipal LoginUser user) {
+    return requestService.create(user.getId(), body.title(), body.approverId());
+  }
+
   @PostMapping("/{id}/approve")
   public void approve(@PathVariable Long id, @AuthenticationPrincipal LoginUser user) {
     requestService.approve(id, user.getId());
   }
+
+  public record NewRequest(String title, Long approverId) {}
 }`,
   },
   {
@@ -270,7 +313,8 @@ public class MailService {
     why: "Java のメソッド名と、XML の id が対になります。申請くんは MyBatis なので、Spring Data の Repository ではなく Mapper です。",
     code: `public interface RequestMapper {
   List<RequestEntity> findMine(@Param("userId") Long userId);
-  RequestEntity findById(Long id);
+  RequestEntity findById(@Param("id") Long id, @Param("userId") Long userId);
+  int insert(RequestEntity request);
   int update(RequestEntity request);
 }`,
   },
@@ -292,7 +336,7 @@ public class MailService {
   {
     path: "src/main/resources/mapper/RequestMapper.xml",
     note: "実際の SQL",
-    why: "一覧が遅い、件数が合わない、更新されないといった症状は、SQL を見ないと終わりません。Java のメソッド名と XML の id が対になっています。findById は承認時に 1 件取り、applicant_email は通知先です。",
+    why: "一覧が遅い、件数が合わない、更新されないといった症状は、SQL を見ないと終わりません。Java のメソッド名と XML の id が対になっています。findById は詳細表示と承認で 1 件取り、applicant_email は通知先です。",
     code: `<select id="findMine" resultType="RequestEntity">
   SELECT id, title, status, applicant_id, approver_id, applicant_email, created_at
   FROM t_request
@@ -305,7 +349,13 @@ public class MailService {
   SELECT id, title, status, applicant_id, approver_id, applicant_email, created_at
   FROM t_request
   WHERE id = #{id}
+    AND (applicant_id = #{userId} OR approver_id = #{userId})
 </select>
+
+<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+  INSERT INTO t_request (title, status, applicant_id, approver_id, created_at)
+  VALUES (#{title}, #{status}, #{applicantId}, #{approverId}, NOW())
+</insert>
 
 <update id="update">
   UPDATE t_request
@@ -317,8 +367,21 @@ public class MailService {
   {
     path: "src/main/resources/templates/request/list.html",
     note: "画面テンプレート",
-    why: "ボタンの遷移先、hidden 項目、表示条件（ステータスでボタンを出す等）は HTML 側にあります。サーバだけ見ても足りないことがあります。th:action なら CSRF 用 hidden が自動で付くことが多いです。欠けると POST が弾かれます。",
+    why: "ボタンの遷移先、hidden 項目、表示条件（ステータスでボタンを出す等）は HTML 側にあります。サーバだけ見ても足りないことがあります。th:action なら CSRF 用 hidden が自動で付くことが多いです。教材では明示して見せています。欠けると POST が弾かれます。",
     code: shinseiListTemplateSnippet,
+  },
+  {
+    path: "src/main/resources/templates/request/detail.html",
+    note: "申請詳細の画面テンプレート",
+    why: "list.html と同じく、表示する項目と承認ボタンの条件は HTML 側にあります。Controller が return \"request/detail\" と返すと、このファイルが使われます。",
+    code: `<h1 th:text="\${request.title}">交通費申請</h1>
+<p>ステータス: <span th:text="\${request.status}">PENDING</span></p>
+<form th:if="\${request.status == 'PENDING'}"
+      th:action="@{/requests/{id}/approve(id=\${request.id})}"
+      method="post">
+  <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
+  <button type="submit">承認</button>
+</form>`,
   },
   {
     path: "src/main/resources/templates/login.html",
@@ -361,7 +424,7 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
   },
   {
     path: "src/main/resources/logback-spring.xml",
-    note: "Spring Boot 用。ログの行き先",
+    note: "Spring Boot 用。ログの出力先",
     why: "ファイルに出すか、コンソールだけか、日付で分けるかといった設定がここに書かれていることが多いです。障害調査は、まずこの出力先を確認します。",
     code: `<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
   <file>logs/shinsei.log</file>
@@ -401,7 +464,7 @@ class RequestServiceTest {
     request.setId(1L);
     request.setApproverId(10L);
     request.setStatus("PENDING");
-    when(requestMapper.findById(1L)).thenReturn(request);
+    when(requestMapper.findById(1L, 10L)).thenReturn(request);
 
     requestService.approve(1L, 10L);
 
@@ -484,7 +547,10 @@ export const projectTree: ProjectTreeNode = {
                   children: [
                     {
                       name: "request",
-                      children: [{ name: "list.html", filePath: "src/main/resources/templates/request/list.html" }],
+                      children: [
+                        { name: "list.html", filePath: "src/main/resources/templates/request/list.html" },
+                        { name: "detail.html", filePath: "src/main/resources/templates/request/detail.html" },
+                      ],
                     },
                     { name: "login.html", filePath: "src/main/resources/templates/login.html" },
                   ],

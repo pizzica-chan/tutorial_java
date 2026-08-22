@@ -85,23 +85,18 @@ export function SiteSearch() {
               id={`${listId}-opt-${index}`}
               role="option"
               aria-selected={index === active}
+              className={index === active ? "active" : undefined}
+              onMouseEnter={() => setActive(index)}
+              onClick={() => go(hit)}
             >
-              <button
-                className={index === active ? "active" : ""}
-                type="button"
-                tabIndex={-1}
-                onMouseEnter={() => setActive(index)}
-                onClick={() => go(hit)}
-              >
-                <span className="search-crumb">{hit.crumb}</span>
-                <strong>{hit.title}</strong>
-                <span className="search-snip">{hit.snippet}</span>
-              </button>
+              <span className="search-crumb">{hit.crumb}</span>
+              <strong>{hit.title}</strong>
+              <span className="search-snip">{hit.snippet}</span>
             </li>
           ))}
         </ul>
       ) : showEmpty ? (
-        <p className="search-results search-empty" role="status">
+        <p className="search-results search-empty" id={listId} role="status" aria-live="polite">
           一致する項目はありません
         </p>
       ) : null}

@@ -12,7 +12,7 @@ export const requestFlow: FlowStep[] = [
     layer: "Browser",
     title: "一覧を開く",
     detail:
-      "利用者が /shinsei/requests にアクセスします。ブラウザは Cookie に入っているセッションIDも一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引く鍵になります。",
+      "利用者が /shinsei/requests にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引く鍵になります。",
     code: `GET /shinsei/requests HTTP/1.1
 Host: intranet.example.co.jp
 Cookie: JSESSIONID=AB12CD34
@@ -23,7 +23,7 @@ Accept: text/html`,
     layer: "Filter",
     title: "セキュリティフィルタ",
     detail:
-      "Spring Security が、Cookie のセッションIDでサーバ側のセッションを引きます。そこにログインユーザがいれば「ログイン済み」です。この URL へのアクセスが許可されているかも、ここで判定します。弾かれると Controller まで届きません。番号や遷移先は実装次第です。",
+      "Spring Security が、Cookie のセッション ID でサーバ側のセッションを引きます。そこにログインユーザがいれば「ログイン済み」です。この URL へのアクセスが許可されているかも、ここで判定します。弾かれると Controller まで届きません。ステータスコードや遷移先は実装次第です。",
     code: `Cookie: JSESSIONID=AB12CD34
   -> セッションを引く
   -> ログインユーザあり?  このURLはアクセス許可?
@@ -113,7 +113,7 @@ export function firstAppLine(item: StackCase): number {
 export const stackCases: StackCase[] = [
   {
     id: "npe",
-    title: "承認ボタンでレスポンス 500（エラー）",
+    title: "承認ボタンでステータスコード 500",
     symptom: "申請詳細の「承認」を押すと画面がエラーになる。自分の申請では起きず、代理承認で起きる。",
     lines: [
       {
@@ -135,11 +135,6 @@ export const stackCases: StackCase[] = [
         kind: "framework",
         text: "    at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:792)",
         note: "フレームワーク内部。原因箇所ではありません。",
-      },
-      {
-        kind: "jdk",
-        text: "    at jdk.proxy2.$Proxy128.approve(Unknown Source)",
-        note: "生成されたプロキシです。Unknown Source なので飛ばします。",
       },
       {
         kind: "app",
@@ -170,8 +165,8 @@ export const stackCases: StackCase[] = [
   },
   {
     id: "sql",
-    title: "一覧でレスポンス 500（エラー）",
-    symptom: "申請一覧に行くとレスポンス 500（サーバエラー）になる。昨日まで動いていた。DBにカラムを足した、という話がある。",
+    title: "一覧でステータスコード 500",
+    symptom: "申請一覧に行くとステータスコード 500（サーバエラー）になる。昨日まで動いていた。DB にカラムを足した、という話がある。",
     lines: [
       {
         kind: "exception",
@@ -191,17 +186,12 @@ export const stackCases: StackCase[] = [
       {
         kind: "jdk",
         text: "    at jdk.proxy2.$Proxy84.findMine(Unknown Source)",
-        note: "Mapper のプロキシです。Unknown Source なので飛ばします。",
-      },
-      {
-        kind: "app",
-        text: "    at jp.co.example.shinsei.mapper.RequestMapper.findMine(RequestMapper.java:18)",
-        note: "自作クラス。対応する XML の findMine を開きます。ライブラリの行より、この行が処理の入口です。",
+        note: "MyBatis の Mapper はインタフェースなので、実行時はプロキシです。Unknown Source なら飛ばして、隣の自作クラスへ戻ります。",
       },
       {
         kind: "app",
         text: "    at jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:22)",
-        note: "呼び出し元の Service。SQL の中身は Mapper 側にあります。",
+        note: "呼び出し元の Service。SQL の中身は Mapper の XML（findMine）にあります。",
       },
       {
         kind: "app",
@@ -223,7 +213,7 @@ export const stackCases: StackCase[] = [
   {
     id: "csrf",
     title: "承認するとログイン画面に戻る",
-    symptom: "ボタンを押すと一覧ではなくログインへ。ログに例外は少ない。Network タブの番号も確認する。",
+    symptom: "ボタンを押すと一覧ではなくログインへ。ログに例外は少ない。Network タブのステータスコードも確認しましょう。",
     lines: [
       {
         kind: "framework",
@@ -252,8 +242,8 @@ Content-Type: text/html;charset=UTF-8
   <body>
     <h1>申請一覧</h1>
     <table>
-      <tr><td>交通費申請</td><td>申請中</td></tr>
-      <tr><td>備品購入</td><td>承認済み</td></tr>
+      <tr><td>交通費申請</td><td>PENDING</td></tr>
+      <tr><td>備品購入</td><td>APPROVED</td></tr>
     </table>
   </body>
 </html>`,

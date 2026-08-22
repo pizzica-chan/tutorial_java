@@ -14,19 +14,6 @@ export const quizzes = {
     explanation:
       "画面や API の URL → Controller が最短です。全体通読より、今動いている一本の線を追います。",
   },
-  "ori-ask": {
-    id: "ori-ask",
-    question: "不具合を記録するとき、最低限そろえる情報はどれ？",
-    choices: [
-      "「動きません」だけ",
-      "再現手順、期待結果、実際の結果、見たログ",
-      "感想と、直してほしい箇所の推測だけ",
-      "関係ないファイルの全文",
-    ],
-    answer: 1,
-    explanation:
-      "再現手順とログがあると、同じ現象を共有できます。仮説はその次です。",
-  },
   "web-front-back": {
     id: "web-front-back",
     question: "申請一覧の件数がおかしい。先に見るのはどれ？",
@@ -42,16 +29,16 @@ export const quizzes = {
   },
   "web-status": {
     id: "web-status",
-    question: "ログイン後の操作で「権限がありません」と出た。ステータスについて妥当なのは？",
+    question: "ログイン後の操作で「権限がありません」と出た。ステータスコードについて妥当なのは？",
     choices: [
       "必ず 403 になる",
-      "403 は「権限が無い」と読む番号だが、実際の番号や画面はアプリによる。Network タブで確認する",
+      "403 は「権限が無い」と読むステータスコードだが、実際のステータスコードや画面はアプリによる。Network タブで確認する",
       "必ず 401 になる",
       "必ず 500 なので、スタックトレースだけ見る",
     ],
     answer: 1,
     explanation:
-      "403 は権限不足と読む番号です。画面に「権限がありません」と出ても、200 のエラー画面や別の番号のことがあります。番号の意味と、そのアプリが何を返すかは別です。",
+      "403 は権限不足と読むステータスコードです。画面に「権限がありません」と出ても、200 のエラー画面や別のステータスコードのことがあります。ステータスコードの意味と、そのアプリが何を返すかは別です。",
   },
   "web-params": {
     id: "web-params",
@@ -90,7 +77,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "API なのに HTML なら、認証失敗や間違った URL で画面用の応答が来ていることが多いです。302 経由でログイン HTML になることも、200 のまま HTML が返ることもあります。ステータスだけでなく Content-Type を見ます。",
+      "API なのに HTML なら、認証失敗や間違った URL で画面用の応答が来ていることが多いです。302 経由でログイン HTML になることも、200 のまま HTML が返ることもあります。ステータスコードだけでなく Content-Type を確認しましょう。",
   },
   "java-layer": {
     id: "java-layer",
@@ -212,6 +199,19 @@ export const quizzes = {
     explanation:
       "org.springframework や java. は自分たちが書いたコードではありません。jp.co.example で始まる RequestService の行を見ます。",
   },
+  "ts-symptom-start": {
+    id: "ts-symptom-start",
+    question: "承認ボタンを押したらログイン画面に戻った。最初に確認するのはどれ？",
+    choices: [
+      "RequestService の承認判定の中身",
+      "Network タブのステータスコードと Location、Cookie",
+      "t_request の件数",
+      "ping が通るか",
+    ],
+    answer: 1,
+    explanation:
+      "Controller の業務ロジックより先に、フィルタやセッションを疑います。ステータスコードと Location、Cookie を確認しましょう。",
+  },
   "ts-log": {
     id: "ts-log",
     question: "画面がエラーになった。ログ調査で最初にやることは？",
@@ -223,20 +223,20 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "アプリはもともとログを出すのが一般的です。行き先を確認し、時刻を合わせて読みます。足すのは足りないときです。",
+      "先に出力先を確認し、操作した時刻の ERROR や WARN を読みます。調査用のログを足すのは、既存ログで足りないときです。",
   },
   "ts-http-log": {
     id: "ts-http-log",
     question: "HTML は 200 で一覧の INFO はアプリログにある。CSS だけ 404。次に見るログは？",
     choices: [
       "Mapper の SQL ログだけ",
-      "HTTPサーバの access.log / error.log。静的ファイルは手前で返していることが多い",
+      "HTTP サーバの access.log / error.log。静的ファイルは手前で返していることが多い",
       "DB のスロークエリログだけ",
       "Git のコミット履歴",
     ],
     answer: 1,
     explanation:
-      "動的処理は Java まで届いています。CSS の 404 は手前の HTTPサーバで止まっていることが多く、アプリログには出ません。",
+      "動的処理は Java まで届いています。CSS の 404 は手前の HTTP サーバで止まっていることが多く、アプリログには出ません。",
   },
   "ts-log-pick": {
     id: "ts-log-pick",
@@ -307,14 +307,14 @@ export const quizzes = {
     id: "java-arch",
     question: "Apache と Tomcat の違いは？",
     choices: [
-      "どちらも同じ HTTPサーバの別名",
-      "Apache は HTTPサーバ、Tomcat はサーブレットコンテナ",
+      "どちらも同じ HTTP サーバの別名",
+      "Apache は HTTP サーバ、Tomcat はサーブレットコンテナ",
       "どちらもデータベース",
       "Tomcat はブラウザ、Apache は CSS",
     ],
     answer: 1,
     explanation:
-      "Apache（httpd）と nginx が HTTPサーバ、Tomcat と Jetty がサーブレットコンテナです。名前に Apache が付いても、Tomcat とは別物です。",
+      "Apache（httpd）と nginx が HTTP サーバ、Tomcat と Jetty がサーブレットコンテナです。名前に Apache が付いても、Tomcat とは別物です。",
   },
   "sc-how": {
     id: "sc-how",
@@ -379,7 +379,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "200 で件数が違うなら、データは DB にある。コード通読より先に、実行された SQL と、その条件での件数を見ます。",
+      "200 で件数が違うなら、原因は多くは DB の行や接続先です。コード通読より先に、実行された SQL と、その条件での件数を確認しましょう。キャッシュでずれることもあります。",
   },
   "sc-net": {
     id: "sc-net",
@@ -399,7 +399,7 @@ export const quizzes = {
     question: "一覧の HTML は 200。表のスタイルだけ当たっていない。次は？",
     choices: [
       "RequestService の null チェック",
-      "Network タブで CSS / JS のステータスを見る。404 ならパスか手前の HTTPサーバ",
+      "Network タブで CSS / JS のステータスコードを確認しましょう。404 ならパスか手前の HTTP サーバ",
       "DB の文字コードだけを疑う",
       "承認者マスタを全削除する",
     ],

@@ -5,7 +5,7 @@ export const webTrack: Track = {
   no: "02",
   title: "Webの基礎",
   kicker: "HTTP",
-  description: "リクエスト、パラメータ、フロントとバック、ステータス、Cookie。",
+  description: "リクエスト、パラメータ、フロントとバック、ステータスコード、Cookie。",
   accent: "#6ec8c0",
   lessons: [
     {
@@ -29,7 +29,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "画面に出ているのは、返ってきた HTML をブラウザが表示したものです。不具合のときは、画面そのものより先に、このリクエストとレスポンスを確認しましょう。",
+          text: "画面に出ているのは、返ってきた HTML をブラウザが表示したものです。不具合は画面で気づくことが多いですが、画面だけ見て原因を決めず、このリクエストとレスポンスも確認しましょう。",
         },
         { type: "diagram", name: "http-roundtrip", caption: "ブラウザが送り、サーバが返す。画面は、返ってきた HTML を表示したものです。" },
         {
@@ -37,7 +37,7 @@ export const webTrack: Track = {
           items: [
             "宛先は URL、操作の種類は HTTP メソッド（GET / POST など）",
             "付加情報はヘッダ（Cookie、Content-Type など）",
-            "成否の概略はステータスコード（200、404、500 など）",
+            "成否の概略は HTTPステータスコード（200、404、500 など）",
             "本文は HTML、JSON、ファイルなど",
           ],
         },
@@ -50,7 +50,7 @@ export const webTrack: Track = {
           type: "callout",
           kind: "tip",
           title: "Network タブ",
-          text: "不具合のときは、該当リクエストのステータスと応答本文を先に確認しましょう。Java のコードを見るのはそのあとです。",
+          text: "不具合のときは、該当リクエストのステータスコードと応答本文を先に確認しましょう。Java のコードを見るのはそのあとです。",
         },
         {
           type: "p",
@@ -73,7 +73,7 @@ export const webTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "Web アプリは、動く場所で二つに分けて見ましょう。フロントエンドはブラウザ側、バックエンドはサーバ側です。境目は HTTP の往復です。一覧に何件あるか、申請の中身は何かは、その奥の DB に保存されています。",
+          text: "Web アプリは、動く場所で二つに分けて見ましょう。フロントエンドはブラウザ側、バックエンドはサーバ側です。境目は HTTP の往復です。",
         },
         { type: "diagram", name: "front-back", caption: "フロントとバックの境目は HTTP。データは DB にあります。" },
         {
@@ -110,7 +110,7 @@ export const webTrack: Track = {
             "見た目だけおかしい（色、位置、CSS の 404）→ フロント側を先に見る",
             "件数や中身がおかしい → 実行された SQL を見て、同じ条件で DB の行を数える",
             "500 が出る → バックエンドのログとスタックトレース",
-            "ボタンを押しても画面が変わらない → Network タブで、リクエストが飛んだか、応答は HTML か JSON かを見る",
+            "ボタンを押しても画面が変わらない → Network タブで、リクエストが飛んだか、応答は HTML か JSON かを確認しましょう",
           ],
         },
         {
@@ -122,12 +122,12 @@ export const webTrack: Track = {
     },
     {
       id: "url-method",
-      title: "URL・メソッド・ステータス",
+      title: "URL・HTTP メソッド・ステータスコード",
       minutes: 10,
       blocks: [
         {
           type: "p",
-          text: "切り分けは、URL のパスとステータス番号から始めましょう。",
+          text: "切り分けは、URL のパスとステータスコードから始めましょう。",
         },
         {
           type: "h2",
@@ -172,17 +172,17 @@ export const webTrack: Track = {
         { type: "diagram", name: "get-post" },
         {
           type: "h2",
-          text: "ステータス",
+          text: "HTTPステータスコード",
         },
         { type: "diagram", name: "status-codes" },
         {
           type: "table",
-          headers: ["番号", "読み方"],
+          headers: ["ステータスコード", "読み方"],
           rows: [
             ["200", "サーバは応答を返せた。業務的に正しいかは別"],
             ["302/303", "別URLへ誘導。ログインへ飛ばされた、POST 後のリダイレクトなど"],
             ["400", "送り方が不正。パラメータ不足、バリデーション"],
-            ["401/403", "番号の読み方は未ログイン / 権限不足。画面や実際の番号はアプリによる"],
+            ["401/403", "読み方は未ログイン / 権限不足。画面や実際のステータスコードはアプリによる"],
             ["404", "URLに対応する処理が無い、または資源が無い"],
             ["500", "サーバ例外。スタックトレースを見る"],
           ],
@@ -190,8 +190,8 @@ export const webTrack: Track = {
         {
           type: "callout",
           kind: "note",
-          title: "番号の読み方と、アプリの応答",
-          text: "403 は「権限が無い」と読む番号です。権限不足が必ず 403 になるわけではありません。未ログインも 401 とは限らず、ログイン画面へ飛ばす実装が多いです。切り分けでは Network タブの番号と本文を見ましょう。",
+          title: "ステータスコードの読み方と、アプリの応答",
+          text: "403 は「権限が無い」と読むステータスコードです。権限不足が必ず 403 になるわけではありません。未ログインも 401 とは限らず、ログイン画面へ飛ばす実装が多いです。切り分けでは Network タブのステータスコードと本文を見ましょう。",
         },
         { type: "quiz", id: "web-status" },
       ],
@@ -212,7 +212,7 @@ export const webTrack: Track = {
         {
           type: "diagram",
           name: "request-params",
-          caption: "載せ方はいくつかある。GET と POST でよく使う場所が違う。",
+          caption: "載せ方はいくつかある。JSON の行は申請くんの API 登録です。GET と POST でよく使う場所が違う。",
         },
         {
           type: "table",
@@ -221,7 +221,7 @@ export const webTrack: Track = {
             ["パス", "URL の /12 の部分", "/shinsei/requests/12"],
             ["クエリ", "URL の ? 以降", "?status=PENDING&page=2"],
             ["フォーム", "POST の本文（form）", "title=休暇申請&approverId=3"],
-            ["JSON", "POST / PUT の本文", '{"status":"APPROVED"}'],
+            ["JSON", "POST / PUT の本文", '{"title":"休暇申請","approverId":3}'],
           ],
         },
         {
@@ -259,7 +259,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "申請 12 件の承認は POST /shinsei/requests/12/approve です。12 はパスに入っています。一覧に絞り込みを足すなら、GET /shinsei/requests?departmentId=5 のようにクエリに載せることが多いです。",
+          text: "申請 ID 12 の承認は POST /shinsei/requests/12/approve です。12 はパスに入っています。一覧に絞り込みを足すなら、GET /shinsei/requests?departmentId=5 のようにクエリに載せることが多いです。",
         },
         {
           type: "callout",
@@ -349,7 +349,7 @@ export const webTrack: Track = {
             ["hidden 項目", "ID や CSRF トークンの有無"],
             ["th:if / c:if", "ボタンが出ないのは表示条件かもしれない"],
             ["name 属性", "サーバの Spring の @RequestParam と一致しているか（「リクエストのパラメータ」参照）"],
-            ["fetch / XMLHttpRequest", "画面遷移しない更新。JSON の Web API が多い。ステータスと Content-Type を Network タブで見る"],
+            ["fetch / XMLHttpRequest", "画面遷移しない更新。JSON の Web API が多い。ステータスコードと Content-Type を Network タブで確認しましょう"],
           ],
         },
         {

@@ -5,7 +5,7 @@ import { ProjectExplorer } from "./ProjectExplorer";
 import { RequestFlow } from "./RequestFlow";
 import { StackLab } from "./StackLab";
 import { HttpInspector } from "./HttpInspector";
-import { TextWithTerms } from "./TextWithTerms";
+import { TermHighlightScope, TextWithTerms } from "./TextWithTerms";
 import { CodeBlock } from "./CodeBlock";
 import { Diagram } from "./Diagram";
 import { Icon, calloutIcon } from "./Icon";
@@ -19,11 +19,13 @@ const widgets: Record<WidgetName, ComponentType> = {
 
 export function Article({ blocks }: { blocks: Block[] }) {
   return (
-    <div className="article">
-      {blocks.map((block, index) => (
-        <BlockView key={index} block={block} />
-      ))}
-    </div>
+    <TermHighlightScope>
+      <div className="article">
+        {blocks.map((block, index) => (
+          <BlockView key={index} block={block} />
+        ))}
+      </div>
+    </TermHighlightScope>
   );
 }
 
