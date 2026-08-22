@@ -295,13 +295,13 @@ export const quizzes = {
     question: "検証用環境のホストへ ping は通るが、Test-NetConnection の 8080 は失敗。まず疑うのは？",
     choices: [
       "Mapper の XML のインデント",
-      "8080 が FW で閉じている、またはアプリがそのポートで待ち受けていない",
+      "8080 が FW で閉じている、または HTTP サーバやアプリがそのポートで待ち受けていない",
       "Thymeleaf の th:if",
       "ORDER BY の列名",
     ],
     answer: 1,
     explanation:
-      "ping はホスト到達、TCP はポート到達です。層が違います。TCP が失敗すると HTTP も届きません。FW と listen ポートを見ます。",
+      "ping はホスト到達、TCP はポート到達です。層が違います。TCP が失敗すると HTTP も届きません。FW と、HTTP サーバやアプリの待ち受けを見ます。",
   },
   "java-arch": {
     id: "java-arch",

@@ -167,7 +167,7 @@ export const troubleshootTrack: Track = {
         },
         {
           type: "h2",
-          text: "HTTP サーバのログ（Apache / nginx）",
+          text: "HTTP サーバのログを見る",
         },
         {
           type: "p",
@@ -220,7 +220,7 @@ export const troubleshootTrack: Track = {
         },
         {
           type: "h2",
-          text: "1行の読み方",
+          text: "アプリのログの 1 行を読む",
         },
         {
           type: "p",
@@ -363,15 +363,31 @@ ping -c 4 intranet.example.co.jp`,
         {
           type: "code",
           title: "例",
-          code: `# Windows
+          code: `# Windows（ICMP が多い）
 tracert intranet.example.co.jp
 
-# Linux（環境により traceroute または tracepath）
-traceroute intranet.example.co.jp`,
+# Linux（環境により traceroute または tracepath。UDP が多い）
+traceroute intranet.example.co.jp
+
+# Linux：ICMP
+traceroute -I intranet.example.co.jp
+
+# Linux：TCP（申請くんの 8080 の例）
+traceroute -T -p 8080 intranet.example.co.jp`,
         },
         {
           type: "p",
           text: "途中のホップが表示され、どこで * やタイムアウトが続くかを見ましょう。社内のどの境界で止まっているかの手がかりになります。",
+        },
+        {
+          type: "p",
+          text: "何も指定しないと、Windows の tracert は ICMP、Linux の traceroute は UDP になることが多いです。プロトコルやポートは、オプションで変えられます。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "プロトコルとポートで経路が変わる",
+          text: "ブラウザは HTTP を TCP で送ります。ポートは 80 や 443、8080 など、接続先で決まります。traceroute の既定が ICMP や UDP だと、見える経路が変わることがあります。途中の FW の許可だけでなく、ポリシーベースルーティングのように、プロトコルやポートで道を分ける制御もあります。同じ道を見る TCP の例は、上の Linux です。Windows の tracert は ICMP のままなので、ポートまで届くかは次で確認しましょう。",
         },
         {
           type: "h2",
@@ -379,7 +395,7 @@ traceroute intranet.example.co.jp`,
         },
         {
           type: "p",
-          text: "申請くんの検証用環境が 8080 なら、HTTP の前に TCP で 8080 が開いているかを見ましょう。アプリが起動していない、別ポートで待ち受けている、FW で閉じている、などが分かれます。",
+          text: "申請くんの検証用環境が 8080 なら、HTTP の前に TCP で 8080 が開いているかを見ましょう。待ち受けが無い、別ポートで待ち受けている、FW で閉じている、などが分かれます。手前に Apache や nginx がある構成では、ブラウザが当たるのはその HTTP サーバのポートです。",
         },
         {
           type: "code",
@@ -437,7 +453,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
           headers: ["結果の型", "よくある意味", "次に見るもの"],
           rows: [
             ["ping 不可", "DNS、ホスト停止、ICMP 拒否", "名前解決、別経路からの ping、ICMP 以外の確認"],
-            ["ping 可、TCP 不可", "ポート閉鎖、アプリ未起動、FW", "プロセス、listen ポート、FW ルール、LB の向き先"],
+            ["ping 可、TCP 不可", "ポート閉鎖、待ち受けが無い、FW", "HTTP サーバやアプリがそのポートで待ち受けているか、FW ルール、LB の向き先"],
             ["TCP 可、curl で HTTP エラー", "パス違い、コンテキストパス、リダイレクト", "URL、server.servlet.context-path、Controller のマッピング"],
             ["curl 可、ブラウザだけ不可", "クライアント側の設定差", "プロキシ、VPN、Cookie、別マシンからの再現"],
             ["すべて可、ログだけ無い", "別インスタンス、別ログファイル", "LB の振り分け、ログの出力先"],

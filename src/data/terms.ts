@@ -409,6 +409,11 @@ export const terms: TermDef[] = [
     body: "通信の許可・拒否を制御する壁。接続タイムアウトの原因になることがあります。",
   },
   {
+    term: "ポリシーベースルーティング",
+    aliases: ["ポリシーベースルーティング", "PBR"],
+    body: "宛先だけでなく、プロトコルやポートなどの条件で通す道を変える経路制御です。ICMP と TCP で道が分かれることがあります。",
+  },
+  {
     term: "DNS",
     aliases: ["DNS"],
     body: "名前（ホスト名）を IP アドレスに変換する仕組みです。",
@@ -424,6 +429,16 @@ export const terms: TermDef[] = [
     body: "インターネットでデータを届ける約束の組み合わせ。IP がホストまで、TCP がポートまで届ける役割を持ちます。HTTP はその上で動きます。",
   },
   {
+    term: "ICMP",
+    aliases: ["ICMP"],
+    body: "ホストの到達確認や、届かないときの通知に使うプロトコルです。ping や Windows の tracert でよく使います。HTTP とは別です。",
+  },
+  {
+    term: "UDP",
+    aliases: ["UDP"],
+    body: "事前の接続を張らずにデータを送るプロトコルです。TCP のように届いたかの確認を待ちません。",
+  },
+  {
     term: "ping",
     aliases: ["ping"],
     body: "ICMP で相手ホストが応答するかを見るコマンド。名前解決やホスト到達の手がかりになります。ping が通らなくても HTTP は通ることもあります。",
@@ -431,7 +446,7 @@ export const terms: TermDef[] = [
   {
     term: "traceroute",
     aliases: ["traceroute", "tracert", "tracepath"],
-    body: "パケットが途中のどの機器を通るかを見るコマンド。どこで止まったかの手がかりになります。",
+    body: "パケットが途中のどの機器を通るかを見るコマンド。ICMP、UDP、TCP などプロトコルを選べることがあります。プロトコルやポートが違うと、見える経路も変わることがあります。",
   },
   {
     term: "curl",
