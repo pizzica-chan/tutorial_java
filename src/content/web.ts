@@ -273,13 +273,51 @@ export const webTrack: Track = {
     {
       id: "session",
       title: "Cookie とセッション",
-      minutes: 9,
+      minutes: 10,
       blocks: [
         {
           type: "p",
-          text: "HTTP の1回のやり取りには、ログイン済みかどうかの記憶がありません。サーバはセッションを作り、その ID を Cookie としてブラウザに渡します。",
+          text: "HTTP は、前のリクエストを覚えていません。たとえば、ログイン済みかどうかも次のリクエストには引き継がれません。サーバはセッションを作り、その ID を Cookie としてブラウザに渡します。",
         },
         { type: "diagram", name: "session", caption: "ブラウザが持つのは鍵だけ。中身はサーバ側です。" },
+        {
+          type: "h2",
+          text: "申請くんの例",
+        },
+        {
+          type: "p",
+          text: "山田太郎でログインしたあとです。Cookie は ID だけです。表示名も権限も、サーバ側のセッションにあります。",
+        },
+        {
+          type: "code",
+          lang: "http",
+          title: "ログイン成功の応答（例）",
+          code: `HTTP/1.1 302 Found
+Location: /shinsei/requests
+Set-Cookie: JSESSIONID=AB12CD34; Path=/shinsei; HttpOnly`,
+        },
+        {
+          type: "code",
+          lang: "http",
+          title: "続く一覧のリクエスト（例）",
+          code: `GET /shinsei/requests HTTP/1.1
+Host: intranet.example.co.jp
+Cookie: JSESSIONID=AB12CD34`,
+        },
+        {
+          type: "code",
+          title: "サーバ側のセッション（例）",
+          code: `ID: AB12CD34
+ログインユーザ:
+  id: 7
+  username: yamada
+  displayName: 山田太郎
+  role: USER`,
+        },
+        {
+          type: "p",
+          text: "キーの名前やオブジェクトの形は、アプリとフレームワーク次第です。パスワードは Cookie には出ません。確認するのは、同じ ID でログインユーザを引けることです。",
+        },
         {
           type: "ol",
           items: [
