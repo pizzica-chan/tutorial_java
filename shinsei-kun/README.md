@@ -1,6 +1,6 @@
 # 申請くん
 
-教材「現場で読む Java Web」で使っている社内申請アプリの、動くソースです。画面キャプチャ用に、ログインから一覧・詳細・承認まで一通り操作できます。
+教材「参画前に知っておきたい Java Web」で使っている社内申請アプリの、動くソースです。画面キャプチャ用に、ログインから一覧・詳細・承認まで一通り操作できます。
 
 構成は教材と同じです。Spring Boot 2.7、Java 17、Thymeleaf、MyBatis、MySQL、Spring Security。コンテキストパスは `/shinsei` です。
 
@@ -64,3 +64,16 @@ mvn spring-boot:run
 パッケージは `jp.co.example.shinsei` です。教材のソースツリーと同じ並びです。動かすために足している主なものは、ログインユーザ、利用者マスタ、例外の出口、Interceptor / AOP、画面のレイアウトです。
 
 教材の抜粋との差、意図している動きは `NOTES.md` にあります。
+
+## 教材用のモック画面
+
+`src/main/resources/static/demo/` は、トラブルシューティング章向けの静的 HTML です。アプリを壊さずに、500、0 件、CSS 無し、承認できない、権限が無い、といった見え方を撮るためのものです。
+
+画面キャプチャの再撮影は、リポジトリ直下で次を実行します。起動中の申請くん（http://localhost:8080/shinsei）が必要です。モック HTML だけ撮るときは `--mocks-only` を付けます。Network タブは headed Chrome なので、モックだけでは撮れません。
+
+```bash
+node shinsei-kun/scripts/capture-screens.mjs
+node shinsei-kun/scripts/capture-network.mjs
+```
+
+成果物は `public/images/screen-*.jpg` です。Network タブは headed Chrome でウィンドウ全体を撮ります。手順の詳細は `.cursor/rules/textbook-screenshots.mdc` です。

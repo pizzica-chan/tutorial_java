@@ -109,6 +109,13 @@ export const scenarioTrack: Track = {
           text: "申請一覧画面で、承認ボタンを押しても何も起きない。画面は切り替わらず、エラーメッセージも出ない。",
         },
         {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-list.jpg",
+          alt: "承認ボタンが見える申請一覧",
+          caption: "ボタンは画面上に見えます。押した瞬間に POST が飛んだかは、Network タブで確認しましょう。",
+        },
+        {
           type: "h2",
           text: "いま分かっていること",
         },
@@ -127,6 +134,13 @@ export const scenarioTrack: Track = {
         {
           type: "p",
           text: "押した瞬間の Network タブを見ましょう。新しい POST が無ければ、バックエンドにも DB にも届いていません。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-no-post.jpg",
+          alt: "承認を押したあとも POST が無い Network タブ",
+          caption: "承認を押した直後の例です。POST /approve の行は増えていません。コンソールにエラーの印が出ています。",
         },
         { type: "diagram", name: "page-assets", caption: "画面1つでも、通信は複数行です。ボタン用の行が無いかを見ましょう。" },
         {
@@ -165,6 +179,20 @@ export const scenarioTrack: Track = {
           text: "申請詳細画面で承認ボタンを押すと、「エラーが発生しました」と出る。一覧には戻らない。",
         },
         {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-error-500.jpg",
+          alt: "承認後にエラーが発生しましたと出た画面",
+          caption: "「エラーが発生しました」だけでは原因は分かりません。Network タブが 500 なら、先にサーバ側のエラーログを確認しましょう。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-500.jpg",
+          alt: "承認 POST が 500 の Network タブ",
+          caption: "例：POST /shinsei/requests/12/approve が 500。画面の文言より先に、このステータスコードを確認しましょう。",
+        },
+        {
           type: "h2",
           text: "いま分かっていること",
         },
@@ -182,7 +210,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "リクエストはサーバに届いています。CSS やボタンの JS ではありません。操作時刻の ERROR とスタックトレースを見ましょう。",
+          text: "リクエストはサーバに届いています。CSS やボタンの JS ではありません。操作時刻のサーバ側のエラーログを確認しましょう。",
         },
         { type: "diagram", name: "stack-own", caption: "ログは長い。そのファイルの行番号を最初に調べましょう。" },
         {
@@ -193,7 +221,7 @@ export const scenarioTrack: Track = {
           type: "ul",
           items: [
             "5xx なら、見た目より先にログ",
-            "画面の文言は薄い。時刻を合わせて ERROR を探す",
+            "「エラーが発生しました」だけでは原因は分からない。時刻を合わせてサーバ側のエラーログを確認する",
             "org.springframework の行で止まらない。自作クラスを開く",
           ],
         },
@@ -210,6 +238,13 @@ export const scenarioTrack: Track = {
           kind: "note",
           title: "シナリオ",
           text: "申請詳細で承認ボタンを押すと、「この申請は承認できません」と出る。一覧には戻らない。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-cannot-approve.jpg",
+          alt: "この申請は承認できませんと出た申請詳細",
+          caption: "業務の一文が出て、例外ログが無いときの例です。この文言でソースを検索しましょう。",
         },
         {
           type: "h2",
@@ -291,6 +326,13 @@ requestService.approve(id, userId);`,
           text: "申請一覧画面が、検証用環境だけ 0 件になる。ローカル環境の起動では、同じログインユーザで 3 件出る。",
         },
         {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-list-empty.jpg",
+          alt: "検証用環境で 0 件になった申請一覧",
+          caption: "HTML は 200 です。件数の差は、実行された SQL の条件で今の DB を数えると分かります。",
+        },
+        {
           type: "h2",
           text: "いま分かっていること",
         },
@@ -336,6 +378,13 @@ requestService.approve(id, userId);`,
           kind: "note",
           title: "シナリオ",
           text: "検証用環境の申請一覧 URL を開くと、いつまでも読み込み中になる。ローカル環境では同じ URL で 200 になる。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-pending.jpg",
+          alt: "HTML のリクエストが pending のままの Network タブ",
+          caption: "例：リロード後も一覧 URL のまま、document の行が pending です。直前の一覧は残っています。アプリのログにアクセスが無ければ、まだサーバに届いていません。",
         },
         {
           type: "h2",
@@ -392,6 +441,20 @@ requestService.approve(id, userId);`,
           kind: "note",
           title: "シナリオ",
           text: "申請一覧画面は開くが、表の罫線も色も当たっていない。文字だけが並ぶ。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-list-unstyled.jpg",
+          alt: "スタイルが当たっていない申請一覧",
+          caption: "文字は出ています。Network タブで CSS の行が 404 になっていないかを見ましょう。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-css-404.jpg",
+          alt: "HTML は 200 で CSS が 404 の Network タブ",
+          caption: "HTML は 200、app.css だけ 404 の例です。一覧の Java 処理は通っています。",
         },
         {
           type: "h2",

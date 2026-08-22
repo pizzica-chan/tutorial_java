@@ -347,13 +347,13 @@ export const quizzes = {
     question: "承認の POST が 500。最初に見るのは？",
     choices: [
       "CSS の余白",
-      "操作時刻の ERROR と、自分たちが書いたコードのパッケージ名があるスタックの行",
+      "操作時刻のサーバ側のエラーログ",
       "favicon.ico",
       "ブラウザのテーマ",
     ],
     answer: 1,
     explanation:
-      "5xx ならログのスタックです。見た目より先に、自作クラスの行を開きます。",
+      "5xx なら、見た目より先にサーバ側のエラーログを確認します。",
   },
   "sc-message": {
     id: "sc-message",

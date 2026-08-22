@@ -70,6 +70,13 @@ export const introTrack: Track = {
           text: "以降の URL、ソース、ログは、架空の社内向け申請アプリ「申請くん」の例です。社員が申請を出し、承認者が承認する、という想定のサンプルです。実在しません。",
         },
         {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-login.jpg",
+          alt: "申請くんのログイン画面",
+          caption: "申請くんのログイン画面。以降の URL やソースは、このアプリの例です。",
+        },
+        {
           type: "p",
           text: "構成の例です。あなたの現場と違っていても、層の分け方や追い方の型は流用できます。",
         },

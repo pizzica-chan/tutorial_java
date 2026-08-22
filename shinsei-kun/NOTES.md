@@ -14,6 +14,11 @@
 - **初期データは 4 件。** 教材の一覧 HTML 例は「交通費申請」「備品購入」の 2 行です。実データは休暇申請・出張旅費が足されています。`ORDER BY created_at DESC` なので、交通費申請（ID 12）は先頭ではありません。
 - **`RequestController` の行番号は教材ラボとずれる。** 実ファイルに `newForm` / `create` があるためです。ラボのスタック例（`list` が 31 行目など）は、短い抜粋向けです。UI キャプチャには影響しません。
 - **教材のソースツリーに無いファイルがある。** `WebMvcConfig`、`LoggingJavaMailSender`、`AccessLogInterceptor`、`ServiceLoggingAspect`、エラー画面などです。Interceptor / AOP / メールログを動かすために足しています。
+- **`static/demo/` は教材キャプチャ用のモック HTML です。** 500 や 0 件など、起動中のアプリでは出しにくい見え方を撮るためのものです。業務の画面ではありません。Network タブは偽 HTML ではなく、headed Chrome の実物を撮ります。手順は `.cursor/rules/textbook-screenshots.mdc` です。
+- **画面にエラーが出ているが POST が無い見え方は、ページ単体のモックでは撮りません。** サーバの flash に見えるためです。一覧で submit を止めて画面にエラーを出し、headed Chrome のウィンドウ全体を撮ります。
+- **500 の画面文言はシナリオ用モックです。** `demo/error-500.html` は「エラーが発生しました」です。動くテンプレート `templates/error/500.html` は「サーバでエラーが起きました」。申請くんに承認 500 の経路は無いので、キャプチャはモックと intercept です。
+- **ページ画像のアドレスバーは合成です。** 三点は macOS 風です。Network タブは Windows の実 Chrome なので、枠の見た目は揃いません。
+- **HTML が終わらない見え方は、ページ内スピナーではありません。** 申請くんの一覧はサーバ側で HTML を返します。リロードが止まると、直前の一覧が残ったまま Network の document 行が pending になります。
 
 ## レビューで求めないこと
 

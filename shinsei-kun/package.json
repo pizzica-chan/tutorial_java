@@ -1,0 +1,8 @@
+{
+  "name": "shinsei-kun-capture",
+  "private": true,
+  "description": "教材キャプチャ用の puppeteer-core。Java アプリの依存ではない。",
+  "devDependencies": {
+    "puppeteer-core": "^25.8.0"
+  }
+}

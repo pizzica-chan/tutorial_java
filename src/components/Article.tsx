@@ -92,7 +92,7 @@ function BlockView({ block }: { block: Block }) {
       return <Diagram name={block.name} caption={block.caption} />;
     case "figure":
       return (
-        <figure className="photo-figure">
+        <figure className={block.kind === "screen" ? "photo-figure screen-figure" : "photo-figure"}>
           <img src={block.src} alt={block.alt} loading="lazy" />
           {block.caption ? (
             <figcaption>

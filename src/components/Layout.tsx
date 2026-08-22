@@ -111,11 +111,7 @@ export function Layout() {
         </button>
         <NavLink to="/" className="brand" onClick={() => setOpen(false)}>
           <img className="brand-mark" src="/favicon.svg" width={42} height={42} alt="" />
-          <span>
-            <span className="brand-name">現場で読む Java Web</span>
-            <br />
-            <span className="brand-sub">既存コード</span>
-          </span>
+          <span className="brand-name">参画前に知っておきたい Java Web</span>
         </NavLink>
 
         <div className="nav-label">CONTENTS</div>

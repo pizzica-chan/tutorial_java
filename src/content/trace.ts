@@ -29,6 +29,13 @@ export const traceTrack: Track = {
           ],
         },
         {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-detail.jpg",
+          alt: "申請くんの申請詳細画面（交通費申請）",
+          caption: "申請詳細。アドレスバーは /shinsei/requests/12 です。12 と requests を手がかりに、処理の入口を探します。",
+        },
+        {
           type: "code",
           title: "RequestController.java（抜粋）",
           lang: "java",

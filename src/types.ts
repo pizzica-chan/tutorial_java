@@ -49,7 +49,7 @@ export type Block =
   | { type: "quiz"; id: string }
   | { type: "widget"; name: WidgetName }
   | { type: "diagram"; name: DiagramName; caption?: string }
-  | { type: "figure"; src: string; alt: string; caption?: string }
+  | { type: "figure"; src: string; alt: string; caption?: string; kind?: "photo" | "screen" }
   | { type: "table"; headers: string[]; rows: string[][] }
   | { type: "steps"; items: { title: string; text: string }[] };
 

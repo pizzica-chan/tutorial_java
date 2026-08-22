@@ -23,7 +23,7 @@ public class RequestService {
   public RequestEntity findById(Long id, Long userId) {
     RequestEntity request = requestMapper.findById(id, userId);
     if (request == null) {
-      throw new NotFoundException("申請がありません");
+      throw new NotFoundException("指定した申請は無い、または見る権限がありません。");
     }
     return request;
   }
@@ -42,7 +42,7 @@ public class RequestService {
   public void approve(Long requestId, Long approverId) {
     RequestEntity request = requestMapper.findById(requestId, approverId);
     if (request == null) {
-      throw new NotFoundException("申請がありません");
+      throw new NotFoundException("指定した申請は無い、または見る権限がありません。");
     }
     if (!request.getApproverId().equals(approverId)) {
       throw new ForbiddenException("承認権限がありません");

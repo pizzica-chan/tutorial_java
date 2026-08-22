@@ -1,0 +1,65 @@
+---
+description: 申請くんの画面・Network タブの教材キャプチャ。puppeteer、headed Chrome、トリミング
+alwaysApply: true
+---
+
+# 教材の画面キャプチャ
+
+ラベル付きの構造説明は CSS 図のまま。雰囲気の写真は `free-stock-images` ルール。申請くんの画面と Network タブだけ、このルールで撮る。装飾で全ページへ貼らない。
+
+置き場は `public/images/screen-*.jpg`。本文は `kind: "screen"`。出典は `SOURCES.md`。追加・削除のあと `npm run check`。
+
+キャプションは画面の事実に合わせる。実装次第の応答は「例」と書く。権限不足が必ず 403、とは書かない。
+
+## 画面（ページ本体）
+
+ヘッドレスでよい。`page.screenshot()` はページ領域だけなので、アドレスバーはスクリプトが合成する。左右の余白は切る。幅はアプリに合わせる（一覧・詳細 960px、ログイン 440px）。高さはコンテンツにクリップする。
+
+```
+# 悪い
+アドレスバーが無い。ビューポートが広く、灰色の余白が左右に残る。
+
+# よい
+URL が見える。ウィンドウ幅はアプリの幅。
+```
+
+再撮影（申請くん起動中。モックだけなら `--mocks-only`）:
+
+```bash
+node shinsei-kun/scripts/capture-screens.mjs
+```
+
+実アプリから撮る: login / login-error / list / detail（ID 12）/ not-found（99999）。
+起動中のアプリでは出しにくい見え方（500、0 件、CSS 無し、権限エラー画面）は `shinsei-kun/src/main/resources/static/demo/` を `file://` で撮る。実行中コンテナは再ビルドしないと `/demo/**` を配信しない。HTML が終わらない見え方はモック画面ではなく、Network の pending で撮る。画面にエラーが出ているがリクエストが無い見え方は、ページ単体ではなく Network のウィンドウ全体で撮る。
+
+ページ画像のアドレスバーは合成（macOS 風の三点）。Network タブは Windows の実 Chrome。枠の見た目は揃えない。
+
+承認の `window.confirm` で puppeteer の遷移待ちが落ちることがある。権限エラー画面はモックで撮る。
+
+## Network タブ
+
+`page.screenshot()` に DevTools は入らない。偽の DevTools HTML は置かない。利用者は headed Chrome で PC を操作してよい、と言っている。
+
+```bash
+node shinsei-kun/scripts/capture-network.mjs
+```
+
+要点:
+
+- Chrome は `C:\Program Files\Google\Chrome\Application\chrome.exe`。`puppeteer-core` は `shinsei-kun/` の Node 依存（Java アプリの依存ではない）
+- `headless: false`、`--auto-open-devtools-for-tabs`。`devtools: true` は別ウィンドウになりやすいので使わない
+- 専用プロファイル。Network を右ドック。パスワード漏洩警告は Preferences と `--disable-features=PasswordLeakDetection` で止める
+- ウィンドウ全体は `window-shot.ps1`（PID でこの Chrome だけ撮る）。見える枠は `DwmGetWindowAttribute` で取る（`GetWindowRect` だと左右に後ろのウィンドウが写る）
+- CSS 404 は `app.css` を intercept して 404 にし、リロードする。ページが崩れた状態と Network の 404 を同時に撮る
+- pending は一覧 URL のまま reload を止める。`about:blank` から始めない
+- 申請くんに承認 500 の経路は無い。Network の 500 行だけ撮るときは intercept で 500 を返してよい。キャプションは「例」
+- POST 後にログが消えるので、403 / 500 は遷移後の document 行を撮る（preserve log は必須ではない）
+- 画面にエラーが出ているが POST が無いときは、submit を止めて画面にエラーを出し、ウィンドウ全体を撮る。ページ単体だとサーバの flash に見える。キャプションは「例」
+
+## 起動とアカウント
+
+```bash
+cd shinsei-kun && docker compose up --build
+```
+
+http://localhost:8080/shinsei/login 。ホスト JDK は 8 でも、アプリはコンテナの Java 17。パスワードはすべて `password`。山田（`yamada`）は申請者。承認ボタンは見えるが、押すと `ForbiddenException`（403）。ID 12 を承認したら再起動するか `PENDING` に戻す。

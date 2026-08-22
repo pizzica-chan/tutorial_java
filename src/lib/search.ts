@@ -85,7 +85,7 @@ function widgetText(name: WidgetName): string {
 const documents: Doc[] = [
   toDoc(
     "/",
-    "現場で読む Java Web",
+    "参画前に知っておきたい Java Web",
     "トップ",
     "HTTP と Java Web アプリの構成、既存コードの追い方、よくある不具合パターン、シナリオでの切り分け。申請くん。",
   ),

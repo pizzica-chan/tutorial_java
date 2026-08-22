@@ -131,12 +131,6 @@ pre {
   letter-spacing: 0.02em;
 }
 
-.brand-sub {
-  color: var(--quiet);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-}
-
 .nav-label {
   margin: 18px 8px 8px;
   color: var(--quiet);
@@ -1390,6 +1384,18 @@ th {
 
 .photo-figure img {
   max-height: 260px;
+}
+
+.photo-figure.screen-figure {
+  background: #f3f4f6;
+}
+
+.photo-figure.screen-figure img {
+  max-height: 520px;
+  object-fit: contain;
+  object-position: top;
+  filter: none;
+  background: #f3f4f6;
 }
 
 .photo-figure figcaption {

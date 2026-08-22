@@ -173,7 +173,7 @@ export const javaMapTrack: Track = {
           type: "ul",
           items: [
             "静的ファイルの 404 は、手前の HTTP サーバのパス設定のことがある（パターン3）",
-            "アプリの例外は、サーブレットコンテナ側のログを見る",
+            "アプリのエラーログは、サーブレットコンテナ側を見る",
             "コンテキストパスは、手前と後ろの両方に付いていることがある（パターン3）",
           ],
         },
@@ -483,7 +483,7 @@ public class RequestApiController {
           type: "callout",
           kind: "trap",
           title: "見た目だけ壊れる",
-          text: "画面は出るのにスタイルだけ当たらないときは、Network タブで /shinsei/css/app.css が 404 になっていないかを見ましょう。ファイルの有無と URL のずれが多いです。",
+          text: "画面は出るのにスタイルだけ当たらないときは、Network タブで /shinsei/css/app.css が 404 になっていないかを見ましょう。ファイルの有無と URL のずれが多いです。崩れた画面の例は、シナリオ章の「一覧は出るが、画面だけ崩れている」にあります。",
         },
         {
           type: "p",
@@ -624,6 +624,13 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           kind: "note",
           title: "ソースと画面の見比べ",
           text: "テンプレートはサーバ側のファイルです。ブラウザの Elements タブは、組み立て後の HTML です。th:if で消えたボタンは、テンプレートにはあっても画面には出ません。切り分けでは、両方を見ましょう。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-list.jpg",
+          alt: "組み立て後の申請一覧画面",
+          caption: "PENDING の行だけ承認ボタンが出ます。APPROVED の備品購入にはボタンがありません。",
         },
         { type: "quiz", id: "java-template" },
       ],

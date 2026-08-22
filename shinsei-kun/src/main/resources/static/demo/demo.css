@@ -1,0 +1,9 @@
+/* 教材キャプチャ用。本番の app.css には足さない */
+.demo-flash {
+  color: #b91c1c;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 0.65rem 0.75rem;
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+}

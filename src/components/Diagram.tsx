@@ -561,7 +561,7 @@ function Divide() {
         Network タブにリクエストが無いか
       </PhotoCard>
       <PhotoCard src="/images/server-racks.jpg" alt="アプリが動くサーバ" title="アプリ">
-        ログに到達しているか。例外は自作クラスか
+        ログに到達しているか。エラーログを確認する
       </PhotoCard>
       <PhotoCard src="/images/storage-racks.jpg" alt="データを置くディスク" title="DB / 外部">
         SQL、接続、ロック、権限
@@ -596,7 +596,7 @@ function StatusCodes() {
         送り方・権限・行き先。クライアント側を疑う
       </ColCard>
       <ColCard icon="server" title="5xx">
-        サーバ例外。スタックトレースを見る
+        サーバ側の失敗。エラーログを確認する
       </ColCard>
     </div>
   );

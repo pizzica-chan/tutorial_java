@@ -63,6 +63,20 @@ export const webTrack: Track = {
           title: "コード例：申請くん",
           text: "この教材の例は、架空の社内申請アプリ「申請くん」です。社員が申請を出し、承認者が承認する、という想定です。実在しません。下の HTTP は、申請一覧を開いた瞬間です。",
         },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-list.jpg",
+          alt: "申請くんの申請一覧画面",
+          caption: "申請一覧。ブラウザは GET /shinsei/requests を送り、この HTML が返ります。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-list.jpg",
+          alt: "申請一覧を開いたときの Network タブ",
+          caption: "同じ操作の Network タブ。HTML（requests）も CSS も JS も 200 です。行は1つではありません。",
+        },
         { type: "widget", name: "http" },
       ],
     },
@@ -109,7 +123,7 @@ export const webTrack: Track = {
           items: [
             "見た目だけおかしい（色、位置、CSS の 404）→ フロント側を先に見る",
             "件数や中身がおかしい → 実行された SQL を見て、同じ条件で DB の行を数える",
-            "500 が出る → バックエンドのログとスタックトレース",
+            "500 が出る → サーバ側のエラーログ",
             "ボタンを押しても画面が変わらない → Network タブで、リクエストが飛んだか、応答は HTML か JSON かを確認しましょう",
           ],
         },
@@ -184,7 +198,7 @@ export const webTrack: Track = {
             ["400", "送り方が不正。パラメータ不足、バリデーション"],
             ["401/403", "読み方は未ログイン / 権限不足。画面や実際のステータスコードはアプリによる"],
             ["404", "URLに対応する処理が無い、または資源が無い"],
-            ["500", "サーバ例外。スタックトレースを見る"],
+            ["500", "サーバ側の失敗。エラーログを確認する"],
           ],
         },
         {
