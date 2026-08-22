@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title='新規申請', content=~{::main})">
+<main>
+  <p class="back"><a th:href="@{/requests}">← 申請一覧</a></p>
+  <h1>新規申請</h1>
+  <form class="stack" th:action="@{/requests}" method="post">
+    <label>
+      件名
+      <input type="text" name="title" required maxlength="255" placeholder="例: 交通費申請" />
+    </label>
+    <label>
+      承認者
+      <select name="approverId" required>
+        <option value="">選択してください</option>
+        <option th:each="person : ${approvers}" th:value="${person.id}" th:text="${person.displayName}">佐藤花子</option>
+      </select>
+    </label>
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button type="submit">提出</button>
+  </form>
+</main>
+</html>

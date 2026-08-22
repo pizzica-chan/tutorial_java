@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title='アクセスできません', content=~{::main})">
+<main>
+  <h1>アクセスできません</h1>
+  <p class="lead">この画面を開く権限がありません。管理者ロールが必要です。</p>
+  <p><a th:href="@{/requests}">申請一覧へ戻る</a></p>
+</main>
+</html>

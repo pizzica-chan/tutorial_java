@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="jp.co.example.shinsei.mapper.RequestMapper">
+
+  <select id="findMine" resultType="RequestEntity">
+    SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+           a.display_name AS applicant_name,
+           v.display_name AS approver_name
+    FROM t_request r
+    JOIN t_user a ON a.id = r.applicant_id
+    JOIN t_user v ON v.id = r.approver_id
+    WHERE r.applicant_id = #{userId}
+       OR r.approver_id = #{userId}
+    ORDER BY r.created_at DESC
+  </select>
+
+  <select id="findById" resultType="RequestEntity">
+    SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+           a.display_name AS applicant_name,
+           v.display_name AS approver_name
+    FROM t_request r
+    JOIN t_user a ON a.id = r.applicant_id
+    JOIN t_user v ON v.id = r.approver_id
+    WHERE r.id = #{id}
+      AND (r.applicant_id = #{userId} OR r.approver_id = #{userId})
+  </select>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO t_request (title, status, applicant_id, approver_id, applicant_email, created_at)
+    VALUES (#{title}, #{status}, #{applicantId}, #{approverId},
+            (SELECT email FROM t_user WHERE id = #{applicantId}), NOW())
+  </insert>
+
+  <update id="update">
+    UPDATE t_request
+       SET status = #{status},
+           updated_at = NOW()
+     WHERE id = #{id}
+  </update>
+</mapper>

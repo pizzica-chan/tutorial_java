@@ -1,0 +1,29 @@
+spring:
+  profiles:
+    active: dev
+  datasource:
+    url: jdbc:mysql://localhost:3306/shinsei
+    username: app
+    password: app
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+      continue-on-error: true
+  jackson:
+    time-zone: Asia/Tokyo
+    date-format: yyyy-MM-dd'T'HH:mm:ss
+server:
+  port: 8080
+  servlet:
+    context-path: /shinsei
+  tomcat:
+    uri-encoding: UTF-8
+logging:
+  level:
+    jp.co.example.shinsei: DEBUG
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: jp.co.example.shinsei.entity
+  configuration:
+    map-underscore-to-camel-case: true

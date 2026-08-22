@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title='見つかりません', content=~{::main})">
+<main>
+  <h1>申請がありません</h1>
+  <p class="lead" th:text="${message}">指定した申請は無い、または見る権限がありません。</p>
+  <p><a th:href="@{/requests}">申請一覧へ戻る</a></p>
+</main>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title='利用者管理', content=~{::main})">
+<main>
+  <h1>利用者管理</h1>
+  <p class="lead">管理者だけが開ける画面です。</p>
+  <table class="data">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>ユーザID</th>
+        <th>表示名</th>
+        <th>メール</th>
+        <th>ロール</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="person : ${users}">
+        <td th:text="${person.id}">7</td>
+        <td th:text="${person.username}">yamada</td>
+        <td th:text="${person.displayName}">山田太郎</td>
+        <td th:text="${person.email}">yamada@example.co.jp</td>
+        <td th:text="${person.role}">USER</td>
+      </tr>
+    </tbody>
+  </table>
+</main>
+</html>

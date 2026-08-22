@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title='権限がありません', content=~{::main})">
+<main>
+  <h1>権限がありません</h1>
+  <p class="lead" th:text="${message}">この操作を行う権限がありません。</p>
+  <p><a th:href="@{/requests}">申請一覧へ戻る</a></p>
+</main>
+</html>

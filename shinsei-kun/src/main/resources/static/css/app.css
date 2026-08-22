@@ -1,0 +1,234 @@
+body {
+  font-family: "Yu Gothic", "YuGothic", "Hiragino Sans", Meiryo, sans-serif;
+  margin: 1rem;
+  color: #1a1a1a;
+  background: #f3f4f6;
+}
+
+.app-header {
+  background: #1b365d;
+  color: #fff;
+  margin: -1rem -1rem 1.5rem;
+  padding: 0.75rem 1.25rem;
+}
+
+.app-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.app-logo {
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+
+.app-nav {
+  display: flex;
+  gap: 1rem;
+  flex: 1;
+}
+
+.app-nav a {
+  color: #d6e4f0;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.app-nav a:hover {
+  color: #fff;
+}
+
+.app-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.app-main {
+  max-width: 960px;
+  margin: 0 auto 2rem;
+  background: #fff;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid #e5e7eb;
+}
+
+.page-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+h1 {
+  font-size: 1.35rem;
+  margin: 0 0 1rem;
+}
+
+.lead {
+  color: #4b5563;
+  margin: 0 0 1rem;
+}
+
+.back {
+  margin: 0 0 0.75rem;
+}
+
+.back a {
+  color: #1b365d;
+}
+
+table.data {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+table.data th,
+table.data td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 0.6rem 0.5rem;
+  text-align: left;
+}
+
+table.data th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.1rem 0.45rem;
+  border-radius: 2px;
+  font-size: 0.8rem;
+}
+
+.status.is-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status.is-approved {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.btn,
+button[type="submit"]:not(.btn-approve):not(.btn-text) {
+  background: #1b365d;
+  color: #fff;
+  border: 0;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 0.9rem;
+}
+
+.btn-approve {
+  background: #2d6a4f;
+  color: #fff;
+  border: 0;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+
+.btn-text {
+  background: transparent;
+  color: #d6e4f0;
+  border: 0;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.85rem;
+}
+
+.detail {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 0.4rem 1rem;
+  margin: 0 0 1.25rem;
+}
+
+.detail dt {
+  color: #6b7280;
+}
+
+.stack label {
+  display: block;
+  margin: 0 0 1rem;
+}
+
+.stack input,
+.stack select {
+  display: block;
+  width: 100%;
+  max-width: 28rem;
+  margin-top: 0.35rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid #cbd5e1;
+}
+
+.login-body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #e8eef4;
+  margin: 0;
+}
+
+.login-card {
+  width: 22rem;
+  background: #fff;
+  padding: 2rem 1.75rem;
+  border: 1px solid #d1d5db;
+}
+
+.login-kicker {
+  margin: 0;
+  color: #1b365d;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+}
+
+.login-lead {
+  color: #4b5563;
+  font-size: 0.9rem;
+}
+
+.login-card h1 {
+  margin: 0.25rem 0 0.75rem;
+}
+
+.login-card label {
+  display: block;
+  margin: 0 0 0.85rem;
+  font-size: 0.85rem;
+}
+
+.login-card input[type="text"],
+.login-card input[type="password"] {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 0.3rem;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid #cbd5e1;
+}
+
+.login-card button {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.flash.error {
+  color: #b91c1c;
+  background: #fef2f2;
+  padding: 0.5rem 0.6rem;
+  font-size: 0.85rem;
+}

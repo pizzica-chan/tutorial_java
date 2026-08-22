@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ログイン | 申請くん</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body class="login-body">
+  <div class="login-card">
+    <p class="login-kicker">社内申請システム</p>
+    <h1>申請くん</h1>
+    <p class="login-lead">社員番号（ユーザID）とパスワードでログインしてください。</p>
+    <p class="flash error" th:if="${param.error}">ユーザIDまたはパスワードが違います。</p>
+    <form th:action="@{/login}" method="post">
+      <label>
+        ユーザID
+        <input type="text" name="username" placeholder="ユーザID" autocomplete="username" autofocus />
+      </label>
+      <label>
+        パスワード
+        <input type="password" name="password" placeholder="パスワード" autocomplete="current-password" />
+      </label>
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      <button type="submit">ログイン</button>
+    </form>
+  </div>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" th:fragment="layout (title, content)">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title th:text="${title} + ' | 申請くん'">申請くん</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}" />
+  <script th:src="@{/js/app.js}" defer></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-header-inner">
+      <a class="app-logo" th:href="@{/requests}">申請くん</a>
+      <nav class="app-nav" sec:authorize="isAuthenticated()">
+        <a th:href="@{/requests}">申請一覧</a>
+        <a th:href="@{/requests/new}">新規申請</a>
+        <a th:href="@{/admin/users}" sec:authorize="hasRole('ADMIN')">利用者管理</a>
+      </nav>
+      <div class="app-user" sec:authorize="isAuthenticated()">
+        <span class="app-user-name" th:text="${#authentication.principal.displayName}">利用者</span>
+        <form th:action="@{/logout}" method="post">
+          <button type="submit" class="btn-text">ログアウト</button>
+        </form>
+      </div>
+    </div>
+  </header>
+  <main class="app-main" th:insert="${content}"></main>
+</body>
+</html>

@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:shinsei_test;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  sql:
+    init:
+      mode: always
+      encoding: UTF-8
+server:
+  servlet:
+    context-path: /shinsei
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: jp.co.example.shinsei.entity
+  configuration:
+    map-underscore-to-camel-case: true

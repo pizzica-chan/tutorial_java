@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title='申請一覧', content=~{::main})">
+<main>
+  <div class="page-head">
+    <h1>申請一覧</h1>
+    <a class="btn" th:href="@{/requests/new}">新規申請</a>
+  </div>
+  <p class="lead">自分の申請と、自分が承認者の申請が表示されます。</p>
+  <table class="data">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>件名</th>
+        <th>申請者</th>
+        <th>承認者</th>
+        <th>ステータス</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="req : ${requests}">
+        <td th:text="${req.id}">12</td>
+        <td>
+          <a th:href="@{/requests/{id}(id=${req.id})}" th:text="${req.title}">交通費申請</a>
+        </td>
+        <td th:text="${req.applicantName}">山田太郎</td>
+        <td th:text="${req.approverName}">佐藤花子</td>
+        <td>
+          <span class="status" th:classappend="${req.status == 'PENDING'} ? ' is-pending' : ' is-approved'" th:text="${req.status}">PENDING</span>
+        </td>
+        <td>
+          <form th:if="${req.status == 'PENDING'}"
+                th:action="@{/requests/{id}/approve(id=${req.id})}"
+                method="post">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit" class="btn-approve">承認</button>
+          </form>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(requests)}">
+        <td colspan="6">表示できる申請はありません。</td>
+      </tr>
+    </tbody>
+  </table>
+</main>
+</html>
