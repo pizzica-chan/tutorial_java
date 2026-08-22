@@ -115,16 +115,16 @@ export const quizzes = {
   },
   "trace-start": {
     id: "trace-start",
-    question: "申請一覧画面の処理の入口を最初に確認するとき、妥当なのは？",
+    question: "申請一覧の処理の入口が RequestController.list だと分かった。この章で次に追うのは？",
     choices: [
       "pom.xml の作者名",
-      "一覧の URL と HTTP メソッドが、どの Controller の Java メソッドに対応するか",
-      "CSS の余白だけを疑う",
-      "本番 DB を直接 UPDATE して試す",
+      "list から Service、SQL、返すテンプレートまでの一本の線",
+      "CSS の余白の定義だけ",
+      "リポジトリを先頭から通読する",
     ],
     answer: 1,
     explanation:
-      "処理の入口は URL と HTTP メソッドの対応です。Java のメソッド名が list でも、パスが違えば別画面です。特定してから中の処理を見ます。",
+      "入口が分かったら、その Java メソッドから下へ降り、応答までを一本で追います。全体通読や見た目の定義は、この線の外です。",
   },
   "read-name": {
     id: "read-name",
@@ -315,19 +315,6 @@ export const quizzes = {
     answer: 1,
     explanation:
       "Apache（httpd）と nginx が HTTP サーバ、Tomcat と Jetty がサーブレットコンテナです。名前に Apache が付いても、Tomcat とは別物です。",
-  },
-  "sc-how": {
-    id: "sc-how",
-    question: "障害対応と改修の影響調査。それぞれ最初にやることは？",
-    choices: [
-      "どちらも Repository から通読する",
-      "障害は操作・期待・実際と Network タブで層を決める。影響調査は依頼を一文にし、既存の識別子で検索する",
-      "どちらも本番 DB を UPDATE する",
-      "どちらも CSS の色を全部変える",
-    ],
-    answer: 1,
-    explanation:
-      "どちらも通読しません。障害は届いた層を、影響調査は変更の波及先を、低コストの手順で絞ります。",
   },
   "sc-front": {
     id: "sc-front",

@@ -7,7 +7,7 @@ export const readingTrack: Track = {
   no: "04",
   title: "ソースの読み方",
   kicker: "READING",
-  description: "どこから読み始めるか、処理の入口、キーワード検索、正規表現、呼び出しの追跡、値の源流、デバッガ、仕様とコードの差。",
+  description: "通読せず、手がかりから処理の入口と呼び出しを追います。",
   accent: "#6ec8c0",
   lessons: [
     {
@@ -52,6 +52,12 @@ export const readingTrack: Track = {
           kind: "note",
           title: "実行された SQL が先にあるとき",
           text: "実行された SQL が先に分かっているときは、テーブル名や特徴のある文の一部を手がかりにしましょう。MyBatis と JPA では探し方が違います。手順は「リクエストの追跡」の「SQL の突き合わせ」です。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "入口から先の順",
+          text: "入口が取れたあとの読み順は、このあと「読む順番」です。次の章「リクエストの追跡」で、申請一覧をその順に辿ります。",
         },
       ],
     },
@@ -121,6 +127,35 @@ export const readingTrack: Track = {
       ],
     },
     {
+      id: "order",
+      title: "読む順番",
+      minutes: 6,
+      blocks: [
+        {
+          type: "p",
+          text: "手がかりの選び方は「どこから読み始めるか」です。入口の取り方は直前の項目です。",
+        },
+        {
+          type: "p",
+          text: "入口から先は、現象 → 処理の入口 → 分岐 → 永続化 → 出口 です。",
+        },
+        {
+          type: "steps",
+          items: [
+            { title: "現象", text: "誰が、どの画面で、何をすると、何が起きるか。" },
+            { title: "処理の入口", text: "URL と HTTP メソッド。Controller またはバッチから読み始める。" },
+            { title: "分岐", text: "権限、ステータス、null。該当する if を特定。止められるならデバッガで値を見る。" },
+            { title: "永続化", text: "SQL、ファイル、外部 API。" },
+            { title: "出口", text: "画面メッセージ、リダイレクト、非同期の後処理。" },
+          ],
+        },
+        {
+          type: "p",
+          text: "次の章「リクエストの追跡」では、この順を申請一覧で辿ります。",
+        },
+      ],
+    },
+    {
       id: "search",
       title: "キーワードで探す",
       minutes: 8,
@@ -131,7 +166,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "URL が分かっているときは、前のレッスン「処理の入口から読む」の方が早く見つかります。",
+          text: "URL が分かっているときは、「処理の入口から読む」の方が早く見つかります。",
         },
         {
           type: "p",
@@ -750,27 +785,6 @@ request.getApproverId().equals(userId); // NPE`,
           kind: "warn",
           title: "修正範囲",
           text: "依頼がバグ修正なら、まず原因箇所の最小変更です。構成の整理は別作業になります。",
-        },
-      ],
-    },
-    {
-      id: "order",
-      title: "読む順番",
-      minutes: 6,
-      blocks: [
-        {
-          type: "p",
-          text: "読む順番は、現象 → 処理の入口 → 分岐 → 永続化 → 出口 です。",
-        },
-        {
-          type: "steps",
-          items: [
-            { title: "現象", text: "誰が、どの画面で、何をすると、何が起きるか。" },
-            { title: "処理の入口", text: "URL と HTTP メソッド。Controller またはバッチから読み始める。" },
-            { title: "分岐", text: "権限、ステータス、null。該当する if を特定。止められるならデバッガで値を見る。" },
-            { title: "永続化", text: "SQL、ファイル、外部 API。" },
-            { title: "出口", text: "画面メッセージ、リダイレクト、非同期の後処理。" },
-          ],
         },
       ],
     },

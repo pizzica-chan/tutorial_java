@@ -12,18 +12,18 @@ export function LabPage() {
       <p className="kicker">LAB</p>
       <h1 className="serif page-title">ラボ</h1>
       <p className="lede">
-        <TextWithTerms text="申請くんのファイル構成、HTTP、リクエスト区間、スタックトレースを、教材の順と独立して確認できます。" />
+        <TextWithTerms text="通読とは独立して使えます。HTTP、ソース、リクエストの区間、スタックトレースを、本文に近い順で確認できます。" />
       </p>
 
-      <h2 className="serif">1. ソースツリー</h2>
-      <p>主要ファイルの役割です。</p>
-      <ProjectExplorer />
-
-      <h2 className="serif">2. HTTP</h2>
+      <h2 className="serif">1. HTTP</h2>
       <p>
         <TextWithTerms text="申請一覧を開いたときのリクエストとレスポンスです。HTTP メソッド、Cookie、Content-Type、本文。" />
       </p>
       <HttpInspector />
+
+      <h2 className="serif">2. ソースツリー</h2>
+      <p>主要ファイルの役割です。</p>
+      <ProjectExplorer />
 
       <h2 className="serif">3. リクエスト追跡</h2>
       <p>

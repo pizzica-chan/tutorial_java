@@ -1,4 +1,4 @@
-import type { Block, Lesson, Track, TrackId } from "../types";
+import type { Block, Lesson, Track } from "../types";
 import { introTrack } from "../content/intro";
 import { webTrack } from "../content/web";
 import { javaMapTrack } from "../content/javaMap";
@@ -16,8 +16,6 @@ export const tracks: Track[] = [
   troubleshootTrack,
   scenarioTrack,
 ];
-
-export const totalLessons = tracks.reduce((sum, track) => sum + track.lessons.length, 0);
 
 /** 項目の先頭段落から、メタ説明や章一覧用の短いリードを取る */
 export function lessonLead(lesson: Lesson, max = 72): string {
@@ -74,15 +72,11 @@ export function getLesson(trackId: string | undefined, lessonId: string | undefi
   };
 }
 
-export function firstLessonPath(trackId: TrackId): string {
-  const track = getTrack(trackId);
-  return `/tracks/${trackId}/${track?.lessons[0]?.id ?? ""}`;
-}
-
 export function pageDescription(pathname: string): string {
-  const fallback = "Java Web アプリの基礎と、症状別トラブルシュート。既存コードの読み方。";
+  const fallback =
+    "既存の Java Web を、処理の入口から追い、届いた箱から切り分ける教材です。ゼロからアプリを作る入門ではありません。";
   if (pathname === "/") return fallback;
-  if (pathname === "/lab") return "申請くんのソース、HTTP、リクエスト区間、スタックトレースを確認するラボ。";
+  if (pathname === "/lab") return "通読とは独立して、申請くんの HTTP とソース、リクエストの区間を確認できます。";
   if (pathname === "/glossary" || pathname.startsWith("/glossary")) {
     return "HTTP、Java Web、Spring まわりの用語。本文の点線から飛びます。";
   }
@@ -94,14 +88,18 @@ export function pageDescription(pathname: string): string {
   }
   if (parts[0] === "tracks" && parts[1]) {
     const track = getTrack(parts[1]);
-    if (track) return track.description;
+    if (track) {
+      if (track.description) return track.description;
+      const first = track.lessons[0];
+      if (first) return lessonLead(first, 110);
+    }
   }
   return fallback;
 }
 
 export function pageTitle(pathname: string): string {
   const site = "参画前に知っておきたい Java Web";
-  if (pathname === "/") return `${site} — 基礎と切り分け`;
+  if (pathname === "/") return site;
   if (pathname === "/lab") return `ラボ — ${site}`;
   if (pathname === "/glossary" || pathname.startsWith("/glossary")) return `用語集 — ${site}`;
   const parts = pathname.split("/").filter(Boolean);

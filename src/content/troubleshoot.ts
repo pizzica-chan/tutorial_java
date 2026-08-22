@@ -4,8 +4,8 @@ export const troubleshootTrack: Track = {
   id: "troubleshoot",
   no: "06",
   title: "トラブルシューティング手法",
-  kicker: "PATTERNS",
-  description: "調査手順、ログの場所、ネットワーク疎通、どこまで届いたか、アプリのログで処理を追う、症状別の切り分け。",
+  kicker: "TROUBLESHOOT",
+  description: "いきなりソースを読まず、届いた箱と症状から当たりをつけます。",
   accent: "#d46a5c",
   lessons: [
     {
@@ -34,7 +34,7 @@ export const troubleshootTrack: Track = {
             },
             {
               title: "どこまで届いているか見る",
-              text: "Network タブとログで、ブラウザまで来ているか、サーバに届いているか、DB まで行っているかを確認しましょう。値の中身は、処理を止められるならデバッガで見ましょう。",
+              text: "Network タブとログで、ブラウザまで来ているか、サーバに届いているか、DB まで行っているかを確認しましょう。箱の切り方は次の「どこまで届いたか」です。",
             },
             {
               title: "詳細を追う",
@@ -123,7 +123,34 @@ export const troubleshootTrack: Track = {
             ],
           ],
         },
+        {
+          type: "p",
+          text: "上の表は、最初に見るものの目安です。届いた箱の切り方は、次の「どこまで届いたか」です。",
+        },
         { type: "quiz", id: "ts-symptom-start" },
+      ],
+    },
+    {
+      id: "divide",
+      title: "どこまで届いたか",
+      minutes: 7,
+      blocks: [
+        {
+          type: "p",
+          text: "Java の分岐を読む前に、リクエストがどの箱まで届いたかを確認しましょう。Network タブとログの見方は、このあとの項目です。ping や curl の打ち方は「ネットワークの疎通確認」です。",
+        },
+        { type: "diagram", name: "divide", caption: "先に「どの箱まで届いたか」を切る。" },
+        {
+          type: "table",
+          headers: ["確認", "疑わしい箇所"],
+          rows: [
+            ["Network タブにリクエストが無い", "サーバには届いていないことが多い。ボタンの JS、二重送信防止、別ウィンドウなど"],
+            ["リクエストはあるがサーバログが無い", "見ているログが違うことがある。別インスタンス、パス違い、LB など"],
+            ["SQLException", "アプリまでは届いている。DB 接続、SQL、ロック、DB 接続ユーザの権限など"],
+            ["接続タイムアウト", "FW、DNS、接続先設定など。外部 API なら、あとの「トラブル例：外部システム / 外部 API」で向き先を特定してから、「ネットワークの疎通確認」を使う"],
+            ["外部 API への接続失敗（例: ResourceAccessException）", "自社アプリは動いていることが多い。アプリサーバから外部ホスト・ポートへの TCP / curl"],
+          ],
+        },
       ],
     },
     {
@@ -466,29 +493,6 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
           text: "ping が通ったから HTTP も通る、TCP が通ったから業務的に正しい応答、とは限りません。層ごとに確認し、最後に Network タブやアプリログと突き合わせましょう。",
         },
         { type: "quiz", id: "ts-net-check" },
-      ],
-    },
-    {
-      id: "divide",
-      title: "どこまで届いたか",
-      minutes: 7,
-      blocks: [
-        {
-          type: "p",
-          text: "Java の分岐を読む前に、リクエストがサーバに届いているかを確認しましょう。コマンドの打ち方は前の「ネットワークの疎通確認」です。ここでは、確認と疑わしい箇所の対応だけまとめます。",
-        },
-        { type: "diagram", name: "divide", caption: "先に「どの箱まで届いたか」を切る。" },
-        {
-          type: "table",
-          headers: ["確認", "疑わしい箇所"],
-          rows: [
-            ["Network タブにリクエストが無い", "サーバには届いていないことが多い。ボタンの JS、二重送信防止、別ウィンドウなど"],
-            ["リクエストはあるがサーバログが無い", "見ているログが違うことがある。別インスタンス、パス違い、LB など"],
-            ["SQLException", "アプリまでは届いている。DB 接続、SQL、ロック、DB 接続ユーザの権限など"],
-            ["接続タイムアウト", "FW、DNS、接続先設定など。外部 API なら、あとの「トラブル例：外部システム / 外部 API」で向き先を特定してから、前の「ネットワークの疎通確認」を使う"],
-            ["外部 API への接続失敗（例: ResourceAccessException）", "自社アプリは動いていることが多い。アプリサーバから外部ホスト・ポートへの TCP / curl"],
-          ],
-        },
       ],
     },
     {

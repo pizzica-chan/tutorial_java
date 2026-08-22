@@ -1,30 +1,18 @@
-import { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import { getLesson } from "../data/curriculum";
 import { NotFoundPage } from "./NotFoundPage";
-import { lessonKey, setLastLesson, toggleCompleted } from "../lib/progress";
 import { Article } from "../components/Article";
 import { Icon } from "../components/Icon";
-import { useProgress } from "../hooks/useProgress";
 
 export function LessonPage() {
   const { trackId, lessonId } = useParams();
   const found = getLesson(trackId, lessonId);
-  const completed = useProgress();
-
-  useEffect(() => {
-    if (!trackId || !lessonId) return;
-    if (!getLesson(trackId, lessonId)) return;
-    setLastLesson(trackId, lessonId);
-  }, [trackId, lessonId]);
 
   if (!found) {
     return <NotFoundPage title="項目が見つかりません" />;
   }
 
   const { track, lesson, prev, next } = found;
-  const key = lessonKey(track.id, lesson.id);
-  const done = completed.includes(key);
 
   return (
     <div className="content">
@@ -48,9 +36,6 @@ export function LessonPage() {
             目次へ
           </Link>
         )}
-        <button className={`btn ${done ? "btn-ghost" : "btn-primary"}`} type="button" onClick={() => toggleCompleted(key)}>
-          {done ? "読了を解除" : "読了にする"}
-        </button>
         {next ? (
           <Link className="btn btn-ghost" to={`/tracks/${next.trackId}/${next.id}`}>
             {next.title}

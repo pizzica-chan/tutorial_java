@@ -46,7 +46,6 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "arch-roles": ArchRoles,
   "arch-patterns": ArchPatterns,
   "front-back": FrontBack,
-  "scenario-layers": ScenarioLayers,
   "cross-cut": CrossCut,
   "debug-two": DebugTwo,
   "protocol-stack": ProtocolStack,
@@ -141,24 +140,6 @@ function PhotoCard({ src, alt, title, children }: { src: string; alt: string; ti
       <img src={src} alt={alt} />
       <h4>{title}</h4>
       <p>{children}</p>
-    </div>
-  );
-}
-
-function ScenarioLayers() {
-  return (
-    <div className="d-stack">
-      <Layer icon="browser">フロントエンド（ブラウザ・JS）</Layer>
-      <Arrow down label="届く道（ネットワーク）" />
-      <Layer icon="server" accent>
-        HTTP サーバ（任意）Apache / nginx
-      </Layer>
-      <Arrow down label="中継" />
-      <Layer icon="inbox" accent>
-        バックエンド（Java）
-      </Layer>
-      <Arrow down label="SQL" />
-      <Layer icon="database">DB（データを保存）</Layer>
     </div>
   );
 }

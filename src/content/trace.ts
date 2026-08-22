@@ -6,34 +6,33 @@ export const traceTrack: Track = {
   no: "05",
   title: "リクエストの追跡",
   kicker: "TRACE",
-  description: "画面や Web API から Controller、Service、SQL、応答まで一本で追う。",
+  description: "処理の入口から SQL と応答まで、一本の線で追います。",
   accent: "#e8a54b",
   lessons: [
     {
       id: "from-screen",
-      title: "画面から処理の入口を特定する",
-      minutes: 8,
+      title: "入口から先を追う",
+      minutes: 7,
       blocks: [
         {
           type: "p",
-          text: "処理の入口の探し方は「ソースの読み方」と同じです。この章では、特定した処理の入口から SQL と応答まで、一本の線の区間を追います。画面遷移しない操作は、アドレスバーではなく Network タブの XHR / fetch を見ましょう。",
+          text: "処理の入口の探し方は「ソースの読み方」です。この章では、入口から SQL と応答まで、一本の線の区間を追います。",
         },
-        { type: "diagram", name: "read-entry", caption: "画面の URL から、サーバ側の処理の入口へ。" },
         {
-          type: "ol",
-          items: [
-            "対象画面を開き、アドレスバーの URL を控える",
-            "開発者ツールの Network タブで、操作した瞬間のリクエストを特定する（JSON なら XHR / fetch）",
-            "HTML またはテンプレートで form / a / fetch の行き先を見る",
-            "そのパスで Java を検索する",
-          ],
+          type: "p",
+          text: "画面遷移しない操作は、アドレスバーではなく Network タブの XHR / fetch を見ましょう。",
         },
+        { type: "diagram", name: "read-entry", caption: "画面の URL から Controller へ降り、Service、SQL、テンプレートまで。" },
         {
           type: "figure",
           kind: "screen",
-          src: "/images/screen-detail.jpg",
-          alt: "申請くんの申請詳細画面（交通費申請）",
-          caption: "申請詳細。アドレスバーは /shinsei/requests/12 です。12 と requests を手がかりに、処理の入口を探します。",
+          src: "/images/screen-list.jpg",
+          alt: "申請くんの申請一覧画面",
+          caption: "申請一覧を開く処理を、入口から先へ追います。アドレスバーは /shinsei/requests です。",
+        },
+        {
+          type: "p",
+          text: "申請くんなら、GET /shinsei/requests の入口は RequestController の list です。ここから Service、SQL、テンプレートへ降ります。",
         },
         {
           type: "code",
@@ -77,6 +76,13 @@ public class RequestController {
 }`,
         },
         { type: "diagram", name: "mapping" },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-detail.jpg",
+          alt: "申請くんの申請詳細画面（交通費申請）",
+          caption: "申請詳細。アドレスバーは /shinsei/requests/12 です。list ではなく、パスに ID が付く detail です。",
+        },
         {
           type: "p",
           text: "Java のメソッド名が list でも、今見ている画面とは限りません。HTTP メソッド（GET など）とパスの両方を確認しましょう。",

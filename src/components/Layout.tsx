@@ -1,8 +1,6 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import { pageDescription, pageTitle, tracks, totalLessons } from "../data/curriculum";
-import { lessonKey } from "../lib/progress";
-import { useProgress } from "../hooks/useProgress";
+import { pageDescription, pageTitle, tracks } from "../data/curriculum";
 import { SiteSearch } from "./SiteSearch";
 import { Icon } from "./Icon";
 
@@ -15,8 +13,6 @@ function focusableIn(root: HTMLElement) {
 export function Layout() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
-  const completed = useProgress();
-  const percent = Math.min(100, Math.round((completed.length / totalLessons) * 100));
   const trackMatch = location.pathname.match(/^\/tracks\/([^/]+)/);
   const currentTrackId = trackMatch?.[1];
   const navRef = useRef<HTMLElement>(null);
@@ -127,19 +123,16 @@ export function Layout() {
             </NavLink>
             {currentTrackId === track.id ? (
               <div className="nav-lessons">
-                {track.lessons.map((lesson) => {
-                  const done = completed.includes(lessonKey(track.id, lesson.id));
-                  return (
-                    <NavLink
-                      key={lesson.id}
-                      to={`/tracks/${track.id}/${lesson.id}`}
-                      className={({ isActive }) => `nav-sub ${isActive ? "active" : ""} ${done ? "done" : ""}`}
-                    >
-                      {done ? <Icon name="check" size={12} /> : <span className="nav-dot" />}
-                      {lesson.title}
-                    </NavLink>
-                  );
-                })}
+                {track.lessons.map((lesson) => (
+                  <NavLink
+                    key={lesson.id}
+                    to={`/tracks/${track.id}/${lesson.id}`}
+                    className={({ isActive }) => `nav-sub ${isActive ? "active" : ""}`}
+                  >
+                    <span className="nav-dot" />
+                    {lesson.title}
+                  </NavLink>
+                ))}
               </div>
             ) : null}
           </div>
@@ -152,6 +145,7 @@ export function Layout() {
           </span>
           <span>ラボ</span>
         </NavLink>
+        <div className="nav-label">GLOSSARY</div>
         <NavLink
           to="/glossary"
           className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
@@ -162,21 +156,6 @@ export function Layout() {
           </span>
           <span>用語集</span>
         </NavLink>
-
-        <div className="progress-card">
-          <strong>読了 {Math.min(completed.length, totalLessons)} / {totalLessons}</strong>
-          <div
-            className="progress-track"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={percent}
-            aria-label={`読了 ${Math.min(completed.length, totalLessons)} / ${totalLessons}`}
-          >
-            <div className="progress-fill" style={{ width: `${percent}%` }} />
-          </div>
-          <span style={{ color: "var(--quiet)", fontSize: 12 }}>進捗はブラウザ内にだけ保存されます</span>
-        </div>
       </aside>
 
       <main className="main" id="main" tabIndex={-1} inert={open}>
@@ -191,11 +170,7 @@ export function Layout() {
           >
             目次
           </button>
-          <p className="topbar-tagline">HTTP と Java Web。既存コードの追跡と、症状別の切り分け。</p>
           <SiteSearch />
-          <p style={{ fontFamily: "var(--mono)", color: "var(--amber)" }} aria-label={`読了 ${percent}パーセント`}>
-            {percent}%
-          </p>
         </header>
         <Outlet />
       </main>

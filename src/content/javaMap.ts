@@ -15,7 +15,7 @@ export const javaMapTrack: Track = {
   no: "03",
   title: "Javaアプリの構成",
   kicker: "STRUCTURE",
-  description: "ディレクトリ、依存関係、設定、動かし方、層、テンプレート、Filter / Interceptor / AOP。",
+  description: "リポジトリを開いたとき、ファイルと層の役割が分かるようにします。",
   accent: "#d46a5c",
   lessons: [
     {
@@ -105,111 +105,6 @@ export const javaMapTrack: Track = {
           lang: "gradle",
           code: shinseiGradleSnippet,
         },
-      ],
-    },
-    {
-      id: "arch",
-      title: "よくある構成",
-      minutes: 10,
-      blocks: [
-        {
-          type: "p",
-          text: "ブラウザから見た「サーバ」は、箱が重なっていることがあります。Controller の手前に、HTTP サーバとサーブレットコンテナがあります。",
-        },
-        {
-          type: "h2",
-          text: "役割の違い",
-        },
-        {
-          type: "table",
-          headers: ["種類", "例", "すること"],
-          rows: [
-            ["HTTP サーバ", "Apache、nginx", "手前で受ける。ブラウザとの HTTPS をここで解き、静的ファイル、後ろへの中継"],
-            ["サーブレットコンテナ", "Tomcat、Jetty", "Java の画面や API を動かす"],
-          ],
-        },
-        { type: "diagram", name: "arch-roles", caption: "手前の箱は無いこともあります。Java が動く箱は、どれかのサーブレットコンテナです。" },
-        {
-          type: "callout",
-          kind: "trap",
-          title: "Apache と Tomcat",
-          text: "Apache（httpd）は HTTP サーバ、Tomcat はサーブレットコンテナです。名前に Apache が付きますが、別物です。",
-        },
-        {
-          type: "h2",
-          text: "重ね方のパターン",
-        },
-        {
-          type: "p",
-          text: "よく見る重ね方は次の3つです。",
-        },
-        {
-          type: "steps",
-          items: [
-            {
-              title: "内蔵だけ",
-              text: "Spring Boot を IDE や java -jar で起動すると、同じプロセスの中で Tomcat や Jetty が動きます。別途 Tomcat を入れる必要はありません。",
-            },
-            {
-              title: "外部に WAR",
-              text: "アプリを WAR にして、すでに動いている Tomcat や Jetty に載せます。ログは catalina.out など、Tomcat 側の置き場を見ましょう。",
-            },
-            {
-              title: "手前に Apache / nginx",
-              text: "ブラウザからの HTTP リクエストは、まず Apache か nginx が受けます。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです（SSL オフロード）。静的ファイルの配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろは内蔵でも外部 WAR でも構いません。",
-            },
-          ],
-        },
-        { type: "diagram", name: "arch-patterns", caption: "左から、パターン1 内蔵だけ、パターン2 外部 WAR、パターン3 手前に HTTP サーバ。" },
-        {
-          type: "h2",
-          text: "重ね方で変わる切り分け",
-        },
-        {
-          type: "p",
-          text: "上の3パターンのどれかかで、ログの見る場所が変わります。",
-        },
-        {
-          type: "ul",
-          items: [
-            "静的ファイルの 404 は、手前の HTTP サーバのパス設定のことがある（パターン3）",
-            "アプリのエラーログは、サーブレットコンテナ側を見る",
-            "コンテキストパスは、手前と後ろの両方に付いていることがある（パターン3）",
-          ],
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "Docker",
-          text: "コンテナの中身も、上の3パターンのどれかです。Docker だから別構成ということはありません。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "APサーバ",
-          text: "古い現場では WebLogic など APサーバに載せることもあります。Java が動く箱が Tomcat ではない、というだけです。",
-        },
-        {
-          type: "h2",
-          text: "さらに手前の箱",
-        },
-        {
-          type: "p",
-          text: "上のどの重ね方でも、さらに手前に別の箱が置かれることがあります。いずれも Java のコードより手前です。パターン3なら Apache / nginx の外側、パターン1・2なら Tomcat や Spring Boot の手前、という位置づけです。",
-        },
-        {
-          type: "ul",
-          items: [
-            "ロードバランサ（LB）… 複数台へ振り分け。SSL 終端をここで行うこともある",
-            "CDN … 静的ファイルを近い拠点から配る。キャッシュや SSL 終端を担うこともある",
-            "WAF … HTTP リクエストを検査し、攻撃と判定したものを遮断する",
-          ],
-        },
-        {
-          type: "p",
-          text: "ログの出る場所や、ブロックされたときの応答は環境次第です。切り分けでは「アプリに届いたか」を先に確認しましょう。",
-        },
-        { type: "quiz", id: "java-arch" },
       ],
     },
     {
@@ -788,6 +683,115 @@ public void addInterceptors(InterceptorRegistry registry) {
           ],
         },
         { type: "quiz", id: "java-crosscut" },
+      ],
+    },
+    {
+      id: "arch",
+      title: "HTTP サーバとコンテナ",
+      minutes: 10,
+      blocks: [
+        {
+          type: "p",
+          text: "ここまでは、リポジトリの中の役割です。ブラウザから見た「サーバ」は、箱が重なっていることがあります。",
+        },
+        {
+          type: "p",
+          text: "Controller の手前に、HTTP サーバとサーブレットコンテナがあります。",
+        },
+        {
+          type: "h2",
+          text: "役割の違い",
+        },
+        {
+          type: "table",
+          headers: ["種類", "例", "すること"],
+          rows: [
+            ["HTTP サーバ", "Apache、nginx", "手前で受ける。ブラウザとの HTTPS をここで解き、静的ファイル、後ろへの中継"],
+            ["サーブレットコンテナ", "Tomcat、Jetty", "Java の画面や API を動かす"],
+          ],
+        },
+        { type: "diagram", name: "arch-roles", caption: "手前の箱は無いこともあります。Java が動く箱は、どれかのサーブレットコンテナです。" },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "Apache と Tomcat",
+          text: "Apache（httpd）は HTTP サーバ、Tomcat はサーブレットコンテナです。名前に Apache が付きますが、別物です。",
+        },
+        {
+          type: "h2",
+          text: "重ね方のパターン",
+        },
+        {
+          type: "p",
+          text: "よく見る重ね方は次の3つです。",
+        },
+        {
+          type: "steps",
+          items: [
+            {
+              title: "内蔵だけ",
+              text: "Spring Boot を IDE や java -jar で起動すると、同じプロセスの中で Tomcat や Jetty が動きます。別途 Tomcat を入れる必要はありません。",
+            },
+            {
+              title: "外部に WAR",
+              text: "アプリを WAR にして、すでに動いている Tomcat や Jetty に載せます。ログは catalina.out など、Tomcat 側の置き場を見ましょう。",
+            },
+            {
+              title: "手前に Apache / nginx",
+              text: "ブラウザからの HTTP リクエストは、まず Apache か nginx が受けます。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです（SSL オフロード）。静的ファイルの配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろは内蔵でも外部 WAR でも構いません。",
+            },
+          ],
+        },
+        { type: "diagram", name: "arch-patterns", caption: "左から、パターン1 内蔵だけ、パターン2 外部 WAR、パターン3 手前に HTTP サーバ。" },
+        {
+          type: "h2",
+          text: "重ね方で変わる切り分け",
+        },
+        {
+          type: "p",
+          text: "上の3パターンのどれかかで、ログの見る場所が変わります。",
+        },
+        {
+          type: "ul",
+          items: [
+            "静的ファイルの 404 は、手前の HTTP サーバのパス設定のことがある（パターン3）",
+            "アプリのエラーログは、サーブレットコンテナ側を見る",
+            "コンテキストパスは、手前と後ろの両方に付いていることがある（パターン3）",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Docker",
+          text: "コンテナの中身も、上の3パターンのどれかです。Docker だから別構成ということはありません。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "APサーバ",
+          text: "古い現場では WebLogic など APサーバに載せることもあります。Java が動く箱が Tomcat ではない、というだけです。",
+        },
+        {
+          type: "h2",
+          text: "さらに手前の箱",
+        },
+        {
+          type: "p",
+          text: "上のどの重ね方でも、さらに手前に別の箱が置かれることがあります。いずれも Java のコードより手前です。パターン3なら Apache / nginx の外側、パターン1・2なら Tomcat や Spring Boot の手前、という位置づけです。",
+        },
+        {
+          type: "ul",
+          items: [
+            "ロードバランサ（LB）… 複数台へ振り分け。SSL 終端をここで行うこともある",
+            "CDN … 静的ファイルを近い拠点から配る。キャッシュや SSL 終端を担うこともある",
+            "WAF … HTTP リクエストを検査し、攻撃と判定したものを遮断する",
+          ],
+        },
+        {
+          type: "p",
+          text: "ログの出る場所や、ブロックされたときの応答は環境次第です。切り分けでは「アプリに届いたか」を先に確認しましょう。",
+        },
+        { type: "quiz", id: "java-arch" },
       ],
     },
   ],

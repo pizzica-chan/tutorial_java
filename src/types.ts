@@ -33,7 +33,6 @@ export type DiagramName =
   | "arch-roles"
   | "arch-patterns"
   | "front-back"
-  | "scenario-layers"
   | "cross-cut"
   | "debug-two"
   | "protocol-stack"
