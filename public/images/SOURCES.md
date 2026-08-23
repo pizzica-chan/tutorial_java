@@ -28,6 +28,7 @@
 | `screen-list-empty.jpg` | モック `demo/list-empty.html` |
 | `screen-list-unstyled.jpg` | モック `demo/list-unstyled.html` |
 | `screen-network-list.jpg` | 申請くん GET `/shinsei/requests` の Network タブ |
+| `screen-network-rows.jpg` | 申請くん GET `/shinsei/requests` の Network タブ（HTML / CSS / JS の行） |
 | `screen-network-css-404.jpg` | 申請くん一覧で `app.css` が 404 の Network タブ |
 | `screen-network-no-post.jpg` | 申請くん一覧で承認を押した直後（POST 無し）の Network タブ |
 | `screen-network-js-error.jpg` | 申請くん一覧で画面にエラーが出ているが POST が無い Network タブ |

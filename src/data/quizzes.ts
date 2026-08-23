@@ -14,6 +14,19 @@ export const quizzes = {
     explanation:
       "画面や API の URL → Controller が最短です。全体通読より、今動いている一本の線を追います。",
   },
+  "web-roundtrip": {
+    id: "web-roundtrip",
+    question: "画面の不具合に気づいたとき、Java のコードより先に確認するのは？",
+    choices: [
+      "Network タブの該当リクエスト（ステータスコードと応答本文）",
+      "pom.xml の version",
+      "CSS の色指定",
+      "クラス名のアルファベットの大小",
+    ],
+    answer: 0,
+    explanation:
+      "画面はレスポンスの HTML を表示したものです。まず該当リクエストのステータスコードと本文を見ましょう。Java はそのあとです。",
+  },
   "web-front-back": {
     id: "web-front-back",
     question: "申請一覧の件数がおかしい。先に見るのはどれ？",

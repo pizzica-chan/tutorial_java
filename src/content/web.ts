@@ -10,12 +10,16 @@ export const webTrack: Track = {
   lessons: [
     {
       id: "letter",
-      title: "リクエストとレスポンス",
-      minutes: 8,
+      title: "HTTP のリクエストとレスポンス",
+      minutes: 9,
       blocks: [
         {
           type: "p",
-          text: "次のような操作のとき、ブラウザはサーバへリクエスト（要求）を送ります。サーバはレスポンス（応答）を返します。このやり取りの約束が HTTP です。",
+          text: "ブラウザはサーバへリクエスト（要求）を送り、サーバはレスポンス（応答）を返します。このやり取りの約束が HTTP です。",
+        },
+        {
+          type: "p",
+          text: "次のような操作のとき、この往復が起きます。",
         },
         {
           type: "ul",
@@ -28,40 +32,21 @@ export const webTrack: Track = {
           ],
         },
         {
+          type: "h2",
+          text: "往復と画面",
+        },
+        {
           type: "p",
-          text: "画面に出ているのは、返ってきた HTML をブラウザが表示したものです。不具合は画面で気づくことが多いですが、画面だけ見て原因を決めず、このリクエストとレスポンスも確認しましょう。",
+          text: "画面に出ているのは、返ってきた HTML をブラウザが表示したものです。不具合は画面で気づくことが多いですが、画面だけ見て原因を決めず、リクエストとレスポンスも確認しましょう。",
         },
         { type: "diagram", name: "http-roundtrip", caption: "ブラウザが送り、サーバが返す。画面は、返ってきた HTML を表示したものです。" },
         {
-          type: "ul",
-          items: [
-            "宛先は URL、操作の種類は HTTP メソッド（GET / POST など）",
-            "付加情報はヘッダ（Cookie、Content-Type など）",
-            "成否の概略は HTTPステータスコード（200、404、500 など）",
-            "本文は HTML、JSON、ファイルなど",
-          ],
-        },
-        { type: "diagram", name: "html-json", caption: "同じ HTTP の往復。違うのは本文の形です。" },
-        {
-          type: "p",
-          text: "HTML はブラウザが画面にする応答です。JSON はデータの形式で、画面の JS や他システムが読みます。JSON を返す HTTP の窓口は Web API と呼ばれることが多いです。",
-        },
-        {
-          type: "callout",
-          kind: "tip",
-          title: "Network タブ",
-          text: "不具合のときは、該当リクエストのステータスコードと応答本文を先に確認しましょう。Java のコードを見るのはそのあとです。",
+          type: "h2",
+          text: "申請くんの例",
         },
         {
           type: "p",
-          text: "1画面でも HTML 以外に CSS、JS、画像のリクエストが飛びます。HTML の 500 と、CSS の 404 では見る場所が違います。",
-        },
-        { type: "diagram", name: "page-assets", caption: "画面1つでも、Network タブには複数行が出ます。" },
-        {
-          type: "callout",
-          kind: "note",
-          title: "コード例：申請くん",
-          text: "この教材の例は、架空の社内申請アプリ「申請くん」です。社員が申請を出し、承認者が承認する、という想定です。実在しません。下の HTTP は、申請一覧を開いた瞬間です。",
+          text: "申請一覧を開いた瞬間です。ブラウザは GET /shinsei/requests を送り、返ってきた HTML が画面になります。",
         },
         {
           type: "figure",
@@ -78,6 +63,55 @@ export const webTrack: Track = {
           caption: "同じ操作の Network タブ。HTML（requests）も CSS も JS も 200 です。行は1つではありません。",
         },
         { type: "widget", name: "http" },
+        {
+          type: "callout",
+          kind: "tip",
+          title: "Network タブ",
+          text: "不具合のときは、該当リクエストのステータスコードと応答本文を先に確認しましょう。Java のコードを見るのはそのあとです。",
+        },
+        {
+          type: "h2",
+          text: "画面を開くと、リクエストは複数",
+        },
+        {
+          type: "p",
+          text: "画面を開くと、HTML 以外に CSS、JS、画像のリクエストも飛びます。HTML の行が 500 なら、エラー画面や真っ白な画面になります。CSS の行が 404 なら、画面のレイアウトが崩れます。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-rows.jpg",
+          alt: "申請一覧を開いた Network。HTML、CSS、JS が別の行",
+          caption: "申請一覧を開いた Network。HTML（requests）のあとに app.css と app.js が別の行です。どれも 200 です。",
+        },
+        { type: "diagram", name: "page-assets", caption: "画面を開いたとき、Network タブには複数行が出ます。" },
+        {
+          type: "h2",
+          text: "HTML と JSON",
+        },
+        { type: "diagram", name: "html-json", caption: "同じ HTTP の往復。違うのは本文の形です。" },
+        {
+          type: "p",
+          text: "HTML はブラウザが画面にする応答です。JSON はデータの形式で、画面の JS や他システムが読みます。JSON を返す HTTP の窓口は Web API と呼ばれることが多いです。",
+        },
+        {
+          type: "h2",
+          text: "往復の読み方",
+        },
+        {
+          type: "p",
+          text: "Network タブで行を選ぶと、次のものが見えます。意味の分解は、このあとのレッスンで行います。",
+        },
+        {
+          type: "ul",
+          items: [
+            "宛先は URL、操作の種類は HTTP メソッド（GET / POST など）",
+            "付加情報はヘッダ（Cookie、Content-Type など）",
+            "成否の概略は HTTPステータスコード（200、404、500 など）",
+            "本文は HTML、JSON、ファイルなど",
+          ],
+        },
+        { type: "quiz", id: "web-roundtrip" },
       ],
     },
     {

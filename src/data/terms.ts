@@ -616,7 +616,7 @@ export const terms: TermDef[] = [
   {
     term: "Networkタブ",
     aliases: ["Network タブ", "Networkタブ", "Network"],
-    body: "ブラウザ開発者ツールの画面。実際に飛んだHTTPリクエストを見られます。",
+    body: "ブラウザ開発者ツールの画面。実際に飛んだ HTTP リクエストを見られます。見られるのは、開発者ツールを開いているウィンドウの通信です。別ウィンドウで送ったリクエストは、元のウィンドウには出ません。",
   },
   {
     term: "ホスト",
