@@ -717,8 +717,8 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-js-error.jpg",
-          alt: "画面にエラーが出ているが POST が無い Network タブ",
-          caption: "例：一覧は残ったまま、画面にエラーが出ています。新しい POST は増えていません。コンソールにエラーの印が出ています。",
+          alt: "画面にエラーが出ているが新しいリクエストが無い Network タブ",
+          caption: "例：一覧は残ったまま、画面にエラーが出ています。新しいリクエストは増えていません。コンソールにエラーの印が出ています。",
         },
         {
           type: "p",

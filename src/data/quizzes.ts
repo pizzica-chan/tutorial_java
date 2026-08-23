@@ -331,7 +331,7 @@ export const quizzes = {
   },
   "sc-front": {
     id: "sc-front",
-    question: "承認ボタンを押しても何も起きない。Network タブに新しい POST が無い。次は？",
+    question: "承認ボタンを押しても何も起きない。Network タブに新しいリクエストが無い。次は？",
     choices: [
       "RequestService の SQL を読む",
       "サーバに届いていないので、フォームか JS、コンソールのエラーを見る",
@@ -340,7 +340,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "リクエストが無ければバックエンドはまだ関係ありません。",
+      "リクエストが無ければサーバはまだ関係ありません。このシナリオでは list.js が、HTML に無い id の value を読んで止まっていました。",
   },
   "sc-back": {
     id: "sc-back",

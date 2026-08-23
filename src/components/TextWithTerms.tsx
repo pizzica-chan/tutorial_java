@@ -1,5 +1,7 @@
 import { createContext, useContext, useRef, type ReactNode } from "react";
+import { splitByChapters } from "../data/chapterRefs";
 import { splitByTerms } from "../data/terms";
+import { ChapterMark } from "./ChapterMark";
 import { TermMark } from "./TermMark";
 
 type ClaimFirst = (term: string) => boolean;
@@ -34,12 +36,24 @@ export function TextWithTerms({
 
   return (
     <>
-      {splitByTerms(text).map((part, index) => {
-        if (part.type === "text") {
-          return <span key={index}>{part.value}</span>;
+      {splitByChapters(text).flatMap((chunk, chunkIndex) => {
+        if (chunk.type === "chapter") {
+          return <ChapterMark key={`c-${chunkIndex}`} hit={chunk.hit} text={chunk.value} />;
         }
-        const toGlossary = linkTerms && (isFirst ? isFirst(part.def.term) : true);
-        return <TermMark key={index} def={part.def} text={part.value} toGlossary={toGlossary} />;
+        return splitByTerms(chunk.value).map((part, index) => {
+          if (part.type === "text") {
+            return <span key={`t-${chunkIndex}-${index}`}>{part.value}</span>;
+          }
+          const toGlossary = linkTerms && (isFirst ? isFirst(part.def.term) : true);
+          return (
+            <TermMark
+              key={`t-${chunkIndex}-${index}`}
+              def={part.def}
+              text={part.value}
+              toGlossary={toGlossary}
+            />
+          );
+        });
       })}
     </>
   );

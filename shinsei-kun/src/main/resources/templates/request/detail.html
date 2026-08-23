@@ -18,6 +18,7 @@
     <dd th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-10 09:15</dd>
   </dl>
   <form th:if="${request.status == 'PENDING'}"
+        class="js-approve-confirm"
         th:action="@{/requests/{id}/approve(id=${request.id})}"
         method="post">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />

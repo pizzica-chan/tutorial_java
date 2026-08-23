@@ -136,6 +136,11 @@ export const terms: TermDef[] = [
     body: "テーブルの1行に相当するJavaのオブジェクトです。",
   },
   {
+    term: "Spring Framework",
+    aliases: ["Spring Framework", "Spring"],
+    body: "Java のアプリを作るための枠組みです。略して Spring と呼ぶことが多いです。この教材では、起動の土台が Spring Boot、URL と Controller が Spring MVC、ログインと権限が Spring Security です。",
+  },
+  {
     term: "Spring Boot",
     aliases: ["Spring Boot"],
     body: "JavaのWebアプリを作るための土台。設定や内蔵サーバがまとまっています。",
@@ -230,8 +235,8 @@ export const terms: TermDef[] = [
   },
   {
     term: "例外",
-    aliases: ["例外"],
-    body: "プログラムが通常どおり進めなくなったときに投げられるエラーオブジェクトです。",
+    aliases: ["例外", "Exception"],
+    body: "プログラムが通常どおり進めなくなったときに投げられるエラーオブジェクトです。Java では Exception と呼びます。",
   },
   {
     term: "N+1",
@@ -699,6 +704,21 @@ export const terms: TermDef[] = [
     body: "ブラウザ上で動くプログラム。fetch で Web API を呼ぶのもこれです。",
   },
   {
+    term: "Uncaught TypeError",
+    aliases: ["Uncaught TypeError", "TypeError"],
+    body: "JavaScript の例外の一種です。型が合わない操作（null のプロパティを読むなど）で出ます。Uncaught は、例外を catch しなかった、という意味です。",
+  },
+  {
+    term: "getElementById",
+    aliases: ["getElementById"],
+    body: "id 属性が一致する HTML 要素を返す JavaScript の関数です。見つからないと null です。",
+  },
+  {
+    term: "preventDefault",
+    aliases: ["preventDefault"],
+    body: "イベントのあとブラウザが本来する動きを止める関数です。フォームの submit なら、送信を止めます。",
+  },
+  {
     term: "DB",
     aliases: ["データベース", "DB"],
     body: "データを保存する置き場。MySQL など。一覧の件数や更新結果はここにあります。",
@@ -841,7 +861,7 @@ export const terms: TermDef[] = [
   {
     term: "null",
     aliases: ["null"],
-    body: "値が無いこと。ここにメソッドを呼ぶと NullPointerException になります。",
+    body: "値が無いことです。メソッドの呼び出し先が null だと、Java では NullPointerException になります。",
   },
   {
     term: "Caused by",
@@ -851,7 +871,7 @@ export const terms: TermDef[] = [
   {
     term: "Unknown Source",
     aliases: ["Unknown Source"],
-    body: "スタックのその行に、対応するソースが無い、という印です。飛ばします。",
+    body: "スタックのその行に対応するソースが無い印です。",
   },
   {
     term: "groupId",

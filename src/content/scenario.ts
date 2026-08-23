@@ -12,7 +12,7 @@ export const scenarioTrack: Track = {
     {
       id: "front",
       title: "[障害調査] 申請一覧で、承認ボタンを押しても何も起きない",
-      minutes: 8,
+      minutes: 9,
       blocks: [
         {
           type: "callout",
@@ -25,7 +25,7 @@ export const scenarioTrack: Track = {
           kind: "screen",
           src: "/images/screen-list.jpg",
           alt: "承認ボタンが見える申請一覧",
-          caption: "ボタンは画面上に見えます。押した瞬間に POST が飛んだかは、Network タブで確認しましょう。",
+          caption: "ボタンは画面上に見えます。押した瞬間にリクエストが飛んだかは、Network タブで確認しましょう。",
         },
         {
           type: "h2",
@@ -45,41 +45,69 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "押した瞬間の Network タブを見ましょう。新しい POST が無ければ、バックエンドにも DB にも届いていません。",
+          text: "押した瞬間の Network タブを見ましょう。新しいリクエストが無ければ、バックエンドにも DB にも届いていません。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-no-post.jpg",
-          alt: "承認を押したあとも POST が無い Network タブ",
+          alt: "承認を押したあとも新しいリクエストが無い Network タブ",
           caption: "承認を押した直後の例です。POST /approve の行は増えていません。コンソールにエラーの印が出ています。",
+        },
+        {
+          type: "table",
+          headers: ["観測", "読む"],
+          rows: [
+            ["新しいリクエストが無い", "サーバはまだ関係ない。フォームか JS"],
+            ["コンソールに JS エラー", "リクエスト送信の手前で止まっている"],
+            ["リクエストがあり 200 / 302 / 500", "リクエスト送信は終わっている。サーバの応答とログを見る"],
+          ],
+        },
+        {
+          type: "h2",
+          text: "このシナリオの原因",
+        },
+        {
+          type: "p",
+          text: "このシナリオでは新しいリクエストが無く、コンソールに Uncaught TypeError: Cannot read properties of null (reading 'value') がありました。サーバのログはまだ見ません。コンソールの例外をクリックして、止まっているファイルと行を開きましょう。",
+        },
+        {
+          type: "code",
+          title: "list.js（申請くん・一覧）",
+          lang: "javascript",
+          code: `form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const tokenEl = document.getElementById("csrfToken");
+  form.querySelector("input[name='_csrf']").value = tokenEl.value;
+  form.submit();
+});`,
+        },
+        {
+          type: "p",
+          text: "preventDefault() のあと、getElementById(\"csrfToken\") の結果を tokenEl に入れ、tokenEl.value を読んでいます。例外は「null の value を読んだ」なので、tokenEl は null です。次は、一覧の HTML に id=\"csrfToken\" があるかを見ます。",
+        },
+        {
+          type: "code",
+          title: "一覧の承認フォーム（ブラウザに出ている HTML）",
+          lang: "html",
+          code: `<form action="/shinsei/requests/12/approve" method="post">
+  <input type="hidden" name="_csrf" value="8f3a2b1c-4e5f-6789-abcd-ef0123456789" />
+  <button type="submit" class="btn-approve">承認</button>
+</form>`,
+        },
+        {
+          type: "p",
+          text: "id=\"csrfToken\" はありません。CSRF 用の hidden は name=\"_csrf\" だけです。tokenEl は null のまま value を読み、例外になります。その下の form.submit() まで進まないので、承認のリクエストは飛びません。",
+        },
+        {
+          type: "p",
+          text: "原因は、一覧用の JS が HTML に無い id を読んでいることです。",
         },
         {
           type: "callout",
           kind: "note",
           title: "別ウィンドウのリクエスト",
           text: "Network タブに出るのは、開発者ツールを開いているウィンドウの通信だけです。別ウィンドウを開いて送ったリクエストは、元のウィンドウの Network タブには出ません。新しいウィンドウ側で Network タブを開きましょう。",
-        },
-        {
-          type: "table",
-          headers: ["観測", "読む"],
-          rows: [
-            ["POST が無い", "サーバはまだ関係ない。フォームか JS"],
-            ["コンソールに JS エラー", "リクエスト送信の手前で止まっている"],
-            ["POST があり 200 / 302 / 500", "リクエスト送信は終わっている。サーバの応答とログを見る"],
-          ],
-        },
-        {
-          type: "p",
-          text: "このシナリオでは POST が無く、コンソールに Uncaught TypeError がありました。submit する JS が途中で止まっていました。",
-        },
-        {
-          type: "ul",
-          items: [
-            "リクエストが無いなら、ログと SQL を先に読まない",
-            "ボタンが見えることと、リクエストが飛ぶことは別",
-            "画面遷移しない操作は、XHR / fetch の行を見る",
-          ],
         },
         { type: "quiz", id: "sc-front" },
       ],

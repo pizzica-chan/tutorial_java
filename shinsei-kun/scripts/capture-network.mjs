@@ -132,11 +132,10 @@ await sleep(700);
 shotWindow("screen-network-css-404.jpg");
 await stopIntercept(page, onCss404);
 
-async function blockApprove(showFlash) {
-  await page.evaluate((showFlash) => {
+async function blockApproveWithFlash() {
+  await page.evaluate(() => {
     const script = document.createElement("script");
-    script.textContent = showFlash
-      ? `document.querySelectorAll("form").forEach((form) => {
+    script.textContent = `document.querySelectorAll("form").forEach((form) => {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     event.stopImmediatePropagation();
@@ -154,27 +153,19 @@ async function blockApprove(showFlash) {
     }
     throw new TypeError("Cannot read properties of null (reading 'value')");
   }, true);
-});`
-      : `document.querySelectorAll("form").forEach((form) => {
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    throw new TypeError("Cannot read properties of null (reading 'value')");
-  }, true);
 });`;
     document.documentElement.appendChild(script);
     script.remove();
-  }, showFlash);
+  });
 }
 
 await page.reload({ waitUntil: "networkidle0" });
-await blockApprove(false);
 await page.click(".btn-approve");
 await sleep(800);
 shotWindow("screen-network-no-post.jpg");
 
 await page.reload({ waitUntil: "networkidle0" });
-await blockApprove(true);
+await blockApproveWithFlash();
 await page.click(".btn-approve");
 await sleep(800);
 shotWindow("screen-network-js-error.jpg");

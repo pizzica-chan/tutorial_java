@@ -166,7 +166,7 @@ export const shinseiAppCssSnippet = `body {
 }`;
 
 /** 教材用。申請くんの JS 抜粋 */
-export const shinseiAppJsSnippet = `document.querySelectorAll("form[action*='/approve']").forEach((form) => {
+export const shinseiAppJsSnippet = `document.querySelectorAll("form.js-approve-confirm").forEach((form) => {
   form.addEventListener("submit", (event) => {
     if (!window.confirm("承認してよいですか？")) {
       event.preventDefault();

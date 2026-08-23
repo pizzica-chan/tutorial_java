@@ -1770,6 +1770,22 @@ th {
   cursor: help;
 }
 
+.chapter-ref {
+  color: inherit;
+  font-weight: 650;
+  padding: 0.08em 0.32em;
+  margin: 0 0.08em;
+  border-radius: 4px;
+  background: rgba(110, 200, 192, 0.18);
+  text-decoration: none;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.chapter-ref:hover {
+  background: rgba(110, 200, 192, 0.32);
+}
+
 
 .term-tip {
   position: fixed;

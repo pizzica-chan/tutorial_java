@@ -5,7 +5,7 @@ export const webTrack: Track = {
   no: "02",
   title: "Webの基礎",
   kicker: "HTTP",
-  description: "HTTP の往復を分解し、画面の材料がどこにあるかを押さえます。",
+  description: "URL、ステータスコード、Cookie など、HTTP の読み方を身につけます。",
   accent: "#6ec8c0",
   lessons: [
     {
@@ -82,7 +82,7 @@ export const webTrack: Track = {
           kind: "screen",
           src: "/images/screen-network-rows.jpg",
           alt: "申請一覧を開いた Network。HTML、CSS、JS が別の行",
-          caption: "申請一覧を開いた Network。HTML（requests）のあとに app.css と app.js が別の行です。どれも 200 です。",
+          caption: "申請一覧を開いた Network。HTML（requests）のあとに CSS と JS が別の行です。どれも 200 です。",
         },
         { type: "diagram", name: "page-assets", caption: "画面を開いたとき、Network タブには複数行が出ます。" },
         {
