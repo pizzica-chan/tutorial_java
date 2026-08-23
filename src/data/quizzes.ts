@@ -102,7 +102,7 @@ export const quizzes = {
   },
   "java-template": {
     id: "java-template",
-    question: "承認ボタンが一覧に出ない。Controller は list を返し、Model に requests は入っている。次に見るのは？",
+    question: "承認ボタンが一覧に出ない。Controller は list を返し、Model に applications は入っている。次に見るのは？",
     choices: [
       "templates/request/list.html の th:if など表示条件",
       "pom.xml の groupId",

@@ -25,7 +25,7 @@ export const javaMapTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "例として、架空の社内申請アプリ「申請くん」を使います。Maven + Spring Boot です。申請の一覧・詳細・承認ができる、という想定で、実在しません。プロジェクトごとに名前は違いますが、役割の分け方は似ています。",
+          text: "例として、架空の社内申請アプリ「申請くん」を使います。",
         },
         {
           type: "p",
@@ -55,11 +55,11 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "どちらも、使うライブラリの一覧と、ビルドの仕方を書いたファイルです。プロジェクトによって Maven か Gradle かは決まっています。申請くんは Maven なので pom.xml があります。",
+          text: "どちらも、使うフレームワークやライブラリの一覧と、ビルドの仕方を書いたファイルです。プロジェクトによって Maven か Gradle かは決まっています。申請くんは Maven なので pom.xml があります。",
         },
         {
           type: "p",
-          text: "切り分けでは、ファイルを上から通読する必要はありません。どのフレームワークや DB ライブラリを使っているかが分かれば、以降の検索語やログの読み方が決まります。",
+          text: "切り分けでは、ファイルを上から通読する必要はありません。どのフレームワークか、DB アクセスが MyBatis / JPA / JDBC のどれかが分かれば、以降の検索語やログの読み方が決まります。",
         },
         {
           type: "h2",
@@ -97,7 +97,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "Gradle のプロジェクトなら、同じライブラリが build.gradle の dependencies に書かれています。書き方は違いますが、見る目的は同じです。",
+          text: "Gradle のプロジェクトなら、同じフレームワークやライブラリが build.gradle の dependencies に書かれています。書き方は違いますが、見る目的は同じです。",
         },
         {
           type: "code",
@@ -208,7 +208,7 @@ server:
 public class RequestController {
   @GetMapping
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("requests", requestService.findMine(user.getId()));
+    model.addAttribute("applications", requestService.findMine(user.getId()));
     return "request/list";
   }
 }`,
@@ -225,7 +225,7 @@ public class RequestController {
 public class RequestController {
   @GetMapping("/requests")
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("requests", requestMapper.findMine(user.getId()));
+    model.addAttribute("applications", requestMapper.findMine(user.getId()));
     return "request/list";
   }
 }`,
@@ -251,7 +251,7 @@ public class RequestController {
 public class RequestController {
   @GetMapping
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("requests", requestService.findMine(user.getId()));
+    model.addAttribute("applications", requestService.findMine(user.getId()));
     return "request/list";
   }
 }`,
@@ -299,7 +299,7 @@ public class RequestApiController {
       blocks: [
         {
           type: "p",
-          text: "申請くんの一覧画面を例に、templates と static の役割を見ます。Controller が返す文字列がテンプレートの場所になり、CSS や JS は多くの場合 static から読み込まれます。",
+          text: "HTML は templates フォルダ、CSS や JS は static フォルダに置きます。申請くんの一覧を例に見ます。",
         },
         {
           type: "h2",
@@ -307,7 +307,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "Controller は Model にデータを載せ、テンプレート名を return します。中身の th:each や th:if は、次の項目で読みます。",
+          text: "HTML は src/main/resources/templates 配下に置きます。Controller が名前で指定したテンプレートを組み立て、その HTML がブラウザに届きます。例えば return \"request/list\" なら templates/request/list.html を組み立てます。",
         },
         {
           type: "code",
@@ -352,7 +352,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "一方で、テンプレートや HTML に直接書いている画面もあります。申請くんは static に分けて置いていますが、見た目や動きを直すときは templates 内も見ましょう。",
+          text: "一方で、CSS や JS をテンプレートや HTML に直接書いている画面もあります。申請くんは static に分けて置いていますが、見た目や動きを直すときは templates 内も見ましょう。",
         },
         {
           type: "ul",
@@ -393,7 +393,7 @@ public class RequestApiController {
       blocks: [
         {
           type: "p",
-          text: "サーバが HTML を組み立てるアプリでは、画面の文言・ボタンの有無・送信先の多くがテンプレートに書かれています。Controller や SQL だけ見ても、ボタンが出ない・リンク先が違う、は説明できないことがあります。",
+          text: "サーバが HTML を組み立てるアプリでは、画面の文言、ボタンの有無、送信先は、その多くがテンプレートに書かれています。",
         },
         {
           type: "p",
@@ -401,7 +401,7 @@ public class RequestApiController {
         },
         {
           type: "h2",
-          text: "ファイルの特定",
+          text: "テンプレートファイルの特定",
         },
         {
           type: "p",
@@ -409,19 +409,19 @@ public class RequestApiController {
         },
         {
           type: "h2",
-          text: "Java から渡す書き方",
+          text: "Controller からテンプレートへの値の渡し方",
         },
         {
           type: "p",
-          text: "テンプレートが参照する名前は、Controller が Model に載せたキーです。書き方はいくつかありますが、テンプレート側から見ると「\${キー名}」がどこから来たか、を突き合わせれば足ります。",
+          text: "テンプレートが参照する名前は、Controller が Model に載せたキーです。書き方はいくつかありますが、いずれもテンプレートに出ているキー名を、Controller 側で探せばよいです。",
         },
         {
           type: "table",
           headers: ["Controller の書き方", "テンプレートでの名前", "補足"],
           rows: [
-            ["model.addAttribute(\"requests\", list)", "${requests}", "いちばん多い。申請くんはこの形"],
-            ["mav.addObject(\"requests\", list) と ModelAndView", "${requests}", "addAttribute と同じ。戻り値が ModelAndView"],
-            ["model.put(\"requests\", list) と Map", "${requests}", "引数が Map のとき。Model と同じ役割"],
+            ["model.addAttribute(\"applications\", list)", "${applications}", "いちばん多い。申請くんはこの形"],
+            ["mav.addObject(\"applications\", list) と ModelAndView", "${applications}", "addAttribute と同じ。戻り値が ModelAndView"],
+            ["model.put(\"applications\", list) と Map", "${applications}", "引数が Map のとき。Model と同じ役割"],
             ["@ModelAttribute(\"form\") RequestForm form", "${form}", "フォーム表示・送信の両方で使うことがある"],
             ["@ModelAttribute メソッド（Controller 内）", "メソッドが返すキー名", "全画面に共通の値を載せる。各メソッドの前に実行される"],
             ["redirectAttributes.addFlashAttribute(\"msg\", ...)", "${msg}", "リダイレクト後の1回だけ。登録完了メッセージなど"],
@@ -429,26 +429,26 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "値は、リストやオブジェクト1件、文字列など何でも載せられます。テンプレートでは \${requests} のようにキー名で取り出し、オブジェクトなら \${req.title} のようにプロパティを辿ります。",
+          text: "値は、リストやオブジェクト1件、文字列など何でも載せられます。テンプレートでは \${applications} のようにキー名で取り出し、オブジェクトなら \${item.title} のようにプロパティを辿ります。",
         },
         {
           type: "code",
-          title: "パターン1: Model + addAttribute（申請くん）",
+          title: "パターン1: Model に載せて、テンプレート名を return（申請くん）",
           lang: "java",
           code: `@GetMapping("/requests")
 public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-  model.addAttribute("requests", requestMapper.findMine(user.getId()));
+  model.addAttribute("applications", requestMapper.findMine(user.getId()));
   return "request/list";
 }`,
         },
         {
           type: "code",
-          title: "パターン2: ModelAndView",
+          title: "パターン2: テンプレート名も値も ModelAndView に載せて return",
           lang: "java",
           code: `@GetMapping("/requests")
 public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
   ModelAndView mav = new ModelAndView("request/list");
-  mav.addObject("requests", requestMapper.findMine(user.getId()));
+  mav.addObject("applications", requestMapper.findMine(user.getId()));
   return mav;
 }`,
         },
@@ -460,18 +460,17 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "h2",
-          text: "よく見る Thymeleaf の印",
+          text: "よく見る Thymeleaf の属性",
         },
         {
           type: "table",
-          headers: ["印", "読み方"],
+          headers: ["属性", "意味", "例"],
           rows: [
-            ["th:each", "リストの繰り返し。\${requests} の1件ずつ"],
-            ["th:text", "画面に出す文字。\${req.title} など"],
-            ["th:if / th:unless", "条件が true のときだけタグを出す。ボタンが無い原因になりやすい"],
-            ["th:action / th:href", "form の送信先、リンク先。@{/requests/{id}/approve} のように URL を組み立てる"],
-            ["@{...}", "context-path を含めた URL。/shinsei が付くかはここで決まる"],
-            ["th:name / name", "フォームの項目名。Controller の @RequestParam と対応"],
+            ["th:each", "リストの繰り返し。要素ごとに内側のタグを出す", "th:each=\"item : \${applications}\"\n申請の件数だけ行が増える"],
+            ["th:text", "画面に出す文字", "th:text=\"\${item.title}\"\n画面に「交通費申請」などが出る"],
+            ["th:if / th:unless", "条件が true のときだけタグを出す。ボタンが無い原因になりやすい", "th:if=\"\${item.status == 'PENDING'}\"\nPENDING の行だけ承認ボタンが出る"],
+            ["th:action / th:href", "form の送信先、リンク先。@{...} に書いたパスの前に、context-path（申請くんなら /shinsei）が付く", "th:action=\"@{/requests/{id}/approve(id=\${item.id})}\"\n承認ボタンの送信先になる"],
+            ["th:name / name", "フォームの項目名。Controller の @RequestParam と対応", "name=\"title\"\n送信時の項目名が title になる"],
           ],
         },
         {
@@ -706,7 +705,7 @@ public void addInterceptors(InterceptorRegistry registry) {
             ["サーブレットコンテナ", "Tomcat、Jetty", "Java の画面や API を動かす"],
           ],
         },
-        { type: "diagram", name: "arch-roles", caption: "手前の箱は無いこともあります。Java が動く箱は、どれかのサーブレットコンテナです。" },
+        { type: "diagram", name: "arch-roles", caption: "手前の HTTP サーバは無いこともあります。Java は、どれかのサーブレットコンテナで動きます。" },
         {
           type: "callout",
           kind: "trap",
@@ -759,15 +758,15 @@ public void addInterceptors(InterceptorRegistry registry) {
           type: "callout",
           kind: "note",
           title: "APサーバ",
-          text: "古い現場では WebLogic など APサーバに載せることもあります。Java が動く箱が Tomcat ではない、というだけです。",
+          text: "古い現場では WebLogic など APサーバに載せることもあります。動く先が Tomcat ではない、というだけです。",
         },
         {
           type: "h2",
-          text: "さらに手前の箱",
+          text: "さらに手前",
         },
         {
           type: "p",
-          text: "上のどの重ね方でも、さらに手前に別の箱が置かれることがあります。いずれも Java のコードより手前です。パターン3なら Apache / nginx の外側、パターン1・2なら Tomcat や Spring Boot の手前、という位置づけです。",
+          text: "上のどの重ね方でも、さらに手前にロードバランサや CDN、WAF が置かれることがあります。いずれも Java のコードより手前です。パターン3なら Apache / nginx の外側、パターン1・2なら Tomcat や Spring Boot の手前、という位置づけです。",
         },
         {
           type: "ul",

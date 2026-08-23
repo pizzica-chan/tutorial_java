@@ -23,7 +23,7 @@ public class RequestController {
   // 処理の入口: GET /shinsei/requests（context-path /shinsei + /requests）
   @GetMapping
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("requests", requestService.findMine(user.getId()));
+    model.addAttribute("applications", requestService.findMine(user.getId()));
     return "request/list";
   }
 
@@ -48,7 +48,7 @@ public class RequestController {
   // 処理の入口: GET /shinsei/requests/12
   @GetMapping("/{id}")
   public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("request", requestService.findById(id, user.getId()));
+    model.addAttribute("application", requestService.findById(id, user.getId()));
     model.addAttribute("currentUserId", user.getId());
     return "request/detail";
   }

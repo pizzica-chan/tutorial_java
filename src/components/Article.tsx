@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import { Fragment, type ComponentType } from "react";
 import type { Block, CalloutKind, WidgetName } from "../types";
 import { QuizBlock } from "./QuizBlock";
 import { ProjectExplorer } from "./ProjectExplorer";
@@ -119,7 +119,12 @@ function BlockView({ block }: { block: Block }) {
                 <tr key={rowIndex}>
                   {row.map((cell, cellIndex) => (
                     <td key={cellIndex}>
-                      <TextWithTerms text={cell} />
+                      {cell.split("\n").map((line, lineIndex) => (
+                        <Fragment key={lineIndex}>
+                          {lineIndex > 0 ? <br /> : null}
+                          <TextWithTerms text={line} />
+                        </Fragment>
+                      ))}
                     </td>
                   ))}
                 </tr>

@@ -18,26 +18,26 @@
       </tr>
     </thead>
     <tbody>
-      <tr th:each="req : ${requests}">
-        <td th:text="${req.id}">12</td>
+      <tr th:each="item : ${applications}">
+        <td th:text="${item.id}">12</td>
         <td>
-          <a th:href="@{/requests/{id}(id=${req.id})}" th:text="${req.title}">交通費申請</a>
+          <a th:href="@{/requests/{id}(id=${item.id})}" th:text="${item.title}">交通費申請</a>
         </td>
-        <td th:text="${req.applicantName}">山田太郎</td>
-        <td th:text="${req.approverName}">佐藤花子</td>
+        <td th:text="${item.applicantName}">山田太郎</td>
+        <td th:text="${item.approverName}">佐藤花子</td>
         <td>
-          <span class="status" th:classappend="${req.status == 'PENDING'} ? ' is-pending' : ' is-approved'" th:text="${req.status}">PENDING</span>
+          <span class="status" th:classappend="${item.status == 'PENDING'} ? ' is-pending' : ' is-approved'" th:text="${item.status}">PENDING</span>
         </td>
         <td>
-          <form th:if="${req.status == 'PENDING'}"
-                th:action="@{/requests/{id}/approve(id=${req.id})}"
+          <form th:if="${item.status == 'PENDING'}"
+                th:action="@{/requests/{id}/approve(id=${item.id})}"
                 method="post">
             <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
             <button type="submit" class="btn-approve">承認</button>
           </form>
         </td>
       </tr>
-      <tr th:if="${#lists.isEmpty(requests)}">
+      <tr th:if="${#lists.isEmpty(applications)}">
         <td colspan="6">表示できる申請はありません。</td>
       </tr>
     </tbody>

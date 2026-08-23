@@ -153,7 +153,7 @@ export const terms: TermDef[] = [
   {
     term: "Spring Security",
     aliases: ["Spring Security", "SecurityConfig"],
-    body: "ログイン、権限、CSRFなどを担う、Spring のライブラリです。",
+    body: "ログイン、権限、CSRFなどを担う、Spring のセキュリティフレームワークです。",
   },
   {
     term: "Thymeleaf",
@@ -188,12 +188,12 @@ export const terms: TermDef[] = [
   {
     term: "Maven",
     aliases: ["Maven", "pom.xml"],
-    body: "Javaのビルドとライブラリ管理の仕組み。pom.xml に依存関係を書きます。",
+    body: "Javaのビルドと依存関係の管理の仕組み。pom.xml にフレームワークやライブラリを書きます。",
   },
   {
     term: "Gradle",
     aliases: ["Gradle"],
-    body: "Javaのビルドとライブラリ管理の仕組みのひとつです。",
+    body: "Javaのビルドと依存関係の管理の仕組みのひとつです。",
   },
   {
     term: "application.yml",
@@ -516,7 +516,7 @@ export const terms: TermDef[] = [
   {
     term: "HTTP サーバ",
     aliases: ["HTTP サーバ", "HTTPサーバ"],
-    body: "ブラウザの手前でリクエストを受ける箱。Apache や nginx。静的ファイルの配信や後ろへの中継を担うことが多く、access.log と error.log を持ちます。",
+    body: "ブラウザの手前でリクエストを受けるサーバ。Apache や nginx。静的ファイルの配信や後ろへの中継を担うことが多く、access.log と error.log を持ちます。",
   },
   {
     term: "Apache",
@@ -796,7 +796,7 @@ export const terms: TermDef[] = [
   {
     term: "th:action",
     aliases: ["th:action", "th:href", "th:if", "c:if"],
-    body: "Thymeleaf などの印。送信先、リンク先、表示条件をテンプレート側に書きます。",
+    body: "Thymeleaf などの属性。送信先、リンク先、表示条件をテンプレート側に書きます。",
   },
   {
     term: "name属性",
@@ -891,7 +891,7 @@ export const terms: TermDef[] = [
   {
     term: "org.springframework",
     aliases: ["org.springframework"],
-    body: "Spring のライブラリのパッケージです。スタックトレースでは飛ばします。",
+    body: "Spring Framework のパッケージです。スタックトレースでは飛ばします。",
   },
   {
     term: "permitAll",
@@ -996,7 +996,7 @@ export const terms: TermDef[] = [
   {
     term: "コンテナ",
     aliases: ["コンテナ"],
-    body: "アプリを、ホストOSから切り離した箱として動かす単位です。Docker とは限りません。中の標準出力を集めてログにすることが多いです。サーブレットコンテナとは別物です。",
+    body: "アプリを、ホスト OS から切り離して動かす単位です。Docker とは限りません。中の標準出力を集めてログにすることが多いです。サーブレットコンテナとは別物です。",
   },
   {
     term: "Docker",
@@ -1026,12 +1026,12 @@ export const terms: TermDef[] = [
   {
     term: "ライブラリ",
     aliases: ["ライブラリ"],
-    body: "自分たちが書いていない、再利用する部品。Spring や MyBatis など。",
+    body: "自分たちが書いていない、再利用する部品。MyBatis や JDBC ドライバなど。アプリの土台そのものではなく、機能を足すものです。",
   },
   {
     term: "フレームワーク",
     aliases: ["フレームワーク"],
-    body: "アプリの土台になる枠組み。スタックトレースの FW 行は、だいたいここです。",
+    body: "アプリの土台になる枠組み。Spring Framework など。スタックトレースの FW 行は、だいたいここです。",
   },
   {
     term: "プロキシ",
@@ -1071,7 +1071,7 @@ export const terms: TermDef[] = [
   {
     term: "依存関係",
     aliases: ["依存関係", "starter"],
-    body: "使っているライブラリの一覧。pom.xml や build.gradle に書きます。",
+    body: "使うフレームワークやライブラリの一覧。pom.xml や build.gradle に書きます。",
   },
   {
     term: "DTO",
@@ -1135,7 +1135,7 @@ const matchers: Matcher[] = terms
     return { alias, pattern, def };
   });
 
-const termRegex = new RegExp(matchers.map((item) => item.pattern).join("|"), "gi");
+const termRegex = new RegExp(matchers.map((item) => item.pattern).join("|"), "g");
 
 const aliasLookup = new Map<string, TermDef>();
 for (const item of matchers) {

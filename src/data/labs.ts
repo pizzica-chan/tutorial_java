@@ -38,7 +38,7 @@ yes -> ログインユーザを次へ渡す`,
       "引数の LoginUser は、フィルタがセッションから復元したログインユーザです。その ID を Service に渡し、自分の申請を取ります。画面用のデータを Model に載せ、テンプレート名を返します。",
     code: `@GetMapping
 public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-  model.addAttribute("requests", requestService.findMine(user.getId()));
+  model.addAttribute("applications", requestService.findMine(user.getId()));
   return "request/list";
 }`,
   },
@@ -149,7 +149,7 @@ export const stackCases: StackCase[] = [
       {
         kind: "framework",
         text: "    at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)",
-        note: "org.springframework はライブラリです。長いクラス名で止まらないでください。",
+        note: "org.springframework はフレームワークです。長いクラス名で止まらないでください。",
       },
       {
         kind: "framework",

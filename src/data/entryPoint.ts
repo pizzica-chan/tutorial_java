@@ -21,7 +21,7 @@ public class RequestController {
   @GetMapping
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     // → Service 呼び出し: ここから RequestService.findMine へ降りる
-    model.addAttribute("requests", requestService.findMine(user.getId()));
+    model.addAttribute("applications", requestService.findMine(user.getId()));
     return "request/list";
   }
 
@@ -37,13 +37,13 @@ public class RequestController {
 
   @GetMapping  // ← 処理の入口（一覧）
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("requests", requestService.findMine(user.getId()));
+    model.addAttribute("applications", requestService.findMine(user.getId()));
     return "request/list";
   }
 
   @GetMapping("/{id}")  // ← 処理の入口（詳細）
   public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("request", requestService.findById(id, user.getId()));
+    model.addAttribute("application", requestService.findById(id, user.getId()));
     return "request/detail";
   }
 
@@ -64,14 +64,14 @@ public class RequestController {
   // 処理の入口: GET /shinsei/requests（context-path /shinsei + /requests）
   @GetMapping
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("requests", requestService.findMine(user.getId()));
+    model.addAttribute("applications", requestService.findMine(user.getId()));
     return "request/list";
   }
 
   // 処理の入口: GET /shinsei/requests/12
   @GetMapping("/{id}")
   public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("request", requestService.findById(id, user.getId()));
+    model.addAttribute("application", requestService.findById(id, user.getId()));
     return "request/detail";
   }
 

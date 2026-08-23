@@ -525,7 +525,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
         },
         {
           type: "p",
-          text: "Controller の list のあと Service の findMine、そのあと Mapper です。この並びはライブラリが違っても同じ型です。Mapper の 3 行（Preparing / Parameters / Total）は MyBatis の DEBUG の書き方で、JPA や JDBC なら文言は違います。間に Filter や Interceptor の行が挟まることもあります。Java のメソッド名は、メッセージに書いてあるときだけ分かります。",
+          text: "Controller の list のあと Service の findMine、そのあと Mapper です。この並びは、DB アクセスの仕方が違っても同じ型です。Mapper の 3 行（Preparing / Parameters / Total）は MyBatis の DEBUG の書き方で、JPA や JDBC なら文言は違います。間に Filter や Interceptor の行が挟まることもあります。Java のメソッド名は、メッセージに書いてあるときだけ分かります。",
         },
         {
           type: "ul",
@@ -634,7 +634,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "申請くんなら、自分たちが書いたコードのパッケージは jp.co.example.shinsei です。org.springframework や java. はライブラリや Java 本体なので、直す場所ではありません。$$Enhancer や $Proxy も生成コードなので飛ばしましょう。",
+          text: "申請くんなら、自分たちが書いたコードのパッケージは jp.co.example.shinsei です。org.springframework や java. はフレームワークや Java 本体なので、直す場所ではありません。$$Enhancer や $Proxy も生成コードなので飛ばしましょう。",
         },
         {
           type: "h2",
@@ -673,7 +673,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
           headers: ["パッケージの先頭", "扱い"],
           rows: [
             ["jp.co.example.shinsei など、自分たちが書いたコードのパッケージ", "自作。このクラスの行番号を調べる"],
-            ["org.springframework / org.apache / org.mybatis / org.hibernate", "ライブラリ。飛ばす"],
+            ["org.springframework / org.apache / org.mybatis / org.hibernate", "フレームワークやライブラリ。飛ばす"],
             ["java. / javax. / jakarta. / jdk. / sun.", "JDK。飛ばす"],
             ["$Proxy / CGLIB / generated", "生成コード。隣の自作クラスへ戻る"],
           ],
@@ -771,7 +771,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "at 行があれば、ライブラリは飛ばし、自分たちが書いたコードのパッケージ名がある行のソースを見ましょう。その値がどこでセットされたかを上流へ辿りましょう。",
+          text: "at 行があれば、フレームワークやライブラリは飛ばし、自分たちが書いたコードのパッケージ名がある行のソースを見ましょう。その値がどこでセットされたかを上流へ辿りましょう。",
         },
       ],
     },
@@ -1044,7 +1044,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
         },
         {
           type: "p",
-          text: "DB 更新は 03.206 で終わっています。ERROR は 08.910 です。あいだは外部への POST 待ちです。例外クラス名はライブラリごとに違いますが、接続失敗・タイムアウト・HTTP 4xx / 5xx を示すことが多いです。",
+          text: "DB 更新は 03.206 で終わっています。ERROR は 08.910 です。あいだは外部への POST 待ちです。例外クラス名はフレームワークやライブラリごとに違いますが、接続失敗・タイムアウト・HTTP 4xx / 5xx を示すことが多いです。",
         },
         {
           type: "h2",

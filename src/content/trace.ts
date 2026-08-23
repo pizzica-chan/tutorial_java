@@ -281,7 +281,7 @@ public class Request {
         {
           type: "callout",
           kind: "note",
-          title: "SQL の置き場所はライブラリ次第",
+          title: "SQL の置き場所は、MyBatis か JPA かで違う",
           text: "JdbcTemplate のように、Java の文字列に SQL を書く書き方もあります。ログの文言は設定次第です。",
         },
         {

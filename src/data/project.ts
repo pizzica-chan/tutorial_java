@@ -118,12 +118,12 @@ dependencies {
 }`;
 
 /** 教材用。申請くんの一覧テンプレート抜粋 */
-export const shinseiListTemplateSnippet = `<tr th:each="req : \${requests}">
-  <td th:text="\${req.title}">交通費申請</td>
-  <td th:text="\${req.status}">PENDING</td>
+export const shinseiListTemplateSnippet = `<tr th:each="item : \${applications}">
+  <td th:text="\${item.title}">交通費申請</td>
+  <td th:text="\${item.status}">PENDING</td>
   <td>
-    <form th:if="\${req.status == 'PENDING'}"
-          th:action="@{/requests/{id}/approve(id=\${req.id})}"
+    <form th:if="\${item.status == 'PENDING'}"
+          th:action="@{/requests/{id}/approve(id=\${item.id})}"
           method="post">
       <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
       <button type="submit">承認</button>
@@ -177,8 +177,8 @@ export const shinseiAppJsSnippet = `document.querySelectorAll("form.js-approve-c
 export const projectFiles: ProjectFile[] = [
   {
     path: "pom.xml",
-    note: "何のライブラリで動いているか",
-    why: "Spring Boot の版、Thymeleaf、MyBatis、MySQL ドライバなど、使っているライブラリがここに並びます。知らない依存を全部理解する必要はありません。画面と DB に直結するものから見ます。",
+    note: "何で動いているか",
+    why: "Spring Boot の版、Thymeleaf、MyBatis、MySQL ドライバなど、使っているものがここに並びます。知らない依存を全部理解する必要はありません。画面と DB に直結するものから見ます。",
     code: shinseiPomSnippet,
   },
   {
@@ -374,10 +374,10 @@ public class MailService {
     path: "src/main/resources/templates/request/detail.html",
     note: "申請詳細の画面テンプレート",
     why: "list.html と同じく、表示する項目と承認ボタンの条件は HTML 側にあります。Controller が return \"request/detail\" と返すと、このファイルが使われます。",
-    code: `<h1 th:text="\${request.title}">交通費申請</h1>
-<p>ステータス: <span th:text="\${request.status}">PENDING</span></p>
-<form th:if="\${request.status == 'PENDING'}"
-      th:action="@{/requests/{id}/approve(id=\${request.id})}"
+    code: `<h1 th:text="\${application.title}">交通費申請</h1>
+<p>ステータス: <span th:text="\${application.status}">PENDING</span></p>
+<form th:if="\${application.status == 'PENDING'}"
+      th:action="@{/requests/{id}/approve(id=\${application.id})}"
       method="post">
   <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
   <button type="submit">承認</button>

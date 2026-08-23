@@ -1,25 +1,25 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title=${request.title}, content=~{::main})">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title=${application.title}, content=~{::main})">
 <main>
   <p class="back"><a th:href="@{/requests}">← 申請一覧</a></p>
-  <h1 th:text="${request.title}">交通費申請</h1>
+  <h1 th:text="${application.title}">交通費申請</h1>
   <dl class="detail">
     <dt>申請ID</dt>
-    <dd th:text="${request.id}">12</dd>
+    <dd th:text="${application.id}">12</dd>
     <dt>ステータス</dt>
     <dd>
-      <span class="status" th:classappend="${request.status == 'PENDING'} ? ' is-pending' : ' is-approved'" th:text="${request.status}">PENDING</span>
+      <span class="status" th:classappend="${application.status == 'PENDING'} ? ' is-pending' : ' is-approved'" th:text="${application.status}">PENDING</span>
     </dd>
     <dt>申請者</dt>
-    <dd th:text="${request.applicantName}">山田太郎</dd>
+    <dd th:text="${application.applicantName}">山田太郎</dd>
     <dt>承認者</dt>
-    <dd th:text="${request.approverName}">佐藤花子</dd>
+    <dd th:text="${application.approverName}">佐藤花子</dd>
     <dt>申請日時</dt>
-    <dd th:text="${#temporals.format(request.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-10 09:15</dd>
+    <dd th:text="${#temporals.format(application.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-10 09:15</dd>
   </dl>
-  <form th:if="${request.status == 'PENDING'}"
+  <form th:if="${application.status == 'PENDING'}"
         class="js-approve-confirm"
-        th:action="@{/requests/{id}/approve(id=${request.id})}"
+        th:action="@{/requests/{id}/approve(id=${application.id})}"
         method="post">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <button type="submit" class="btn-approve">承認</button>
