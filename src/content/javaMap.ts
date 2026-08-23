@@ -114,7 +114,7 @@ export const javaMapTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "Spring Boot 用の設定ファイルです。接続先、ポート、プロファイル、コンテキストパスはここに書きます。yml でも properties でも同じ意味です。申請くんは yml です。",
+          text: "Spring Boot 用の設定ファイルです。接続先、ポート、プロファイル、コンテキストパスは、Spring Boot ならここに書くことが多いです。外の Tomcat に載せるときは、ポートやコンテキストパスは Tomcat 側で決まることが多いです。yml でも properties でも、書き方が異なるだけで同じ意味です。申請くんは yml に /shinsei があります。",
         },
         {
           type: "code",
@@ -168,7 +168,7 @@ server:
       blocks: [
         {
           type: "p",
-          text: "画面の URL や API のパスから、処理がどこで動いているかを追うときの型です。まずは層の役割と、開く順番だけを押さえます。",
+          text: "画面や API の URL からソースを追うときは、Controller → Service → Repository の順で開きます。この項目では、各層の役割と、その順番だけ押さえます。",
         },
         {
           type: "h2",
@@ -215,24 +215,7 @@ public class RequestController {
         },
         {
           type: "p",
-          text: "list が URL の受付です。requestService.findMine が次に開く先です。return の意味は、このあと別の話として見ます。",
-        },
-        {
-          type: "code",
-          title: "並びがずれる例（Controller が Mapper を直呼び、抜粋）",
-          lang: "java",
-          code: `@Controller
-public class RequestController {
-  @GetMapping("/requests")
-  public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("applications", requestMapper.findMine(user.getId()));
-    return "request/list";
-  }
-}`,
-        },
-        {
-          type: "p",
-          text: "Service を飛ばして Mapper を直呼びしている例です。たどり方は同じで、list から requestMapper.findMine を開きます。",
+          text: "URL を受けるのは list メソッドです。その中で呼んでいる requestService.findMine が、次に開くメソッドです。return は、すぐ下の「Controller の返し方」で見ます。",
         },
         {
           type: "h2",

@@ -206,7 +206,7 @@ export const terms: TermDef[] = [
       "application-dev.properties",
       "application-*.properties",
     ],
-    body: "接続先、ポート、ログ、プロファイルなど、起動時の設定ファイルです。Spring Boot 用です。yml でも properties でも同じ意味です。",
+    body: "接続先、ポート、ログ、プロファイルなど、起動時の設定ファイルです。Spring Boot 用です。yml でも properties でも、書き方が異なるだけで同じ意味です。",
   },
   {
     term: "プロファイル",
