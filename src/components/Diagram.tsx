@@ -52,30 +52,22 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "template-rendered": TemplateRendered,
 };
 
-function Node({ kicker, title, sub }: { kicker: string; title: string; sub?: string }) {
-  return (
-    <div className="d-node">
-      <span>{kicker}</span>
-      <strong>{title}</strong>
-      {sub ? <small>{sub}</small> : null}
-    </div>
-  );
-}
-
 function IconNode({
   icon,
   kicker,
   title,
   sub,
+  size = 20,
 }: {
   icon: IconName;
   kicker: string;
   title: string;
   sub?: string;
+  size?: number;
 }) {
   return (
     <div className="d-node has-icon">
-      <Icon name={icon} size={20} className="d-node-icon" />
+      <Icon name={icon} size={size} className="d-node-icon" />
       <span>{kicker}</span>
       <strong>{title}</strong>
       {sub ? <small>{sub}</small> : null}
@@ -113,43 +105,12 @@ function Arrow({ label, down, reverse }: { label: string; down?: boolean; revers
   );
 }
 
-function PhotoNode({
-  src,
-  alt,
-  kicker,
-  title,
-  sub,
-}: {
-  src: string;
-  alt: string;
-  kicker: string;
-  title: string;
-  sub?: string;
-}) {
-  return (
-    <div className="d-photo-node">
-      <img src={src} alt={alt} />
-      <Node kicker={kicker} title={title} sub={sub} />
-    </div>
-  );
-}
-
-function PhotoCard({ src, alt, title, children }: { src: string; alt: string; title: string; children: string }) {
-  return (
-    <div className="d-col d-photo-card">
-      <img src={src} alt={alt} />
-      <h4>{title}</h4>
-      <p>{children}</p>
-    </div>
-  );
-}
-
 function FrontBack() {
   return (
     <div className="d-row wrap">
       <IconNode icon="browser" kicker="FRONT" title="フロントエンド" sub="ブラウザ・画面" />
       <Arrow label="HTTP" />
-      <IconNode icon="inbox" kicker="BACK" title="バックエンド" sub="Java・SQL を投げる" />
+      <IconNode icon="code" kicker="BACK" title="バックエンド" sub="Java・SQL を投げる" />
       <Arrow label="SQL" />
       <IconNode icon="database" kicker="DATA" title="DB" sub="データを保存する" />
     </div>
@@ -159,12 +120,12 @@ function FrontBack() {
 function DebugTwo() {
   return (
     <div className="d-cols">
-      <PhotoCard src="/images/client-laptop.jpg" alt="ノートPC" title="フロントエンド">
+      <ColCard icon="browser" title="フロントエンド">
         ブラウザの開発者ツール。JS のブレークポイント、Console、いまの HTML
-      </PhotoCard>
-      <PhotoCard src="/images/code-screen.jpg" alt="ソースを開いたエディタ" title="バックエンド">
+      </ColCard>
+      <ColCard icon="code" title="バックエンド">
         IDE のデバッガ。Java のブレークポイントと変数
-      </PhotoCard>
+      </ColCard>
     </div>
   );
 }
@@ -172,12 +133,12 @@ function DebugTwo() {
 function HttpRoundtrip() {
   return (
     <div className="d-split">
-      <PhotoNode src="/images/client-laptop.jpg" alt="ノートPCで作業している机" kicker="CLIENT" title="ブラウザ" sub="画面・Network タブ" />
+      <IconNode icon="browser" kicker="CLIENT" title="ブラウザ" sub="画面・Network タブ" size={28} />
       <div className="d-arrows">
         <Arrow label="リクエスト" />
         <Arrow reverse label="レスポンス" />
       </div>
-      <PhotoNode src="/images/server-racks.jpg" alt="サーバ室のラック" kicker="SERVER" title="サーバ" sub="リクエストを受け、応答を返す" />
+      <IconNode icon="server" kicker="SERVER" title="サーバ" sub="リクエストを受け、応答を返す" size={28} />
     </div>
   );
 }
@@ -272,11 +233,11 @@ function RequestParams() {
 function SessionCookie() {
   return (
     <div className="d-split">
-      <PhotoNode src="/images/keys.jpg" alt="鍵のかかった南京錠" kicker="BROWSER" title="Cookie" sub="鍵だけ持つ" />
+      <IconNode icon="key" kicker="BROWSER" title="Cookie" sub="キーだけ持つ" size={28} />
       <div className="d-arrows">
         <Arrow label="ID だけ往復する" />
       </div>
-      <PhotoNode src="/images/server-racks.jpg" alt="サーバ室のラック" kicker="SERVER" title="セッション" sub="中身はこちら" />
+      <IconNode icon="box" kicker="SERVER" title="セッション" sub="中身はこちら" size={28} />
     </div>
   );
 }
@@ -538,15 +499,15 @@ function CauseSides() {
 function Divide() {
   return (
     <div className="d-cols">
-      <PhotoCard src="/images/client-laptop.jpg" alt="ノートPC" title="ブラウザ">
+      <ColCard icon="browser" title="ブラウザ">
         Network タブにリクエストが無いか
-      </PhotoCard>
-      <PhotoCard src="/images/server-racks.jpg" alt="アプリが動くサーバ" title="アプリ">
+      </ColCard>
+      <ColCard icon="server" title="アプリ">
         ログに到達しているか。エラーログを確認する
-      </PhotoCard>
-      <PhotoCard src="/images/storage-racks.jpg" alt="データを置くディスク" title="DB / 外部">
+      </ColCard>
+      <ColCard icon="database" title="DB / 外部">
         SQL、接続、ロック、権限
-      </PhotoCard>
+      </ColCard>
     </div>
   );
 }
@@ -662,12 +623,12 @@ function EnvDiff() {
       <Layer icon="file">同じコード</Layer>
       <Arrow down label="環境が違う" />
       <div className="d-cols">
-        <PhotoCard src="/images/home-desk.jpg" alt="入力している机" title="ローカル環境">
+        <ColCard icon="terminal" title="ローカル環境">
           dev プロファイル、ローカル環境の DB
-        </PhotoCard>
-        <PhotoCard src="/images/server-racks.jpg" alt="検証用環境や本番のサーバ" title="検証用環境 / 本番">
+        </ColCard>
+        <ColCard icon="server" title="検証用環境 / 本番">
           設定、データ、権限、プロキシ
-        </PhotoCard>
+        </ColCard>
       </div>
     </div>
   );

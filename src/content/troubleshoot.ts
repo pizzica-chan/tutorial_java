@@ -647,13 +647,7 @@ ORDER BY r.created_at DESC
         { type: "diagram", name: "stack-line", caption: "右端の括弧が、ソースのファイルと行です。" },
         {
           type: "p",
-          text: "RequestService.java:47 なら、プロジェクト内の RequestService.java の 47 行目です。この教材の申請くんのスタック例は、実ファイルの行番号と一致しています。Unknown Source とだけある行は、ソースが無いので飛ばしましょう。",
-        },
-        {
-          type: "figure",
-          src: "/images/code-screen.jpg",
-          alt: "エディタにソースと行番号が出ている画面",
-          caption: "ログの :47 は、エディタ左端の行番号と同じものです。",
+          text: "RequestService.java:47 なら、プロジェクト内の RequestService.java の 47 行目です。ログの :47 は、エディタ左端の行番号と同じものです。この教材の申請くんのスタック例は、実ファイルの行番号と一致しています。Unknown Source とだけある行は、ソースが無いので飛ばしましょう。",
         },
         {
           type: "h2",

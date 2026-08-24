@@ -282,7 +282,7 @@ export const webTrack: Track = {
           type: "p",
           text: "HTTP は、前のリクエストを覚えていません。たとえば、ログイン済みかどうかも次のリクエストには引き継がれません。サーバはセッションを作り、その ID を Cookie としてブラウザに渡します。",
         },
-        { type: "diagram", name: "session", caption: "ブラウザが持つのは鍵だけ。中身はサーバ側です。" },
+        { type: "diagram", name: "session", caption: "ブラウザが持つのはキーだけ。中身はサーバ側です。" },
         {
           type: "h2",
           text: "申請くんの例",

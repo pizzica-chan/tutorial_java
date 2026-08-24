@@ -12,7 +12,7 @@ export const requestFlow: FlowStep[] = [
     layer: "Browser",
     title: "一覧を開く",
     detail:
-      "利用者が /shinsei/requests にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引く鍵になります。",
+      "利用者が /shinsei/requests にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引くキーになります。",
     code: `GET /shinsei/requests HTTP/1.1
 Host: intranet.example.co.jp
 Cookie: JSESSIONID=AB12CD34
