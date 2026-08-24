@@ -373,11 +373,10 @@ public class MailService {
   {
     path: "src/main/resources/templates/request/detail.html",
     note: "申請詳細の画面テンプレート",
-    why: "list.html と同じく、表示する項目と承認ボタンの条件は HTML 側にあります。Controller が return \"request/detail\" と返すと、このファイルが使われます。",
-    code: `<h1 th:text="\${application.title}">交通費申請</h1>
-<p>ステータス: <span th:text="\${application.status}">PENDING</span></p>
-<form th:if="\${application.status == 'PENDING'}"
-      th:action="@{/requests/{id}/approve(id=\${application.id})}"
+    why: "表示する項目やフォームの送信先は HTML 側にあります。申請くんの詳細はシナリオでサーバ側の判定を確認できるよう、ステータスにかかわらず承認ボタンを表示します。通常の画面では th:if で表示を制限する実装もあります。",
+    code: `<h1 th:text="\${requestItem.title}">交通費申請</h1>
+<p>ステータス: <span th:text="\${requestItem.status}">PENDING</span></p>
+<form th:action="@{/requests/{id}/approve(id=\${requestItem.id})}"
       method="post">
   <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
   <button type="submit">承認</button>

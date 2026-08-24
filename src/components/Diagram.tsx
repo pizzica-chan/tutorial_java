@@ -272,7 +272,7 @@ function RequestParams() {
 function SessionCookie() {
   return (
     <div className="d-split">
-      <PhotoNode src="/images/keys.jpg" alt="鍵のかかった南京錠" kicker="BROWSER" title="Cookie" sub="鍵だけ持つ" />
+      <PhotoNode src="/images/keys.jpg" alt="鍵のかかった南京錠" kicker="BROWSER" title="Cookie" sub="キーだけ持つ" />
       <div className="d-arrows">
         <Arrow label="ID だけ往復する" />
       </div>
@@ -432,7 +432,7 @@ function StackLine() {
           <em>メソッド</em>
         </span>
         <span className="url-part query">
-          (RequestService.java:41)
+          (RequestService.java:47)
           <em>ソースのファイルと行</em>
         </span>
       </div>
@@ -460,7 +460,7 @@ const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: stri
   },
   {
     kind: "hit",
-    text: "    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:41)",
+    text: "    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)",
     note: "このファイルの 41 行目を最初に調べる",
   },
   {
@@ -478,7 +478,7 @@ const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: stri
   },
   {
     kind: "own",
-    text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:58)",
+    text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)",
     note: "呼び出し元。このファイルの 58 行目",
   },
   {
@@ -757,11 +757,11 @@ function LogLine() {
           <em>レベル</em>
         </span>
         <span className="url-part res">
-          RequestService
+          dispatcherServlet
           <em>どのクラスか</em>
         </span>
         <span className="url-part query">
-          approve failed requestId=12
+          Servlet.service() threw exception
           <em>メッセージ</em>
         </span>
       </div>

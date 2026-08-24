@@ -7,7 +7,7 @@ export const readingTrack: Track = {
   no: "04",
   title: "ソースの読み方",
   kicker: "READING",
-  description: "通読せず、手がかりから処理の入口と呼び出しを追います。",
+  description: "画面と URL を手がかりに、サーバ側の処理の入口を特定します。",
   accent: "#6ec8c0",
   lessons: [
     {
@@ -68,7 +68,7 @@ export const readingTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "リポジトリを上から読む必要はありません。操作が特定できているときは、処理の入口だけを開き、そこから下へ降りましょう。手がかりの選び方は前のレッスンです。",
+          text: "リポジトリを上から読む必要はありません。操作が特定できているときは、画面と URL から処理の入口を探しましょう。手がかりの選び方は前のレッスンです。",
         },
         {
           type: "p",
@@ -83,8 +83,8 @@ export const readingTrack: Track = {
           items: [
             "対象の URL を確認する（画面ならアドレスバー、Web API なら Network タブの XHR / fetch）",
             "パス文字列（requests など）でソースを検索する",
-            "ヒットした Controller の Java メソッドが処理の入口。ここから Service、SQL へ降りる",
-            "ボタンやリンクの行き先が URL と一致するか、テンプレートや JS で突き合わせる",
+            "ヒットした Controller で、HTTP メソッドとパスが対象の操作に合うか確認する",
+            "一致した Java メソッドを、処理の入口として特定する",
           ],
         },
         {
@@ -94,6 +94,13 @@ export const readingTrack: Track = {
         {
           type: "p",
           text: "申請一覧を開くと GET /shinsei/requests が飛びます。処理の入口は RequestController の list です。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-list.jpg",
+          alt: "申請くんの申請一覧画面",
+          caption: "申請一覧のアドレスバーは /shinsei/requests です。この URL を手がかりにします。",
         },
         {
           type: "table",
@@ -109,6 +116,10 @@ export const readingTrack: Track = {
           title: "RequestController.java（抜粋）",
           lang: "java",
           code: requestListEntryPointReadingSnippet,
+        },
+        {
+          type: "p",
+          text: "ここでは入口の特定までです。次の項目「読む順番」で、入口からどこを見るかを押さえます。そのあと、次章「リクエストの追跡」で、この list から Service、SQL、応答へ進みます。",
         },
         {
           type: "h2",
@@ -439,7 +450,16 @@ public class RequestController {
   private final RequestService requestService;
 
   @PostMapping("/{id}/approve")
-  public String approve(@PathVariable Long id, @AuthenticationPrincipal LoginUser user) {
+  public String approve(
+      @PathVariable Long id,
+      @AuthenticationPrincipal LoginUser user,
+      RedirectAttributes redirectAttributes) {
+    var request = requestService.findById(id, user.getId());
+    if (!"PENDING".equals(request.getStatus())) {
+      redirectAttributes.addFlashAttribute(
+          "errorMessage", "この申請は承認できません");
+      return "redirect:/requests/" + id;
+    }
     // → この approve にカーソルを置いて定義へジャンプすると、RequestService.approve へ着く
     requestService.approve(id, user.getId());
     return "redirect:/requests";
@@ -564,7 +584,7 @@ requestService.approve(id, user.getId());`,
           type: "callout",
           kind: "trap",
           title: "アノテーションを読み飛ばす",
-          text: "アノテーションが付いていると、メソッド本体に書いていない処理が動くことがあります。@Transactional ならトランザクション、@PreAuthorize なら権限の確認、が例です。知らないアノテーションは飛ばさず、用語や検索で確認しましょう。",
+          text: "アノテーションが付いていると、Java メソッド本体に書いていない処理が動くことがあります。@Transactional のトランザクションや、@PreAuthorize の権限確認が例です。知らないアノテーションは飛ばさず、用語や検索で確認しましょう。",
         },
         {
           type: "p",
@@ -640,7 +660,18 @@ request.getApproverId().equals(userId); // NPE`,
         },
         {
           type: "p",
-          text: "ソースを読むと、「PENDING 以外は承認できない」という分岐は分かります。今の申請 ID 12 の status が何かは、その行で止めて見ましょう。",
+          text: "申請くんには「PENDING 以外は承認できない」という分岐があります。山田でログインし、申請 ID 11「備品購入」の詳細から承認を送信します。findById の直後にある if で止めると、status が APPROVED だと確認できます。",
+        },
+        {
+          type: "code",
+          title: "RequestController.java（申請くん）",
+          lang: "java",
+          code: `var request = requestService.findById(id, user.getId());
+if (!"PENDING".equals(request.getStatus())) {
+  redirectAttributes.addFlashAttribute(
+      "errorMessage", "この申請は承認できません");
+  return "redirect:/requests/" + id;
+}`,
         },
         {
           type: "h2",

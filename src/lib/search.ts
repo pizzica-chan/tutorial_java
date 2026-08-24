@@ -54,8 +54,9 @@ function blockText(block: Block): string {
       return [quiz.question, ...quiz.choices, quiz.explanation].join("\n");
     }
     case "diagram":
-    case "figure":
       return block.caption ?? "";
+    case "figure":
+      return [block.alt, block.caption].filter(Boolean).join("\n");
     case "table":
       return [block.headers.join(" "), ...block.rows.map((row) => row.join(" "))].join("\n");
     case "steps":

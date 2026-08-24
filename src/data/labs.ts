@@ -12,7 +12,7 @@ export const requestFlow: FlowStep[] = [
     layer: "Browser",
     title: "一覧を開く",
     detail:
-      "利用者が /shinsei/requests にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引く鍵になります。",
+      "利用者が /shinsei/requests にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引くキーになります。",
     code: `GET /shinsei/requests HTTP/1.1
 Host: intranet.example.co.jp
 Cookie: JSESSIONID=AB12CD34
@@ -114,17 +114,17 @@ export const stackCases: StackCase[] = [
   {
     id: "npe",
     title: "承認ボタンでステータスコード 500",
-    symptom: "申請詳細の「承認」を押すと画面がエラーになる。自分の申請では起きず、代理承認で起きる。",
+    symptom: "山田で申請 ID 16「承認者未設定」の詳細を開き、「承認」を押すと画面がエラーになる。",
     lines: [
       {
         kind: "exception",
         text: 'java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because the return value of "RequestEntity.getApproverId()" is null',
-        note: "例外の型とメッセージが本体です。approverId が null の申請で equals している、と読めます。",
+        note: "例外の型とメッセージが本体です。getApproverId() の戻り値が null で、その null に equals を呼んだと読めます。",
       },
       {
         kind: "app",
-        text: "    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:41)",
-        note: "自分たちが書いたコードのパッケージ名で始まり、.java がある、上から最初の行。このファイルの 41 行目を最初に調べます。",
+        text: "    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)",
+        note: "自分たちが書いたコードのパッケージ名で始まり、.java がある、上から最初の行。実ファイルの 47 行目を最初に調べます。",
       },
       {
         kind: "framework",
@@ -138,7 +138,7 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "app",
-        text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:58)",
+        text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)",
         note: "その下の自作クラスは呼び出し元。画面のどの操作から来たか（POST /requests/{id}/approve）を特定できます。",
       },
       {
@@ -190,12 +190,12 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "app",
-        text: "    at jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:22)",
+        text: "    at jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:20)",
         note: "呼び出し元の Service。SQL の中身は Mapper の XML（findMine）にあります。",
       },
       {
         kind: "app",
-        text: "    at jp.co.example.shinsei.controller.RequestController.list(RequestController.java:31)",
+        text: "    at jp.co.example.shinsei.controller.RequestController.list(RequestController.java:27)",
         note: "画面の処理の入口。一覧を開いた操作から来ている、と確認できます。",
       },
       {
@@ -250,11 +250,11 @@ Content-Type: text/html;charset=UTF-8
   notes: [
     {
       label: "GET",
-      text: "一覧を開く取得です。ブラウザのアドレスバーやリンクから飛ぶときも、だいたい GET です。",
+      text: "GET は、サーバからデータを取る操作です。申請一覧を開くときも GET です。",
     },
     {
       label: "Cookie",
-      text: "ログイン状態はサーバのセッションにあり、ブラウザはその鍵（JSESSIONID）を持っています。",
+      text: "リクエストに Cookie を載せることで、サーバは JSESSIONID をもとに、どのセッションのログイン情報を取り出せばよいか判断できます。",
     },
     {
       label: "200",
@@ -262,7 +262,7 @@ Content-Type: text/html;charset=UTF-8
     },
     {
       label: "Content-Type",
-      text: "text/html なら画面用の HTML です。application/json ならデータで、Web API の応答に多いです。",
+      text: "Content-Type は、レスポンス本文の種類を表すヘッダです。text/html なら画面用の HTML です。application/json ならデータで、Web API の応答に多いです。",
     },
   ],
 };

@@ -12,7 +12,7 @@ export function LabPage() {
       <p className="kicker">LAB</p>
       <h1 className="serif page-title">ラボ</h1>
       <p className="lede">
-        <TextWithTerms text="通読とは独立して使えます。HTTP、ソース、リクエストの区間、スタックトレースを、本文に近い順で確認できます。" />
+        <TextWithTerms text="ラボはいつでも利用できます。通読後の復習にも使えます。HTTP、ソース、リクエストの区間、スタックトレースを、本文に近い順で確認できます。" />
       </p>
 
       <h2 className="serif">1. HTTP</h2>
@@ -33,15 +33,15 @@ export function LabPage() {
 
       <h2 className="serif">4. スタックトレース</h2>
       <p>
-        <TextWithTerms text="at 行の右端が、ソースの位置です。RequestService.java:41 なら、そのファイルの 41 行目を見ましょう。教材の抜粋では行を省略しているので、数字は教材上の位置です。" />
+        <TextWithTerms text="at 行の右端が、ソースの位置です。RequestService.java:47 なら、そのファイルの 47 行目を見ましょう。この教材の申請くんのスタック例は、実ファイルの行番号と一致しています。" />
       </p>
       <p>
         <TextWithTerms text="org.springframework や java. で始まる行は、自分たちが書いたコードではありません。申請くんなら、パッケージ名 jp.co.example.shinsei で始まる行を、上から最初に見つけたところから調べましょう。" />
       </p>
       <StackLab />
 
-      <h2 className="serif">5. 確認</h2>
-      <p>各章で出題済みの確認問題です。</p>
+      <h2 className="serif">5. 総合確認</h2>
+      <p>入口の次に追うもの、スタックトレース、ログ、Java アプリの層をまとめて確認します。</p>
       <QuizBlock id="trace-start" />
       <QuizBlock id="ts-npe" />
       <QuizBlock id="ts-own-class" />

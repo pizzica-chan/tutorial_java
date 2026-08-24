@@ -24,7 +24,7 @@
           <a th:href="@{/requests/{id}(id=${item.id})}" th:text="${item.title}">交通費申請</a>
         </td>
         <td th:text="${item.applicantName}">山田太郎</td>
-        <td th:text="${item.approverName}">佐藤花子</td>
+        <td th:text="${item.approverName != null ? item.approverName : '未設定'}">佐藤花子</td>
         <td>
           <span class="status" th:classappend="${item.status == 'PENDING'} ? ' is-pending' : ' is-approved'" th:text="${item.status}">PENDING</span>
         </td>

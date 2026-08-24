@@ -26,7 +26,7 @@ export const webTrack: Track = {
           items: [
             "アドレスバーに URL を入力して Enter を押したとき",
             "ページ上のリンク（ハイパーリンク）をクリックしたとき",
-            "再読み込みや戻る／進むをしたとき",
+            "更新、戻る、進むのボタンを押したとき",
             "フォームの送信ボタンを押したとき（ログイン、検索、登録など）",
             "HTML を受け取ったあと、ブラウザが CSS・画像・JS を取りに行くとき",
           ],
@@ -46,45 +46,32 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "申請一覧を開いた瞬間です。ブラウザは GET /shinsei/requests を送り、返ってきた HTML が画面になります。",
+          text: "申請一覧を開いた瞬間です。ブラウザは /shinsei/requests へ GET リクエストを送り、レスポンスとして返ってきた HTML が画面になります。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-list.jpg",
           alt: "申請くんの申請一覧画面",
-          caption: "申請一覧。ブラウザは GET /shinsei/requests を送り、この HTML が返ります。",
-        },
-        {
-          type: "figure",
-          kind: "screen",
-          src: "/images/screen-network-list.jpg",
-          alt: "申請一覧を開いたときの Network タブ",
-          caption: "同じ操作の Network タブ。HTML（requests）も CSS も JS も 200 です。行は1つではありません。",
+          caption: "申請一覧。ブラウザは /shinsei/requests へ GET リクエストを送り、この HTML がレスポンスとして返ります。",
         },
         { type: "widget", name: "http" },
-        {
-          type: "callout",
-          kind: "tip",
-          title: "Network タブ",
-          text: "不具合のときは、該当リクエストのステータスコードと応答本文を先に確認しましょう。Java のコードを見るのはそのあとです。",
-        },
         {
           type: "h2",
           text: "画面を開くと、リクエストは複数",
         },
         {
           type: "p",
-          text: "画面を開くと、HTML 以外に CSS、JS、画像のリクエストも飛びます。HTML の行が 500 なら、エラー画面や真っ白な画面になります。CSS の行が 404 なら、画面のレイアウトが崩れます。",
+          text: "ブラウザは、まず画面の HTML を取ります。HTML の中には、CSS や JS、画像などの URL が書いてあります。ブラウザはそれを見て、それぞれ別のリクエストを送ります。Network タブでは、HTML のあとにそれらの行が並びます。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-rows.jpg",
           alt: "申請一覧を開いた Network。HTML、CSS、JS が別の行",
-          caption: "申請一覧を開いた Network。HTML（requests）のあとに CSS と JS が別の行です。どれも 200 です。",
+          caption: "申請一覧を開いた Network タブ。HTML（requests）のあとに、CSS と JS が別の行として並びます。",
         },
-        { type: "diagram", name: "page-assets", caption: "画面を開いたとき、Network タブには複数行が出ます。" },
+        { type: "diagram", name: "page-assets" },
         {
           type: "h2",
           text: "HTML と JSON",
@@ -92,26 +79,8 @@ export const webTrack: Track = {
         { type: "diagram", name: "html-json", caption: "同じ HTTP の往復。違うのは本文の形です。" },
         {
           type: "p",
-          text: "HTML はブラウザが画面にする応答です。JSON はデータの形式で、画面の JS や他システムが読みます。JSON を返す HTTP の窓口は Web API と呼ばれることが多いです。",
+          text: "HTML は、ブラウザが画面として表示するためのデータ形式です。JSON は、画面の JavaScript や他のシステムが読み取るためのデータ形式です。JSON を返す URL は、Web API と呼ばれることが多いです。",
         },
-        {
-          type: "h2",
-          text: "往復の読み方",
-        },
-        {
-          type: "p",
-          text: "Network タブで行を選ぶと、次のものが見えます。意味の分解は、このあとのレッスンで行います。",
-        },
-        {
-          type: "ul",
-          items: [
-            "宛先は URL、操作の種類は HTTP メソッド（GET / POST など）",
-            "付加情報はヘッダ（Cookie、Content-Type など）",
-            "成否の概略は HTTPステータスコード（200、404、500 など）",
-            "本文は HTML、JSON、ファイルなど",
-          ],
-        },
-        { type: "quiz", id: "web-roundtrip" },
       ],
     },
     {
@@ -166,7 +135,7 @@ export const webTrack: Track = {
         { type: "diagram", name: "get-post" },
         {
           type: "h2",
-          text: "HTTPステータスコード",
+          text: "HTTP ステータスコード",
         },
         { type: "diagram", name: "status-codes" },
         {
@@ -313,7 +282,7 @@ export const webTrack: Track = {
           type: "p",
           text: "HTTP は、前のリクエストを覚えていません。たとえば、ログイン済みかどうかも次のリクエストには引き継がれません。サーバはセッションを作り、その ID を Cookie としてブラウザに渡します。",
         },
-        { type: "diagram", name: "session", caption: "ブラウザが持つのは鍵だけ。中身はサーバ側です。" },
+        { type: "diagram", name: "session", caption: "ブラウザが持つのはキーだけ。中身はサーバ側です。" },
         {
           type: "h2",
           text: "申請くんの例",

@@ -72,25 +72,11 @@ Start-Sleep -Milliseconds 200
 
 if ($SelectNetwork) {
   $clickX = [int]($rect.Left + ($w * 0.82))
-  $clickY = [int]($rect.Top + ($h * 0.55))
+  $clickY = [int]($rect.Top + 102)
   [WinShot]::SetCursorPos($clickX, $clickY) | Out-Null
   [WinShot]::mouse_event(2, 0, 0, 0, 0)
   [WinShot]::mouse_event(4, 0, 0, 0, 0)
-  Start-Sleep -Milliseconds 250
-  [System.Windows.Forms.SendKeys]::SendWait("^+p")
   Start-Sleep -Milliseconds 500
-  [System.Windows.Forms.SendKeys]::SendWait("Show Network")
-  Start-Sleep -Milliseconds 400
-  [System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
-  Start-Sleep -Milliseconds 300
-  [System.Windows.Forms.SendKeys]::SendWait("{ESC}")
-  Start-Sleep -Milliseconds 250
-  $bannerX = [int]($rect.Left + ($w * 0.66))
-  $bannerY = [int]($rect.Top + 112)
-  [WinShot]::SetCursorPos($bannerX, $bannerY) | Out-Null
-  [WinShot]::mouse_event(2, 0, 0, 0, 0)
-  [WinShot]::mouse_event(4, 0, 0, 0, 0)
-  Start-Sleep -Milliseconds 300
 }
 
 $bmp = New-Object System.Drawing.Bitmap $w, $h

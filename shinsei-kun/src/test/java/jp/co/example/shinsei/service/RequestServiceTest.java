@@ -9,6 +9,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -34,5 +36,19 @@ class RequestServiceTest {
     assertEquals("APPROVED", request.getStatus());
     verify(requestMapper).update(request);
     verify(mailService).notifyApplicant(request);
+  }
+
+  @Test
+  void approve_throwsNullPointerExceptionWhenApproverIsMissing() {
+    RequestEntity request = new RequestEntity();
+    request.setId(16L);
+    request.setApproverId(null);
+    request.setStatus("PENDING");
+    when(requestMapper.findById(16L, 7L)).thenReturn(request);
+
+    assertThrows(NullPointerException.class, () -> requestService.approve(16L, 7L));
+
+    verify(requestMapper, never()).update(request);
+    verify(mailService, never()).notifyApplicant(request);
   }
 }

@@ -164,6 +164,38 @@ pre {
   font-size: 12px;
 }
 
+.nav-group-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nav-group-head .nav-link {
+  min-width: 0;
+  flex: 1;
+}
+
+.nav-group-toggle {
+  display: inline-flex;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 8px;
+  color: var(--muted);
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.nav-group-toggle:hover,
+.nav-group-toggle:focus-visible {
+  color: var(--paper);
+  background: rgba(232, 165, 75, 0.08);
+}
+
 .nav-lessons {
   display: flex;
   flex-direction: column;
@@ -482,6 +514,26 @@ h3,
   padding: 14px 16px;
   border: 1px solid var(--line);
   background: rgba(16, 32, 51, 0.55);
+}
+
+.step-list {
+  display: grid;
+  gap: 10px;
+}
+
+.step-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+  background: rgba(16, 32, 51, 0.55);
+}
+
+.step-row > .tag {
+  justify-self: start;
+  width: max-content;
 }
 
 .lesson-lead {

@@ -15,6 +15,7 @@ export function SiteSearch() {
   const showList = show && hits.length > 0;
   const showEmpty = show && hits.length === 0;
   const activeId = showList && hits[active] ? `${listId}-opt-${active}` : undefined;
+  const statusId = `${listId}-status`;
 
   useEffect(() => {
     setActive(0);
@@ -96,7 +97,7 @@ export function SiteSearch() {
           ))}
         </ul>
       ) : showEmpty ? (
-        <p className="search-results search-empty" id={listId} role="status" aria-live="polite">
+        <p className="search-results search-empty" id={statusId} role="status" aria-live="polite">
           一致する項目はありません
         </p>
       ) : null}

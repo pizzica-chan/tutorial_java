@@ -1,5 +1,4 @@
 import type { Track } from "../types";
-import { requestListEntryPointSnippet } from "../data/entryPoint";
 
 export const traceTrack: Track = {
   id: "trace",
@@ -16,35 +15,17 @@ export const traceTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "処理の入口の探し方は「ソースの読み方」です。この章では、入口から SQL と応答まで、一本の線の区間を追います。",
+          text: "前章「ソースの読み方」の「処理の入口から読む」では、申請一覧の入口を RequestController.list と特定しました。この章では、その入口から Service、SQL、応答へ進みます。入口の探し方を見直す場合は、前章のその項目へ戻りましょう。",
         },
         {
           type: "p",
-          text: "画面遷移しない操作は、アドレスバーではなく Network タブの XHR / fetch を見ましょう。",
-        },
-        { type: "diagram", name: "read-entry", caption: "画面の URL から Controller へ降り、Service、SQL、テンプレートまで。" },
-        {
-          type: "figure",
-          kind: "screen",
-          src: "/images/screen-list.jpg",
-          alt: "申請くんの申請一覧画面",
-          caption: "申請一覧を開く処理を、入口から先へ追います。アドレスバーは /shinsei/requests です。",
-        },
-        {
-          type: "p",
-          text: "申請くんなら、GET /shinsei/requests の入口は RequestController の list です。ここから Service、SQL、テンプレートへ降ります。",
-        },
-        {
-          type: "code",
-          title: "RequestController.java（抜粋）",
-          lang: "java",
-          code: requestListEntryPointSnippet,
+          text: "list が呼ぶ Service を開き、Mapper の SQL と、最後に返す HTML までを一本につなぎます。JSON を返す Web API でも、応答まで追う考え方は同じです。",
         },
         {
           type: "callout",
           kind: "tip",
           title: "コンテキストパス",
-          text: "画面は /shinsei/requests でも、Controller は Spring の @RequestMapping(\"/requests\") だけのことがあります。検索語は requests や approve のように特徴的な部分にしましょう。",
+          text: "前章で見た画面の URL は /shinsei/requests です。先頭の /shinsei はコンテキストパスなので、Controller は Spring の @RequestMapping(\"/requests\") だけのことがあります。入口を見直すときは、requests のように特徴的な部分で検索しましょう。",
         },
         { type: "quiz", id: "trace-start" },
       ],
@@ -125,7 +106,7 @@ public class RequestApiController {
       blocks: [
         {
           type: "p",
-          text: "Controller の次に、ビジネスロジックのメソッドを見ましょう。次の印を追いましょう。",
+          text: "Controller の次に、ビジネスロジックを扱う Java メソッドを見ましょう。次の箇条書きにある処理を探します。",
         },
         {
           type: "ul",

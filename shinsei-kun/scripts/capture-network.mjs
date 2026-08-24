@@ -1,6 +1,6 @@
 // 教材用 Network タブ（headed Chrome）。方針は .cursor/rules/textbook-screenshots.mdc
 import { execFileSync } from "node:child_process";
-import { mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
+import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
@@ -12,11 +12,6 @@ const chrome = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const base = "http://localhost:8080/shinsei";
 const profile = join(tmpdir(), "shinsei-capture-profile");
 const ps1 = join(root, "shinsei-kun", "scripts", "window-shot.ps1");
-const error500 = readFileSync(
-  join(root, "shinsei-kun", "src", "main", "resources", "static", "demo", "error-500.html"),
-  "utf8",
-).replace("../css/app.css", "/shinsei/css/app.css");
-
 mkdirSync(outDir, { recursive: true });
 rmSync(profile, { recursive: true, force: true });
 mkdirSync(join(profile, "Default"), { recursive: true });
@@ -115,8 +110,7 @@ await page.keyboard.press("Escape").catch(() => {});
 await sleep(400);
 await page.goto(`${base}/requests`, { waitUntil: "networkidle0" });
 await sleep(800);
-shotWindow("screen-network-list.jpg", true);
-shotWindow("screen-network-list.jpg");
+shotWindow("screen-network-rows.jpg", true);
 
 await page.setRequestInterception(true);
 const onCss404 = (req) => {
@@ -129,7 +123,7 @@ const onCss404 = (req) => {
 page.on("request", onCss404);
 await page.reload({ waitUntil: "networkidle0" });
 await sleep(700);
-shotWindow("screen-network-css-404.jpg");
+shotWindow("screen-network-css-404.jpg", true);
 await stopIntercept(page, onCss404);
 
 async function blockApproveWithFlash() {
@@ -162,13 +156,13 @@ async function blockApproveWithFlash() {
 await page.reload({ waitUntil: "networkidle0" });
 await page.click(".btn-approve");
 await sleep(800);
-shotWindow("screen-network-no-post.jpg");
+shotWindow("screen-network-no-post.jpg", true);
 
 await page.reload({ waitUntil: "networkidle0" });
 await blockApproveWithFlash();
 await page.click(".btn-approve");
 await sleep(800);
-shotWindow("screen-network-js-error.jpg");
+shotWindow("screen-network-js-error.jpg", true);
 
 await page.goto(`${base}/requests/12`, { waitUntil: "networkidle0" });
 await page.evaluate(() => {
@@ -179,34 +173,18 @@ await Promise.allSettled([
   page.click(".btn-approve"),
 ]);
 await sleep(800);
-shotWindow("screen-network-403.jpg");
+shotWindow("screen-network-403.jpg", true);
 
-await page.goto(`${base}/requests/12`, { waitUntil: "networkidle0" });
+await page.goto(`${base}/requests/16`, { waitUntil: "networkidle0" });
 await page.evaluate(() => {
   window.confirm = () => true;
 });
-await page.setRequestInterception(true);
-const on500 = (req) => {
-  if (req.method() === "POST" && req.url().includes("/approve")) {
-    req
-      .respond({
-        status: 500,
-        contentType: "text/html; charset=UTF-8",
-        body: error500,
-      })
-      .catch(() => {});
-    return;
-  }
-  req.continue().catch(() => {});
-};
-page.on("request", on500);
 await Promise.allSettled([
   page.waitForNavigation({ waitUntil: "networkidle0", timeout: 8000 }),
   page.click(".btn-approve"),
 ]);
 await sleep(800);
-shotWindow("screen-network-500.jpg");
-await stopIntercept(page, on500);
+shotWindow("screen-network-500.jpg", true);
 
 await page.goto(`${base}/requests`, { waitUntil: "networkidle0" });
 await page.setRequestInterception(true);
@@ -221,7 +199,7 @@ const onHang = (req) => {
 page.on("request", onHang);
 const hungNav = page.reload({ waitUntil: "domcontentloaded", timeout: 2500 }).catch(() => {});
 await sleep(1800);
-shotWindow("screen-network-pending.jpg");
+shotWindow("screen-network-pending.jpg", true);
 page.off("request", onHang);
 if (hung) await hung.abort("timedout").catch(() => {});
 await page.setRequestInterception(false);

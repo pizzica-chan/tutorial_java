@@ -135,7 +135,7 @@ export const scenarioTrack: Track = {
           kind: "screen",
           src: "/images/screen-network-500.jpg",
           alt: "承認 POST が 500 の Network タブ",
-          caption: "例：POST /shinsei/requests/12/approve が 500。画面の文言より先に、このステータスコードを確認しましょう。",
+          caption: "POST /shinsei/requests/16/approve が 500。画面の文言より先に、このステータスコードを確認しましょう。",
         },
         {
           type: "h2",
@@ -144,8 +144,8 @@ export const scenarioTrack: Track = {
         {
           type: "ul",
           items: [
-            "申請 ID 12。検証用環境",
-            "Network タブで POST /shinsei/requests/12/approve が 500",
+            "山田（yamada）でログイン。申請 ID 16「承認者未設定」。検証用環境",
+            "Network タブで POST /shinsei/requests/16/approve が 500",
             "Content-Type は text/html",
           ],
         },
@@ -159,8 +159,32 @@ export const scenarioTrack: Track = {
         },
         { type: "diagram", name: "stack-own", caption: "ログは長い。そのファイルの行番号を最初に調べましょう。" },
         {
+          type: "code",
+          title: "操作時刻のサーバログ（申請くん）",
+          lang: "text",
+          code: `java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null
+    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)
+    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)`,
+        },
+        {
           type: "p",
-          text: "RequestService.java:41 で NullPointerException。approverId が null のオブジェクトに equals していました。",
+          text: "例外メッセージの次にある最初の自作 at 行は RequestService.java:47 です。実ファイルの同じ行を開くと、request.getApproverId().equals(approverId) があります。",
+        },
+        {
+          type: "code",
+          title: "RequestService.java:47（申請くん）",
+          lang: "java",
+          code: `if (!request.getApproverId().equals(approverId)) {
+  throw new ForbiddenException("承認権限がありません");
+}`,
+        },
+        {
+          type: "h2",
+          text: "このシナリオの原因",
+        },
+        {
+          type: "p",
+          text: "ID 16 の申請データでは承認者が未設定です。そのため request.getApproverId() の戻り値が null になり、その null に equals を呼んだことが NullPointerException の原因です。",
         },
         {
           type: "ul",
@@ -198,8 +222,8 @@ export const scenarioTrack: Track = {
         {
           type: "ul",
           items: [
-            "申請 ID 12。検証用環境。ステータスは承認済みに見える",
-            "Network タブで POST /shinsei/requests/12/approve は飛んでいる。500 ではない",
+            "山田（yamada）でログイン。申請 ID 11「備品購入」。検証用環境。ステータスは APPROVED",
+            "Network タブで POST /shinsei/requests/11/approve は飛んでいる。500 ではない",
             "操作時刻のログに ERROR もスタックトレースも無い",
           ],
         },
@@ -218,23 +242,28 @@ export const scenarioTrack: Track = {
             "ヒットがプロパティファイルなら、そのキー（error.cannotApprove など）で参照を辿る",
             "ヒットが Java やテンプレートなら、その if と、誰が呼んでいるかを見る",
             "ソースに無ければ、文言の一部でも再検索する。それでも無ければ DB、外部 API、jar の自作ライブラリを疑う",
-            "申請 ID 12 のステータスなど、分岐の条件になるデータを DB で確認する",
+            "申請 ID 11 のステータスなど、分岐の条件になるデータを DB で確認する",
           ],
         },
         {
           type: "code",
           title: "検索で当たった箇所（申請くん）",
           lang: "java",
-          code: `if (!"PENDING".equals(request.getStatus())) {
+          code: `var request = requestService.findById(id, user.getId());
+if (!"PENDING".equals(request.getStatus())) {
   redirectAttributes.addFlashAttribute(
       "errorMessage", "この申請は承認できません");
   return "redirect:/requests/" + id;
 }
-requestService.approve(id, userId);`,
+requestService.approve(id, user.getId());`,
+        },
+        {
+          type: "h2",
+          text: "このシナリオの原因",
         },
         {
           type: "p",
-          text: "throw していないので、例外ログは出ません。ID 12 は既に APPROVED でした。承認処理の本体には入っていません。",
+          text: "ID 11 は既に APPROVED です。PENDING ではないため Controller の分岐に入り、flash メッセージを設定して詳細へ戻ります。throw しておらず、承認処理の本体にも入らないため、例外ログは出ません。",
         },
         {
           type: "ul",
@@ -489,11 +518,13 @@ requestService.approve(id, userId);`,
           type: "code",
           title: "検索で見つかった分岐の例（申請くん）",
           lang: "java",
-          code: `if (!"PENDING".equals(request.getStatus())) {
+          code: `var request = requestService.findById(id, user.getId());
+if (!"PENDING".equals(request.getStatus())) {
   redirectAttributes.addFlashAttribute(
       "errorMessage", "この申請は承認できません");
   return "redirect:/requests/" + id;
 }
+requestService.approve(id, user.getId());
 // 一覧 Mapper: WHERE status IN ('PENDING', 'APPROVED')`,
         },
         {

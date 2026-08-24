@@ -9,7 +9,7 @@
            v.display_name AS approver_name
     FROM t_request r
     JOIN t_user a ON a.id = r.applicant_id
-    JOIN t_user v ON v.id = r.approver_id
+    LEFT JOIN t_user v ON v.id = r.approver_id
     WHERE r.applicant_id = #{userId}
        OR r.approver_id = #{userId}
     ORDER BY r.created_at DESC
@@ -21,7 +21,7 @@
            v.display_name AS approver_name
     FROM t_request r
     JOIN t_user a ON a.id = r.applicant_id
-    JOIN t_user v ON v.id = r.approver_id
+    LEFT JOIN t_user v ON v.id = r.approver_id
     WHERE r.id = #{id}
       AND (r.applicant_id = #{userId} OR r.approver_id = #{userId})
   </select>

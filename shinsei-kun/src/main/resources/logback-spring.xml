@@ -18,6 +18,9 @@
     </encoder>
   </appender>
 
+  <logger name="jp.co.example.shinsei.aspect.ServiceLoggingAspect" level="DEBUG" />
+  <logger name="jp.co.example.shinsei.mapper" level="DEBUG" />
+
   <root level="INFO">
     <appender-ref ref="CONSOLE" />
     <appender-ref ref="FILE" />

@@ -18,11 +18,19 @@ const widgets: Record<WidgetName, ComponentType> = {
 };
 
 export function Article({ blocks }: { blocks: Block[] }) {
+  const occurrences = new Map<string, number>();
+  const keyedBlocks = blocks.map((block) => {
+    const content = JSON.stringify(block);
+    const occurrence = occurrences.get(content) ?? 0;
+    occurrences.set(content, occurrence + 1);
+    return { block, key: `${content}:${occurrence}` };
+  });
+
   return (
     <TermHighlightScope>
       <div className="article">
-        {blocks.map((block, index) => (
-          <BlockView key={index} block={block} />
+        {keyedBlocks.map(({ block, key }) => (
+          <BlockView key={key} block={block} />
         ))}
       </div>
     </TermHighlightScope>
@@ -135,9 +143,9 @@ function BlockView({ block }: { block: Block }) {
       );
     case "steps":
       return (
-        <div className="lesson-list">
+        <div className="step-list">
           {block.items.map((item, index) => (
-            <div className="lesson-row" key={item.title}>
+            <div className="step-row" key={item.title}>
               <span className="tag">{String(index + 1).padStart(2, "0")}</span>
               <div>
                 <strong>
@@ -147,7 +155,6 @@ function BlockView({ block }: { block: Block }) {
                   <TextWithTerms text={item.text} />
                 </p>
               </div>
-              <span />
             </div>
           ))}
         </div>

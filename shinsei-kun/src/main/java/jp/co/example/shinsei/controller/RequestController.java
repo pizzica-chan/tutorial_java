@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/requests")
@@ -48,14 +49,24 @@ public class RequestController {
   // 処理の入口: GET /shinsei/requests/12
   @GetMapping("/{id}")
   public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("application", requestService.findById(id, user.getId()));
+    model.addAttribute("requestItem", requestService.findById(id, user.getId()));
     model.addAttribute("currentUserId", user.getId());
     return "request/detail";
   }
 
-  // 処理の入口: POST /shinsei/requests/12/approve
+  // 処理の入口: POST /shinsei/requests/{id}/approve
   @PostMapping("/{id}/approve")
-  public String approve(@PathVariable Long id, @AuthenticationPrincipal LoginUser user) {
+  public String approve(
+      @PathVariable Long id,
+      @AuthenticationPrincipal LoginUser user,
+      RedirectAttributes redirectAttributes
+  ) {
+    var request = requestService.findById(id, user.getId());
+    if (!"PENDING".equals(request.getStatus())) {
+      redirectAttributes.addFlashAttribute(
+          "errorMessage", "この申請は承認できません");
+      return "redirect:/requests/" + id;
+    }
     requestService.approve(id, user.getId());
     return "redirect:/requests";
   }

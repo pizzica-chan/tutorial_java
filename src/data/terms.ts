@@ -13,7 +13,7 @@ export const terms: TermDef[] = [
   {
     term: "HTTP",
     aliases: ["HTTP"],
-    body: "ブラウザとサーバがデータをやり取りする約束事。1回の会話はリクエストとレスポンスで完結します。",
+    body: "ブラウザとサーバがデータをやり取りする約束事。1 回の会話はリクエストとレスポンスで完結します。",
   },
   {
     term: "HTTPS",
@@ -26,7 +26,7 @@ export const terms: TermDef[] = [
     body: "HTTP メソッドの代表例。GET は取得、POST は登録や状態を変える操作に使われることが多いです。PUT / PATCH / DELETE も API でよく使います。約束と実装がずれることもあるので、Network タブで確認します。",
   },
   {
-    term: "HTTPステータスコード",
+    term: "HTTP ステータスコード",
     aliases: ["HTTPステータスコード", "HTTP ステータスコード", "ステータスコード", "2xx", "3xx", "4xx", "5xx"],
     body: "応答の結果を表す 3 桁の番号。2xx は成功、3xx は別 URL へ、4xx はクライアント側、5xx はサーバ側の問題です。",
   },
@@ -68,7 +68,7 @@ export const terms: TermDef[] = [
   {
     term: "Cookie",
     aliases: ["Set-Cookie", "Cookie"],
-    body: "サーバがブラウザに預ける小さなデータ。ログイン状態の識別子（セッションID）を載せるのに使います。",
+    body: "サーバがブラウザに預ける小さなデータ。ログイン状態の識別子（セッション ID）を載せるのに使います。",
   },
   {
     term: "セッション",
@@ -78,17 +78,17 @@ export const terms: TermDef[] = [
   {
     term: "リダイレクト",
     aliases: ["リダイレクト"],
-    body: "サーバが「別のURLを開き直して」と返すこと。302 と Location ヘッダの組み合わせが典型です。",
+    body: "サーバが「別の URL を開き直して」と返すこと。302 と Location ヘッダの組み合わせが典型です。",
   },
   {
     term: "コンテキストパス",
     aliases: ["コンテキストパス", "context-path"],
-    body: "アプリの根っこのURL。例: /shinsei。Controllerのパスの手前に付きます。Spring Boot では server.servlet.context-path に書きます。",
+    body: "アプリの根っこの URL。例: /shinsei。Controller のパスの手前に付きます。Spring Boot では server.servlet.context-path に書きます。",
   },
   {
     term: "クエリ",
     aliases: ["クエリパラメータ", "クエリ"],
-    body: "URLの ? 以降。同じ資源の見え方や検索条件を渡すのに使います。",
+    body: "URL の ? 以降。同じ資源の見え方や検索条件を渡すのに使います。",
   },
   {
     term: "CSRF",
@@ -123,17 +123,17 @@ export const terms: TermDef[] = [
   {
     term: "Repository",
     aliases: ["Repository"],
-    body: "DB アクセスを担当する層。テーブルの読み書きをここに寄せます。Spring Data JPA ではこの名前が多いです。申請くんは MyBatis の Mapper です。",
+    body: "DB アクセスを担当する層。Mapper と同じデータアクセス層で、JPA では Repository、MyBatis では Mapper を使うことが多いです。",
   },
   {
     term: "Mapper",
     aliases: ["Mapper"],
-    body: "MyBatis などで、Java のメソッドと SQL を対応づける部品です。",
+    body: "MyBatis などで、Java メソッドと SQL を対応づけるデータアクセス層の部品です。",
   },
   {
     term: "Entity",
     aliases: ["Entity"],
-    body: "テーブルの1行に相当するJavaのオブジェクトです。",
+    body: "テーブルの 1 行に相当する Java のオブジェクトです。",
   },
   {
     term: "Spring Framework",
@@ -143,27 +143,27 @@ export const terms: TermDef[] = [
   {
     term: "Spring Boot",
     aliases: ["Spring Boot"],
-    body: "JavaのWebアプリを作るための土台。設定や内蔵サーバがまとまっています。",
+    body: "Java の Web アプリを作るための土台。設定や内蔵サーバがまとまっています。",
   },
   {
     term: "Spring MVC",
     aliases: ["Spring MVC"],
-    body: "URLとControllerを結びつける、SpringのWebの仕組みです。",
+    body: "URL と Controller を結びつける、Spring の Web の仕組みです。",
   },
   {
     term: "Spring Security",
     aliases: ["Spring Security", "SecurityConfig"],
-    body: "ログイン、権限、CSRFなどを担う、Spring のセキュリティフレームワークです。",
+    body: "ログイン、権限、CSRF などを担う、Spring のセキュリティフレームワークです。",
   },
   {
     term: "Thymeleaf",
     aliases: ["Thymeleaf"],
-    body: "サーバ側でHTMLを組み立てるテンプレートエンジンです。Spring でよく使います。",
+    body: "サーバ側で HTML を組み立てるテンプレートエンジンです。Spring でよく使います。",
   },
   {
     term: "JSP",
     aliases: ["JSP"],
-    body: "JavaServer Pages。サーバ側でHTMLを組み立てる、古くからある方式です。",
+    body: "JavaServer Pages。サーバ側で HTML を組み立てる、古くからある方式です。",
   },
   {
     term: "SQL",
@@ -173,27 +173,27 @@ export const terms: TermDef[] = [
   {
     term: "MyBatis",
     aliases: ["MyBatis"],
-    body: "SQLをXMLやアノテーションで書き、Javaから実行するライブラリです。ログに出た文に近い SQL が、プロジェクト内のファイルにあることが多いです。",
+    body: "SQL を XML やアノテーションで書き、Java から実行するライブラリです。ログに出た文に近い SQL が、プロジェクト内のファイルにあることが多いです。",
   },
   {
     term: "JPA",
     aliases: ["JPA", "JPQL"],
-    body: "Java Persistence API。オブジェクトとテーブルを対応づけてDBアクセスします。実行される SQL はライブラリが組み立てることが多く、ソースに書いてないことがあります。",
+    body: "Java Persistence API。オブジェクトとテーブルを対応づけて DB アクセスします。実行される SQL はライブラリが組み立てることが多く、ソースに書いてないことがあります。",
   },
   {
     term: "JDBC",
     aliases: ["JDBC"],
-    body: "JavaからDBへ接続するための標準APIです。",
+    body: "Java から DB へ接続するための標準 API です。",
   },
   {
     term: "Maven",
     aliases: ["Maven", "pom.xml"],
-    body: "Javaのビルドと依存関係の管理の仕組み。pom.xml にフレームワークやライブラリを書きます。",
+    body: "Java のビルドと依存関係の管理の仕組み。pom.xml にフレームワークやライブラリを書きます。",
   },
   {
     term: "Gradle",
     aliases: ["Gradle"],
-    body: "Javaのビルドと依存関係の管理の仕組みのひとつです。",
+    body: "Java のビルドと依存関係の管理の仕組みのひとつです。",
   },
   {
     term: "application.yml",
@@ -231,7 +231,7 @@ export const terms: TermDef[] = [
   {
     term: "SQLException",
     aliases: ["SQLException", "BadSqlGrammarException", "SQLSyntaxErrorException"],
-    body: "SQLの失敗や、DB接続の失敗で出る例外です。",
+    body: "SQL の失敗や、DB 接続の失敗で出る例外です。",
   },
   {
     term: "例外",
@@ -241,7 +241,7 @@ export const terms: TermDef[] = [
   {
     term: "N+1",
     aliases: ["N+1"],
-    body: "一覧の件数だけ追加のSQLが飛ぶパターン。画面は動くが遅くなります。",
+    body: "一覧の件数だけ追加の SQL が飛ぶパターン。画面は動くが遅くなります。",
   },
   {
     term: "Filter",
@@ -261,7 +261,7 @@ export const terms: TermDef[] = [
   {
     term: "@Transactional",
     aliases: ["@Transactional", "Transactional"],
-    body: "そのメソッドをトランザクションで囲む印です。Spring の AOP プロキシが先に動くので、メソッド本体の1行目より前に処理があります。",
+    body: "その Java メソッドをトランザクションで囲む印です。Spring の AOP プロキシが先に動くので、Java メソッド本体の 1 行目より前に処理があります。",
   },
   {
     term: "@ControllerAdvice",
@@ -326,7 +326,7 @@ export const terms: TermDef[] = [
   {
     term: "@RequestParam",
     aliases: ["@RequestParam"],
-    body: "URLのクエリやフォームの name を、メソッド引数に取り出す印です。Spring のアノテーションです。",
+    body: "URL のクエリやフォームの name を、Java メソッドの引数に取り出す印です。Spring のアノテーションです。",
   },
   {
     term: "マッピング",
@@ -341,7 +341,7 @@ export const terms: TermDef[] = [
   {
     term: "トランザクション",
     aliases: ["トランザクション"],
-    body: "DB更新をまとめて確定（または取り消す）単位。途中で失敗したら元に戻します。",
+    body: "DB 更新をまとめて確定（または取り消す）単位。途中で失敗したら元に戻します。",
   },
   {
     term: "コミット",
@@ -356,7 +356,7 @@ export const terms: TermDef[] = [
   {
     term: "バインド",
     aliases: ["バインド値", "バインド"],
-    body: "画面の入力やSQLの ? に、実際の値をはめ込むことです。",
+    body: "画面の入力や SQL の ? に、実際の値をはめ込むことです。",
   },
   {
     term: "プレースホルダ",
@@ -376,17 +376,17 @@ export const terms: TermDef[] = [
   {
     term: "DDL",
     aliases: ["DDL"],
-    body: "テーブル定義を変えるSQL（CREATE / ALTER など）。コードとDB定義がずれる原因になります。",
+    body: "テーブル定義を変える SQL（CREATE / ALTER など）。コードと DB 定義がずれる原因になります。",
   },
   {
     term: "インデックス",
     aliases: ["インデックス"],
-    body: "検索を速くするためのDBの索引。無いと全件スキャンになりやすいです。",
+    body: "検索を速くするための DB の索引。無いと全件スキャンになりやすいです。",
   },
   {
     term: "接続プール",
     aliases: ["接続プール"],
-    body: "DB接続を使い回す仕組み。枯渇すると待ちやタイムアウトが起きます。",
+    body: "DB 接続を使い回す仕組み。枯渇すると待ちやタイムアウトが起きます。",
   },
   {
     term: "リバースプロキシ",
@@ -481,7 +481,7 @@ export const terms: TermDef[] = [
   {
     term: "テンプレート",
     aliases: ["テンプレート"],
-    body: "HTMLの雛形。サーバがデータを流し込んで画面を作ります。",
+    body: "HTML の雛形。サーバがデータを流し込んで画面を作ります。",
   },
   {
     term: "JSON",
@@ -501,12 +501,12 @@ export const terms: TermDef[] = [
   {
     term: "Ajax",
     aliases: ["XMLHttpRequest", "Ajax", "fetch", "XHR"],
-    body: "画面を丸ごと遷移せず、裏でHTTP通信する方式です。応答は JSON が多いです。",
+    body: "画面を丸ごと遷移せず、裏で HTTP 通信する方式です。応答は JSON が多いです。",
   },
   {
     term: "PRG",
     aliases: ["PRG"],
-    body: "Post/Redirect/Get。POSTのあとリダイレクトし、再読込で二重送信しにくくする型です。",
+    body: "Post/Redirect/Get。POST のあとリダイレクトし、再読込で二重送信しにくくする型です。",
   },
   {
     term: "WAR",
@@ -536,7 +536,7 @@ export const terms: TermDef[] = [
   {
     term: "Tomcat",
     aliases: ["Tomcat"],
-    body: "JavaのWebアプリを動かすサーバ（サーブレットコンテナ）です。",
+    body: "Java の Web アプリを動かすサーバ（サーブレットコンテナ）です。",
   },
   {
     term: "Jetty",
@@ -556,7 +556,7 @@ export const terms: TermDef[] = [
   {
     term: "JDK",
     aliases: ["JDK"],
-    body: "Javaの開発・実行環境。版が違うと起動できないことがあります。",
+    body: "Java の開発・実行環境。版が違うと起動できないことがあります。",
   },
   {
     term: "APサーバ",
@@ -566,7 +566,7 @@ export const terms: TermDef[] = [
   {
     term: "logback",
     aliases: ["logback", "logback-spring.xml", "logback.xml"],
-    body: "Javaでよく使うログ出力のライブラリです。出力先は logback-spring.xml や logback.xml に書くことが多いです。logback-spring.xml は Spring Boot 用です。",
+    body: "Java でよく使うログ出力のライブラリです。出力先は logback-spring.xml や logback.xml に書くことが多いです。logback-spring.xml は Spring Boot 用です。",
   },
   {
     term: "MDC",
@@ -591,32 +591,32 @@ export const terms: TermDef[] = [
   {
     term: "Struts",
     aliases: ["Struts"],
-    body: "Spring以前からあるJavaのWebフレームワークです。",
+    body: "Spring 以前からある Java の Web フレームワークです。",
   },
   {
     term: "SameSite",
     aliases: ["SameSite"],
-    body: "Cookieをどのサイト経由のリクエストに付けるかの制限。緩いとCSRF、厳しいとログイン切れの原因になります。",
+    body: "Cookie のクロスサイト送信を制限する属性です。緩い設定では CSRF のリスクが上がることがあり、厳しい設定では外部サイト経由の遷移などに影響することがあります。",
   },
   {
     term: "参照検索",
     aliases: ["参照検索", "使用箇所の検索", "ワークスペース内の参照", "Find Usages", "References", "Find References"],
-    body: "IDEの機能。そのメソッドや型がどこから呼ばれているかを一覧します。日本語化した IntelliJ では「使用箇所の検索」、Eclipse では「ワークスペース内の参照」という名前です。",
+    body: "IDE の機能。その Java メソッドや型がどこから呼ばれているかを一覧します。日本語化した IntelliJ では「使用箇所の検索」、Eclipse では「ワークスペース内の参照」という名前です。",
   },
   {
     term: "定義へジャンプ",
     aliases: ["定義へジャンプ", "宣言または使用箇所に移動", "宣言を開く", "宣言へジャンプ", "Go to Declaration", "Open Declaration"],
-    body: "IDEの機能。呼び出しのメソッド名から、その宣言（呼ばれている側）を開きます。日本語化した IntelliJ では「宣言または使用箇所に移動」、Eclipse では「宣言を開く」という名前です。",
+    body: "IDE の機能。呼び出している Java メソッドの名前から、その宣言（呼ばれている側）を開きます。日本語化した IntelliJ では「宣言または使用箇所に移動」、Eclipse では「宣言を開く」という名前です。",
   },
   {
     term: "呼び出し階層",
     aliases: ["呼び出し階層", "呼び出し階層を開く", "Call Hierarchy"],
-    body: "IDEの機能。今のメソッドを起点に、呼び出し元と呼び出し先を階層（ツリー）で出します。日本語化した IntelliJ では「呼び出し階層」、Eclipse では「呼び出し階層を開く」です。1段だけなら参照検索と定義へジャンプで足ります。",
+    body: "IDE の機能。今の Java メソッドを起点に、呼び出し元と呼び出し先を階層（ツリー）で出します。日本語化した IntelliJ では「呼び出し階層」、Eclipse では「呼び出し階層を開く」です。1 段だけなら参照検索と定義へジャンプで足ります。",
   },
   {
     term: "実装へジャンプ",
     aliases: ["実装へジャンプ", "実装に移動", "実装を開く", "Go to Implementation"],
-    body: "IDEの機能。インタフェースの宣言から、実体のクラスを開きます。日本語化した IntelliJ では「実装に移動」、Eclipse では「実装を開く」という名前です。MyBatis の Mapper は Java の実装クラスが無いことが多いです。",
+    body: "IDE の機能。インタフェースの宣言から、実体のクラスを開きます。日本語化した IntelliJ では「実装に移動」、Eclipse では「実装を開く」という名前です。MyBatis の Mapper は Java の実装クラスが無いことが多いです。",
   },
   {
     term: "Networkタブ",
@@ -626,7 +626,7 @@ export const terms: TermDef[] = [
   {
     term: "ホスト",
     aliases: ["ホスト名", "ホスト"],
-    body: "URLのサーバ名の部分。どの機械（またはその手前）に届くかを表します。",
+    body: "URL のサーバ名の部分。どの機械（またはその手前）に届くかを表します。",
   },
   {
     term: "タイムアウト",
@@ -636,7 +636,7 @@ export const terms: TermDef[] = [
   {
     term: "ロック",
     aliases: ["行ロック", "ロック"],
-    body: "同時更新を防ぐため、DBが行や表を一時的に専有すること。待ちの原因になります。",
+    body: "同時更新を防ぐため、DB が行や表を一時的に専有すること。待ちの原因になります。",
   },
   {
     term: "モック",
@@ -646,12 +646,12 @@ export const terms: TermDef[] = [
   {
     term: "環境変数",
     aliases: ["環境変数"],
-    body: "OSや起動元が渡す設定値。パスワードをファイルに書かないときに使います。",
+    body: "OS や起動元が渡す設定値。パスワードをファイルに書かないときに使います。",
   },
   {
     term: "javax / jakarta",
     aliases: ["jakarta", "javax"],
-    body: "Javaの標準APIのパッケージ名。Spring Boot 2系は javax、3系は jakarta です。",
+    body: "Java の標準 API のパッケージ名。Spring Boot 2 系は javax、3 系は jakarta です。",
   },
   {
     term: "URL",
@@ -731,7 +731,7 @@ export const terms: TermDef[] = [
   {
     term: "テーブル",
     aliases: ["テーブル"],
-    body: "DBの表。行が1件のデータ、列が項目です。",
+    body: "DB の表。行が 1 件のデータ、列が項目です。",
   },
   {
     term: "カラム",
@@ -931,12 +931,12 @@ export const terms: TermDef[] = [
   {
     term: "SELECT",
     aliases: ["SELECT"],
-    body: "DBから行を読む SQL です。",
+    body: "DB から行を読む SQL です。",
   },
   {
     term: "UPDATE",
     aliases: ["UPDATE", "INSERT"],
-    body: "DBを変える SQL。更新されないときは WHERE とコミットを疑います。",
+    body: "DB を変える SQL。更新されないときは WHERE とコミットを疑います。",
   },
   {
     term: "ORDER BY",

@@ -9,7 +9,10 @@ export function GlossaryPage() {
   useEffect(() => {
     const id = location.hash.replace(/^#/, "");
     if (!id) return;
-    document.getElementById(id)?.scrollIntoView({ block: "start" });
+    const item = document.getElementById(id);
+    if (!item) return;
+    item.focus({ preventScroll: true });
+    item.scrollIntoView({ block: "start" });
   }, [location.hash]);
 
   return (
@@ -21,7 +24,7 @@ export function GlossaryPage() {
       </p>
       <dl className="glossary">
         {glossary.map((item) => (
-          <div key={item.term} id={glossaryAnchor(item.term)}>
+          <div key={item.term} id={glossaryAnchor(item.term)} tabIndex={-1}>
             <dt>{item.term}</dt>
             <dd>
               <TextWithTerms highlight={false} text={item.body} />

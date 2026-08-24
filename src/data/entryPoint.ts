@@ -43,12 +43,21 @@ public class RequestController {
 
   @GetMapping("/{id}")  // ← 処理の入口（詳細）
   public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("application", requestService.findById(id, user.getId()));
+    model.addAttribute("requestItem", requestService.findById(id, user.getId()));
     return "request/detail";
   }
 
   @PostMapping("/{id}/approve")  // ← 処理の入口（承認）
-  public String approve(@PathVariable Long id, @AuthenticationPrincipal LoginUser user) {
+  public String approve(
+      @PathVariable Long id,
+      @AuthenticationPrincipal LoginUser user,
+      RedirectAttributes redirectAttributes) {
+    var request = requestService.findById(id, user.getId());
+    if (!"PENDING".equals(request.getStatus())) {
+      redirectAttributes.addFlashAttribute(
+          "errorMessage", "この申請は承認できません");
+      return "redirect:/requests/" + id;
+    }
     requestService.approve(id, user.getId());
     return "redirect:/requests";
   }
@@ -71,13 +80,22 @@ public class RequestController {
   // 処理の入口: GET /shinsei/requests/12
   @GetMapping("/{id}")
   public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("application", requestService.findById(id, user.getId()));
+    model.addAttribute("requestItem", requestService.findById(id, user.getId()));
     return "request/detail";
   }
 
-  // 処理の入口: POST /shinsei/requests/12/approve
+  // 処理の入口: POST /shinsei/requests/{id}/approve
   @PostMapping("/{id}/approve")
-  public String approve(@PathVariable Long id, @AuthenticationPrincipal LoginUser user) {
+  public String approve(
+      @PathVariable Long id,
+      @AuthenticationPrincipal LoginUser user,
+      RedirectAttributes redirectAttributes) {
+    var request = requestService.findById(id, user.getId());
+    if (!"PENDING".equals(request.getStatus())) {
+      redirectAttributes.addFlashAttribute(
+          "errorMessage", "この申請は承認できません");
+      return "redirect:/requests/" + id;
+    }
     requestService.approve(id, user.getId());
     return "redirect:/requests";
   }

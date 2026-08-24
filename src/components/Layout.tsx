@@ -12,11 +12,16 @@ function focusableIn(root: HTMLElement) {
 
 export function Layout() {
   const [open, setOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => !window.matchMedia("(min-width: 901px)").matches);
   const location = useLocation();
   const trackMatch = location.pathname.match(/^\/tracks\/([^/]+)/);
   const currentTrackId = trackMatch?.[1];
+  const [expandedTrackIds, setExpandedTrackIds] = useState<Set<string>>(
+    () => new Set(currentTrackId ? [currentTrackId] : []),
+  );
   const navRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const mobileDialogOpen = isMobile && open;
 
   useEffect(() => {
     const title = pageTitle(location.pathname);
@@ -35,6 +40,10 @@ export function Layout() {
   }, [location.pathname]);
 
   useEffect(() => {
+    setExpandedTrackIds(new Set(currentTrackId ? [currentTrackId] : []));
+  }, [currentTrackId]);
+
+  useEffect(() => {
     if (location.hash) return;
     window.scrollTo(0, 0);
   }, [location.pathname]);
@@ -43,14 +52,16 @@ export function Layout() {
   useEffect(() => {
     const wide = window.matchMedia("(min-width: 901px)");
     const onChange = () => {
+      setIsMobile(!wide.matches);
       if (wide.matches) setOpen(false);
     };
+    onChange();
     wide.addEventListener("change", onChange);
     return () => wide.removeEventListener("change", onChange);
   }, []);
 
   useEffect(() => {
-    if (!open) return;
+    if (!mobileDialogOpen) return;
     const nav = navRef.current;
     if (!nav) return;
     const items = focusableIn(nav);
@@ -78,21 +89,23 @@ export function Layout() {
 
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [open]);
+  }, [mobileDialogOpen]);
 
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main">
         本文へ
       </a>
-      {open ? (
+      {mobileDialogOpen ? (
         <button className="backdrop" type="button" aria-label="メニューを閉じる" onClick={() => setOpen(false)} />
       ) : null}
       <aside
         id="site-nav"
         ref={navRef}
-        className={`sidebar ${open ? "open" : ""}`}
+        className={`sidebar ${mobileDialogOpen ? "open" : ""}`}
         aria-label="目次"
+        role={mobileDialogOpen ? "dialog" : undefined}
+        aria-modal={mobileDialogOpen ? true : undefined}
       >
         <button
           className="btn btn-ghost sidebar-close"
@@ -111,32 +124,55 @@ export function Layout() {
         </NavLink>
 
         <div className="nav-label">CONTENTS</div>
-        {tracks.map((track) => (
-          <div key={track.id} className="nav-group">
-            <NavLink
-              to={`/tracks/${track.id}`}
-              className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
-              onClick={() => setOpen(false)}
-            >
-              <span className="no">{track.no}</span>
-              <span>{track.title}</span>
-            </NavLink>
-            {currentTrackId === track.id ? (
-              <div className="nav-lessons">
-                {track.lessons.map((lesson) => (
-                  <NavLink
-                    key={lesson.id}
-                    to={`/tracks/${track.id}/${lesson.id}`}
-                    className={({ isActive }) => `nav-sub ${isActive ? "active" : ""}`}
-                  >
-                    <span className="nav-dot" />
-                    {lesson.title}
-                  </NavLink>
-                ))}
+        {tracks.map((track) => {
+          const expanded = expandedTrackIds.has(track.id);
+          const lessonsId = `nav-lessons-${track.id}`;
+          return (
+            <div key={track.id} className="nav-group">
+              <div className="nav-group-head">
+                <NavLink
+                  to={`/tracks/${track.id}`}
+                  className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="no">{track.no}</span>
+                  <span>{track.title}</span>
+                </NavLink>
+                <button
+                  className="nav-group-toggle"
+                  type="button"
+                  aria-expanded={expanded}
+                  aria-controls={lessonsId}
+                  aria-label={`${track.title}の項目を${expanded ? "閉じる" : "開く"}`}
+                  onClick={() => {
+                    setExpandedTrackIds((current) => {
+                      const next = new Set(current);
+                      if (next.has(track.id)) next.delete(track.id);
+                      else next.add(track.id);
+                      return next;
+                    });
+                  }}
+                >
+                  {expanded ? "−" : "＋"}
+                </button>
               </div>
-            ) : null}
-          </div>
-        ))}
+              {expanded ? (
+                <div className="nav-lessons" id={lessonsId}>
+                  {track.lessons.map((lesson) => (
+                    <NavLink
+                      key={lesson.id}
+                      to={`/tracks/${track.id}/${lesson.id}`}
+                      className={({ isActive }) => `nav-sub ${isActive ? "active" : ""}`}
+                    >
+                      <span className="nav-dot" />
+                      {lesson.title}
+                    </NavLink>
+                  ))}
+                </div>
+              ) : null}
+            </div>
+          );
+        })}
 
         <div className="nav-label">LAB</div>
         <NavLink to="/lab" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`} onClick={() => setOpen(false)}>
@@ -158,13 +194,13 @@ export function Layout() {
         </NavLink>
       </aside>
 
-      <main className="main" id="main" tabIndex={-1} inert={open}>
+      <main className="main" id="main" tabIndex={-1} inert={mobileDialogOpen}>
         <header className="topbar">
           <button
             ref={toggleRef}
             className="btn btn-ghost mobile-toggle"
             type="button"
-            aria-expanded={open}
+            aria-expanded={mobileDialogOpen}
             aria-controls="site-nav"
             onClick={() => setOpen((v) => !v)}
           >

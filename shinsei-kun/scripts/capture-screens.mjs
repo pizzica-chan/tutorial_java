@@ -103,6 +103,7 @@ const browser = await puppeteer.launch({
   args: ["--lang=ja-JP"],
 });
 const page = await browser.newPage();
+page.on("dialog", (dialog) => dialog.accept());
 await page.emulateTimezone("Asia/Tokyo");
 await page.setViewport({ width, height: 720, deviceScaleFactor: 2 });
 
@@ -126,13 +127,25 @@ if (!mocksOnly) {
   await page.goto(`${base}/requests/12`, { waitUntil: "networkidle0" });
   await shot(page, "screen-detail.jpg", `${base}/requests/12`);
 
+  await page.goto(`${base}/requests/16`, { waitUntil: "networkidle0" });
+  await Promise.allSettled([
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 8000 }),
+    page.$eval("form.js-approve-confirm", (form) => form.submit()),
+  ]);
+  await shot(page, "screen-error-500.jpg", `${base}/requests/16/approve`);
+
+  await page.goto(`${base}/requests/11`, { waitUntil: "networkidle0" });
+  await Promise.allSettled([
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 8000 }),
+    page.$eval("form.js-approve-confirm", (form) => form.submit()),
+  ]);
+  await shot(page, "screen-cannot-approve.jpg", `${base}/requests/11`);
+
   await page.goto(`${base}/requests/99999`, { waitUntil: "networkidle0" });
   await shot(page, "screen-not-found.jpg", `${base}/requests/99999`);
 }
 
 const mocks = [
-  ["error-500.html", "screen-error-500.jpg", `${base}/requests/12/approve`],
-  ["cannot-approve.html", "screen-cannot-approve.jpg", `${base}/requests/12`],
   ["list-empty.html", "screen-list-empty.jpg", `${base}/requests`],
   ["list-unstyled.html", "screen-list-unstyled.jpg", `${base}/requests`],
   ["forbidden.html", "screen-forbidden.jpg", `${base}/requests/12/approve`],

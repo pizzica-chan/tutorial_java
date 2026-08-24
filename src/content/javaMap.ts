@@ -163,16 +163,20 @@ server:
     },
     {
       id: "layers",
-      title: "Controller / Service / Repository",
+      title: "Controller / Service / Repository / Mapper",
       minutes: 9,
       blocks: [
         {
           type: "p",
-          text: "画面や API の URL からソースを追うときは、Controller → Service → Repository の順で開きます。この項目では、各層の役割と、その順番だけ押さえます。",
+          text: "画面や API の URL からソースを追うときは、Controller → Service → Repository または Mapper の順で開きます。この項目では、各層の役割と、その順番だけ押さえます。",
         },
         {
           type: "h2",
           text: "層の役割とたどり方",
+        },
+        {
+          type: "p",
+          text: "Repository と Mapper は同じデータアクセス層です。JPA では Repository、MyBatis では Mapper を使うことが多いです。",
         },
         {
           type: "ul",
@@ -197,7 +201,7 @@ server:
         },
         {
           type: "p",
-          text: "ここまでは、Controller → Service → Mapper と分かれている想定です。実際には Service を飛ばして Controller から Mapper を呼ぶなど、並びがずれることがあります。ずれていても、上の順番（受付 → ビジネスロジック → DB）で、今のメソッドから呼ばれている先を開いていけば十分です。",
+          text: "ここまでは、Controller → Service → Mapper と分かれている想定です。実際には Service を飛ばして Controller から Mapper を呼ぶなど、並びがずれることがあります。ずれていても、上の順番（受付 → ビジネスロジック → DB）で、今の Java メソッドから呼ばれている先を開いていけば十分です。",
         },
         {
           type: "code",
@@ -215,7 +219,7 @@ public class RequestController {
         },
         {
           type: "p",
-          text: "URL を受けるのは list メソッドです。その中で呼んでいる requestService.findMine が、次に開くメソッドです。return は、すぐ下の「Controller の返し方」で見ます。",
+          text: "URL を受ける Java メソッドは list です。その中で呼んでいる requestService.findMine が、次に開く Java メソッドです。return は、すぐ下の「Controller の返し方」で見ます。",
         },
         {
           type: "h2",
@@ -491,7 +495,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
             "Controller の return から HTML ファイルを開く",
             "Model に載せた名前と、th:each / th:text の \${...} が一致するか見る",
             "ボタンやリンクが無いときは th:if の条件を読む",
-            "form の th:action と method が、想定の Controller のマッピングと一致するか見る",
+            "form の th:action と method で指定した送信先と HTTP メソッドが、想定の Controller のマッピングと一致するか見る",
             "POST なのに CSRF エラーなら、hidden の _csrf や th:action の有無を見る",
             "テンプレートと違う HTML がブラウザに出ているなら、別テンプレートか JS の書き換えを疑う（Elements タブで確認）",
           ],
@@ -519,7 +523,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
       blocks: [
         {
           type: "p",
-          text: "Controller から Service を追うとき、ソースに書いてあるメソッド呼び出しだけを見ると足りないことがあります。リクエストの前後や、service.approve() の実体の手前に、別クラスが挟まります。呼び出し元のメソッドには、その名前が出ません。",
+          text: "Controller から Service を追うとき、ソースに書いてある Java メソッド呼び出しだけを見ると足りないことがあります。リクエストの前後や、service.approve() の実体の手前に、別クラスが挟まります。呼び出し元の Java メソッドには、その名前が出ません。",
         },
         { type: "diagram", name: "cross-cut", caption: "Controller や Service のソースに、これらの呼び出しは書かれていません。" },
         {
@@ -528,7 +532,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           rows: [
             ["Filter", "サーブレットコンテナ。Controller の前（静的ファイルも通ることがある）", "Controller から呼ばれない。Filter 実装や SecurityConfig を別検索する"],
             ["Interceptor", "Spring MVC。Controller の Java メソッドの直前・直後", "HandlerInterceptor と WebMvcConfigurer の addInterceptors。Controller に呼び出しは無い"],
-            ["AOP / プロキシ", "Service などのメソッド呼び出しの手前", "見た目は requestService.approve()。実行時は $Proxy や CGLIB を経由する"],
+            ["AOP / プロキシ", "Service などの Java メソッド呼び出しの手前", "見た目は requestService.approve()。実行時は $Proxy や CGLIB を経由する"],
             ["@ControllerAdvice", "例外のあと。戻り値や画面を別クラスが決める", "throw したメソッドの return を追っても、実際の応答はここ"],
           ],
         },
@@ -639,13 +643,13 @@ public void addInterceptors(InterceptorRegistry registry) {
           lang: "java",
           code: `requestService.approve(id, userId);
 // この1行の手前で、トランザクション開始や @Aspect が動くことがある
-// RequestService の1行目にブレークポイントを置いても、その前で弾かれる`,
+// 本体の1行目で止まった時点では、トランザクションが始まっていることがある`,
         },
         {
           type: "callout",
           kind: "trap",
-          title: "メソッドの1行目より前",
-          text: "Service のブレークポイントが止まらない、または @Transactional のついたメソッドの前後でだけ失敗するときは、プロキシを疑いましょう。Filter / Interceptor が Controller の前なら、Controller 自体が止まりません。",
+          title: "Java メソッド本体より前",
+          text: "@Transactional が付いていても、通常はトランザクションを開始したあとに Java メソッド本体へ進むため、本体のブレークポイントで止まります。止まらないときは、メソッド認可や独自の @Aspect が本体を呼ばずに終了していないか、トランザクション開始時に失敗していないかを確認しましょう。Filter / Interceptor が Controller の前なら、Controller 自体が止まりません。",
         },
         {
           type: "h2",
@@ -659,7 +663,7 @@ public void addInterceptors(InterceptorRegistry registry) {
           type: "ul",
           items: [
             "Controller に届かない → Filter、Interceptor、SecurityConfig",
-            "Controller には入るが Service の本体に入らない → プロキシ、AOP、@Transactional、メソッド認可",
+            "Controller には入るが Service の本体に入らない → メソッド認可、独自の AOP、トランザクション開始時の失敗",
             "例外の画面や JSON がメソッドに無い → @ControllerAdvice",
             "検索語: HandlerInterceptor、addInterceptors、OncePerRequestFilter、@Aspect、@ControllerAdvice",
           ],

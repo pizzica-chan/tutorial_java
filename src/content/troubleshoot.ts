@@ -256,11 +256,11 @@ export const troubleshootTrack: Track = {
         { type: "diagram", name: "log-line" },
         {
           type: "code",
-          title: "例外が出たときの例",
-          code: `2026-08-16 04:12:03.512 ERROR 8120 --- [nio-8080-exec-3] j.c.e.s.service.RequestService : approve failed requestId=12
-java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because ...
-    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:41)
-    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:58)`,
+          title: "例外が出たとき（申請くん・ID 16）",
+          code: `04:12:03.512 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[/shinsei].[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] threw exception
+java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null
+    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)
+    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)`,
         },
         {
           type: "ol",
@@ -515,17 +515,16 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
         {
           type: "code",
           title: "同じスレッドの通過点（申請くん・MyBatis）",
-          code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.controller.RequestController : list start userId=7
-04:12:03.105 INFO  [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine start userId=7
-04:12:03.110 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper : ==>  Preparing: SELECT ... WHERE applicant_id = ? OR approver_id = ?
-04:12:03.112 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper : ==> Parameters: 7(Long), 7(Long)
-04:12:03.115 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper : <==      Total: 3
-04:12:03.118 INFO  [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine done count=3
-04:12:03.120 INFO  [nio-8080-exec-3] j.c.e.s.controller.RequestController : list done`,
+          code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests
+04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : start RequestService.findMine(..)
+04:12:03.110 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findMine : ==>  Preparing: SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at, a.display_name AS applicant_name, v.display_name AS approver_name FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.id = r.approver_id WHERE r.applicant_id = ? OR r.approver_id = ? ORDER BY r.created_at DESC
+04:12:03.112 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findMine : ==> Parameters: 7(Long), 7(Long)
+04:12:03.115 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findMine : <==      Total: 5
+04:12:03.118 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : end RequestService.findMine(..)`,
         },
         {
           type: "p",
-          text: "Controller の list のあと Service の findMine、そのあと Mapper です。この並びは、DB アクセスの仕方が違っても同じ型です。Mapper の 3 行（Preparing / Parameters / Total）は MyBatis の DEBUG の書き方で、JPA や JDBC なら文言は違います。間に Filter や Interceptor の行が挟まることもあります。Java のメソッド名は、メッセージに書いてあるときだけ分かります。",
+          text: "申請くんでは AccessLogInterceptor の GET、ServiceLoggingAspect の start、Mapper、ServiceLoggingAspect の end の順です。Mapper の 3 行（Preparing / Parameters / Total）は MyBatis の DEBUG の書き方で、JPA や JDBC なら文言は違います。Java のメソッド名は、メッセージに書いてあるときだけ分かります。",
         },
         {
           type: "ul",
@@ -546,15 +545,15 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
         {
           type: "code",
           title: "同じ秒に混ざった行（MyBatis の Parameters 例）",
-          code: `04:12:03.100 INFO  [nio-8080-exec-3] ...RequestController : list start userId=7
-04:12:03.102 INFO  [nio-8080-exec-5] ...RequestController : detail start userId=22
-04:12:03.105 INFO  [nio-8080-exec-3] ...RequestService : findMine start userId=7
-04:12:03.108 INFO  [nio-8080-exec-5] ...RequestService : findById start userId=22
-04:12:03.110 DEBUG [nio-8080-exec-3] ...RequestMapper : ==> Parameters: 7(Long)`,
+          code: `04:12:03.100 INFO  [nio-8080-exec-3] ...AccessLogInterceptor : GET /shinsei/requests
+04:12:03.102 INFO  [nio-8080-exec-5] ...AccessLogInterceptor : GET /shinsei/requests/12
+04:12:03.105 DEBUG [nio-8080-exec-3] ...ServiceLoggingAspect : start RequestService.findMine(..)
+04:12:03.108 DEBUG [nio-8080-exec-5] ...ServiceLoggingAspect : start RequestService.findById(..)
+04:12:03.110 DEBUG [nio-8080-exec-3] ...RequestMapper.findMine : ==> Parameters: 7(Long), 7(Long)`,
         },
         {
           type: "p",
-          text: "userId=7 の一覧なら、まず 7 で検索しましょう。ヒットした行のスレッド名は nio-8080-exec-3 です。その名前と、操作の前後数秒で再検索すると、上の list → findMine → Mapper の行が揃います。Parameters の書き方は MyBatis の例です。exec-5 は別の人の詳細です。",
+          text: "山田の一覧なら、まず Parameters の 7(Long) や URL で検索しましょう。ヒットした行のスレッド名は nio-8080-exec-3 です。その名前と、操作の前後数秒で再検索すると、GET → findMine → Mapper の行が揃います。exec-5 は別の詳細表示です。",
         },
         {
           type: "ol",
@@ -591,10 +590,15 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
         {
           type: "code",
           title: "MyBatis の DEBUG（申請くんの findMine）",
-          code: `==>  Preparing: SELECT id, title, status, applicant_id, approver_id, created_at
-FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DESC
+          code: `==>  Preparing: SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+       a.display_name AS applicant_name, v.display_name AS approver_name
+FROM t_request r
+JOIN t_user a ON a.id = r.applicant_id
+LEFT JOIN t_user v ON v.id = r.approver_id
+WHERE r.applicant_id = ? OR r.approver_id = ?
+ORDER BY r.created_at DESC
 ==> Parameters: 7(Long), 7(Long)
-<==      Total: 3`,
+<==      Total: 5`,
         },
         {
           type: "ul",
@@ -643,13 +647,13 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         { type: "diagram", name: "stack-line", caption: "右端の括弧が、ソースのファイルと行です。" },
         {
           type: "p",
-          text: "RequestService.java:41 なら、プロジェクト内の RequestService.java の 41 行目です。教材の抜粋では行を省略しているので、数字は教材上の位置です。Unknown Source とだけある行は、ソースが無いので飛ばしましょう。",
+          text: "RequestService.java:47 なら、プロジェクト内の RequestService.java の 47 行目です。この教材の申請くんのスタック例は、実ファイルの行番号と一致しています。Unknown Source とだけある行は、ソースが無いので飛ばしましょう。",
         },
         {
           type: "figure",
           src: "/images/code-screen.jpg",
           alt: "エディタにソースと行番号が出ている画面",
-          caption: "ログの :41 は、エディタ左端の行番号と同じものです。",
+          caption: "ログの :47 は、エディタ左端の行番号と同じものです。",
         },
         {
           type: "h2",
@@ -852,7 +856,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
           headers: ["症状", "切り分け"],
           rows: [
             ["最初からログイン画面", "未ログイン、Cookie 未送信、セッション無効"],
-            ["操作後にログイン画面", "セッションタイムアウト、CSRF 不一致、セッション固定"],
+            ["操作後にログイン画面", "セッションタイムアウト、セッション失効、Cookie 属性の不一致、CSRF 不一致"],
             ["権限がありません", "ステータスコードは 403 と読むことが多いが、200 のエラー画面などアプリ次第。ロール、hasRole、承認者 ID"],
             ["API が 401 の JSON", "画面側でログインへ飛ばすのと同じ未ログイン、という実装が多い。形はアプリ次第"],
             ["API なのに HTML が返る", "認証リダイレクト。JSON ではなくログイン画面。Content-Type を見る"],
@@ -946,7 +950,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         },
         {
           type: "code",
-          title: "同じスレッドの INFO（抜粋）",
+          title: "計測ログを追加した例（申請くんの実ログではない）",
           code: `2026-08-16 04:12:03.100 INFO  ... [nio-8080-exec-3] j.c.e.s.controller.RequestController : list start
 2026-08-16 04:12:03.105 INFO  ... [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine start
 2026-08-16 04:12:08.410 INFO  ... [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine done
@@ -954,7 +958,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "上の例では findMine の start と done のあいだが約 5 秒、前後は数ミリ秒です。遅いのは Service の中（SQL やその前後の I/O）です。Controller の組み立てではありません。start / done は時刻差の読み方の例で、同じ文言が必ず出るわけではありません。既存の通過点でも、見方は同じです。",
+          text: "上は計測ログを追加した例で、申請くんの実ログではありません。findMine の start と done のあいだが約 5 秒なので、遅いのは Service の中（SQL やその前後の I/O）です。申請くんの既存ログでは ServiceLoggingAspect が DEBUG で start / end を出します。",
         },
         {
           type: "ul",
@@ -1034,7 +1038,7 @@ FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DES
         },
         {
           type: "code",
-          title: "承認後に通知 API を呼ぶ例（抜粋）",
+          title: "計測ログと通知 API の例（申請くんの実ログではない）",
           code: `04:12:03.200 INFO  ... RequestService : approve start requestId=12
 04:12:03.205 DEBUG ... RequestMapper : <==      Total: 1
 04:12:03.206 INFO  ... RequestService : db updated requestId=12
