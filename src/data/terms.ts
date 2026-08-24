@@ -123,12 +123,12 @@ export const terms: TermDef[] = [
   {
     term: "Repository",
     aliases: ["Repository"],
-    body: "DB アクセスを担当する層。Mapper と同じデータアクセス層で、JPA では Repository、MyBatis では Mapper を使うことが多いです。",
+    body: "DB アクセスを担当する層。JPA ではこの名前が多いです。Mapper と役割が同じことも、Mapper の手前に置くこともあります。",
   },
   {
     term: "Mapper",
     aliases: ["Mapper"],
-    body: "MyBatis などで、Java メソッドと SQL を対応づけるデータアクセス層の部品です。",
+    body: "MyBatis などで、Java メソッドと SQL を対応づける部品です。データアクセス層として単体で置くことも、Repository から呼ばれることもあります。",
   },
   {
     term: "Entity",

@@ -168,7 +168,7 @@ server:
       blocks: [
         {
           type: "p",
-          text: "画面や API の URL からソースを追うときは、Controller → Service → Repository または Mapper の順で開きます。この項目では、各層の役割と、その順番だけ押さえます。",
+          text: "画面や API の URL からソースを追うときは、Controller → Service → DB アクセスの層、の順で開きます。この項目では、各層の役割と、開く順を見ます。",
         },
         {
           type: "h2",
@@ -176,7 +176,7 @@ server:
         },
         {
           type: "p",
-          text: "Repository と Mapper は同じデータアクセス層です。JPA では Repository、MyBatis では Mapper を使うことが多いです。",
+          text: "DB アクセスのクラスは、JPA では Repository、MyBatis では Mapper と呼ぶことが多いです。どちらか一方だけ置くことも、Repository が Mapper を呼ぶこともあります。",
         },
         {
           type: "ul",
