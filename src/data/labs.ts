@@ -12,7 +12,7 @@ export const requestFlow: FlowStep[] = [
     layer: "Browser",
     title: "一覧を開く",
     detail:
-      "利用者が /shinsei/requests にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引くキーになります。",
+      "利用者が /shinsei/requests にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引く鍵になります。",
     code: `GET /shinsei/requests HTTP/1.1
 Host: intranet.example.co.jp
 Cookie: JSESSIONID=AB12CD34
@@ -114,7 +114,7 @@ export const stackCases: StackCase[] = [
   {
     id: "npe",
     title: "承認ボタンでステータスコード 500",
-    symptom: "山田で申請 ID 16「承認者未設定」の詳細を開き、「承認」を押すと画面がエラーになる。",
+    symptom: "山田で申請 ID 16「研修参加」の詳細を開き、「承認」を押すと画面がエラーになる。",
     lines: [
       {
         kind: "exception",

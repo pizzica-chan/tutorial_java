@@ -26,7 +26,7 @@ export const terms: TermDef[] = [
     body: "HTTP メソッドの代表例。GET は取得、POST は登録や状態を変える操作に使われることが多いです。PUT / PATCH / DELETE も API でよく使います。約束と実装がずれることもあるので、Network タブで確認します。",
   },
   {
-    term: "HTTP ステータスコード",
+    term: "HTTPステータスコード",
     aliases: ["HTTPステータスコード", "HTTP ステータスコード", "ステータスコード", "2xx", "3xx", "4xx", "5xx"],
     body: "応答の結果を表す 3 桁の番号。2xx は成功、3xx は別 URL へ、4xx はクライアント側、5xx はサーバ側の問題です。",
   },

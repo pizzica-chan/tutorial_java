@@ -253,7 +253,7 @@ export const troubleshootTrack: Track = {
           type: "p",
           text: "書式は設定次第ですが、次の要素が並ぶことが多いです。",
         },
-        { type: "diagram", name: "log-line" },
+        { type: "diagram", name: "log-line", caption: "ログの名前は、原因のクラスとは限りません。原因は下の at 行で見ます。" },
         {
           type: "code",
           title: "例外が出たとき（申請くん・ID 16）",

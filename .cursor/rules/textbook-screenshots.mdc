@@ -52,7 +52,7 @@ node shinsei-kun/scripts/capture-network.mjs
 - ウィンドウ全体は `window-shot.ps1`（PID でこの Chrome だけ撮る）。見える枠は `DwmGetWindowAttribute` で取る（`GetWindowRect` だと左右に後ろのウィンドウが写る）
 - CSS 404 は `app.css` を intercept して 404 にし、リロードする。ページが崩れた状態と Network の 404 を同時に撮る
 - pending は一覧 URL のまま reload を止める。`about:blank` から始めない
-- 承認 500 は、山田で ID 16「承認者未設定」を開き、実際に承認を送信して撮る。`request.getApproverId()` が null のため、実アプリが 500 を返す
+- 承認 500 は、山田で ID 16「研修参加」を開き、実際に承認を送信して撮る。`request.getApproverId()` が null のため、実アプリが 500 を返す
 - POST 後にログが消えるので、403 / 500 は遷移後の document 行を撮る（preserve log は必須ではない）
 - 画面にエラーが出ているが POST が無いときは、submit を止めて画面にエラーを出し、ウィンドウ全体を撮る。ページ単体だとサーバの flash に見える。キャプションは「例」
 

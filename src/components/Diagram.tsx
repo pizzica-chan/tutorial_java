@@ -272,7 +272,7 @@ function RequestParams() {
 function SessionCookie() {
   return (
     <div className="d-split">
-      <PhotoNode src="/images/keys.jpg" alt="鍵のかかった南京錠" kicker="BROWSER" title="Cookie" sub="キーだけ持つ" />
+      <PhotoNode src="/images/keys.jpg" alt="鍵のかかった南京錠" kicker="BROWSER" title="Cookie" sub="鍵だけ持つ" />
       <div className="d-arrows">
         <Arrow label="ID だけ往復する" />
       </div>
@@ -461,7 +461,7 @@ const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: stri
   {
     kind: "hit",
     text: "    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)",
-    note: "このファイルの 41 行目を最初に調べる",
+    note: "このファイルの 47 行目を最初に調べる",
   },
   {
     kind: "dim",
@@ -479,7 +479,7 @@ const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: stri
   {
     kind: "own",
     text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)",
-    note: "呼び出し元。このファイルの 58 行目",
+    note: "呼び出し元。このファイルの 70 行目",
   },
   {
     kind: "dim",
@@ -758,7 +758,7 @@ function LogLine() {
         </span>
         <span className="url-part res">
           dispatcherServlet
-          <em>どのクラスか</em>
+          <em>ログの名前</em>
         </span>
         <span className="url-part query">
           Servlet.service() threw exception

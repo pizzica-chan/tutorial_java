@@ -144,7 +144,7 @@ export const scenarioTrack: Track = {
         {
           type: "ul",
           items: [
-            "山田（yamada）でログイン。申請 ID 16「承認者未設定」。検証用環境",
+            "山田（yamada）でログイン。申請 ID 16「研修参加」。検証用環境",
             "Network タブで POST /shinsei/requests/16/approve が 500",
             "Content-Type は text/html",
           ],

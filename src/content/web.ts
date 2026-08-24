@@ -135,7 +135,7 @@ export const webTrack: Track = {
         { type: "diagram", name: "get-post" },
         {
           type: "h2",
-          text: "HTTP ステータスコード",
+          text: "HTTPステータスコード",
         },
         { type: "diagram", name: "status-codes" },
         {
@@ -282,7 +282,7 @@ export const webTrack: Track = {
           type: "p",
           text: "HTTP は、前のリクエストを覚えていません。たとえば、ログイン済みかどうかも次のリクエストには引き継がれません。サーバはセッションを作り、その ID を Cookie としてブラウザに渡します。",
         },
-        { type: "diagram", name: "session", caption: "ブラウザが持つのはキーだけ。中身はサーバ側です。" },
+        { type: "diagram", name: "session", caption: "ブラウザが持つのは鍵だけ。中身はサーバ側です。" },
         {
           type: "h2",
           text: "申請くんの例",
@@ -319,7 +319,7 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "キーの名前やオブジェクトの形は、アプリとフレームワーク次第です。パスワードは Cookie には出ません。確認するのは、同じ ID でログインユーザを引けることです。",
+          text: "中身の持ち方は、アプリとフレームワーク次第です。パスワードは Cookie には出ません。確認するのは、同じ ID でログインユーザを引けることです。",
         },
         {
           type: "ol",
