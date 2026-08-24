@@ -27,6 +27,32 @@ export const quizzes = {
     explanation:
       "一覧の件数は、SQL が読んだ DB の行です。先に実行された SQL を見て、同じ条件で行を数えます。見た目の CSS とは切り分けが違います。",
   },
+  "web-api-json": {
+    id: "web-api-json",
+    question: "fetch で Web API を呼んだ。JSON を読む前に確認するのはどれ？",
+    choices: [
+      "ステータスコードと Content-Type",
+      "画面のフォント",
+      "Java のクラス数",
+      "アドレスバーの色",
+    ],
+    answer: 0,
+    explanation:
+      "401 や 500 でも fetch の通信自体は完了します。ステータスコードが成功で、Content-Type が application/json であることを確認してから JSON を読みましょう。",
+  },
+  "web-json-ui": {
+    id: "web-json-ui",
+    question: "上の React の例で、一覧の件数がおかしい。先に確認するのはどれ？",
+    choices: [
+      "最初に返ってきた HTML に行が入っているかだけ",
+      "JSON を返す Web API の応答（ステータスコードと本文）",
+      "アドレスバーが変わったかだけ",
+      "サーバの起動ログだけ",
+    ],
+    answer: 1,
+    explanation:
+      "上の例では一覧の行を JSON から組みます。Network タブの XHR / fetch で応答を確認しましょう。JSON の件数も違うなら API の SQL と DB、JSON が正しいなら画面側の filter、React の state、プロパティ名を調べます。",
+  },
   "web-status": {
     id: "web-status",
     question: "ログイン後の操作で「権限がありません」と出た。ステータスコードについて妥当なのは？",

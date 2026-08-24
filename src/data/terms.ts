@@ -491,7 +491,7 @@ export const terms: TermDef[] = [
   {
     term: "Web API",
     aliases: ["Web API", "WebAPI"],
-    body: "画面ではなくデータを返す HTTP の窓口。本文は JSON が多いです。",
+    body: "データを HTTP で提供する窓口。本文は JSON が多く、ブラウザの画面、モバイルアプリ、ほかのサーバなどから使われます。",
   },
   {
     term: "Content-Type",
@@ -502,6 +502,21 @@ export const terms: TermDef[] = [
     term: "Ajax",
     aliases: ["XMLHttpRequest", "Ajax", "fetch", "XHR"],
     body: "画面を丸ごと遷移せず、裏で HTTP 通信する方式です。応答は JSON が多いです。",
+  },
+  {
+    term: "SPA",
+    aliases: ["SPA", "シングルページアプリケーション"],
+    body: "Single Page Application。ページ全体の読み直しを減らし、JavaScript で画面を切り替えるアプリの形です。Web API の JSON を使う構成が多く、React などで作れます。",
+  },
+  {
+    term: "React",
+    aliases: ["React"],
+    body: "ブラウザで画面を組むための JavaScript のライブラリです。Web API から受け取った JSON を一覧などにすることが多いです。",
+  },
+  {
+    term: "React の state",
+    aliases: ["React の state"],
+    body: "React が画面の表示に使う、変化する値です。useState で作った state を更新すると、React がその値に合わせて画面を描画し直します。",
   },
   {
     term: "PRG",
@@ -657,6 +672,11 @@ export const terms: TermDef[] = [
     term: "URL",
     aliases: ["URL"],
     body: "資源の住所。ホスト、パス、クエリなどが並びます。",
+  },
+  {
+    term: "オリジン",
+    aliases: ["オリジン"],
+    body: "Web で通信元を区別する単位。URL のスキーム（http または https）、ホスト、ポートの組み合わせです。どれか 1 つでも違えば、別のオリジンです。",
   },
   {
     term: "リクエスト",

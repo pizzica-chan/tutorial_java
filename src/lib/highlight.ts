@@ -5,6 +5,7 @@ import yaml from "highlight.js/lib/languages/yaml";
 import http from "highlight.js/lib/languages/http";
 import sql from "highlight.js/lib/languages/sql";
 import javascript from "highlight.js/lib/languages/javascript";
+import json from "highlight.js/lib/languages/json";
 import css from "highlight.js/lib/languages/css";
 import { lookupTerm, type TermDef } from "../data/terms";
 
@@ -15,6 +16,7 @@ hljs.registerLanguage("yaml", yaml);
 hljs.registerLanguage("http", http);
 hljs.registerLanguage("sql", sql);
 hljs.registerLanguage("javascript", javascript);
+hljs.registerLanguage("json", json);
 hljs.registerLanguage("css", css);
 
 const aliases: Record<string, string> = {
@@ -28,6 +30,7 @@ const aliases: Record<string, string> = {
   sql: "sql",
   javascript: "javascript",
   js: "javascript",
+  json: "json",
   css: "css",
 };
 

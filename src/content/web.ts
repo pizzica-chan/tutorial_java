@@ -358,6 +358,10 @@ Cookie: JSESSIONID=AB12CD34`,
           text: "申請くんのようにサーバ側で画面用 HTML を返すアプリでは、バックエンドがテンプレートをもとに HTML を動的に組み立てます。ブラウザは、返ってきた HTML を画面として表示します。",
         },
         {
+          type: "p",
+          text: "JSON を受け取ってブラウザが画面を組む形もあります。申請くんの画面はこの形ではありません。短い例は、この章の「Web API と SPA」です。",
+        },
+        {
           type: "callout",
           kind: "note",
           title: "担当と、動く場所",
@@ -409,12 +413,195 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "画面遷移しない操作は、JS が別 URL（/api/requests など）へ JSON を取りに行きます。アドレスバーは変わらないので、Network タブの XHR / fetch を見ましょう。",
+          text: "画面遷移しない操作は、JS が別 URL（/api/requests など）へ JSON を取りに行きます。アドレスバーは変わらないので、Network タブの XHR / fetch を見ましょう。一覧の行を JSON から組む形は、次の項目です。",
         },
         {
           type: "p",
           text: "CSS は見た目です。「ボタンが見えない」ことと「処理が無い」ことは別です。",
         },
+      ],
+    },
+    {
+      id: "api-json",
+      title: "Web API から JSON を受け取る",
+      minutes: 6,
+      blocks: [
+        {
+          type: "p",
+          text: "申請くんの一覧画面は、サーバが作った HTML を表示します。同じ申請データを、画面ではなく JSON で受け取る URL もあります。",
+        },
+        {
+          type: "p",
+          text: "GET /shinsei/api/requests は、申請一覧のデータを返します。このように、データを HTTP で提供する窓口を Web API と呼びます。",
+        },
+        {
+          type: "h2",
+          text: "JSON の応答",
+        },
+        {
+          type: "p",
+          text: "前に見た HTML の応答には、申請データに加えて、見出し、表、ボタンなど、画面を組み立てる要素が含まれていました。一方、次の JSON の応答には申請データだけが入っています。JSON の場合に画面をどう組み立てるかは、次の「JSON から画面を作る」で確認します。",
+          link: {
+            label: "JSON から画面を作る",
+            to: "/tracks/web/json-ui",
+          },
+        },
+        {
+          type: "p",
+          text: "山田でログインして一覧 API を呼んだときの応答から、1 件だけ抜粋します。HTML の画面ではなく、名前と値が並ぶデータです。",
+        },
+        {
+          type: "code",
+          title: "GET /shinsei/api/requests の応答から 1 件を抜粋",
+          lang: "json",
+          code: `[
+  {
+    "id": 12,
+    "title": "交通費申請",
+    "status": "PENDING",
+    "applicantId": 7,
+    "approverId": 3,
+    "applicantEmail": "yamada@example.co.jp",
+    "createdAt": "2026-04-10T09:15:00"
+  }
+]`,
+        },
+        {
+          type: "h2",
+          text: "ブラウザから取得する",
+        },
+        {
+          type: "p",
+          text: "JavaScript では fetch を使って Web API を呼べます。この例では画面と API が同じオリジン（URL のスキーム・ホスト・ポートが同じ）にあるため、ログイン済みならセッション Cookie も送られます。",
+        },
+        {
+          type: "code",
+          title: "一覧 API を呼ぶ",
+          lang: "javascript",
+          code: `fetch("/shinsei/api/requests")
+  .then((res) => {
+    if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+    if (!res.headers.get("content-type")?.includes("application/json")) {
+      throw new Error("JSON ではありません");
+    }
+    return res.json();
+  })
+  .then((data) => console.log(data))
+  .catch((error) => console.error(error));`,
+        },
+        {
+          type: "steps",
+          items: [
+            { title: "Web API へ GET", text: "ブラウザが /shinsei/api/requests を送ります。" },
+            { title: "応答の種類を確認", text: "ステータスコードが成功で、Content-Type が application/json かを確認します。" },
+            { title: "JSON を読む", text: "成功した応答の本文を res.json() で読み取ります。" },
+          ],
+        },
+        {
+          type: "p",
+          text: "Web API は画面専用ではありません。同じデータを、ブラウザの画面、モバイルアプリ、ほかのサーバなどから利用できます。",
+        },
+        { type: "quiz", id: "web-api-json" },
+      ],
+    },
+    {
+      id: "json-ui",
+      title: "JSON から画面を作る",
+      minutes: 7,
+      blocks: [
+        {
+          type: "p",
+          text: "前の項目では、Web API から申請一覧の JSON を受け取りました。次は、その JSON をブラウザの一覧として表示します。",
+        },
+        {
+          type: "p",
+          text: "下の例では React を使います。React の文法を覚えるのではなく、JSON が画面になるまでの流れを見ましょう。",
+        },
+        {
+          type: "code",
+          title: "React で一覧を組む例",
+          lang: "javascript",
+          code: `import { useEffect, useState } from "react";
+
+function RequestList() {
+  const [items, setItems] = useState([]);
+
+  useEffect(() => {
+    fetch("/shinsei/api/requests")
+      .then((res) => {
+        if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+        if (!res.headers.get("content-type")?.includes("application/json")) {
+          throw new Error("JSON ではありません");
+        }
+        return res.json();
+      })
+      .then((data) => setItems(data))
+      .catch((error) => console.error(error));
+  }, []);
+
+  return (
+    <ul>
+      {items.map((item) => (
+        <li key={item.id}>
+          {item.title}（{item.status}）
+        </li>
+      ))}
+    </ul>
+  );
+}`,
+        },
+        {
+          type: "steps",
+          items: [
+            { title: "JSON を受け取る", text: "fetch が一覧 API の応答を読みます。" },
+            { title: "React の state に入れる", text: "setItems で、React が管理する値を更新します。" },
+            { title: "一覧を作る", text: "items.map が JSON の各要素を一覧の行にします。" },
+          ],
+        },
+        {
+          type: "p",
+          text: "item.title と item.status は、前の項目で見た JSON の title と status です。プロパティ名が違うと、画面には出ません。",
+        },
+        {
+          type: "h2",
+          text: "HTML に一覧がある場合との違い",
+        },
+        {
+          type: "table",
+          headers: ["観点", "申請くんの一覧画面", "上の React の例"],
+          rows: [
+            ["一覧データの主な取得元", "最初に返る HTML", "Web API の JSON"],
+            ["画面の組み立て", "サーバのテンプレート", "ブラウザの JavaScript"],
+            ["件数の根拠として見る行", "一覧 HTML の応答", "一覧 API の XHR / fetch 応答"],
+          ],
+        },
+        {
+          type: "h2",
+          text: "SPA という構成",
+        },
+        {
+          type: "p",
+          text: "ページ全体の読み直しを減らし、JavaScript で画面を切り替えるアプリを、シングルページアプリケーション（SPA）と呼びます。SPA では、Web API の JSON から画面を作る構成が多くあります。",
+        },
+        {
+          type: "p",
+          text: "上の例のように、React は JSON から画面を作るために使えます。ただし、React を使うだけで SPA になるわけではありません。Web API も SPA 専用ではありません。名前だけで決めず、Network タブで実際の応答を確認しましょう。",
+        },
+        {
+          type: "h2",
+          text: "表示がおかしいとき",
+        },
+        {
+          type: "p",
+          text: "JSON の件数もおかしいなら、API の SQL と DB を確認します。JSON は正しいのに画面だけ違うなら、プロパティ名、filter や並べ替え、React の state、JavaScript の例外を確認しましょう。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "API が 200 でも画面は空になる",
+          text: "一覧 API が 200 でも、JSON のプロパティ名が違うときや JavaScript が例外になったときは、一覧が出ません。Network タブの XHR / fetch と、ブラウザのコンソールを確認しましょう。",
+        },
+        { type: "quiz", id: "web-json-ui" },
       ],
     },
   ],

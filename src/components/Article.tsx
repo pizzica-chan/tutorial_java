@@ -1,4 +1,5 @@
 import { Fragment, type ComponentType } from "react";
+import { Link } from "react-router-dom";
 import type { Block, CalloutKind, WidgetName } from "../types";
 import { QuizBlock } from "./QuizBlock";
 import { ProjectExplorer } from "./ProjectExplorer";
@@ -42,7 +43,7 @@ function BlockView({ block }: { block: Block }) {
     case "p":
       return (
         <p>
-          <TextWithTerms text={block.text} />
+          {block.link ? <LinkedText text={block.text} link={block.link} /> : <TextWithTerms text={block.text} />}
         </p>
       );
     case "h2":
@@ -164,6 +165,23 @@ function BlockView({ block }: { block: Block }) {
       return _exhaustive;
     }
   }
+}
+
+function LinkedText({ text, link }: { text: string; link: { label: string; to: string } }) {
+  const index = text.indexOf(link.label);
+  if (index < 0) return <TextWithTerms text={text} />;
+
+  const before = text.slice(0, index);
+  const after = text.slice(index + link.label.length);
+  return (
+    <>
+      <TextWithTerms text={before} />
+      <Link className="chapter-ref" to={link.to}>
+        {link.label}
+      </Link>
+      <TextWithTerms text={after} />
+    </>
+  );
 }
 
 function label(kind: CalloutKind) {

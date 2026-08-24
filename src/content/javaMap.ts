@@ -276,6 +276,10 @@ public class RequestApiController {
           type: "p",
           text: "同じ RequestService を呼んでも、出口が HTML か JSON かで、クライアントが受け取るものが変わります。たどる順番は同じです。最後に見る場所だけ切り替えましょう。",
         },
+        {
+          type: "p",
+          text: "ブラウザが JSON から画面を組む例は、Webの基礎の「Web API と SPA」です。",
+        },
         { type: "quiz", id: "java-layer" },
       ],
     },

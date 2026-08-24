@@ -39,7 +39,7 @@ export type DiagramName =
   | "template-rendered";
 
 export type Block =
-  | { type: "p"; text: string }
+  | { type: "p"; text: string; link?: { label: string; to: string } }
   | { type: "h2"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "ol"; items: string[] }
