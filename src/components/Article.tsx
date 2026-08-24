@@ -49,7 +49,7 @@ function BlockView({ block }: { block: Block }) {
     case "h2":
       return (
         <h2>
-          <TextWithTerms text={block.text} />
+          <TextWithTerms text={block.text} linkChapters={false} />
         </h2>
       );
     case "ul":

@@ -531,7 +531,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
       blocks: [
         {
           type: "p",
-          text: "Controller から Service を追うとき、ソースに書いてある Java メソッド呼び出しだけを見ると足りないことがあります。リクエストの前後や、service.approve() の実体の手前に、別クラスが挟まります。呼び出し元の Java メソッドには、その名前が出ません。",
+          text: "Controller から Service を追うとき、ソースに書いてある Java メソッド呼び出しだけを見るのでは足りないことがあります。リクエストの前後や、service.approve() の実体の手前に、別クラスが挟まります。呼び出し元の Java メソッドには、その名前が出ません。",
         },
         { type: "diagram", name: "cross-cut", caption: "Controller や Service のソースに、これらの呼び出しは書かれていません。" },
         {

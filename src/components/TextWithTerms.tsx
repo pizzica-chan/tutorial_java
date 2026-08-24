@@ -26,17 +26,21 @@ export function TextWithTerms({
   text,
   highlight = true,
   linkTerms = true,
+  linkChapters = true,
 }: {
   text: string;
   highlight?: boolean;
   linkTerms?: boolean;
+  linkChapters?: boolean;
 }) {
   const isFirst = useContext(TermSeenContext);
   if (!highlight) return text;
 
+  const chunks = linkChapters ? splitByChapters(text) : [{ type: "text" as const, value: text }];
+
   return (
     <>
-      {splitByChapters(text).flatMap((chunk, chunkIndex) => {
+      {chunks.flatMap((chunk, chunkIndex) => {
         if (chunk.type === "chapter") {
           return <ChapterMark key={`c-${chunkIndex}`} hit={chunk.hit} text={chunk.value} />;
         }

@@ -1,8 +1,10 @@
 import { tracks } from "./curriculum";
+import { terms } from "./terms";
 
 export type ChapterHit = {
   title: string;
   href: string;
+  kind: "chapter" | "lesson";
 };
 
 export type ChapterPart =
@@ -26,22 +28,41 @@ type Matcher = {
 };
 
 const SKIP = new Set(["はじめに"]);
+const termNames = new Set(terms.flatMap((item) => [item.term, ...item.aliases]));
+
+function toMatchers(aliasSet: Set<string>, hit: ChapterHit): Matcher[] {
+  return [...aliasSet].map((alias) => {
+    const escaped = escapeRegex(alias);
+    const pattern = /^[\x00-\x7F]+$/.test(alias)
+      ? `(?<![A-Za-z0-9_])${escaped}(?![A-Za-z0-9_])`
+      : /^[A-Za-z0-9]/.test(alias)
+        ? `(?<![A-Za-z0-9_])${escaped}`
+        : escaped;
+    return { alias, pattern, hit };
+  });
+}
+
+function titleAliases(title: string): Set<string> {
+  return new Set([title, insertAsciiJaSpaces(title), title.replace(/\s+/g, "")]);
+}
 
 const matchers: Matcher[] = tracks
   .filter((track) => !SKIP.has(track.title))
   .flatMap((track) => {
-    const hit: ChapterHit = { title: track.title, href: `/tracks/${track.id}` };
-    const aliases = new Set([track.title, insertAsciiJaSpaces(track.title), track.title.replace(/\s+/g, "")]);
+    const chapterHit: ChapterHit = { title: track.title, href: `/tracks/${track.id}`, kind: "chapter" };
+    const aliases = titleAliases(track.title);
     if (track.id === "scenario") aliases.add("シナリオ章");
-    return [...aliases].map((alias) => {
-      const escaped = escapeRegex(alias);
-      const pattern = /^[\x00-\x7F]+$/.test(alias)
-        ? `(?<![A-Za-z0-9_])${escaped}(?![A-Za-z0-9_])`
-        : /^[A-Za-z0-9]/.test(alias)
-          ? `(?<![A-Za-z0-9_])${escaped}`
-          : escaped;
-      return { alias, pattern, hit };
-    });
+    const chapterMatchers = toMatchers(aliases, chapterHit);
+    const lessonMatchers = track.lessons
+      .filter((lesson) => !termNames.has(lesson.title))
+      .flatMap((lesson) =>
+        toMatchers(titleAliases(lesson.title), {
+          title: lesson.title,
+          href: `/tracks/${track.id}/${lesson.id}`,
+          kind: "lesson",
+        }),
+      );
+    return [...chapterMatchers, ...lessonMatchers];
   })
   .sort((a, b) => b.alias.length - a.alias.length);
 
