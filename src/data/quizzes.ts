@@ -51,7 +51,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "上の例では一覧の行を JSON から組みます。Network タブの XHR / fetch で応答を確認しましょう。JSON の件数も違うなら API の SQL と DB、JSON が正しいなら画面側の filter、React の state、プロパティ名を調べます。",
+      "上の例では一覧の行を JSON から組みます。Network タブの Fetch/XHR で応答を確認しましょう。JSON の件数も違うなら API の SQL と DB、JSON が正しいなら画面側の filter、React の state、プロパティ名を調べます。",
   },
   "web-status": {
     id: "web-status",

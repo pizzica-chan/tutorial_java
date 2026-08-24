@@ -504,6 +504,11 @@ export const terms: TermDef[] = [
     body: "画面を丸ごと遷移せず、裏で HTTP 通信する方式です。応答は JSON が多いです。",
   },
   {
+    term: "Fetch/XHR",
+    aliases: ["Fetch/XHR"],
+    body: "ブラウザ開発者ツールの Network タブにある絞り込み項目。fetch または XMLHttpRequest で始まった通信だけを表示します。対象の通信を選ぶと、送信先、ステータスコード、応答の本文などを確認できます。",
+  },
+  {
     term: "SPA",
     aliases: ["SPA", "シングルページアプリケーション"],
     body: "Single Page Application。ページ全体の読み直しを減らし、JavaScript で画面を切り替えるアプリの形です。Web API の JSON を使う構成が多く、React などで作れます。",
@@ -637,6 +642,11 @@ export const terms: TermDef[] = [
     term: "Networkタブ",
     aliases: ["Network タブ", "Networkタブ", "Network"],
     body: "ブラウザ開発者ツールの画面。実際に飛んだ HTTP リクエストを見られます。見られるのは、開発者ツールを開いているウィンドウの通信です。別ウィンドウで送ったリクエストは、元のウィンドウには出ません。",
+  },
+  {
+    term: "Elementsタブ",
+    aliases: ["Elements タブ", "Elements（要素）", "Elements"],
+    body: "ブラウザ開発者ツールの画面。現在のページにある HTML 要素と、適用されている CSS を確認できます。サーバが返した後に JavaScript が書き換えた内容も反映されます。",
   },
   {
     term: "ホスト",

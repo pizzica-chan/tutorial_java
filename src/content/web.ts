@@ -359,7 +359,11 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "JSON を受け取ってブラウザが画面を組む形もあります。申請くんの画面はこの形ではありません。短い例は、この章の「Web API と SPA」です。",
+          text: "JSON を受け取ってブラウザが画面を組む形もあります。申請くんの画面はこの形ではありません。短い例は、この章の「Web API から JSON を受け取る」から順に説明します。",
+          link: {
+            label: "Web API から JSON を受け取る",
+            to: "/tracks/web/api-json",
+          },
         },
         {
           type: "callout",
@@ -393,31 +397,70 @@ Cookie: JSESSIONID=AB12CD34`,
     },
     {
       id: "front-roles",
-      title: "HTML / CSS / JS",
+      title: "HTML / CSS / JavaScript の役割",
       minutes: 8,
       blocks: [
         {
           type: "p",
-          text: "サーバ側の処理だけ見ても足りないことがあります。フォームの送信先や表示条件はテンプレート側にあります。Thymeleaf の読み方は「Javaアプリの構成」のテンプレートの読み方です。",
+          text: "ブラウザに表示される画面には、HTML、CSS、JavaScript が関わります。まず、それぞれが何を担当するかを分けて見ましょう。",
         },
         {
           type: "table",
-          headers: ["見るもの", "確認すること"],
+          headers: ["技術", "主な役割", "申請くんで見る例"],
           rows: [
-            ["form の action / method", "どの Controller に飛ぶか"],
-            ["hidden 項目", "ID や CSRF トークンの有無"],
-            ["th:if / c:if", "ボタンが出ないのは表示条件かもしれない"],
-            ["name 属性", "サーバの Spring の @RequestParam と一致しているか（「リクエストのパラメータ」参照）"],
-            ["fetch / XMLHttpRequest", "画面遷移しない更新。JSON の Web API が多い。ステータスコードと Content-Type を Network タブで確認しましょう"],
+            ["HTML", "見出し、入力欄、ボタンなど、画面の要素を表す", "form、input、button"],
+            ["CSS", "色、位置、余白、表示・非表示など、見え方を指定する", "ボタンの色、表の幅、レイアウト"],
+            ["JavaScript", "操作に応じて画面を変えたり、HTTP 通信を始めたりする", "確認ダイアログ、fetch"],
           ],
         },
         {
-          type: "p",
-          text: "画面遷移しない操作は、JS が別 URL（/api/requests など）へ JSON を取りに行きます。アドレスバーは変わらないので、Network タブの XHR / fetch を見ましょう。一覧の行を JSON から組む形は、次の項目です。",
+          type: "h2",
+          text: "HTML テンプレート：送る内容と表示条件",
         },
         {
           type: "p",
-          text: "CSS は見た目です。「ボタンが見えない」ことと「処理が無い」ことは別です。",
+          text: "申請くんでは、サーバが Thymeleaf テンプレートから HTML を組み立てます。フォームの送信先や、ボタンを表示する条件を追うときは、Java のコードとテンプレートの両方を確認します。Thymeleaf の基本は、「テンプレートの読み方」で説明しています。",
+          link: {
+            label: "テンプレートの読み方",
+            to: "/tracks/java-map/template-read",
+          },
+        },
+        {
+          type: "table",
+          headers: ["テンプレートで見るもの", "確認すること"],
+          rows: [
+            ["form の action / method", "送信先の URL と HTTP メソッド"],
+            ["input の name / hidden", "サーバへ送る項目、ID、CSRF トークン"],
+            ["th:if / c:if", "サーバがその要素を HTML に出す条件"],
+          ],
+        },
+        {
+          type: "h2",
+          text: "JavaScript：画面の更新と HTTP 通信",
+        },
+        {
+          type: "p",
+          text: "ボタンを押してもページが切り替わらないときは、JavaScript が画面だけを更新している場合と、fetch などで HTTP 通信をしている場合があります。まず Network タブで新しい通信があるかを確認します。通信があれば Fetch/XHR を選び、対象の通信を開いて、送信先、ステータスコード、応答の本文を見ましょう。JSON を使う通信は、次の「Web API から JSON を受け取る」で確認します。",
+          link: {
+            label: "Web API から JSON を受け取る",
+            to: "/tracks/web/api-json",
+          },
+        },
+        {
+          type: "p",
+          text: "新しい通信が無いときは、Console に JavaScript の例外が出ていないかを確認します。通信せずに画面内の表示だけを変える処理なら、処理の前後で HTML の要素がどう変わったかを Elements タブで見ます。",
+        },
+        {
+          type: "h2",
+          text: "CSS：要素の見え方",
+        },
+        {
+          type: "p",
+          text: "ボタンが見えないときは、開発者ツールの Elements タブでボタンの要素があるかを確認します。要素が無ければ、HTML テンプレートの表示条件や JavaScript を調べます。要素があれば、CSS で隠れていないか、画面の外に出ていないか、ほかの要素に覆われていないかを確認します。",
+        },
+        {
+          type: "p",
+          text: "HTML は要素と送る内容、JavaScript は画面の更新と通信、CSS は見え方を担当します。症状に関係する役割から確認すると、画面側のすべてを一度に読む必要はありません。",
         },
       ],
     },
@@ -572,7 +615,7 @@ function RequestList() {
           rows: [
             ["一覧データの主な取得元", "最初に返る HTML", "Web API の JSON"],
             ["画面の組み立て", "サーバのテンプレート", "ブラウザの JavaScript"],
-            ["件数の根拠として見る行", "一覧 HTML の応答", "一覧 API の XHR / fetch 応答"],
+            ["件数の根拠として見る行", "一覧 HTML の応答", "Fetch/XHR に表示される一覧 API の応答"],
           ],
         },
         {
@@ -599,7 +642,7 @@ function RequestList() {
           type: "callout",
           kind: "trap",
           title: "API が 200 でも画面は空になる",
-          text: "一覧 API が 200 でも、JSON のプロパティ名が違うときや JavaScript が例外になったときは、一覧が出ません。Network タブの XHR / fetch と、ブラウザのコンソールを確認しましょう。",
+          text: "一覧 API が 200 でも、JSON のプロパティ名が違うときや JavaScript が例外になったときは、一覧が出ません。Network タブの Fetch/XHR と、ブラウザのコンソールを確認しましょう。",
         },
         { type: "quiz", id: "web-json-ui" },
       ],

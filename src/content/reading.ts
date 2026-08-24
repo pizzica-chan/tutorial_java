@@ -81,7 +81,7 @@ export const readingTrack: Track = {
         {
           type: "ol",
           items: [
-            "対象の URL を確認する（画面ならアドレスバー、Web API なら Network タブの XHR / fetch）",
+            "対象の URL を確認する（画面ならアドレスバー、Web API なら Network タブの Fetch/XHR）",
             "パス文字列（requests など）でソースを検索する",
             "ヒットした Controller で、HTTP メソッドとパスが対象の操作に合うか確認する",
             "一致した Java メソッドを、処理の入口として特定する",

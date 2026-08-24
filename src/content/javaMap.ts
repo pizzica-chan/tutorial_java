@@ -278,7 +278,11 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "ブラウザが JSON から画面を組む例は、Webの基礎の「Web API と SPA」です。",
+          text: "ブラウザが JSON から画面を組む例は、Webの基礎の「Web API から JSON を受け取る」から順に説明します。",
+          link: {
+            label: "Web API から JSON を受け取る",
+            to: "/tracks/web/api-json",
+          },
         },
         { type: "quiz", id: "java-layer" },
       ],
