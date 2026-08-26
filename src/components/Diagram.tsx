@@ -835,7 +835,7 @@ function SqlToSource() {
           MyBatis
         </h4>
         <div className="d-stack">
-          <Layer icon="terminal">ログの SQL</Layer>
+          <Layer icon="terminal">調べたい SQL</Layer>
           <Arrow down label="テーブル名や列名で探す" />
           <Layer icon="file" accent>
             Mapper XML
@@ -851,10 +851,10 @@ function SqlToSource() {
       <div className="d-col">
         <h4>
           <Icon name="code" size={16} />
-          Hibernate
+          JPA（Hibernate）
         </h4>
         <div className="d-stack">
-          <Layer icon="terminal">ログの SQL</Layer>
+          <Layer icon="terminal">調べたい SQL</Layer>
           <Arrow down label="テーブル名で探す" />
           <Layer icon="file" accent>
             Entity の @Table

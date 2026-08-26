@@ -168,7 +168,7 @@ export const terms: TermDef[] = [
   {
     term: "フラグメント",
     aliases: ["フラグメント", "th:fragment", "th:replace"],
-    body: "Thymeleaf で、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。ヘッダなどの共通部品のほか、Ajax で画面の一部だけを返すときにも使います。申請くんでは fragments/layout.html がヘッダと CSS を持ち、各画面が th:replace で使います。",
+    body: "Thymeleaf で、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。複数画面で共通する HTML を1か所にまとめて共有できます。申請くんでは fragments/layout.html が全画面共通のヘッダと CSS を持ち、各画面の個別ファイルが th:replace で使います。",
   },
   {
     term: "JSP",
@@ -515,8 +515,13 @@ export const terms: TermDef[] = [
   },
   {
     term: "Ajax",
-    aliases: ["Ajax", "fetch"],
+    aliases: ["Ajax"],
     body: "Asynchronous JavaScript and XML。ページ全体を読み直さず、JavaScript から HTTP 通信する方法です。名前に XML とありますが、JSON も扱えます。",
+  },
+  {
+    term: "fetch",
+    aliases: ["fetch"],
+    body: "ブラウザの JavaScript から HTTP 通信するための API です。XMLHttpRequest より新しい書き方としてよく使われます。Network タブでは、XMLHttpRequest とまとめて Fetch/XHR に表示されます。",
   },
   {
     term: "XMLHttpRequest",

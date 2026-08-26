@@ -408,11 +408,15 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "フラグメントは、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。ヘッダや CSS の読み込みは、画面ごとに書かず、共通の部品に置くことが多いです。",
+          text: "フラグメントは、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。複数の画面で共通する HTML を、1か所にまとめて共有できます。",
         },
         {
           type: "p",
-          text: "申請くんでは templates/fragments/layout.html が枠です。th:fragment で名前を付け、各画面は th:replace でそれを使います。list.html にヘッダや CSS が無いときは、fragments を開きましょう。",
+          text: "申請くんの画面は、共通部分と個別部分に分かれています。ヘッダと CSS は全画面で共通なので、fragments/layout.html にまとめています。一覧の表や詳細の項目など、画面ごとに変わる部分は、request/list.html や request/detail.html のように、画面ごとのファイルに書きます。",
+        },
+        {
+          type: "p",
+          text: "画面ごとのファイルは th:replace で共通の layout.html を読み込みます。そのため list.html を開くと、その画面固有の <main> だけが見えます。共通のヘッダや CSS を追うときは layout.html も開きましょう。",
         },
         {
           type: "code",
@@ -434,15 +438,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "fragments/layout :: layout は、fragments/layout.html の layout という部品、と読みます。list.html の <main> が、layout.html の <main> の中に入ります。",
-        },
-        {
-          type: "p",
-          text: "Ajax で画面の一部だけを更新するときにも、サーバはフラグメントを返すことがあります。",
-          link: {
-            label: "Ajax",
-            to: "/tracks/web/ajax",
-          },
+          text: "fragments/layout :: layout は、共通の layout.html を指します。list.html の <main>（一覧固有の部分）が、layout.html の <main> に入ります。",
         },
         {
           type: "h2",
@@ -508,7 +504,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
             ["th:if / th:unless", "条件が true のときだけタグを出す。ボタンが無い原因になりやすい", "th:if=\"\${item.status == 'PENDING'}\"\nPENDING の行だけ承認ボタンが出る"],
             ["th:action / th:href", "form の送信先、リンク先。@{...} に書いたパスの前に、context-path（申請くんなら /shinsei）が付く", "th:action=\"@{/requests/{id}/approve(id=\${item.id})}\"\n承認ボタンの送信先になる"],
             ["th:name / name", "フォームの項目名。Controller の @RequestParam と対応", "name=\"title\"\n送信時の項目名が title になる"],
-            ["th:fragment / th:replace", "共通の HTML 部品。画面ファイルにヘッダが無いときに見る", "申請くんは fragments/layout.html"],
+            ["th:fragment / th:replace", "共通の HTML を、個別の画面から読み込む", "layout.html が共通、list.html が個別"],
           ],
         },
         {
@@ -544,7 +540,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "ol",
           items: [
             "Controller の return から HTML ファイルを開く",
-            "ヘッダや CSS が無ければ、th:replace 先のフラグメントも開く",
+            "共通のヘッダや CSS は fragments/layout.html にある",
             "Model に載せた名前と、th:each / th:text の ${...} が一致するか見る",
             "ボタンやリンクが無いときは th:if の条件を読む",
             "form の th:action と method で指定した送信先と HTTP メソッドが、想定の Controller のマッピングと一致するか見る",

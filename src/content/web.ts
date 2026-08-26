@@ -503,7 +503,7 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "Thymeleaf では、一覧の表だけなど、画面の一部分を HTML で返す使い方もあります。JavaScript が今のページのその部分を差し替えます。フラグメントの説明は「テンプレートの読み方」です。",
+          text: "Ajax で表だけを更新するアプリでは、サーバが HTML の一部分だけを返すことがあります。申請くんはページ全体を返します。申請くんで見るフラグメントは、全画面で共通のヘッダと CSS をまとめた layout.html です。詳しくは「テンプレートの読み方」です。",
           link: {
             label: "テンプレートの読み方",
             to: "/tracks/java-map/template-read",
