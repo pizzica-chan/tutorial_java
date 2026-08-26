@@ -46,7 +46,7 @@ export const javaMapTrack: Track = {
     },
     {
       id: "build",
-      title: "pom.xml / Gradle",
+      title: "Maven / Gradle",
       minutes: 9,
       blocks: [
         {
@@ -327,7 +327,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "th:href=\"@{/css/app.css}\" は、context-path を含めた URL に変換されます。申請くんでは /shinsei/css/app.css のように見えます。",
+          text: "th:href=\"@{/css/app.css}\" は、context-path を含めた URL に変換されます。申請くんでは /shinsei/css/app.css のように見えます。この head は templates/fragments/layout.html にあります。",
         },
         {
           type: "code",
@@ -384,7 +384,7 @@ public class RequestApiController {
     {
       id: "template-read",
       title: "テンプレートの読み方",
-      minutes: 11,
+      minutes: 12,
       blocks: [
         {
           type: "p",
@@ -401,6 +401,48 @@ public class RequestApiController {
         {
           type: "p",
           text: "Controller の return が返す文字列が、templates 配下のパスになります。return \"request/list\" なら templates/request/list.html です。前の項目の図のとおりです。",
+        },
+        {
+          type: "h2",
+          text: "共通部分（フラグメント）",
+        },
+        {
+          type: "p",
+          text: "フラグメントは、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。ヘッダや CSS の読み込みは、画面ごとに書かず、共通の部品に置くことが多いです。",
+        },
+        {
+          type: "p",
+          text: "申請くんでは templates/fragments/layout.html が枠です。th:fragment で名前を付け、各画面は th:replace でそれを使います。list.html にヘッダや CSS が無いときは、fragments を開きましょう。",
+        },
+        {
+          type: "code",
+          title: "fragments/layout.html（抜粋）",
+          lang: "html",
+          code: `<html th:fragment="layout (title, content)">
+  ...
+  <main th:insert="\${content}"></main>
+</html>`,
+        },
+        {
+          type: "code",
+          title: "request/list.html（先頭）",
+          lang: "html",
+          code: `<html th:replace="fragments/layout :: layout(title='申請一覧', content=~{::main})">
+<main>
+  ...
+</main>`,
+        },
+        {
+          type: "p",
+          text: "fragments/layout :: layout は、fragments/layout.html の layout という部品、と読みます。list.html の <main> が、layout.html の <main> の中に入ります。",
+        },
+        {
+          type: "p",
+          text: "Ajax で画面の一部だけを更新するときにも、サーバはフラグメントを返すことがあります。",
+          link: {
+            label: "Ajax",
+            to: "/tracks/web/ajax",
+          },
         },
         {
           type: "h2",
@@ -466,6 +508,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
             ["th:if / th:unless", "条件が true のときだけタグを出す。ボタンが無い原因になりやすい", "th:if=\"\${item.status == 'PENDING'}\"\nPENDING の行だけ承認ボタンが出る"],
             ["th:action / th:href", "form の送信先、リンク先。@{...} に書いたパスの前に、context-path（申請くんなら /shinsei）が付く", "th:action=\"@{/requests/{id}/approve(id=\${item.id})}\"\n承認ボタンの送信先になる"],
             ["th:name / name", "フォームの項目名。Controller の @RequestParam と対応", "name=\"title\"\n送信時の項目名が title になる"],
+            ["th:fragment / th:replace", "共通の HTML 部品。画面ファイルにヘッダが無いときに見る", "申請くんは fragments/layout.html"],
           ],
         },
         {
@@ -501,7 +544,8 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "ol",
           items: [
             "Controller の return から HTML ファイルを開く",
-            "Model に載せた名前と、th:each / th:text の \${...} が一致するか見る",
+            "ヘッダや CSS が無ければ、th:replace 先のフラグメントも開く",
+            "Model に載せた名前と、th:each / th:text の ${...} が一致するか見る",
             "ボタンやリンクが無いときは th:if の条件を読む",
             "form の th:action と method で指定した送信先と HTTP メソッドが、想定の Controller のマッピングと一致するか見る",
             "POST なのに CSRF エラーなら、hidden の _csrf や th:action の有無を見る",

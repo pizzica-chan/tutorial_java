@@ -136,6 +136,11 @@ export const terms: TermDef[] = [
     body: "テーブルの 1 行に相当する Java のオブジェクトです。",
   },
   {
+    term: "@Table",
+    aliases: ["@Table"],
+    body: "Entity がどのテーブルに対応するかを示す印です。name にテーブル名を書きます。JPA のアノテーションです。Hibernate のログからソースを探すときは、このテーブル名で検索します。",
+  },
+  {
     term: "Spring Framework",
     aliases: ["Spring Framework", "Spring"],
     body: "Java のアプリを作るための枠組みです。略して Spring と呼ぶことが多いです。この教材では、起動の土台が Spring Boot、URL と Controller が Spring MVC、ログインと権限が Spring Security です。",
@@ -158,7 +163,12 @@ export const terms: TermDef[] = [
   {
     term: "Thymeleaf",
     aliases: ["Thymeleaf"],
-    body: "サーバ側で HTML を組み立てるテンプレートエンジンです。Spring でよく使います。",
+    body: "サーバ側で HTML を組み立てるテンプレートエンジンです。Spring でよく使います。共通の部品はフラグメントに分けます。",
+  },
+  {
+    term: "フラグメント",
+    aliases: ["フラグメント", "th:fragment", "th:replace"],
+    body: "Thymeleaf で、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。ヘッダなどの共通部品のほか、Ajax で画面の一部だけを返すときにも使います。申請くんでは fragments/layout.html がヘッダと CSS を持ち、各画面が th:replace で使います。",
   },
   {
     term: "JSP",
@@ -186,14 +196,19 @@ export const terms: TermDef[] = [
     body: "Java から DB へ接続するための標準 API です。",
   },
   {
+    term: "JdbcTemplate",
+    aliases: ["JdbcTemplate"],
+    body: "Spring が JDBC を使いやすくしたクラスです。SQL を Java の文字列として書き、実行します。ログに出た文に近い SQL が、ソースにあることが多いです。",
+  },
+  {
     term: "Maven",
     aliases: ["Maven", "pom.xml"],
     body: "Java のビルドと依存関係の管理の仕組み。pom.xml にフレームワークやライブラリを書きます。",
   },
   {
     term: "Gradle",
-    aliases: ["Gradle"],
-    body: "Java のビルドと依存関係の管理の仕組みのひとつです。",
+    aliases: ["Gradle", "build.gradle", "settings.gradle"],
+    body: "Java のビルドと依存関係の管理の仕組みのひとつです。build.gradle にフレームワークやライブラリを書きます。",
   },
   {
     term: "application.yml",
@@ -500,8 +515,13 @@ export const terms: TermDef[] = [
   },
   {
     term: "Ajax",
-    aliases: ["XMLHttpRequest", "Ajax", "fetch", "XHR"],
-    body: "画面を丸ごと遷移せず、裏で HTTP 通信する方式です。応答は JSON が多いです。",
+    aliases: ["Ajax", "fetch"],
+    body: "Asynchronous JavaScript and XML。ページ全体を読み直さず、JavaScript から HTTP 通信する方法です。名前に XML とありますが、JSON も扱えます。",
+  },
+  {
+    term: "XMLHttpRequest",
+    aliases: ["XMLHttpRequest", "XHR"],
+    body: "ブラウザの JavaScript から HTTP 通信するための API です。XHR は XMLHttpRequest の略です。名前に XML とありますが、JSON も扱えます。Network タブでは、fetch とまとめて Fetch/XHR に表示されます。",
   },
   {
     term: "Fetch/XHR",

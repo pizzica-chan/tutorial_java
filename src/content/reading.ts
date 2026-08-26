@@ -51,7 +51,7 @@ export const readingTrack: Track = {
           type: "callout",
           kind: "note",
           title: "探したい SQL が先にあるとき",
-          text: "探したい SQL が先にあるときは、テーブル名や特徴のある文の一部を手がかりにしましょう。MyBatis と JPA では探し方が違います。手順は「SQL の突き合わせ」です。",
+          text: "探したい SQL が先にあるときは、テーブル名や特徴のある文の一部を手がかりにしましょう。MyBatis と JPA では探し方が違います。手順は「SQL からソースを探す」です。",
         },
       ],
     },
@@ -210,7 +210,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "実行された SQL からソースを探す手順は、「リクエストの追跡」の「SQL の突き合わせ」にあります。MyBatis と JPA では探し方が違います。",
+          text: "実行された SQL からソースを探す手順は、「リクエストの追跡」の「SQL からソースを探す」にあります。MyBatis と JPA では探し方が違います。",
         },
         { type: "quiz", id: "read-name" },
       ],
@@ -503,7 +503,7 @@ public class RequestController {
           type: "callout",
           kind: "note",
           title: "Mapper はインタフェース",
-          text: "定義へジャンプは、Java の宣言に着きます。RequestMapper はインタフェースなので、着くのはメソッドの宣言です。SQL の文は XML 側です。手順は「リクエストの追跡」の「SQL の突き合わせ」です。",
+          text: "定義へジャンプは、Java の宣言に着きます。RequestMapper はインタフェースなので、着くのはメソッドの宣言です。SQL の文は XML 側です。手順は「リクエストの追跡」の「SQL からソースを探す」です。",
         },
         {
           type: "h2",

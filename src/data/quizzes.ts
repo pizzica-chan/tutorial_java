@@ -27,6 +27,19 @@ export const quizzes = {
     explanation:
       "一覧の件数は、SQL が読んだ DB の行です。先に実行された SQL を見て、同じ条件で行を数えます。見た目の CSS とは切り分けが違います。",
   },
+  "web-ajax": {
+    id: "web-ajax",
+    question: "画面内の検索でアドレスバーが変わらない。HTTP 通信について妥当なのはどれ？",
+    choices: [
+      "アドレスバーが同じなら、通信は無い",
+      "無いとは限らない。Network タブの Fetch/XHR を確認する",
+      "必ずページ全体が読み直される",
+      "必ず JSON が返る",
+    ],
+    answer: 1,
+    explanation:
+      "Ajax では、今のページを残したまま JavaScript が HTTP 通信できます。アドレスバーだけでは判断できません。Network タブの Fetch/XHR を確認しましょう。応答が JSON かどうかは、その通信の本文と Content-Type で分かります。",
+  },
   "web-api-json": {
     id: "web-api-json",
     question: "fetch で Web API を呼んだ。JSON を読む前に確認するのはどれ？",
@@ -436,7 +449,7 @@ export const quizzes = {
   "trace-sql-source": {
     id: "trace-sql-source",
     question:
-      "スロークエリに SELECT ... FROM t_request WHERE applicant_id = ? と出た。JPA のプロジェクトで、この文を全文検索してもヒットしない。次は？",
+      "スロークエリに SELECT ... FROM t_request WHERE applicant_id = 7 と出た。JPA のプロジェクトで、この文を全文検索してもヒットしない。次は？",
     choices: [
       "Mapper XML が必ずあるので、XML だけを探す",
       "テーブル名や Entity、Repository から呼び出し元を辿る",

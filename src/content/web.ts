@@ -359,10 +359,10 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "JSON を受け取ってブラウザが画面を組む形もあります。申請くんの画面はこの形ではありません。短い例は、この章の「Web API から JSON を受け取る」から順に説明します。",
+          text: "JSON を受け取ってブラウザが画面を組む形もあります。申請くんの画面はこの形ではありません。短い例は、この章の「Ajax」から順に説明します。",
           link: {
-            label: "Web API から JSON を受け取る",
-            to: "/tracks/web/api-json",
+            label: "Ajax",
+            to: "/tracks/web/ajax",
           },
         },
         {
@@ -398,7 +398,7 @@ Cookie: JSESSIONID=AB12CD34`,
     {
       id: "front-roles",
       title: "HTML / CSS / JavaScript の役割",
-      minutes: 8,
+      minutes: 7,
       blocks: [
         {
           type: "p",
@@ -410,7 +410,7 @@ Cookie: JSESSIONID=AB12CD34`,
           rows: [
             ["HTML", "見出し、入力欄、ボタンなど、画面の要素を表す", "form、input、button"],
             ["CSS", "色、位置、余白、表示・非表示など、見え方を指定する", "ボタンの色、表の幅、レイアウト"],
-            ["JavaScript", "操作に応じて画面を変えたり、HTTP 通信を始めたりする", "確認ダイアログ、fetch"],
+            ["JavaScript", "操作に応じて画面を変えたり、HTTP 通信を始めたりする", "確認ダイアログ"],
           ],
         },
         {
@@ -440,15 +440,15 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "ボタンを押してもページが切り替わらないときは、JavaScript が画面だけを更新している場合と、fetch などで HTTP 通信をしている場合があります。まず Network タブで新しい通信があるかを確認します。通信があれば Fetch/XHR を選び、対象の通信を開いて、送信先、ステータスコード、応答の本文を見ましょう。JSON を使う通信は、次の「Web API から JSON を受け取る」で確認します。",
+          text: "ボタンを押してもページが切り替わらないときは、JavaScript が画面だけを更新している場合と、HTTP 通信を始めている場合があります。まず Network タブで新しい通信があるかを確認しましょう。ページを開いたまま通信する方法は、次の「Ajax」で説明します。",
           link: {
-            label: "Web API から JSON を受け取る",
-            to: "/tracks/web/api-json",
+            label: "Ajax",
+            to: "/tracks/web/ajax",
           },
         },
         {
           type: "p",
-          text: "新しい通信が無いときは、Console に JavaScript の例外が出ていないかを確認します。通信せずに画面内の表示だけを変える処理なら、処理の前後で HTML の要素がどう変わったかを Elements タブで見ます。",
+          text: "新しい通信が無いときは、Console に JavaScript の例外が出ていないかを確認しましょう。通信せずに画面内の表示だけを変える処理なら、処理の前後で HTML の要素がどう変わったかを Elements タブで見ましょう。",
         },
         {
           type: "h2",
@@ -462,6 +462,80 @@ Cookie: JSESSIONID=AB12CD34`,
           type: "p",
           text: "HTML は要素と送る内容、JavaScript は画面の更新と通信、CSS は見え方を担当します。症状に関係する役割から確認すると、画面側のすべてを一度に読む必要はありません。",
         },
+      ],
+    },
+    {
+      id: "ajax",
+      title: "Ajax",
+      minutes: 5,
+      blocks: [
+        {
+          type: "p",
+          text: "ページ全体を読み直さず、JavaScript から HTTP 通信する方法を Ajax と呼びます。通信のあと、JavaScript が必要な部分だけ画面を更新できます。",
+        },
+        {
+          type: "h2",
+          text: "ページ遷移との違い",
+        },
+        {
+          type: "table",
+          headers: ["方法", "よくある見え方", "通信を始めるもの"],
+          rows: [
+            ["リンクやフォーム送信", "別のページへ移る、またはページ全体を読み直す", "ブラウザ"],
+            ["Ajax", "今のページを残し、必要な部分を更新する", "JavaScript"],
+          ],
+        },
+        {
+          type: "p",
+          text: "アドレスバーが変わらなくても、HTTP 通信が無いとは限りません。画面内の検索、候補表示、一覧の追加読込などで Ajax が使われることがあります。",
+        },
+        {
+          type: "h2",
+          text: "XMLHttpRequest と fetch",
+        },
+        {
+          type: "p",
+          text: "既存のコードでは XMLHttpRequest や jQuery の $.ajax、比較的新しいコードでは fetch を使う例があります。どれも、JavaScript から HTTP 通信を始めるために使えます。",
+        },
+        {
+          type: "p",
+          text: "XMLHttpRequest や Ajax には XML という名前が入っていますが、応答は XML に限りません。現在は JSON を受け取る通信も多くあります。",
+        },
+        {
+          type: "p",
+          text: "Thymeleaf では、一覧の表だけなど、画面の一部分を HTML で返す使い方もあります。JavaScript が今のページのその部分を差し替えます。フラグメントの説明は「テンプレートの読み方」です。",
+          link: {
+            label: "テンプレートの読み方",
+            to: "/tracks/java-map/template-read",
+          },
+        },
+        {
+          type: "h2",
+          text: "通信があるか、Network タブで見る",
+        },
+        {
+          type: "p",
+          text: "Ajax かどうかは、画面やアドレスバーだけでは分かりにくいことがあります。開発者ツールの Network タブを開き、Fetch/XHR を選びましょう。ここに並ぶのは、JavaScript から始めた通信です。検索や一覧の追加読込などを試したあと、行が増えていれば Ajax で通信しています。",
+        },
+        {
+          type: "p",
+          text: "行を開くと、送信先、ステータスコード、応答の本文を確認できます。本文は JSON のことも、HTML の一部分のこともあります。行自体が無ければ、ブラウザの Console に JavaScript の例外が出ていないかを確認しましょう。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Ajax、Web API、JSON の違い",
+          text: "Ajax は通信の方法です。Web API はデータを提供する HTTP の窓口、JSON は送受信するデータ形式です。Ajax の通信先が Web API で、その応答が JSON、という組み合わせがあります。",
+        },
+        {
+          type: "p",
+          text: "次は、実際に Web API から JSON を受け取る例を見ます。",
+          link: {
+            label: "Web API から JSON を受け取る",
+            to: "/tracks/web/api-json",
+          },
+        },
+        { type: "quiz", id: "web-ajax" },
       ],
     },
     {

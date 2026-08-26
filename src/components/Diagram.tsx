@@ -50,6 +50,7 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "debug-two": DebugTwo,
   "protocol-stack": ProtocolStack,
   "template-rendered": TemplateRendered,
+  "sql-to-source": SqlToSource,
 };
 
 function IconNode({
@@ -821,6 +822,51 @@ function NPlusOne() {
         <Chip icon="terminal">SELECT #10</Chip>
       </div>
       <p className="diagram-note">件数だけ SQL が増えるのが N+1。</p>
+    </div>
+  );
+}
+
+function SqlToSource() {
+  return (
+    <div className="d-cols">
+      <div className="d-col">
+        <h4>
+          <Icon name="file" size={16} />
+          MyBatis
+        </h4>
+        <div className="d-stack">
+          <Layer icon="terminal">ログの SQL</Layer>
+          <Arrow down label="テーブル名や列名で探す" />
+          <Layer icon="file" accent>
+            Mapper XML
+          </Layer>
+          <Arrow down label="id がメソッド名" />
+          <Layer icon="code" accent>
+            Mapper.java
+          </Layer>
+          <Arrow down label="参照検索" />
+          <Layer icon="cog">呼び出し元</Layer>
+        </div>
+      </div>
+      <div className="d-col">
+        <h4>
+          <Icon name="code" size={16} />
+          Hibernate
+        </h4>
+        <div className="d-stack">
+          <Layer icon="terminal">ログの SQL</Layer>
+          <Arrow down label="テーブル名で探す" />
+          <Layer icon="file" accent>
+            Entity の @Table
+          </Layer>
+          <Arrow down label="参照検索" />
+          <Layer icon="code" accent>
+            Repository
+          </Layer>
+          <Arrow down label="参照検索" />
+          <Layer icon="cog">呼び出し元</Layer>
+        </div>
+      </div>
     </div>
   );
 }

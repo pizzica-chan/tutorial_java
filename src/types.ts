@@ -36,7 +36,8 @@ export type DiagramName =
   | "cross-cut"
   | "debug-two"
   | "protocol-stack"
-  | "template-rendered";
+  | "template-rendered"
+  | "sql-to-source";
 
 export type Block =
   | { type: "p"; text: string; link?: { label: string; to: string } }

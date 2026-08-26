@@ -137,32 +137,41 @@ mailService.notifyApplicant(request);`,
     },
     {
       id: "sql",
-      title: "SQL の突き合わせ",
+      title: "SQL からソースを探す",
       minutes: 14,
       blocks: [
         {
           type: "p",
-          text: "スロークエリや Mapper の DEBUG など、実行された SQL が先に手元にあることがあります。件数を DB と突き合わせる前に、その SQL を誰が発行したかをソースで探しましょう。",
+          text: "DB 側にスロークエリログが出たときなど、調べたい SQL は分かっているのに、アプリ側のどのソースが発行したか分からないことがあります。この項目では、その探し方を説明します。",
+        },
+        {
+          type: "p",
+          text: "探す前に、そのプロジェクトで SQL の実行に使っているライブラリを確認しましょう。pom.xml や build.gradle の依存を見ると、MyBatis、JPA（Hibernate）、JdbcTemplate などが分かります。依存の見方は、「Maven / Gradle」で説明しています。分かってから、そのライブラリに合わせた探し方を採用しましょう。",
+          link: {
+            label: "Maven / Gradle",
+            to: "/tracks/java-map/build",
+          },
         },
         {
           type: "h2",
-          text: "手元の SQL（申請くん）",
+          text: "ログに出た SQL",
         },
         {
           type: "p",
-          text: "申請くんなら、MyBatis の DEBUG に次のように出ます。",
+          text: "申請くんの一覧に相当する SQL が、MySQL のスロークエリログに出た例です。",
         },
         {
           type: "code",
-          title: "ログに出た SQL（MyBatis の DEBUG）",
-          code: `==>  Preparing: SELECT id, title, status, applicant_id, approver_id, created_at
-FROM t_request WHERE applicant_id = ? OR approver_id = ? ORDER BY created_at DESC
-==> Parameters: 7(Long), 7(Long)
-<==      Total: 3`,
+          title: "MySQL のスロークエリログ（例）",
+          code: `# Time: 2026-04-10T09:15:23.456789Z
+# User@Host: app[app] @ localhost []
+# Query_time: 2.103421  Lock_time: 0.000120  Rows_sent: 3  Rows_examined: 3
+SELECT id, title, status, applicant_id, approver_id, created_at
+FROM t_request WHERE applicant_id = 7 OR approver_id = 7 ORDER BY created_at DESC;`,
         },
         {
           type: "p",
-          text: "この文をそのまま検索しても、見つからないことが多いです。空白や改行が違ううえ、ログの ?（プレースホルダ）はソースでは #{userId} になっています。テーブル名や特徴のある文の一部から検索しましょう。",
+          text: "この文をそのまま検索しても、見つからないことが多いです。空白や改行が違ううえ、ログの 7 はソースでは #{userId} などになっています。テーブル名や特徴のある文の一部から検索しましょう。",
         },
         {
           type: "h2",
@@ -260,14 +269,64 @@ public class Request {
           text: "メソッド名だけ、または JPQL なら、実行された SQL では見つかりません。t_request で Entity を見つけ、参照検索で呼び出し元を辿りましょう。nativeQuery なら、実行された SQL に近い文で XML と同じように検索できます。",
         },
         {
+          type: "h2",
+          text: "ライブラリごとの探し方",
+        },
+        {
+          type: "p",
+          text: "ログの SQL からソースを探すとき、当たるファイルは実装で違います。下は MyBatis と Hibernate の例です。上から順に辿りましょう。",
+        },
+        {
+          type: "diagram",
+          name: "sql-to-source",
+        },
+        {
+          type: "p",
+          text: "MyBatis では、実行された SQL に近い文が Mapper の XML にあります。",
+        },
+        {
+          type: "steps",
+          items: [
+            {
+              title: "特徴のある部分で XML を探す",
+              text: "ログの SQL をそのまま検索しても見つからないことが多いです。空白や改行が違ううえ、スロークエリの 7 や DEBUG の ? は、ソースでは #{...} になっているからです。テーブル名や WHERE の列名で探しましょう。",
+            },
+            {
+              title: "id から Java のメソッドへ",
+              text: "当たった select の id が Java のメソッド名です。同じ名前の Mapper メソッドを開きましょう。ログに XML の id やメソッド名が出ていれば、それを先に検索しましょう。",
+            },
+            {
+              title: "参照検索で呼び出し元を辿る",
+              text: "Mapper メソッドを誰が呼んでいるかを辿ります。画面からの下りと同じ線です。",
+            },
+          ],
+        },
+        {
+          type: "p",
+          text: "Hibernate では、実行された SQL がソースに無いことが多いです。Hibernate が別名を付けて SQL を組み立てるからです。",
+        },
+        {
+          type: "steps",
+          items: [
+            {
+              title: "テーブル名で Entity を探す",
+              text: "ログの SELECT を全文検索せず、テーブル名で Entity の @Table を探しましょう。",
+            },
+            {
+              title: "Repository を参照検索で見つける",
+              text: "その Entity を使う Repository を見つけ、どの Java メソッドが発行しているかを確認しましょう。",
+            },
+            {
+              title: "書き方で検索語を変える",
+              text: "メソッド名から条件を組み立てる書き方や JPQL は、実行された SQL と文字列が一致しません。nativeQuery だけ、実行された SQL に近い文がソースにあります。",
+            },
+          ],
+        },
+        {
           type: "callout",
           kind: "note",
           title: "SQL の置き場所は、MyBatis か JPA かで違う",
           text: "JdbcTemplate のように、Java の文字列に SQL を書く書き方もあります。ログの文言は設定次第です。",
-        },
-        {
-          type: "p",
-          text: "Mapper や Repository が見つかったら、参照検索で誰が呼んでいるかを見ましょう。画面からの下りと同じ線です。",
         },
         {
           type: "h2",
