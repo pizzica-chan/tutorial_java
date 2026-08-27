@@ -273,7 +273,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
         },
         {
           type: "p",
-          text: "DEBUG は量が多いので、普段は出していないことが多いです。必要なときだけ、そのパッケージのレベルを上げましょう。上げたら調査後に戻しましょう。",
+          text: "DEBUG は量が多いので、普段は出していないことが多いです。必要なときだけログレベルを上げましょう。",
         },
         {
           type: "p",
