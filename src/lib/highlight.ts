@@ -7,6 +7,7 @@ import sql from "highlight.js/lib/languages/sql";
 import javascript from "highlight.js/lib/languages/javascript";
 import json from "highlight.js/lib/languages/json";
 import css from "highlight.js/lib/languages/css";
+import nginx from "highlight.js/lib/languages/nginx";
 import { lookupTerm, type TermDef } from "../data/terms";
 
 hljs.registerLanguage("java", java);
@@ -18,6 +19,7 @@ hljs.registerLanguage("sql", sql);
 hljs.registerLanguage("javascript", javascript);
 hljs.registerLanguage("json", json);
 hljs.registerLanguage("css", css);
+hljs.registerLanguage("nginx", nginx);
 
 const aliases: Record<string, string> = {
   java: "java",
@@ -32,6 +34,7 @@ const aliases: Record<string, string> = {
   js: "javascript",
   json: "json",
   css: "css",
+  nginx: "nginx",
 };
 
 const JAVA_KEYWORDS = new Set([

@@ -13,6 +13,7 @@ const chrome = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const base = "http://localhost:8080/shinsei";
 const profile = join(tmpdir(), "shinsei-capture-profile");
 const ps1 = join(root, "shinsei-kun", "scripts", "window-shot.ps1");
+const manualPromptPs1 = join(root, "shinsei-kun", "scripts", "manual-prompt.ps1");
 mkdirSync(outDir, { recursive: true });
 rmSync(profile, { recursive: true, force: true });
 mkdirSync(join(profile, "Default"), { recursive: true });
@@ -31,6 +32,7 @@ writeFileSync(
         "panel-selectedTab": '"network"',
         "network-log.preserve-log": "false",
         "network-show-overview": "false",
+        "disable-locale-info-bar": "true",
         "InspectorView.splitViewState": JSON.stringify({
           vertical: { size: 460, showMode: "Both" },
           horizontal: { size: 460, showMode: "Both" },
@@ -79,6 +81,25 @@ function prepareNetworkPanel({ clear = false, filter = "" } = {}) {
 
 function clearNetworkLog() {
   prepareNetworkPanel({ clear: true });
+}
+
+function waitForManualStep(message, title = "教材キャプチャ") {
+  execFileSync(
+    "powershell",
+    [
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      manualPromptPs1,
+      "-Message",
+      message,
+      "-Title",
+      title,
+    ],
+    { encoding: "utf8" },
+  );
+  console.log("manual step completed");
 }
 
 function showConsoleDrawer() {
@@ -133,15 +154,134 @@ async function captureLoginFail(page) {
   await stopIntercept(page, onFail);
 }
 
-async function captureNoPost(page, appBase) {
+async function prepareNoPostShot(page, appBase) {
   await page.goto(`${appBase}/requests`, { waitUntil: "networkidle0" });
   await sleep(600);
   await page.bringToFront();
   prepareNetworkPanel();
   await sleep(300);
-  await page.click(".btn-approve");
-  await sleep(800);
+}
+
+async function finishNoPostShot() {
+  await page.bringToFront();
+  await sleep(200);
   shotWindow("screen-network-no-post.jpg", true);
+}
+
+async function captureNoPost(page, appBase) {
+  await prepareNoPostShot(page, appBase);
+  waitForManualStep(
+    "次の操作を実施した後、OK を押してください。\n\n" +
+      "1. Network タブでログを消す\n" +
+      "2. 承認ボタンを押す\n" +
+      "3. Console を開き、TypeError のメッセージが読める状態にする\n" +
+      "   （Network と Console の両方が見えるように DevTools を調整する）",
+  );
+  await finishNoPostShot();
+}
+
+async function captureListEmpty200(page) {
+  await page.goto(`${verifyBase}/requests`, { waitUntil: "networkidle0" });
+  await page.evaluate(() => {
+    const tbody = document.querySelector("table.data tbody");
+    if (tbody) {
+      tbody.innerHTML = '<tr><td colspan="6">表示できる申請はありません。</td></tr>';
+    }
+  });
+  await sleep(600);
+  await page.bringToFront();
+  prepareNetworkPanel();
+  await sleep(300);
+  shotWindow("screen-network-list-empty.jpg", true);
+}
+
+async function blockApproveWithFlash() {
+  await page.evaluate(() => {
+    const script = document.createElement("script");
+    script.textContent = `document.querySelectorAll("form").forEach((form) => {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    if (!document.querySelector(".demo-flash")) {
+      if (!document.getElementById("demo-flash-style")) {
+        const style = document.createElement("style");
+        style.id = "demo-flash-style";
+        style.textContent = ".demo-flash{color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;padding:0.65rem 0.75rem;margin:0 0 1rem;font-size:0.95rem}";
+        document.head.appendChild(style);
+      }
+      const flash = document.createElement("p");
+      flash.className = "demo-flash";
+      flash.textContent = "処理に失敗しました";
+      document.querySelector(".page-head")?.after(flash);
+    }
+    throw new TypeError("Cannot read properties of null (reading 'value')");
+  }, true);
+});`;
+    document.documentElement.appendChild(script);
+    script.remove();
+  });
+}
+
+async function prepareJsErrorShot(page, appBase = base) {
+  await page.goto(`${appBase}/requests`, { waitUntil: "networkidle0" });
+  await blockApproveWithFlash();
+  await page.bringToFront();
+  prepareNetworkPanel();
+  await sleep(300);
+}
+
+async function finishJsErrorShot() {
+  await page.bringToFront();
+  await sleep(200);
+  shotWindow("screen-network-js-error.jpg", true);
+}
+
+async function captureJsError(page, appBase = base) {
+  await prepareJsErrorShot(page, appBase);
+  waitForManualStep(
+    "次の操作を実施した後、OK を押してください。\n\n" +
+      "1. Network タブでログを消す\n" +
+      "2. 承認ボタンを押す（「処理に失敗しました」が出る）\n" +
+      "3. Console を開き、TypeError のメッセージが読める状態にする\n" +
+      "   （Network と Console の両方が見えるように DevTools を調整する）",
+  );
+  await finishJsErrorShot();
+}
+
+async function captureCannotApprove(page, appBase = verifyBase) {
+  await page.goto(`${appBase}/requests/11`, { waitUntil: "networkidle0" });
+  await page.evaluate(() => {
+    window.confirm = () => true;
+  });
+  await page.bringToFront();
+  prepareNetworkPanel();
+  await sleep(300);
+  await Promise.allSettled([
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 8000 }),
+    page.$eval("form.js-approve-confirm", (form) => form.submit()),
+  ]);
+  await sleep(800);
+  shotWindow("screen-network-cannot-approve.jpg", true);
+}
+
+async function captureCss404(page, appBase = verifyBase) {
+  await page.goto(`${appBase}/requests`, { waitUntil: "networkidle0" });
+  await page.setRequestInterception(true);
+  const onCss404 = (req) => {
+    if (req.url().includes("/css/app.css")) {
+      req.respond({ status: 404, contentType: "text/plain", body: "" }).catch(() => {});
+      return;
+    }
+    req.continue().catch(() => {});
+  };
+  page.on("request", onCss404);
+  await page.reload({ waitUntil: "networkidle0" });
+  await sleep(700);
+  await page.bringToFront();
+  prepareNetworkPanel();
+  await sleep(300);
+  shotWindow("screen-network-css-404.jpg", true);
+  await stopIntercept(page, onCss404);
 }
 
 async function captureVerifyScenarios(page) {
@@ -149,6 +289,7 @@ async function captureVerifyScenarios(page) {
   await page.keyboard.press("Escape").catch(() => {});
   await sleep(400);
   await captureNoPost(page, verifyBase);
+  await captureListEmpty200(page);
 
   await page.goto(`${verifyBase}/requests/16`, { waitUntil: "networkidle0" });
   await page.evaluate(() => {
@@ -160,6 +301,10 @@ async function captureVerifyScenarios(page) {
   ]);
   await sleep(800);
   shotWindow("screen-network-500.jpg", true);
+
+  await captureCannotApprove(page, verifyBase);
+
+  await captureCss404(page, verifyBase);
 
   await captureLoginFail(page);
 }
@@ -197,12 +342,66 @@ if (process.argv.includes("--login-fail-only")) {
   process.exit(0);
 }
 
+if (process.argv.includes("--js-error-only") || process.argv.includes("--js-error-manual")) {
+  const appBase = process.argv.includes("--verify") ? verifyBase : base;
+  await login(page, appBase);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  await captureJsError(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
+if (process.argv.includes("--cannot-approve-only")) {
+  const appBase = process.argv.includes("--verify") ? verifyBase : base;
+  await login(page, appBase);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  await captureCannotApprove(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
+if (process.argv.includes("--list-empty-only")) {
+  const appBase = process.argv.includes("--verify") ? verifyBase : base;
+  await login(page, appBase);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  if (process.argv.includes("--verify")) {
+    await captureListEmpty200(page);
+  } else {
+    await page.goto(`${appBase}/requests`, { waitUntil: "networkidle0" });
+    await page.evaluate(() => {
+      const tbody = document.querySelector("table.data tbody");
+      if (tbody) {
+        tbody.innerHTML = '<tr><td colspan="6">表示できる申請はありません。</td></tr>';
+      }
+    });
+    await sleep(600);
+    await page.bringToFront();
+    prepareNetworkPanel();
+    await sleep(300);
+    shotWindow("screen-network-list-empty.jpg", true);
+  }
+  await browser.close();
+  process.exit(0);
+}
+
 if (process.argv.includes("--no-post-only")) {
   const appBase = process.argv.includes("--verify") ? verifyBase : base;
   await login(page, appBase);
   await page.keyboard.press("Escape").catch(() => {});
   await sleep(400);
   await captureNoPost(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
+if (process.argv.includes("--css-404-only")) {
+  await login(page, verifyBase);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  await captureCss404(page, verifyBase);
   await browser.close();
   process.exit(0);
 }
@@ -220,54 +419,14 @@ await page.goto(`${base}/requests`, { waitUntil: "networkidle0" });
 await sleep(800);
 shotWindow("screen-network-rows.jpg", true);
 
-await page.setRequestInterception(true);
-const onCss404 = (req) => {
-  if (req.url().includes("/css/app.css")) {
-    req.respond({ status: 404, contentType: "text/plain", body: "" }).catch(() => {});
-    return;
-  }
-  req.continue().catch(() => {});
-};
-page.on("request", onCss404);
-await page.reload({ waitUntil: "networkidle0" });
-await sleep(700);
-shotWindow("screen-network-css-404.jpg", true);
-await stopIntercept(page, onCss404);
-
-async function blockApproveWithFlash() {
-  await page.evaluate(() => {
-    const script = document.createElement("script");
-    script.textContent = `document.querySelectorAll("form").forEach((form) => {
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    if (!document.querySelector(".demo-flash")) {
-      if (!document.getElementById("demo-flash-style")) {
-        const style = document.createElement("style");
-        style.id = "demo-flash-style";
-        style.textContent = ".demo-flash{color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;padding:0.65rem 0.75rem;margin:0 0 1rem;font-size:0.95rem}";
-        document.head.appendChild(style);
-      }
-      const flash = document.createElement("p");
-      flash.className = "demo-flash";
-      flash.textContent = "処理に失敗しました";
-      document.querySelector(".page-head")?.after(flash);
-    }
-    throw new TypeError("Cannot read properties of null (reading 'value')");
-  }, true);
-});`;
-    document.documentElement.appendChild(script);
-    script.remove();
-  });
-}
+await login(page, verifyBase);
+await page.keyboard.press("Escape").catch(() => {});
+await sleep(400);
+await captureCss404(page, verifyBase);
 
 await captureNoPost(page, base);
 
-await page.reload({ waitUntil: "networkidle0" });
-await blockApproveWithFlash();
-await page.click(".btn-approve");
-await sleep(800);
-shotWindow("screen-network-js-error.jpg", true);
+await captureJsError(page, base);
 
 await page.goto(`${base}/requests/12`, { waitUntil: "networkidle0" });
 await page.evaluate(() => {

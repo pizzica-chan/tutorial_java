@@ -48,7 +48,7 @@ export const terms: TermDef[] = [
   {
     term: "500",
     aliases: ["500"],
-    body: "Internal Server Error。サーバ側の失敗と読む応答です。",
+    body: "Internal Server Error。サーバ側の失敗を示す応答です。",
   },
   {
     term: "302",

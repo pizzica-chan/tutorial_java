@@ -610,10 +610,10 @@ function NotFound() {
   return (
     <div className="d-cols">
       <ColCard icon="search" title="404">
-        行き先が無い。マッピング、パス、静的ファイル
+        行き先が無い。URL と実体がずれている
       </ColCard>
       <ColCard icon="warn" title="500">
-        行き先はある。処理の途中で例外
+        行き先はある。処理の途中でサーバ側の失敗
       </ColCard>
     </div>
   );

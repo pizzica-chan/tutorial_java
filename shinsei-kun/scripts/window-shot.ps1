@@ -87,12 +87,12 @@ if ($SelectNetwork -or $ClearNetwork) {
 }
 
 if ($ClearNetwork) {
-  $clearX = [int]($rect.Left + ($w * 0.54))
-  $clearY = [int]($rect.Top + 128)
-  [WinShot]::SetCursorPos($clearX, $clearY) | Out-Null
-  [WinShot]::mouse_event(2, 0, 0, 0, 0)
-  [WinShot]::mouse_event(4, 0, 0, 0, 0)
-  Start-Sleep -Milliseconds 700
+  [System.Windows.Forms.SendKeys]::SendWait("^+p")
+  Start-Sleep -Milliseconds 500
+  [System.Windows.Forms.SendKeys]::SendWait("clear network log")
+  Start-Sleep -Milliseconds 400
+  [System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
+  Start-Sleep -Milliseconds 500
   Write-Output "cleared network log title=$($proc.MainWindowTitle)"
 }
 

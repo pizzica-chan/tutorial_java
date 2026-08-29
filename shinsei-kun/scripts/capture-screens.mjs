@@ -119,16 +119,13 @@ if (process.argv.includes("--verify-scenarios")) {
   ]);
   await shot(page, "screen-error-500.jpg", `${verifyBase}/requests/16/approve`);
 
-  await page.goto(`${verifyBase}/requests/11`, { waitUntil: "networkidle0" });
-  await Promise.allSettled([
-    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 8000 }),
-    page.$eval("form.js-approve-confirm", (form) => form.submit()),
-  ]);
-  await shot(page, "screen-cannot-approve.jpg", `${verifyBase}/requests/11`);
-
   await page.goto(pathToFileURL(join(demoDir, "list-empty.html")).href, { waitUntil: "networkidle0" });
   await page.setViewport({ width, height: 720, deviceScaleFactor: 2 });
   await shot(page, "screen-list-empty.jpg", `${verifyBase}/requests`);
+
+  await page.goto(pathToFileURL(join(demoDir, "list-unstyled.html")).href, { waitUntil: "networkidle0" });
+  await page.setViewport({ width, height: 720, deviceScaleFactor: 2 });
+  await shot(page, "screen-list-unstyled.jpg", `${verifyBase}/requests`);
 
   await browser.close();
   process.exit(0);
@@ -161,20 +158,13 @@ if (!mocksOnly) {
   ]);
   await shot(page, "screen-error-500.jpg", `${base}/requests/16/approve`);
 
-  await page.goto(`${base}/requests/11`, { waitUntil: "networkidle0" });
-  await Promise.allSettled([
-    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 8000 }),
-    page.$eval("form.js-approve-confirm", (form) => form.submit()),
-  ]);
-  await shot(page, "screen-cannot-approve.jpg", `${base}/requests/11`);
-
   await page.goto(`${base}/requests/99999`, { waitUntil: "networkidle0" });
   await shot(page, "screen-not-found.jpg", `${base}/requests/99999`);
 }
 
 const mocks = [
-  ["list-empty.html", "screen-list-empty.jpg", `${base}/requests`],
-  ["list-unstyled.html", "screen-list-unstyled.jpg", `${base}/requests`],
+  ["list-empty.html", "screen-list-empty.jpg", `${verifyBase}/requests`],
+  ["list-unstyled.html", "screen-list-unstyled.jpg", `${verifyBase}/requests`],
   ["forbidden.html", "screen-forbidden.jpg", `${base}/requests/12/approve`],
 ];
 for (const [file, name, url] of mocks) {

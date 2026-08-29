@@ -715,16 +715,16 @@ ORDER BY r.created_at DESC
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-js-error.jpg",
-          alt: "画面にエラーが出ているが新しいリクエストが無い Network タブ",
-          caption: "例：一覧は残ったまま、画面にエラーが出ています。新しいリクエストは増えていません。コンソールにエラーの印が出ています。",
+          alt: "画面にエラーが出ているが新しいリクエストが無く Console に TypeError が出ている Network タブ",
+          caption: "例：画面にエラーが出ています。新しいリクエストは増えていません。Console に TypeError のメッセージが出ています。",
         },
         {
           type: "p",
-          text: "Console に例外があれば、クラスとメッセージを読みましょう。その行が指す JS を見て、click や submit の手前で止まっていないかを確認しましょう。",
+          text: "Console にエラーがあれば、クラスとメッセージを読みましょう。その行が指す JS を見て、click や submit の手前で止まっていないかを確認しましょう。",
         },
         {
           type: "p",
-          text: "Console にも何も無ければ、例外では止まっていません。開発者ツールで、いま画面にある HTML からエラーの文言を検索しましょう。click が付いているか、ボタンが無効になっていないかも確認しましょう。",
+          text: "Console にも何も無ければ、エラーでは止まっていません。開発者ツールで、いま画面にある HTML からエラーの文言を検索しましょう。click が付いているか、ボタンが無効になっていないかも確認しましょう。",
         },
         {
           type: "callout",

@@ -54,7 +54,7 @@ node shinsei-kun/scripts/capture-network.mjs
 - `screen-network-login-fail.jpg` は `http://intranet.example.co.jp:8080/shinsei/login` を撮る。検証用シナリオ向けの画面・Network も同じホスト名。撮影 PC の hosts で `127.0.0.1 intranet.example.co.jp` を足す（`shinsei-kun/scripts/setup-capture-hosts.ps1`、管理者 PowerShell）。一括再撮影は `capture-screens.mjs --verify-scenarios` と `capture-network.mjs --verify-scenarios`
 - 承認 500 は、山田で ID 16「研修参加」を開き、実際に承認を送信して撮る。`request.getApproverId()` が null のため、実アプリが 500 を返す
 - POST 後にログが消えるので、403 / 500 は遷移後の document 行を撮る（preserve log は必須ではない）
-- 画面にエラーが出ているが POST が無いときは、submit を止めて画面にエラーを出し、ウィンドウ全体を撮る。ページ単体だとサーバの flash に見える。キャプションは「例」
+- 画面にエラーが出ているが POST が無い見え方は、ページ単体ではなく Network のウィンドウ全体で撮る。`screen-network-js-error.jpg` は Network のログを消してから押す。ログ消去は手動。スクリプトがダイアログで案内する（`capture-network.mjs` の js-error 撮影）。キャプションは「例」
 
 ## 起動とアカウント
 

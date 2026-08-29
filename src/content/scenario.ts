@@ -44,7 +44,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "押した瞬間の Network タブを見ましょう。見づらいときは、Network のログを消してから、もう一度承認ボタンを押します。新しいリクエストが無ければ、バックエンドにも DB にも届いていません。",
+          text: "押した瞬間の Network タブを見ましょう。新しいリクエストが無ければ、バックエンドにも DB にも届いていません。",
         },
         {
           type: "callout",
@@ -56,9 +56,9 @@ export const scenarioTrack: Track = {
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-no-post.jpg",
-          alt: "承認を押したあとも新しいリクエストが無い Network タブ",
+          alt: "承認を押したあとも新しいリクエストが無く Console に TypeError が出ている Network タブ",
           caption:
-            "Network の 4 行は、画面を開いたときの document / CSS / JS です。承認を押したあとも POST の行は増えていません。下のコンソールにエラーが出ています。見づらいときは、Network のログを消してから、もう一度承認ボタンを押します。",
+            "承認を押したあとも新しいリクエストは増えていません。Console に TypeError のメッセージが出ています。",
         },
         {
           type: "table",
@@ -161,12 +161,6 @@ export const scenarioTrack: Track = {
           type: "callout",
           kind: "scenario",
           text: "申請詳細画面で承認ボタンを押すと、「エラーが発生しました」と出る。一覧には戻らない。",
-        },
-        {
-          type: "figure",
-          kind: "screen",
-          src: "/images/screen-error-500.jpg",
-          alt: "承認後にエラーが発生しましたと出た画面",
         },
         {
           type: "figure",
@@ -297,9 +291,10 @@ WHERE id = 16;`,
         {
           type: "figure",
           kind: "screen",
-          src: "/images/screen-cannot-approve.jpg",
-          alt: "この申請は承認できませんと出た申請詳細",
-          caption: "業務の一文が出て、例外ログが無いときの例です。この文言でソースを検索しましょう。",
+          src: "/images/screen-network-cannot-approve.jpg",
+          alt: "POST /shinsei/requests/11/approve が 500 ではない Network タブ",
+          caption:
+            "例：POST /shinsei/requests/11/approve は飛んでいます。500 ではありません。画面に「この申請は承認できません」が出ています。",
         },
         {
           type: "h2",
@@ -408,9 +403,10 @@ requestService.approve(id, user.getId());`,
         {
           type: "figure",
           kind: "screen",
-          src: "/images/screen-list-empty.jpg",
-          alt: "検証用環境で 0 件になった申請一覧",
-          caption: "HTML は 200 です。件数の差は、実行された SQL の条件で今の DB を数えると分かります。",
+          src: "/images/screen-network-list-empty.jpg",
+          alt: "申請一覧が 0 件のとき、GET /shinsei/requests が 200 の Network タブ",
+          caption:
+            "例：GET /shinsei/requests は 200、text/html です。画面は 0 件ですが、応答自体は成功しています。",
         },
         {
           type: "h2",
@@ -576,7 +572,7 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
         },
         {
           type: "p",
-          text: "検証用環境のサーバのポート 8080 が、社内ネットワークから閉じられていました。ブラウザはサーバまで届かず、アプリは何も記録しません。",
+          text: "社内ネットワークから、検証用環境のサーバの 8080 へ届かない経路になっていました。ブラウザはサーバまで届かず、アプリは何も記録しません。",
         },
         {
           type: "p",
@@ -602,11 +598,18 @@ TcpTestSucceeded : False`,
         },
         {
           type: "p",
-          text: "ping は ICMP、HTTP は TCP なので別です。ping が通っても 8080 が閉じていれば、アプリには届きません。",
+          text: "ping は ICMP、HTTP は TCP なので別です。ping が通っても 8080 に届かなければ、アプリには届きません。",
         },
         {
           type: "p",
-          text: "検証用環境のサーバ上では、アプリは起動しており 8080 で待ち受けています。",
+          text: "検証用環境のサーバ上でも、待ち受けと応答を確認します。",
+        },
+        {
+          type: "ul",
+          items: [
+            "ss -tlnp | grep 8080 … 8080 ポートで待ち受けしているプロセスがあるかを出す",
+            "curl -I http://localhost:8080/shinsei/login … サーバ自身（localhost）からログイン URL へ HTTP を送る。-I は本文を捨て、ステータスコードとヘッダだけを表示する",
+          ],
         },
         {
           type: "code",
@@ -620,8 +623,15 @@ HTTP/1.1 200
 Content-Type: text/html;charset=UTF-8`,
         },
         {
+          type: "ul",
+          items: [
+            "LISTEN と *:8080 … 8080 で待ち受けしている（java は申請くんのプロセス）",
+            "HTTP/1.1 200 … サーバ自身からはログイン URL に応答できている",
+          ],
+        },
+        {
           type: "p",
-          text: "社内端末からは 8080 に届かない一方、サーバ自身では応答があります。アプリ停止ではなく、社内ネットワークからサーバの 8080 への経路が閉じられています。",
+          text: "社内端末からは 8080 に届かない一方、サーバ上では待ち受けと応答が確認できました。アプリ停止ではなく、社内ネットワークからサーバの 8080 への経路が閉じられています。",
         },
         {
           type: "h2",
@@ -645,7 +655,7 @@ Content-Type: text/html;charset=UTF-8`,
             "Network タブで、HTML のリクエストが終わらない、または失敗していることを確認",
             "操作時刻のアプリログにアクセスが無いことを確認",
             "社内端末から ping と Test-NetConnection で、ping では応答があるがポート 8080 の TCP は開いていないことを確認",
-            "検証用サーバ上で ss と curl を確認し、8080 で待ち受けている",
+            "検証用サーバ上で、8080 の待ち受けとログイン URL への応答を確認",
           ],
         },
         { type: "quiz", id: "sc-net" },
@@ -683,6 +693,8 @@ Content-Type: text/html;charset=UTF-8`,
           type: "ul",
           items: [
             "画面の HTML は 200",
+            "app.css は 404。Request URL は /shinsei/css/app.css",
+            "開発者ツールのコンソールに、CSS の 404 のエラーが出ている",
             "Java のログに、一覧の INFO は出ている",
             "見た目がおかしい以外のエラーは画面に無い",
           ],
@@ -693,13 +705,7 @@ Content-Type: text/html;charset=UTF-8`,
         },
         {
           type: "p",
-          text: "HTML が 200 なら、一覧の Controller は動いています。Network タブで CSS / JS の行を見ましょう。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "テンプレート側のこともある",
-          text: "href が /css/app.css のままで、コンテキストパス /shinsei が付いていない、というずれもあります。それでも先に Network タブの 404 URL を見ましょう。",
+          text: "HTML が 200 なら、一覧の Controller は動いています。次は 404 の Request URL と、サーバ上のファイルの有無を見ましょう。",
         },
         { type: "diagram", name: "not-found", caption: "HTML が 200 でも、静的ファイルだけ 404 のことがあります。" },
         {
@@ -708,7 +714,80 @@ Content-Type: text/html;charset=UTF-8`,
         },
         {
           type: "p",
-          text: "/shinsei/css/app.css が 404 でした。手前の nginx が /css/ を別ディレクトリに振っており、コンテキストパス付きの実体とずれていました。アプリの Java は直す場所ではありません。",
+          text: "Network タブの 404 は /shinsei/css/app.css でした。一覧の HTML は Java まで届いています。検証用環境のサーバ上で、WAR を展開した先に app.css があるかを見ます。申請くんの Spring Boot WAR では、static は WEB-INF/classes/static に入ります。",
+        },
+        {
+          type: "ul",
+          items: [
+            "ls -l /opt/tomcat/webapps/shinsei/WEB-INF/classes/static/css/ … 展開先の CSS ディレクトリを一覧する",
+          ],
+        },
+        {
+          type: "code",
+          title: "例（検証用環境のサーバ上）",
+          lang: "text",
+          code: `$ ls -l /opt/tomcat/webapps/shinsei/WEB-INF/classes/static/css/
+-rw-r--r-- 1 tomcat tomcat 4120 Aug 16 04:00 app.css`,
+        },
+        {
+          type: "p",
+          text: "ファイルはあります。Java まで届いていれば 200 になるはずです。手前の nginx を見ます。",
+        },
+        {
+          type: "code",
+          title: "nginx の設定の例（このシナリオ）",
+          lang: "nginx",
+          highlightLines: [1],
+          code: `location /shinsei/css/ {
+    alias /var/www/html/css/;
+}
+
+location /shinsei/ {
+    proxy_pass http://127.0.0.1:8080;
+}`,
+        },
+        {
+          type: "p",
+          text: "nginx が見ているディレクトリにも、同じように ls します。",
+        },
+        {
+          type: "code",
+          title: "例（nginx が見ている先）",
+          lang: "text",
+          code: `$ ls -l /var/www/html/css/
+ls: cannot access '/var/www/html/css/': No such file or directory`,
+        },
+        {
+          type: "p",
+          text: "手前の nginx が /shinsei/css/ を先に受け、ディスクの別ディレクトリを見ています。そこには app.css が無いので 404 となっています。",
+        },
+        {
+          type: "p",
+          text: "直し方は複数あります。それぞれ利点と欠点があります。",
+        },
+        {
+          type: "table",
+          headers: ["触る場所", "すること", "利点", "欠点"],
+          rows: [
+            [
+              "nginx が見ているディレクトリ",
+              "app.css を置く",
+              "静的ファイルを nginx が返すので速い",
+              "アプリの app.css とは別に置く。片方だけ直すとずれる",
+            ],
+            [
+              "nginx の設定（alias）",
+              "向き先を WAR の展開先にする",
+              "コピーを増やさない。静的ファイルを nginx が返すので速い",
+              "展開先のパスに縛られる",
+            ],
+            [
+              "nginx の設定（location）",
+              "CSS 用の location を外し、proxy_pass だけにする",
+              "構成が単純。ファイルは WAR だけ",
+              "静的ファイルも Java が処理する",
+            ],
+          ],
         },
         {
           type: "h2",
@@ -719,7 +798,7 @@ Content-Type: text/html;charset=UTF-8`,
           items: [
             "見た目の崩れは、先に静的ファイルのステータスコードを確認しましょう",
             "HTML 200 と CSS 404 が同時にある。層が違う",
-            "手前に Apache / nginx があるなら、location や alias を疑う",
+            "手前に Apache / nginx があるなら、静的ファイルのパス設定を疑う",
           ],
         },
         {
@@ -731,7 +810,8 @@ Content-Type: text/html;charset=UTF-8`,
           items: [
             "Network タブで、HTML が 200 であることを確認",
             "CSS の行が 404 であることを確認",
-            "手前の nginx の location / alias と、実体のパスがずれている",
+            "WAR を展開した先に app.css があることを ls で確認",
+            "手前の nginx が CSS の URL を先に受け、別ディレクトリを見ている",
           ],
         },
         { type: "quiz", id: "sc-http" },
