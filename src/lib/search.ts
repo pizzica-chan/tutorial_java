@@ -61,6 +61,8 @@ function blockText(block: Block): string {
       return [block.headers.join(" "), ...block.rows.map((row) => row.join(" "))].join("\n");
     case "steps":
       return block.items.map((item) => `${item.title}\n${item.text}`).join("\n");
+    case "investigation-flow":
+      return block.items.join("\n");
     case "widget":
       return widgetText(block.name);
     default:

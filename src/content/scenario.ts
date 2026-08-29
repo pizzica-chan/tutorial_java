@@ -111,6 +111,30 @@ export const scenarioTrack: Track = {
           type: "p",
           text: "原因は、一覧用の JS が HTML に無い id を読んでいることです。フロント側の不具合です。",
         },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "ボタンを押しても反応が無いときは、まず Network タブで新しいリクエストが出たかを見る",
+            "リクエストが無くコンソールに JS エラーがあるなら、サーバより先にフロントを疑う",
+            "コンソールの例外メッセージと、指しているファイル・行を見て、何を読もうとして失敗したかをたどる",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "Network タブで、リクエストが飛んでいないことを確認",
+            "コンソールで、JS の null 参照例外を確認",
+            "HTML と JS で識別子が異なり、値が取れず null になっていることを確認",
+          ],
+        },
         { type: "quiz", id: "sc-front" },
       ],
     },
@@ -163,15 +187,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "このシナリオでは POST が 500 でした。操作時刻のログに NullPointerException がありました。",
-        },
-        {
-          type: "code",
-          title: "操作時刻のサーバログ（申請くん）",
-          lang: "text",
-          code: `java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null
-    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)
-    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)`,
+          text: "操作時刻のサーバログには、先のとおり NullPointerException がありました。",
         },
         {
           type: "p",
@@ -187,14 +203,68 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "ID 16 の申請データでは承認者が未設定です。そのため request.getApproverId() の戻り値が null になり、その null に equals を呼んだことが NullPointerException の原因です。",
+          text: "getApproverId() が null です。null に equals を呼んだのが NullPointerException の直接原因です。",
+        },
+        {
+          type: "p",
+          text: "request は approve の冒頭で DB から取っています。approver_id が null なら、getApproverId() も null になります。",
+        },
+        {
+          type: "code",
+          title: "RequestService.approve（抜粋）",
+          lang: "java",
+          code: `RequestEntity request = requestMapper.findById(requestId, approverId);
+if (request == null) {
+  throw new NotFoundException("指定した申請は無い、または見る権限がありません。");
+}
+if (!request.getApproverId().equals(approverId)) {
+  throw new ForbiddenException("承認権限がありません");
+}`,
+        },
+        {
+          type: "p",
+          text: "ID 16 を DB で見ると、approver_id が NULL でした。詳細画面の承認者「未設定」と一致します。",
+        },
+        {
+          type: "code",
+          title: "t_request（申請くん）",
+          lang: "sql",
+          code: `SELECT id, title, approver_id, status
+FROM t_request
+WHERE id = 16;`,
+        },
+        {
+          type: "table",
+          headers: ["id", "title", "approver_id", "status"],
+          rows: [["16", "研修参加", "NULL", "PENDING"]],
+        },
+        {
+          type: "p",
+          text: "申請を登録するときは承認者が必須です。承認ボタンが押された際の処理の仕様も、承認者 ID が入っている前提となっており、未設定のときの考慮はありません。つまり ID 16 は、何らかの理由で作られた、仕様と食い違うレコードです。こうした不整合な行の作成を防ぐには、DB の approver_id に NOT NULL を付けるのが有効です。申請くんの列定義は NULL 可のままなので、値が空の行があると、今回のように 500 になります。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
         },
         {
           type: "ul",
           items: [
-            "5xx なら、見た目より先にログ",
-            "「エラーが発生しました」だけでは原因は分からない。時刻を合わせてサーバ側のエラーログを確認する",
-            "org.springframework の行で止まらない。自作クラスを開く",
+            "POST が 500 なら、操作時刻のサーバログを先に見る。「エラーが発生しました」だけでは原因は分からない",
+            "スタックトレースでは、org.springframework や java. の行は飛ばし、自分たちが書いたコードの最初の at 行からソースを開く",
+            "変数の値が原因なら、その値がセットされている箇所を追う",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "Network タブで、POST が 500 であることを確認",
+            "操作時刻のサーバログで NullPointerException を確認",
+            "スタックから RequestService.java:47 を開き、getApproverId() が null と分かる",
+            "DB で approver_id が NULL であることを確認",
           ],
         },
         { type: "quiz", id: "sc-back" },
@@ -278,11 +348,28 @@ requestService.approve(id, user.getId());`,
           text: "ID 11 は既に APPROVED です。PENDING ではないため Controller の分岐に入り、flash メッセージを設定して詳細へ戻ります。throw しておらず、承認処理の本体にも入らないため、例外ログは出ません。",
         },
         {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
           type: "ul",
           items: [
             "固有の文言があるときは、それが最短の検索語",
             "「エラーが発生しました」だけだとヒットが多すぎる。前後の文やキー名も試す",
             "ソースにヒットしなければ、DB のメッセージマスタや、外部 API が返した文を疑う",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "Network タブで、POST は飛んでいるが 500 ではないことを確認",
+            "操作時刻のログに ERROR もスタックも無いことを確認",
+            "画面の文言でソースを検索し、Controller の分岐に当たる",
+            "DB で申請 ID 11 の status が APPROVED であることを確認",
           ],
         },
         {
@@ -341,11 +428,27 @@ requestService.approve(id, user.getId());`,
           text: "検証用環境の t_request を、ログインユーザの ID で検索すると 0 件でした。ローカル環境の DB には 3 件あります。SQL の WHERE は同じでも、行が無ければ一覧は空です。",
         },
         {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
           type: "ul",
           items: [
             "200 で件数が違うなら、コード通読より先に、実行された SQL とその条件の行",
             "今見ている接続先が、思っている検証用環境の DB かを確認する",
             "論理削除フラグが立っている、別のログインユーザの行しか無い、といった場合も同じ型",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "Network タブで、GET が 200 であることを確認",
+            "実行された SQL とその条件を確認",
+            "同じ条件で DB を検索し、行が 0 件であることを確認",
           ],
         },
         { type: "quiz", id: "sc-db" },
@@ -407,11 +510,27 @@ requestService.approve(id, user.getId());`,
           text: "検証用環境のサーバのポート 8080 が、社内ネットワークから閉じられていました。ブラウザはサーバまで届かず、アプリは何も記録しません。",
         },
         {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
           type: "ul",
           items: [
             "ログが無いときは、アプリ未到達か、見ているログが違うことが多いです",
             "ローカル環境で動くことと、検証用環境のホストへ届くことは別",
             "DNS の向き先、ポート、HTTPS の終端、プロキシの有無を表にする",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "Network タブで、HTML のリクエストが pending のままであることを確認",
+            "操作時刻のアプリログにアクセスが無いことを確認",
+            "宛先・ポート・ファイアウォールを確認し、ポート 8080 が閉じられている",
           ],
         },
         { type: "quiz", id: "sc-net" },
@@ -477,11 +596,27 @@ requestService.approve(id, user.getId());`,
           text: "/shinsei/css/app.css が 404 でした。手前の nginx が /css/ を別ディレクトリに振っており、コンテキストパス付きの実体とずれていました。アプリの Java は直す場所ではありません。",
         },
         {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
           type: "ul",
           items: [
             "見た目の崩れは、先に静的ファイルのステータスコードを確認しましょう",
             "HTML 200 と CSS 404 が同時にある。層が違う",
             "手前に Apache / nginx があるなら、location や alias を疑う",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "Network タブで、HTML が 200 であることを確認",
+            "CSS の行が 404 であることを確認",
+            "手前の nginx の location / alias と、実体のパスがずれている",
           ],
         },
         { type: "quiz", id: "sc-http" },
@@ -555,11 +690,27 @@ requestService.approve(id, user.getId());
           ],
         },
         {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
           type: "ul",
           items: [
             "既存の値名（PENDING）から逆引きすると漏れが減る",
             "画面だけ見ても、Service やバッチの分岐は見落とす",
             "DB の CHECK 制約や、他システム連携のコード値も確認対象",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "status や PENDING など既存の識別子で全文検索する",
+            "ヒットを分岐・表示・SQL に分類する",
+            "CANCELLED を足すと直す必要がある箇所を一覧にする",
           ],
         },
         { type: "quiz", id: "sc-impact-status" },
@@ -612,11 +763,27 @@ requestService.approve(id, user.getId());
           text: "検索で RequestController.list と RequestMapper.findMine だけでなく、CSV 用の export メソッドも同じ Mapper を呼んでいる、と分かれば、一覧とエクスポートの両方を直す必要がある、と書けます。",
         },
         {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
           type: "ul",
           items: [
             "画面だけ追うと、裏の SQL やエクスポートを見落とす",
             "クエリパラメータ名は、テンプレートと Controller で一致しているか確認する",
             "影響一覧は「ファイル + 何を変えるか」で十分なことが多い",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "一覧の URL から Controller を特定する",
+            "Controller → Service → Mapper を辿る",
+            "export など別経路も同じ Mapper を使っていないか確認する",
           ],
         },
         {

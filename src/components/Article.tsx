@@ -9,6 +9,7 @@ import { HttpInspector } from "./HttpInspector";
 import { TermHighlightScope, TextWithTerms } from "./TextWithTerms";
 import { CodeBlock } from "./CodeBlock";
 import { Diagram } from "./Diagram";
+import { InvestigationFlow } from "./InvestigationFlow";
 import { Icon, calloutIcon } from "./Icon";
 
 const widgets: Record<WidgetName, ComponentType> = {
@@ -170,6 +171,8 @@ function BlockView({ block }: { block: Block }) {
           ))}
         </div>
       );
+    case "investigation-flow":
+      return <InvestigationFlow items={block.items} />;
     default: {
       const _exhaustive: never = block;
       return _exhaustive;

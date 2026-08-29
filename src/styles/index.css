@@ -1546,6 +1546,21 @@ th {
   margin: 0 auto;
 }
 
+.investigation-flow {
+  max-width: 640px;
+}
+
+.investigation-flow-item {
+  display: contents;
+}
+
+.investigation-flow-step span {
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: normal;
+}
+
 .d-plus {
   color: var(--quiet);
   font-family: var(--mono);

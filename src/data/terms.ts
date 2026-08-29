@@ -480,7 +480,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "error.log",
-    aliases: ["error.log", "error_log", "エラーログ"],
+    aliases: ["error.log", "error_log"],
     body: "HTTP サーバ側のエラー記録。設定ミス、後ろのアプリへの接続失敗、SSL の問題など。",
   },
   {
@@ -789,6 +789,11 @@ export const terms: TermDef[] = [
     body: "DB の表。行が 1 件のデータ、列が項目です。",
   },
   {
+    term: "レコード",
+    aliases: ["レコード"],
+    body: "テーブルの 1 行のこと。1 件のデータを指すときによく使います。Java では同じ行を Entity として扱うことが多いです。",
+  },
+  {
     term: "カラム",
     aliases: ["カラム", "列名"],
     body: "テーブルの項目。コードの列名と DB の定義がずれると SQL エラーになります。",
@@ -1016,7 +1021,7 @@ export const terms: TermDef[] = [
   {
     term: "ログ",
     aliases: ["ログ"],
-    body: "アプリが出す記録。失敗や SQL などの手がかりはここに残ります。ログインとは別です。調査では、まず既存ログの出力先を確認します。",
+    body: "何が起きたかを残した記録です。アプリ、HTTP サーバ、コンテナの標準出力など、出る場所は環境ごとに違います。",
   },
   {
     term: "ログレベル",
