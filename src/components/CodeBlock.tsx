@@ -1,4 +1,4 @@
-import { highlightCode, inferLang } from "../lib/highlight";
+import { highlightCode, highlightCodeLines, inferLang } from "../lib/highlight";
 import { JavaCode } from "./JavaCode";
 
 type Props = {
@@ -6,14 +6,21 @@ type Props = {
   lang?: string;
   title?: string;
   path?: string;
+  codeScope?: "fragment-common" | "fragment-individual";
+  highlightLines?: number[];
 };
 
-export function CodeBlock({ code, lang, title, path }: Props) {
+export function CodeBlock({ code, lang, title, path, codeScope, highlightLines }: Props) {
   const resolved = inferLang(code, lang, path);
-  const html = resolved === "java" ? undefined : highlightCode(code, resolved);
+  const html =
+    resolved === "java"
+      ? undefined
+      : highlightLines?.length && resolved
+        ? highlightCodeLines(code, resolved, highlightLines)
+        : highlightCode(code, resolved);
 
   return (
-    <div className="codeblock">
+    <div className={`codeblock${codeScope ? ` codeblock-${codeScope}` : ""}`}>
       <header>
         <span>{title ?? path ?? "code"}</span>
         <span>{resolved ?? ""}</span>

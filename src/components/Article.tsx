@@ -73,7 +73,15 @@ function BlockView({ block }: { block: Block }) {
         </ol>
       );
     case "code":
-      return <CodeBlock code={block.code} lang={block.lang} title={block.title} />;
+      return (
+        <CodeBlock
+          code={block.code}
+          lang={block.lang}
+          title={block.title}
+          codeScope={block.codeScope}
+          highlightLines={block.highlightLines}
+        />
+      );
     case "callout":
       return (
         <div className={`callout ${block.kind}`}>
@@ -82,10 +90,12 @@ function BlockView({ block }: { block: Block }) {
             {label(block.kind)}
           </b>
           <div>
-            <strong>
-              <TextWithTerms text={block.title} />
-            </strong>
-            <p style={{ margin: "6px 0 0" }}>
+            {block.title ? (
+              <strong>
+                <TextWithTerms text={block.title} />
+              </strong>
+            ) : null}
+            <p style={{ margin: block.title ? "6px 0 0" : 0 }}>
               <TextWithTerms text={block.text} />
             </p>
           </div>
@@ -188,5 +198,6 @@ function label(kind: CalloutKind) {
   if (kind === "warn") return "注意";
   if (kind === "trap") return "落とし穴";
   if (kind === "note") return "補足";
+  if (kind === "scenario") return "シナリオ";
   return "ヒント";
 }

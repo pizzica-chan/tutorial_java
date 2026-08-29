@@ -419,21 +419,52 @@ public class RequestApiController {
           text: "画面ごとのファイルは th:replace で共通の layout.html を読み込みます。そのため list.html を開くと、その画面固有の <main> だけが見えます。共通のヘッダや CSS を追うときは layout.html も開きましょう。",
         },
         {
+          type: "diagram",
+          name: "template-fragment",
+        },
+        {
           type: "code",
           title: "fragments/layout.html（抜粋）",
           lang: "html",
-          code: `<html th:fragment="layout (title, content)">
-  ...
-  <main th:insert="\${content}"></main>
+          codeScope: "fragment-common",
+          code: `<!-- ① ヘッダ（共通） -->
+<html th:fragment="layout (title, content)">
+<head>
+  <title th:text="\${title} + ' | 申請くん'">申請くん</title>
+  <!-- ② CSS（共通） -->
+  <link rel="stylesheet" th:href="@{/css/app.css}" />
+</head>
+<body>
+  <header class="app-header">
+    <a class="app-logo" th:href="@{/requests}">申請くん</a>
+    <nav>
+      <a th:href="@{/requests}">申請一覧</a>
+      ...
+    </nav>
+    <button type="submit" class="btn-text">ログアウト</button>
+  </header>
+  <!-- ③ main の枠。list.html などの <main> が入る -->
+  <main class="app-main" th:insert="\${content}"></main>
+</body>
 </html>`,
         },
         {
           type: "code",
           title: "request/list.html（先頭）",
           lang: "html",
+          codeScope: "fragment-individual",
           code: `<html th:replace="fragments/layout :: layout(title='申請一覧', content=~{::main})">
+<!-- ③ 個別（この画面の <main>） -->
 <main>
-  ...
+  <h1>申請一覧</h1>
+  <table class="data">
+    <thead>
+      <tr><th>件名</th><th>ステータス</th><th>操作</th></tr>
+    </thead>
+    <tbody>
+      ...
+    </tbody>
+  </table>
 </main>`,
         },
         {

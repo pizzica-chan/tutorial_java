@@ -50,6 +50,7 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "debug-two": DebugTwo,
   "protocol-stack": ProtocolStack,
   "template-rendered": TemplateRendered,
+  "template-fragment": TemplateFragment,
   "sql-to-source": SqlToSource,
 };
 
@@ -643,6 +644,58 @@ function ViewFile() {
       <Layer icon="file" accent>
         templates/request/list.html
       </Layer>
+    </div>
+  );
+}
+
+function TemplateFragment() {
+  return (
+    <div className="d-template-fragment">
+      <div className="d-template-fragment-outer">
+        <p className="d-template-fragment-label">fragments/layout.html（共通）</p>
+        <div className="d-template-fragment-header">
+          <span className="d-template-fragment-mark">①</span>
+          <span>申請くん</span>
+          <span>申請一覧</span>
+          <span>ログアウト</span>
+        </div>
+        <div className="d-template-fragment-css">
+          <span className="d-template-fragment-mark">②</span>
+          <span>app.css</span>
+        </div>
+        <div className="d-template-fragment-slot">
+          <span className="d-template-fragment-mark d-template-fragment-mark-individual">③</span>
+          <span>&lt;main&gt; の枠</span>
+        </div>
+        <div className="d-template-fragment-inner">
+          <p className="d-template-fragment-label">
+            <span className="d-template-fragment-mark d-template-fragment-mark-individual">③</span>
+            request/list.html の &lt;main&gt;（個別）
+          </p>
+          <p className="d-template-fragment-page-title">申請一覧</p>
+          <table className="d-template-fragment-table">
+            <thead>
+              <tr>
+                <th>件名</th>
+                <th>ステータス</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>交通費申請</td>
+                <td>PENDING</td>
+                <td>承認</td>
+              </tr>
+              <tr>
+                <td>備品購入</td>
+                <td>APPROVED</td>
+                <td />
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

@@ -16,8 +16,7 @@ export const scenarioTrack: Track = {
       blocks: [
         {
           type: "callout",
-          kind: "note",
-          title: "シナリオ",
+          kind: "scenario",
           text: "申請一覧画面で、承認ボタンを押しても何も起きない。画面は切り替わらず、エラーメッセージも出ない。",
         },
         {
@@ -48,6 +47,12 @@ export const scenarioTrack: Track = {
           text: "押した瞬間の Network タブを見ましょう。新しいリクエストが無ければ、バックエンドにも DB にも届いていません。",
         },
         {
+          type: "callout",
+          kind: "note",
+          title: "別ウィンドウのリクエスト",
+          text: "Network タブに出るのは、開発者ツールを開いているウィンドウの通信だけです。別ウィンドウを開いて送ったリクエストは、元のウィンドウの Network タブには出ません。",
+        },
+        {
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-no-post.jpg",
@@ -56,11 +61,11 @@ export const scenarioTrack: Track = {
         },
         {
           type: "table",
-          headers: ["観測", "読む"],
+          headers: ["Networkタブ / コンソール", "分かること", "次に確認すること"],
           rows: [
-            ["新しいリクエストが無い", "サーバはまだ関係ない。フォームか JS"],
-            ["コンソールに JS エラー", "リクエスト送信の手前で止まっている"],
-            ["リクエストがあり 200 / 302 / 500", "リクエスト送信は終わっている。サーバの応答とログを見る"],
+            ["新しいリクエストが無い", "サーバはまだ関係ない。フォームか JS", "コンソール、フォーム、一覧の JS"],
+            ["コンソールに JS エラー", "リクエスト送信の手前で止まっている", "例外のファイルと行"],
+            ["リクエストがあり 200 / 302 / 500", "リクエスト送信は終わっている。サーバの応答とログを見る", "レスポンス、操作時刻のサーバ側のエラーログ"],
           ],
         },
         {
@@ -69,22 +74,25 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "このシナリオでは新しいリクエストが無く、コンソールに Uncaught TypeError: Cannot read properties of null (reading 'value') がありました。サーバのログはまだ見ません。コンソールの例外をクリックして、止まっているファイルと行を開きましょう。",
+          text: "このシナリオでは新しいリクエストが無く、コンソールに Uncaught TypeError: Cannot read properties of null (reading 'value') がありました。コンソールの例外をクリックして、エラーが発生したファイルを開きましょう。",
         },
         {
           type: "code",
           title: "list.js（申請くん・一覧）",
           lang: "javascript",
+          highlightLines: [4],
           code: `form.addEventListener("submit", (event) => {
   event.preventDefault();
   const tokenEl = document.getElementById("csrfToken");
-  form.querySelector("input[name='_csrf']").value = tokenEl.value;
+  const token = tokenEl.value;
+  const csrfInput = form.querySelector("input[name='_csrf']");
+  csrfInput.value = token;
   form.submit();
 });`,
         },
         {
           type: "p",
-          text: "preventDefault() のあと、getElementById(\"csrfToken\") の結果を tokenEl に入れ、tokenEl.value を読んでいます。例外は「null の value を読んだ」なので、tokenEl は null です。次は、一覧の HTML に id=\"csrfToken\" があるかを見ます。",
+          text: "preventDefault() のあと、getElementById(\"csrfToken\") の結果を tokenEl に入れ、次の行で tokenEl.value を読んでいます。例外が発生した行はここです。例外は「null の value を読んだ」なので、tokenEl は null です。次は、一覧の HTML に id=\"csrfToken\" があるかを見ます。",
         },
         {
           type: "code",
@@ -97,17 +105,11 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "id=\"csrfToken\" はありません。CSRF 用の hidden は name=\"_csrf\" だけです。tokenEl は null のまま value を読み、例外になります。その下の form.submit() まで進まないので、承認のリクエストは飛びません。",
+          text: "id=\"csrfToken\" はありません。そのため getElementById は null を返し、tokenEl.value で例外になります。その下の form.submit() まで進まないので、承認のリクエストは飛びません。",
         },
         {
           type: "p",
-          text: "原因は、一覧用の JS が HTML に無い id を読んでいることです。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "別ウィンドウのリクエスト",
-          text: "Network タブに出るのは、開発者ツールを開いているウィンドウの通信だけです。別ウィンドウを開いて送ったリクエストは、元のウィンドウの Network タブには出ません。新しいウィンドウ側で Network タブを開きましょう。",
+          text: "原因は、一覧用の JS が HTML に無い id を読んでいることです。フロント側の不具合です。",
         },
         { type: "quiz", id: "sc-front" },
       ],
@@ -119,8 +121,7 @@ export const scenarioTrack: Track = {
       blocks: [
         {
           type: "callout",
-          kind: "note",
-          title: "シナリオ",
+          kind: "scenario",
           text: "申請詳細画面で承認ボタンを押すと、「エラーが発生しました」と出る。一覧には戻らない。",
         },
         {
@@ -128,14 +129,12 @@ export const scenarioTrack: Track = {
           kind: "screen",
           src: "/images/screen-error-500.jpg",
           alt: "承認後にエラーが発生しましたと出た画面",
-          caption: "「エラーが発生しました」だけでは原因は分かりません。Network タブが 500 なら、先にサーバ側のエラーログを確認しましょう。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-500.jpg",
           alt: "承認 POST が 500 の Network タブ",
-          caption: "POST /shinsei/requests/16/approve が 500。画面の文言より先に、このステータスコードを確認しましょう。",
         },
         {
           type: "h2",
@@ -155,9 +154,9 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "リクエストはサーバに届いています。CSS やボタンの JS ではありません。操作時刻のサーバ側のエラーログを確認しましょう。",
+          text: "リクエストはサーバに届いています。操作時刻のサーバ側のエラーログを確認しましょう。",
         },
-        { type: "diagram", name: "stack-own", caption: "ログは長い。そのファイルの行番号を最初に調べましょう。" },
+        { type: "diagram", name: "stack-own" },
         {
           type: "code",
           title: "操作時刻のサーバログ（申請くん）",
@@ -204,8 +203,7 @@ export const scenarioTrack: Track = {
       blocks: [
         {
           type: "callout",
-          kind: "note",
-          title: "シナリオ",
+          kind: "scenario",
           text: "申請詳細で承認ボタンを押すと、「この申請は承認できません」と出る。一覧には戻らない。",
         },
         {
@@ -295,8 +293,7 @@ requestService.approve(id, user.getId());`,
       blocks: [
         {
           type: "callout",
-          kind: "note",
-          title: "シナリオ",
+          kind: "scenario",
           text: "申請一覧画面が、検証用環境だけ 0 件になる。ローカル環境の起動では、同じログインユーザで 3 件出る。",
         },
         {
@@ -349,8 +346,7 @@ requestService.approve(id, user.getId());`,
       blocks: [
         {
           type: "callout",
-          kind: "note",
-          title: "シナリオ",
+          kind: "scenario",
           text: "検証用環境の申請一覧 URL を開くと、いつまでも読み込み中になる。ローカル環境では同じ URL で 200 になる。",
         },
         {
@@ -412,8 +408,7 @@ requestService.approve(id, user.getId());`,
       blocks: [
         {
           type: "callout",
-          kind: "note",
-          title: "シナリオ",
+          kind: "scenario",
           text: "申請一覧画面は開くが、表の罫線も色も当たっていない。文字だけが並ぶ。",
         },
         {
@@ -479,8 +474,7 @@ requestService.approve(id, user.getId());`,
       blocks: [
         {
           type: "callout",
-          kind: "note",
-          title: "シナリオ",
+          kind: "scenario",
           text: "取り下げ機能の見積もりのため、申請ステータスに CANCELLED を追加したときの影響範囲を調べてほしい、と依頼された。不具合報告ではない。",
         },
         {
@@ -558,8 +552,7 @@ requestService.approve(id, user.getId());
       blocks: [
         {
           type: "callout",
-          kind: "note",
-          title: "シナリオ",
+          kind: "scenario",
           text: "申請一覧に「部署で絞り込み」を追加したい。既存の一覧処理への影響を教えてほしい、と依頼された。",
         },
         {

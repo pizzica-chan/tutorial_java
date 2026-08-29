@@ -3,7 +3,9 @@ document.querySelectorAll("form[action*='/approve']").forEach((form) => {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const tokenEl = document.getElementById("csrfToken");
-    form.querySelector("input[name='_csrf']").value = tokenEl.value;
+    const token = tokenEl.value;
+    const csrfInput = form.querySelector("input[name='_csrf']");
+    csrfInput.value = token;
     form.submit();
   });
 });

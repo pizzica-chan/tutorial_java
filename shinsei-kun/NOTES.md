@@ -5,7 +5,7 @@
 ## 意図している動き
 
 - **申請者（山田）にも承認ボタンが出る。** 教材の一覧抜粋と同じです。一覧で押しても POST しません（下の `list.js`）。詳細で押すと POST します。山田が詳細で押すと「権限がありません」になり、`ForbiddenException` の画面が撮れます。佐藤が詳細で承認すると通ります。
-- **一覧の承認は POST しない。** シナリオ「承認ボタンを押しても何も起きない」用です。`list.js` が `id="csrfToken"` の value を読みますが、一覧 HTML にその id はありません。`preventDefault()` のあと例外になり、POST は飛びません。詳細の承認は `form.js-approve-confirm` と `app.js` の確認ダイアログだけで、POST します。
+- **一覧の承認は POST しない。** シナリオ「承認ボタンを押しても何も起きない」用です。`list.js` が `id="csrfToken"` の value を読みますが、一覧 HTML にその id はありません。`tokenEl.value` の行で例外になり、POST は飛びません。詳細の承認は `form.js-approve-confirm` と `app.js` の確認ダイアログだけで、POST します。
 - **パスワードは BCrypt、POST フォームには CSRF 用 hidden がある。** 動かすための簡略はありますが、平文パスワード・CSRF 無効・SQL の文字列連結はしません。
 - **教材の短い抜粋に無いクラスや処理がある。** 新規申請、`findById` の null チェック、`@Transactional`、ログインユーザ、例外の出口、画面レイアウトなどです。動かすための穴埋めです。
 - **ID 16「研修参加」は、承認者が未設定の教材用データ。** タイトルは業務らしい名前にしてあります。`approver_id=NULL` は意図的な不整合です。山田で詳細を開いて承認すると、`RequestService.approve` の `request.getApproverId().equals(...)` で NullPointerException が発生します。原因を追うシナリオのため、この行を null 安全にはしません。

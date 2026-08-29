@@ -302,3 +302,15 @@ export function highlightCode(code: string, lang?: string): string {
   }
   return escapeHtml(code);
 }
+
+export function highlightCodeLines(code: string, lang: string, highlightLines: number[]): string {
+  const lines = code.split("\n");
+  return lines
+    .map((line, index) => {
+      const lineNo = index + 1;
+      const highlighted = line ? highlightCode(line, lang) : "&nbsp;";
+      const mark = highlightLines.includes(lineNo);
+      return `<span class="code-line${mark ? " code-line-mark" : ""}">${highlighted}</span>`;
+    })
+    .join("");
+}

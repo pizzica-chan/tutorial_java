@@ -1,6 +1,6 @@
 export type TrackId = "intro" | "web" | "java-map" | "reading" | "trace" | "troubleshoot" | "scenario";
 
-export type CalloutKind = "tip" | "note" | "warn" | "trap";
+export type CalloutKind = "tip" | "note" | "warn" | "trap" | "scenario";
 
 export type WidgetName = "explorer" | "flow" | "stack" | "http";
 
@@ -37,6 +37,7 @@ export type DiagramName =
   | "debug-two"
   | "protocol-stack"
   | "template-rendered"
+  | "template-fragment"
   | "sql-to-source";
 
 export type Block =
@@ -44,8 +45,8 @@ export type Block =
   | { type: "h2"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "ol"; items: string[] }
-  | { type: "code"; lang?: string; title?: string; code: string }
-  | { type: "callout"; kind: CalloutKind; title: string; text: string }
+  | { type: "code"; lang?: string; title?: string; code: string; codeScope?: "fragment-common" | "fragment-individual"; highlightLines?: number[] }
+  | { type: "callout"; kind: CalloutKind; title?: string; text: string }
   | { type: "quiz"; id: string }
   | { type: "widget"; name: WidgetName }
   | { type: "diagram"; name: DiagramName; caption?: string }
