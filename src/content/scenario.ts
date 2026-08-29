@@ -44,7 +44,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "押した瞬間の Network タブを見ましょう。新しいリクエストが無ければ、バックエンドにも DB にも届いていません。",
+          text: "押した瞬間の Network タブを見ましょう。見づらいときは、ログを消してからもう一度押します。新しいリクエストが無ければ、バックエンドにも DB にも届いていません。",
         },
         {
           type: "callout",
@@ -57,7 +57,7 @@ export const scenarioTrack: Track = {
           kind: "screen",
           src: "/images/screen-network-no-post.jpg",
           alt: "承認を押したあとも新しいリクエストが無い Network タブ",
-          caption: "承認を押した直後の例です。POST /approve の行は増えていません。コンソールにエラーの印が出ています。",
+          caption: "ログを消してから承認を押した例です。リクエストの行は増えていません。コンソールにエラーの印が出ています。",
         },
         {
           type: "table",
@@ -158,6 +158,14 @@ export const scenarioTrack: Track = {
         },
         { type: "diagram", name: "stack-own" },
         {
+          type: "h2",
+          text: "このシナリオの原因",
+        },
+        {
+          type: "p",
+          text: "このシナリオでは POST が 500 でした。操作時刻のログに NullPointerException がありました。",
+        },
+        {
           type: "code",
           title: "操作時刻のサーバログ（申請くん）",
           lang: "text",
@@ -176,10 +184,6 @@ export const scenarioTrack: Track = {
           code: `if (!request.getApproverId().equals(approverId)) {
   throw new ForbiddenException("承認権限がありません");
 }`,
-        },
-        {
-          type: "h2",
-          text: "このシナリオの原因",
         },
         {
           type: "p",
@@ -230,6 +234,12 @@ export const scenarioTrack: Track = {
           text: "先に見ること",
         },
         {
+          type: "callout",
+          kind: "note",
+          title: "前のシナリオとの違い",
+          text: "「エラーが発生しました」で POST が 500 なら、先にスタックです。画面に業務の一文があり ERROR が無いなら、先にその一文で検索しましょう。",
+        },
+        {
           type: "p",
           text: "例外が出ていないので、スタックの at 行は使えません。画面に出ている文言そのものを、ソース全体から検索しましょう。",
         },
@@ -244,6 +254,14 @@ export const scenarioTrack: Track = {
           ],
         },
         {
+          type: "h2",
+          text: "このシナリオの原因",
+        },
+        {
+          type: "p",
+          text: "「この申請は承認できません」で検索すると、Controller の分岐に当たりました。",
+        },
+        {
           type: "code",
           title: "検索で当たった箇所（申請くん）",
           lang: "java",
@@ -254,10 +272,6 @@ if (!"PENDING".equals(request.getStatus())) {
   return "redirect:/requests/" + id;
 }
 requestService.approve(id, user.getId());`,
-        },
-        {
-          type: "h2",
-          text: "このシナリオの原因",
         },
         {
           type: "p",
@@ -276,12 +290,6 @@ requestService.approve(id, user.getId());`,
           kind: "note",
           title: "ソースに無い文言",
           text: "画面の文が、コードにもプロパティファイルにも無いときは、Java が直書きしていません。メッセージ用のテーブル、ワークフローや認証サーバの応答 JSON を、Network タブと DB で見ましょう。応答の message をそのまま出していることがあります。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "前のシナリオとの違い",
-          text: "「エラーが発生しました」で POST が 500 なら、先にスタックです。画面に業務の一文があり ERROR が無いなら、先にその一文で検索しましょう。",
         },
         { type: "quiz", id: "sc-message" },
       ],
@@ -324,6 +332,10 @@ requestService.approve(id, user.getId());`,
           text: "応答は成功しています。フロントや CSS の問題でも、500 でもありません。実行された SQL を見て、同じ条件で今つないでいる DB の行を数えましょう。",
         },
         { type: "diagram", name: "front-back", caption: "データは DB にある。実行された SQL の条件で、今の DB を見る。" },
+        {
+          type: "h2",
+          text: "このシナリオの原因",
+        },
         {
           type: "p",
           text: "検証用環境の t_request を、ログインユーザの ID で検索すると 0 件でした。ローカル環境の DB には 3 件あります。SQL の WHERE は同じでも、行が無ければ一覧は空です。",
@@ -387,6 +399,10 @@ requestService.approve(id, user.getId());`,
         },
         { type: "diagram", name: "env-diff", caption: "コードが同じでも、届く道が違うことがあります。" },
         {
+          type: "h2",
+          text: "このシナリオの原因",
+        },
+        {
           type: "p",
           text: "検証用環境のサーバのポート 8080 が、社内ネットワークから閉じられていました。ブラウザはサーバまで届かず、アプリは何も記録しません。",
         },
@@ -445,7 +461,17 @@ requestService.approve(id, user.getId());`,
           type: "p",
           text: "HTML が 200 なら、一覧の Controller は動いています。Network タブで CSS / JS の行を見ましょう。",
         },
+        {
+          type: "callout",
+          kind: "note",
+          title: "テンプレート側のこともある",
+          text: "href が /css/app.css のままで、コンテキストパス /shinsei が付いていない、というずれもあります。それでも先に Network タブの 404 URL を見ましょう。",
+        },
         { type: "diagram", name: "not-found", caption: "HTML が 200 でも、静的ファイルだけ 404 のことがあります。" },
+        {
+          type: "h2",
+          text: "このシナリオの原因",
+        },
         {
           type: "p",
           text: "/shinsei/css/app.css が 404 でした。手前の nginx が /css/ を別ディレクトリに振っており、コンテキストパス付きの実体とずれていました。アプリの Java は直す場所ではありません。",
@@ -457,12 +483,6 @@ requestService.approve(id, user.getId());`,
             "HTML 200 と CSS 404 が同時にある。層が違う",
             "手前に Apache / nginx があるなら、location や alias を疑う",
           ],
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "テンプレート側のこともある",
-          text: "href が /css/app.css のままで、コンテキストパス /shinsei が付いていない、というずれもあります。それでも先に Network タブの 404 URL を見ましょう。",
         },
         { type: "quiz", id: "sc-http" },
       ],

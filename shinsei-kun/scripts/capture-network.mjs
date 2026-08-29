@@ -59,6 +59,27 @@ function shotWindow(name, selectNetwork = false) {
   console.log(result.trim());
 }
 
+function prepareNetworkPanel({ clear = false, filter = "" } = {}) {
+  const args = [
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    ps1,
+    "-ProcessId",
+    String(browserPid),
+    "-SelectNetwork",
+  ];
+  if (clear) args.push("-ClearNetwork");
+  if (filter) args.push("-NetworkFilter", filter);
+  const result = execFileSync("powershell", args, { encoding: "utf8" });
+  console.log(result.trim());
+}
+
+function clearNetworkLog() {
+  prepareNetworkPanel({ clear: true });
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -153,7 +174,10 @@ async function blockApproveWithFlash() {
   });
 }
 
-await page.reload({ waitUntil: "networkidle0" });
+await page.goto(`${base}/requests`, { waitUntil: "networkidle0" });
+await sleep(600);
+await page.bringToFront();
+prepareNetworkPanel({ clear: true });
 await page.click(".btn-approve");
 await sleep(800);
 shotWindow("screen-network-no-post.jpg", true);

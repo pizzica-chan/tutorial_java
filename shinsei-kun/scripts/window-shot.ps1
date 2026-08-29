@@ -1,8 +1,14 @@
 param(
   [Parameter(Mandatory = $true)][int] $ProcessId,
-  [Parameter(Mandatory = $true)][string] $OutPath,
-  [switch] $SelectNetwork
+  [string] $OutPath = "",
+  [switch] $SelectNetwork,
+  [switch] $ClearNetwork,
+  [string] $NetworkFilter = ""
 )
+
+if (-not $OutPath -and -not $ClearNetwork -and -not $NetworkFilter -and -not $SelectNetwork) {
+  throw "OutPath or a DevTools action is required"
+}
 
 Add-Type -AssemblyName System.Windows.Forms
 Add-Type -AssemblyName System.Drawing
@@ -70,13 +76,40 @@ Start-Sleep -Milliseconds 150
 [System.Windows.Forms.SendKeys]::SendWait("{ESC}")
 Start-Sleep -Milliseconds 200
 
-if ($SelectNetwork) {
+if ($SelectNetwork -or $ClearNetwork) {
   $clickX = [int]($rect.Left + ($w * 0.82))
   $clickY = [int]($rect.Top + 102)
   [WinShot]::SetCursorPos($clickX, $clickY) | Out-Null
   [WinShot]::mouse_event(2, 0, 0, 0, 0)
   [WinShot]::mouse_event(4, 0, 0, 0, 0)
   Start-Sleep -Milliseconds 500
+}
+
+if ($ClearNetwork) {
+  [System.Windows.Forms.SendKeys]::SendWait("^+p")
+  Start-Sleep -Milliseconds 500
+  [System.Windows.Forms.SendKeys]::SendWait("clear network")
+  Start-Sleep -Milliseconds 400
+  [System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
+  Start-Sleep -Milliseconds 500
+  Write-Output "cleared network log title=$($proc.MainWindowTitle)"
+}
+
+if ($NetworkFilter) {
+  $filterX = [int]($rect.Left + ($w * 0.665))
+  $filterY = [int]($rect.Top + 128)
+  [WinShot]::SetCursorPos($filterX, $filterY) | Out-Null
+  [WinShot]::mouse_event(2, 0, 0, 0, 0)
+  [WinShot]::mouse_event(4, 0, 0, 0, 0)
+  Start-Sleep -Milliseconds 250
+  [System.Windows.Forms.SendKeys]::SendWait("^a")
+  [System.Windows.Forms.SendKeys]::SendWait($NetworkFilter)
+  Start-Sleep -Milliseconds 400
+  Write-Output "filtered network log filter=$NetworkFilter title=$($proc.MainWindowTitle)"
+}
+
+if (-not $OutPath) {
+  return
 }
 
 $bmp = New-Object System.Drawing.Bitmap $w, $h
