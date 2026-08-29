@@ -58,7 +58,10 @@ function blockText(block: Block): string {
     case "figure":
       return [block.alt, block.caption].filter(Boolean).join("\n");
     case "table":
-      return [block.headers.join(" "), ...block.rows.map((row) => row.join(" "))].join("\n");
+      return [
+        block.headers.join(" "),
+        ...(block.rows.length > 0 ? block.rows.map((row) => row.join(" ")) : [block.empty ?? "0 行"]),
+      ].join("\n");
     case "steps":
       return block.items.map((item) => `${item.title}\n${item.text}`).join("\n");
     case "investigation-flow":

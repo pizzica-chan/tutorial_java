@@ -135,20 +135,28 @@ function BlockView({ block }: { block: Block }) {
               </tr>
             </thead>
             <tbody>
-              {block.rows.map((row, rowIndex) => (
-                <tr key={rowIndex}>
-                  {row.map((cell, cellIndex) => (
-                    <td key={cellIndex}>
-                      {cell.split("\n").map((line, lineIndex) => (
-                        <Fragment key={lineIndex}>
-                          {lineIndex > 0 ? <br /> : null}
-                          <TextWithTerms text={line} />
-                        </Fragment>
-                      ))}
-                    </td>
-                  ))}
+              {block.rows.length > 0 ? (
+                block.rows.map((row, rowIndex) => (
+                  <tr key={rowIndex}>
+                    {row.map((cell, cellIndex) => (
+                      <td key={cellIndex}>
+                        {cell.split("\n").map((line, lineIndex) => (
+                          <Fragment key={lineIndex}>
+                            {lineIndex > 0 ? <br /> : null}
+                            <TextWithTerms text={line} />
+                          </Fragment>
+                        ))}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={block.headers.length} className="table-empty">
+                    <TextWithTerms text={block.empty ?? "0 行"} />
+                  </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>

@@ -774,6 +774,13 @@ th {
   background: rgba(16, 32, 51, 0.8);
 }
 
+.table-empty {
+  color: var(--muted);
+  text-align: center;
+  font-family: var(--mono);
+  background: rgba(16, 32, 51, 0.35);
+}
+
 .quiz {
   margin: 22px 0;
   padding: 18px;

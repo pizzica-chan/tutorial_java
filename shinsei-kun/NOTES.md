@@ -21,7 +21,7 @@
 - **画面にエラーが出ているが POST が無い見え方は、ページ単体のモックでは撮りません。** サーバの flash に見えるためです。一覧で submit を止めて画面にエラーを出し、headed Chrome のウィンドウ全体を撮ります。
 - **承認 500 と業務メッセージの画面は実アプリ経路で撮る。** ID 16 の実 POST で 500 画面と Network タブを、ID 11 の実 POST で flash 画面を撮ります。500 テンプレートの見出しは教材と同じ「エラーが発生しました」です。本文は利用者向けの定型文です。
 - **ページ画像のアドレスバーは合成です。** 三点は macOS 風です。Network タブは Windows の実 Chrome なので、枠の見た目は揃いません。
-- **HTML が終わらない見え方は、ページ内スピナーではありません。** 申請くんの一覧はサーバ側で HTML を返します。リロードが止まると、直前の一覧が残ったまま Network の document 行が pending になります。
+- **`screen-network-login-fail.jpg` だけ URL は `intranet.example.co.jp` です。** 教材の検証用ホスト名に合わせるため、撮影 PC の hosts で `127.0.0.1 intranet.example.co.jp` を足します。`shinsei-kun/scripts/setup-capture-hosts.ps1`（管理者 PowerShell）。検証用シナリオ向けの画面・Network キャプチャも同じホスト名です。再撮影は `node shinsei-kun/scripts/capture-screens.mjs --verify-scenarios` と `node shinsei-kun/scripts/capture-network.mjs --verify-scenarios`。
 
 ## レビューで求めないこと
 

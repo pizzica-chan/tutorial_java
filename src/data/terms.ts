@@ -241,7 +241,7 @@ export const terms: TermDef[] = [
   {
     term: "NullPointerException",
     aliases: ["NullPointerException", "NPE"],
-    body: "null のオブジェクトに対してメソッドを呼んだときに出る例外です。",
+    body: "null の参照に対してメソッドやフィールドにアクセスしたときに出る例外です。",
   },
   {
     term: "SQLException",

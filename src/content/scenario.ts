@@ -44,7 +44,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "押した瞬間の Network タブを見ましょう。見づらいときは、ログを消してからもう一度押します。新しいリクエストが無ければ、バックエンドにも DB にも届いていません。",
+          text: "押した瞬間の Network タブを見ましょう。見づらいときは、Network のログを消してから、もう一度承認ボタンを押します。新しいリクエストが無ければ、バックエンドにも DB にも届いていません。",
         },
         {
           type: "callout",
@@ -57,14 +57,15 @@ export const scenarioTrack: Track = {
           kind: "screen",
           src: "/images/screen-network-no-post.jpg",
           alt: "承認を押したあとも新しいリクエストが無い Network タブ",
-          caption: "ログを消してから承認を押した例です。リクエストの行は増えていません。コンソールにエラーの印が出ています。",
+          caption:
+            "Network の 4 行は、画面を開いたときの document / CSS / JS です。承認を押したあとも POST の行は増えていません。下のコンソールにエラーが出ています。見づらいときは、Network のログを消してから、もう一度承認ボタンを押します。",
         },
         {
           type: "table",
           headers: ["Networkタブ / コンソール", "分かること", "次に確認すること"],
           rows: [
             ["新しいリクエストが無い", "サーバはまだ関係ない。フォームか JS", "コンソール、フォーム、一覧の JS"],
-            ["コンソールに JS エラー", "リクエスト送信の手前で止まっている", "例外のファイルと行"],
+            ["コンソールに JS エラー", "リクエスト送信の手前で止まっている", "エラーのファイルと行"],
             ["リクエストがあり 200 / 302 / 500", "リクエスト送信は終わっている。サーバの応答とログを見る", "レスポンス、操作時刻のサーバ側のエラーログ"],
           ],
         },
@@ -74,7 +75,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "このシナリオでは新しいリクエストが無く、コンソールに Uncaught TypeError: Cannot read properties of null (reading 'value') がありました。コンソールの例外をクリックして、エラーが発生したファイルを開きましょう。",
+          text: "このシナリオでは新しいリクエストが無く、コンソールに Uncaught TypeError: Cannot read properties of null (reading 'value') がありました。コンソールのエラーをクリックして、エラーが発生したファイルを開きましょう。",
         },
         {
           type: "code",
@@ -92,7 +93,20 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "preventDefault() のあと、getElementById(\"csrfToken\") の結果を tokenEl に入れ、次の行で tokenEl.value を読んでいます。例外が発生した行はここです。例外は「null の value を読んだ」なので、tokenEl は null です。次は、一覧の HTML に id=\"csrfToken\" があるかを見ます。",
+          text: "上の list.js を、承認ボタンを押したときの流れに沿って読み、エラーの原因を追います。",
+        },
+        {
+          type: "ul",
+          items: [
+            "preventDefault() のあと、const tokenEl = document.getElementById(\"csrfToken\"); で要素を取り、tokenEl に入れる",
+            "その次の行 const token = tokenEl.value; で tokenEl.value を読もうとしてエラーになる",
+            "エラー内容は「null の value を読んだ」となっているので、読もうとした tokenEl が null だとわかる",
+            "tokenEl は 1 行上の getElementById(\"csrfToken\") の戻り値なので、HTML に id=\"csrfToken\" の要素が無かった、と考えられる",
+          ],
+        },
+        {
+          type: "p",
+          text: "次は、一覧の HTML に id=\"csrfToken\" があるかを見ます。",
         },
         {
           type: "code",
@@ -105,7 +119,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "id=\"csrfToken\" はありません。そのため getElementById は null を返し、tokenEl.value で例外になります。その下の form.submit() まで進まないので、承認のリクエストは飛びません。",
+          text: "id=\"csrfToken\" はありません。そのため getElementById は null を返し、tokenEl.value でエラーになります。その下の form.submit() まで進まないので、承認のリクエストは飛びません。",
         },
         {
           type: "p",
@@ -120,7 +134,7 @@ export const scenarioTrack: Track = {
           items: [
             "ボタンを押しても反応が無いときは、まず Network タブで新しいリクエストが出たかを見る",
             "リクエストが無くコンソールに JS エラーがあるなら、サーバより先にフロントを疑う",
-            "コンソールの例外メッセージと、指しているファイル・行を見て、何を読もうとして失敗したかをたどる",
+            "コンソールのエラーメッセージと、指しているファイル・行を見て、何を読もうとして失敗したかをたどる",
           ],
         },
         {
@@ -131,7 +145,7 @@ export const scenarioTrack: Track = {
           type: "investigation-flow",
           items: [
             "Network タブで、リクエストが飛んでいないことを確認",
-            "コンソールで、JS の null 参照例外を確認",
+            "コンソールで、JS の null 参照エラーを確認",
             "HTML と JS で識別子が異なり、値が取れず null になっていることを確認",
           ],
         },
@@ -167,7 +181,7 @@ export const scenarioTrack: Track = {
         {
           type: "ul",
           items: [
-            "山田（yamada）でログイン。申請 ID 16「研修参加」。検証用環境",
+            "山田（yamada）でログイン。申請詳細で ID 16「研修参加」の承認ボタンを押した。検証用環境",
             "Network タブで POST /shinsei/requests/16/approve が 500",
             "Content-Type は text/html",
           ],
@@ -203,7 +217,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "getApproverId() が null です。null に equals を呼んだのが NullPointerException の直接原因です。",
+          text: "getApproverId() の戻り値が null です。その null に対して equals を呼んだため、NullPointerException になっています。",
         },
         {
           type: "p",
@@ -294,7 +308,7 @@ WHERE id = 16;`,
         {
           type: "ul",
           items: [
-            "山田（yamada）でログイン。申請 ID 11「備品購入」。検証用環境。ステータスは APPROVED",
+            "山田（yamada）でログイン。申請詳細で ID 11「備品購入」の承認ボタンを押した。検証用環境。ステータスは APPROVED",
             "Network タブで POST /shinsei/requests/11/approve は飛んでいる。500 ではない",
             "操作時刻のログに ERROR もスタックトレースも無い",
           ],
@@ -307,18 +321,18 @@ WHERE id = 16;`,
           type: "callout",
           kind: "note",
           title: "前のシナリオとの違い",
-          text: "「エラーが発生しました」で POST が 500 なら、先にスタックです。画面に業務の一文があり ERROR が無いなら、先にその一文で検索しましょう。",
+          text: "前のシナリオでは POST が 500 で、ログにスタックがありました。今回は 500 ではなく、ログにも ERROR がありません。画面に出ている「この申請は承認できません」でソースを検索しましょう。",
         },
         {
           type: "p",
-          text: "例外が出ていないので、スタックの at 行は使えません。画面に出ている文言そのものを、ソース全体から検索しましょう。",
+          text: "例外やエラーのログが無いので、画面の文言でソース全体を検索しましょう。",
         },
         {
           type: "ol",
           items: [
-            "「この申請は承認できません」で全文検索する",
+            "「この申請は承認できません」でソース全体を全文検索する",
             "ヒットがプロパティファイルなら、そのキー（error.cannotApprove など）で参照を辿る",
-            "ヒットが Java やテンプレートなら、その if と、誰が呼んでいるかを見る",
+            "ヒットが Java やテンプレートなら、その if 分岐の条件と、参照元を辿る",
             "ソースに無ければ、文言の一部でも再検索する。それでも無ければ DB、外部 API、jar の自作ライブラリを疑う",
             "申請 ID 11 のステータスなど、分岐の条件になるデータを DB で確認する",
           ],
@@ -407,7 +421,7 @@ requestService.approve(id, user.getId());`,
           items: [
             "Network タブは GET /shinsei/requests が 200、text/html",
             "画面に例外は出ていない",
-            "コードはローカル環境と同じ版（同じ commit / タグ）、と言われている",
+            "デプロイされているコードは、ローカルと同じ commit / タグだ",
           ],
         },
         {
@@ -425,7 +439,60 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "検証用環境の t_request を、ログインユーザの ID で検索すると 0 件でした。ローカル環境の DB には 3 件あります。SQL の WHERE は同じでも、行が無ければ一覧は空です。",
+          text: "操作時刻のログで findMine を見ると、Parameters は 7, 7 でした。Total は 0 です。",
+        },
+        {
+          type: "code",
+          title: "操作時刻のサーバログ（申請くん）",
+          lang: "text",
+          code: `==>  Preparing: SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+       a.display_name AS applicant_name, v.display_name AS approver_name
+FROM t_request r
+JOIN t_user a ON a.id = r.applicant_id
+LEFT JOIN t_user v ON v.id = r.approver_id
+WHERE r.applicant_id = ? OR r.approver_id = ?
+ORDER BY r.created_at DESC
+==> Parameters: 7(Long), 7(Long)
+<==      Total: 0`,
+        },
+        {
+          type: "p",
+          text: "検証用環境の DB で同じ条件を実行すると、行は 0 件でした。",
+        },
+        {
+          type: "code",
+          title: "t_request（申請くん・検証用環境）",
+          lang: "sql",
+          code: `SELECT id, title, status, applicant_id, approver_id
+FROM t_request
+WHERE applicant_id = 7 OR approver_id = 7;`,
+        },
+        {
+          type: "table",
+          headers: ["id", "title", "status", "applicant_id", "approver_id"],
+          rows: [],
+          empty: "0 行",
+        },
+        {
+          type: "p",
+          text: "ローカル環境の同じ SQL では 3 件ありました。WHERE は同じでも、つないでいる DB が違うと一覧は空になります。",
+        },
+        {
+          type: "code",
+          title: "t_request（申請くん・ローカル環境）",
+          lang: "sql",
+          code: `SELECT id, title, status, applicant_id, approver_id
+FROM t_request
+WHERE applicant_id = 7 OR approver_id = 7;`,
+        },
+        {
+          type: "table",
+          headers: ["id", "title", "status", "applicant_id", "approver_id"],
+          rows: [
+            ["12", "交通費申請", "PENDING", "7", "3"],
+            ["13", "休暇申請", "PENDING", "7", "3"],
+            ["16", "研修参加", "PENDING", "7", "NULL"],
+          ],
         },
         {
           type: "h2",
@@ -456,20 +523,21 @@ requestService.approve(id, user.getId());`,
     },
     {
       id: "net",
-      title: "[障害調査] 検証用環境だけ、画面がいつまでも読み込み中",
+      title: "[障害調査] 検証用環境だけ、読み込みが終わらない",
       minutes: 8,
       blocks: [
         {
           type: "callout",
           kind: "scenario",
-          text: "検証用環境の申請一覧 URL を開くと、いつまでも読み込み中になる。ローカル環境では同じ URL で 200 になる。",
+          text: "検証用環境の URL を開いても読み込みが終わらない。ログイン画面も申請一覧も同じ。HTML が返らないので画面は白いまま、タブが読み込み中になることが多い。ローカルでは同じ URL で 200。",
         },
         {
           type: "figure",
           kind: "screen",
-          src: "/images/screen-network-pending.jpg",
-          alt: "HTML のリクエストが pending のままの Network タブ",
-          caption: "例：リロード後も一覧 URL のまま、document の行が pending です。直前の一覧は残っています。アプリのログにアクセスが無ければ、まだサーバに届いていません。",
+          src: "/images/screen-network-login-fail.jpg",
+          alt: "ログイン URL の document が失敗した Network タブ",
+          caption:
+            "例：ログイン URL を開いたとき、Network タブの document（HTML）が終わらない、または失敗しています。申請一覧も同様です。アプリのログにアクセスが無ければ、まだサーバに届いていません。",
         },
         {
           type: "h2",
@@ -479,8 +547,9 @@ requestService.approve(id, user.getId());`,
           type: "ul",
           items: [
             "Network タブで、画面を開いたときの最初のリクエスト（HTML）が終わらない、または失敗する",
+            "画面は白いまま、タブが読み込み中になる（ログイン画面はまだ出ない）",
             "アプリのログに、操作時刻のアクセスが無い",
-            "コードはローカル環境と同じ、と言われている",
+            "デプロイされているコードは、ローカルと同じ commit / タグだ",
           ],
         },
         {
@@ -510,6 +579,51 @@ requestService.approve(id, user.getId());`,
           text: "検証用環境のサーバのポート 8080 が、社内ネットワークから閉じられていました。ブラウザはサーバまで届かず、アプリは何も記録しません。",
         },
         {
+          type: "p",
+          text: "社内の端末から打った結果です。ping では応答がありますが、ポート 8080 の TCP は開いていません。",
+        },
+        {
+          type: "code",
+          title: "例（社内端末から）",
+          lang: "text",
+          code: `PS> ping intranet.example.co.jp
+
+Pinging intranet.example.co.jp [10.20.30.40] with 32 bytes of data:
+Reply from 10.20.30.40: bytes=32 time=2ms TTL=58
+Reply from 10.20.30.40: bytes=32 time=1ms TTL=58
+
+PS> Test-NetConnection -ComputerName intranet.example.co.jp -Port 8080
+
+ComputerName     : intranet.example.co.jp
+RemoteAddress    : 10.20.30.40
+RemotePort       : 8080
+PingSucceeded    : True
+TcpTestSucceeded : False`,
+        },
+        {
+          type: "p",
+          text: "ping は ICMP、HTTP は TCP なので別です。ping が通っても 8080 が閉じていれば、アプリには届きません。",
+        },
+        {
+          type: "p",
+          text: "検証用環境のサーバ上では、アプリは起動しており 8080 で待ち受けています。",
+        },
+        {
+          type: "code",
+          title: "例（検証用環境のサーバ上）",
+          lang: "text",
+          code: `$ ss -tlnp | grep 8080
+LISTEN 0      100               *:8080            *:*    users:(("java",pid=2841,fd=46))
+
+$ curl -I http://localhost:8080/shinsei/login
+HTTP/1.1 200
+Content-Type: text/html;charset=UTF-8`,
+        },
+        {
+          type: "p",
+          text: "社内端末からは 8080 に届かない一方、サーバ自身では応答があります。アプリ停止ではなく、社内ネットワークからサーバの 8080 への経路が閉じられています。",
+        },
+        {
           type: "h2",
           text: "このシナリオの要点",
         },
@@ -528,9 +642,10 @@ requestService.approve(id, user.getId());`,
         {
           type: "investigation-flow",
           items: [
-            "Network タブで、HTML のリクエストが pending のままであることを確認",
+            "Network タブで、HTML のリクエストが終わらない、または失敗していることを確認",
             "操作時刻のアプリログにアクセスが無いことを確認",
-            "宛先・ポート・ファイアウォールを確認し、ポート 8080 が閉じられている",
+            "社内端末から ping と Test-NetConnection で、ping では応答があるがポート 8080 の TCP は開いていないことを確認",
+            "検証用サーバ上で ss と curl を確認し、8080 で待ち受けている",
           ],
         },
         { type: "quiz", id: "sc-net" },

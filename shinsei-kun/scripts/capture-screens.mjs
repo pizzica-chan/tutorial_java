@@ -3,6 +3,7 @@ import { mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import puppeteer from "puppeteer-core";
+import { verifyBase } from "./capture-hosts.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const outDir = join(root, "public", "images");
@@ -85,8 +86,8 @@ async function shot(page, name, url, pageWidth = width) {
   console.log("wrote", name, `${pageWidth}x${height}`);
 }
 
-async function login(page, username, password = "password") {
-  await page.goto(`${base}/login`, { waitUntil: "networkidle0" });
+async function login(page, username, password = "password", appBase = base) {
+  await page.goto(`${appBase}/login`, { waitUntil: "networkidle0" });
   await page.setViewport({ width, height: 720, deviceScaleFactor: 2 });
   await page.type('input[name="username"]', username);
   await page.type('input[name="password"]', password);
@@ -106,6 +107,32 @@ const page = await browser.newPage();
 page.on("dialog", (dialog) => dialog.accept());
 await page.emulateTimezone("Asia/Tokyo");
 await page.setViewport({ width, height: 720, deviceScaleFactor: 2 });
+
+if (process.argv.includes("--verify-scenarios")) {
+  await login(page, "yamada", "password", verifyBase);
+  await shot(page, "screen-list.jpg", `${verifyBase}/requests`);
+
+  await page.goto(`${verifyBase}/requests/16`, { waitUntil: "networkidle0" });
+  await Promise.allSettled([
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 8000 }),
+    page.$eval("form.js-approve-confirm", (form) => form.submit()),
+  ]);
+  await shot(page, "screen-error-500.jpg", `${verifyBase}/requests/16/approve`);
+
+  await page.goto(`${verifyBase}/requests/11`, { waitUntil: "networkidle0" });
+  await Promise.allSettled([
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 8000 }),
+    page.$eval("form.js-approve-confirm", (form) => form.submit()),
+  ]);
+  await shot(page, "screen-cannot-approve.jpg", `${verifyBase}/requests/11`);
+
+  await page.goto(pathToFileURL(join(demoDir, "list-empty.html")).href, { waitUntil: "networkidle0" });
+  await page.setViewport({ width, height: 720, deviceScaleFactor: 2 });
+  await shot(page, "screen-list-empty.jpg", `${verifyBase}/requests`);
+
+  await browser.close();
+  process.exit(0);
+}
 
 if (!mocksOnly) {
   await page.goto(`${base}/login`, { waitUntil: "networkidle0" });

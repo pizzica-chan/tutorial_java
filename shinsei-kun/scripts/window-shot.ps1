@@ -3,10 +3,11 @@ param(
   [string] $OutPath = "",
   [switch] $SelectNetwork,
   [switch] $ClearNetwork,
+  [switch] $ShowConsole,
   [string] $NetworkFilter = ""
 )
 
-if (-not $OutPath -and -not $ClearNetwork -and -not $NetworkFilter -and -not $SelectNetwork) {
+if (-not $OutPath -and -not $ClearNetwork -and -not $NetworkFilter -and -not $SelectNetwork -and -not $ShowConsole) {
   throw "OutPath or a DevTools action is required"
 }
 
@@ -86,12 +87,12 @@ if ($SelectNetwork -or $ClearNetwork) {
 }
 
 if ($ClearNetwork) {
-  [System.Windows.Forms.SendKeys]::SendWait("^+p")
-  Start-Sleep -Milliseconds 500
-  [System.Windows.Forms.SendKeys]::SendWait("clear network")
-  Start-Sleep -Milliseconds 400
-  [System.Windows.Forms.SendKeys]::SendWait("{ENTER}")
-  Start-Sleep -Milliseconds 500
+  $clearX = [int]($rect.Left + ($w * 0.54))
+  $clearY = [int]($rect.Top + 128)
+  [WinShot]::SetCursorPos($clearX, $clearY) | Out-Null
+  [WinShot]::mouse_event(2, 0, 0, 0, 0)
+  [WinShot]::mouse_event(4, 0, 0, 0, 0)
+  Start-Sleep -Milliseconds 700
   Write-Output "cleared network log title=$($proc.MainWindowTitle)"
 }
 
@@ -106,6 +107,18 @@ if ($NetworkFilter) {
   [System.Windows.Forms.SendKeys]::SendWait($NetworkFilter)
   Start-Sleep -Milliseconds 400
   Write-Output "filtered network log filter=$NetworkFilter title=$($proc.MainWindowTitle)"
+}
+
+if ($ShowConsole) {
+  $devtoolsX = [int]($rect.Left + ($w * 0.75))
+  $devtoolsY = [int]($rect.Top + ($h * 0.45))
+  [WinShot]::SetCursorPos($devtoolsX, $devtoolsY) | Out-Null
+  [WinShot]::mouse_event(2,  0, 0, 0, 0)
+  [WinShot]::mouse_event(4, 0, 0, 0, 0)
+  Start-Sleep -Milliseconds 250
+  [System.Windows.Forms.SendKeys]::SendWait("{ESC}")
+  Start-Sleep -Milliseconds 600
+  Write-Output "showed console drawer title=$($proc.MainWindowTitle)"
 }
 
 if (-not $OutPath) {

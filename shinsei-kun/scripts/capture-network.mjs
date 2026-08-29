@@ -5,6 +5,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { tmpdir } from "node:os";
 import puppeteer from "puppeteer-core";
+import { verifyBase, verifyHost } from "./capture-hosts.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const outDir = join(root, "public", "images");
@@ -80,12 +81,27 @@ function clearNetworkLog() {
   prepareNetworkPanel({ clear: true });
 }
 
+function showConsoleDrawer() {
+  const args = [
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    ps1,
+    "-ProcessId",
+    String(browserPid),
+    "-ShowConsole",
+  ];
+  const result = execFileSync("powershell", args, { encoding: "utf8" });
+  console.log(result.trim());
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-async function login(page) {
-  await page.goto(`${base}/login`, { waitUntil: "networkidle0" });
+async function login(page, appBase = base) {
+  await page.goto(`${appBase}/login`, { waitUntil: "networkidle0" });
   await page.type('input[name="username"]', "yamada");
   await page.type('input[name="password"]', "password");
   await Promise.all([
@@ -97,6 +113,55 @@ async function login(page) {
 function stopIntercept(page, handler) {
   page.off("request", handler);
   return page.setRequestInterception(false);
+}
+
+async function captureLoginFail(page) {
+  await page.bringToFront();
+  clearNetworkLog();
+  await page.setRequestInterception(true);
+  const onFail = (req) => {
+    if (req.isNavigationRequest() && req.url().includes(`${verifyHost}:8080/shinsei/login`)) {
+      req.abort("failed").catch(() => {});
+      return;
+    }
+    req.continue().catch(() => {});
+  };
+  page.on("request", onFail);
+  await page.goto(`${verifyBase}/login`, { timeout: 15000 }).catch(() => {});
+  await sleep(900);
+  shotWindow("screen-network-login-fail.jpg", true);
+  await stopIntercept(page, onFail);
+}
+
+async function captureNoPost(page, appBase) {
+  await page.goto(`${appBase}/requests`, { waitUntil: "networkidle0" });
+  await sleep(600);
+  await page.bringToFront();
+  prepareNetworkPanel();
+  await sleep(300);
+  await page.click(".btn-approve");
+  await sleep(800);
+  shotWindow("screen-network-no-post.jpg", true);
+}
+
+async function captureVerifyScenarios(page) {
+  await login(page, verifyBase);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  await captureNoPost(page, verifyBase);
+
+  await page.goto(`${verifyBase}/requests/16`, { waitUntil: "networkidle0" });
+  await page.evaluate(() => {
+    window.confirm = () => true;
+  });
+  await Promise.allSettled([
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 8000 }),
+    page.click(".btn-approve"),
+  ]);
+  await sleep(800);
+  shotWindow("screen-network-500.jpg", true);
+
+  await captureLoginFail(page);
 }
 
 const browser = await puppeteer.launch({
@@ -125,6 +190,28 @@ const page = (await browser.pages())[0] ?? (await browser.newPage());
 page.on("dialog", (dialog) => dialog.accept());
 await page.emulateTimezone("Asia/Tokyo");
 await sleep(1200);
+
+if (process.argv.includes("--login-fail-only")) {
+  await captureLoginFail(page);
+  await browser.close();
+  process.exit(0);
+}
+
+if (process.argv.includes("--no-post-only")) {
+  const appBase = process.argv.includes("--verify") ? verifyBase : base;
+  await login(page, appBase);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  await captureNoPost(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
+if (process.argv.includes("--verify-scenarios")) {
+  await captureVerifyScenarios(page);
+  await browser.close();
+  process.exit(0);
+}
 
 await login(page);
 await page.keyboard.press("Escape").catch(() => {});
@@ -174,13 +261,7 @@ async function blockApproveWithFlash() {
   });
 }
 
-await page.goto(`${base}/requests`, { waitUntil: "networkidle0" });
-await sleep(600);
-await page.bringToFront();
-prepareNetworkPanel({ clear: true });
-await page.click(".btn-approve");
-await sleep(800);
-shotWindow("screen-network-no-post.jpg", true);
+await captureNoPost(page, base);
 
 await page.reload({ waitUntil: "networkidle0" });
 await blockApproveWithFlash();
@@ -209,24 +290,5 @@ await Promise.allSettled([
 ]);
 await sleep(800);
 shotWindow("screen-network-500.jpg", true);
-
-await page.goto(`${base}/requests`, { waitUntil: "networkidle0" });
-await page.setRequestInterception(true);
-let hung = null;
-const onHang = (req) => {
-  if (!hung && req.isNavigationRequest() && req.url().includes("/shinsei/requests") && !req.url().includes("/12")) {
-    hung = req;
-    return;
-  }
-  req.continue().catch(() => {});
-};
-page.on("request", onHang);
-const hungNav = page.reload({ waitUntil: "domcontentloaded", timeout: 2500 }).catch(() => {});
-await sleep(1800);
-shotWindow("screen-network-pending.jpg", true);
-page.off("request", onHang);
-if (hung) await hung.abort("timedout").catch(() => {});
-await page.setRequestInterception(false);
-await hungNav;
 
 await browser.close();

@@ -51,7 +51,7 @@ export type Block =
   | { type: "widget"; name: WidgetName }
   | { type: "diagram"; name: DiagramName; caption?: string }
   | { type: "figure"; src: string; alt: string; caption?: string; kind?: "photo" | "screen" }
-  | { type: "table"; headers: string[]; rows: string[][] }
+  | { type: "table"; headers: string[]; rows: string[][]; empty?: string }
   | { type: "steps"; items: { title: string; text: string }[] }
   | { type: "investigation-flow"; items: string[] };
 
