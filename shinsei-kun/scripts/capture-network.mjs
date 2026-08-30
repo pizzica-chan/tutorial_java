@@ -331,6 +331,34 @@ async function captureHistorySearch(page, appBase = verifyBase) {
   });
 }
 
+async function captureApprovePayload(page, appBase = base) {
+  await page.goto(`${appBase}/requests/15`, { waitUntil: "networkidle0" });
+  await page.evaluate(() => {
+    window.confirm = () => true;
+  });
+  await page.bringToFront();
+  prepareNetworkPanel({ clear: true });
+  await sleep(300);
+  await Promise.allSettled([
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 8000 }),
+    page.$eval("form.js-approve-confirm", (form) => form.submit()),
+  ]);
+  await sleep(800);
+  shotWindow("screen-network-approve.jpg", true);
+  waitForManualStep(
+    "次の操作を実施した後、OK を押してください。\n\n" +
+      "1. Network タブで、承認の POST（/requests/15/approve）をクリックする\n" +
+      "2. Payload を開き、Form Data で _csrf のキーと値が見える状態にする\n" +
+      "3. マウスを DevTools の外へ移す（ツールチップが残らないように）",
+  );
+  const payloadShot = join(tmpdir(), "screen-network-approve-payload-full.jpg");
+  shotWindow("screen-network-approve.jpg", false, {
+    outPath: payloadShot,
+    preserveUi: true,
+  });
+  console.log("payload shot saved to", payloadShot, "- crop manually once coordinates are known");
+}
+
 async function captureCss404(page, appBase = verifyBase) {
   await page.goto(`${appBase}/requests`, { waitUntil: "networkidle0" });
   await page.setRequestInterception(true);
@@ -482,6 +510,16 @@ if (process.argv.includes("--rows-only")) {
   await page.keyboard.press("Escape").catch(() => {});
   await sleep(400);
   await captureRows(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
+if (process.argv.includes("--approve-payload-only")) {
+  const appBase = process.argv.includes("--verify") ? verifyBase : base;
+  await login(page, appBase);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  await captureApprovePayload(page, appBase);
   await browser.close();
   process.exit(0);
 }

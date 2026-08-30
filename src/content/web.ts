@@ -322,7 +322,15 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "申請 ID 12 の承認は `POST /shinsei/requests/12/approve` です。12 はパスに入っています。",
+          text: "申請 ID 15 の承認は `POST /shinsei/requests/15/approve` です。15 はパスに入っているので、フォーム本文には乗りません。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-approve-payload.jpg",
+          alt: "承認 POST の Payload。Form Data に _csrf だけがある",
+          caption: "承認 POST の Payload。Form Data には CSRF トークンだけが乗り、申請 ID はここには出てきません。",
+          size: "small",
         },
         {
           type: "h2",
