@@ -152,7 +152,9 @@ server:
     url: jdbc:mysql://localhost:3306/shinsei_dev?characterEncoding=UTF-8
 logging:
   level:
-    jp.co.example.shinsei: DEBUG`,
+    jp.co.example.shinsei: DEBUG
+    org.mybatis: DEBUG
+    jp.co.example.shinsei.mapper: DEBUG`,
         },
         {
           type: "p",
