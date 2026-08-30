@@ -186,7 +186,7 @@ FROM t_request WHERE (applicant_id = 7 OR approver_id = 7) AND status = 'PENDING
         },
         {
           type: "p",
-          text: "上の例では `applicant_id` = 7 と出ますが、7 の部分はソースでは `#{userId}` と書きます。7 で検索しても XML には当たりません。テーブル名や列名から探しましょう。",
+          text: "上の例では `applicant_id` = 7 と出ますが、7 の部分はソースでは `#{userId}` と書きます。7 で検索しても XML にはヒットしません。テーブル名や列名から探しましょう。",
         },
         {
           type: "h2",
@@ -194,7 +194,7 @@ FROM t_request WHERE (applicant_id = 7 OR approver_id = 7) AND status = 'PENDING
         },
         {
           type: "p",
-          text: "申請くんは MyBatis です。`t_request` や `applicant_id` で検索すると、Mapper の XML に当たります。",
+          text: "申請くんは MyBatis です。`t_request` や `applicant_id` で検索すると、Mapper の XML がヒットします。",
         },
         {
           type: "code",
@@ -241,7 +241,7 @@ FROM t_request WHERE (applicant_id = 7 OR approver_id = 7) AND status = 'PENDING
         },
         {
           type: "p",
-          text: "この SELECT で全文検索しても、プロジェクト内にはありません。r1_0 は Hibernate が付けた別名です。テーブル名 `t_request` で検索すると、Entity の `@Table` に当たります。",
+          text: "この SELECT で全文検索しても、プロジェクト内にはありません。r1_0 は Hibernate が付けた別名です。テーブル名 `t_request` で検索すると、Entity の `@Table` がヒットします。",
         },
         {
           type: "code",

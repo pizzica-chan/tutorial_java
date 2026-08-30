@@ -44,6 +44,7 @@ function blockText(block: Block): string {
   switch (block.type) {
     case "p":
     case "h2":
+    case "h3":
       return block.text;
     case "ul":
     case "ol":

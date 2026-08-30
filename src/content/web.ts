@@ -222,7 +222,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "申請 ID 12 の承認は `POST /shinsei/requests/12/approve` です。12 はパスに入っています。一覧に絞り込みを足すなら、`GET /shinsei/requests?departmentId=5` のようにクエリに載せることが多いです。",
+          text: "申請 ID 12 の承認は `POST /shinsei/requests/12/approve` です。12 はパスに入っています。一覧に絞り込みを追加するなら、`GET /shinsei/requests?departmentId=5` のようにクエリに載せることが多いです。",
         },
         {
           type: "callout",

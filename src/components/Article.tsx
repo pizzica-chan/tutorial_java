@@ -53,6 +53,12 @@ function BlockView({ block }: { block: Block }) {
           <TextWithTerms text={block.text} linkChapters={false} />
         </h2>
       );
+    case "h3":
+      return (
+        <h3>
+          <TextWithTerms text={block.text} linkChapters={false} />
+        </h3>
+      );
     case "ul":
       return (
         <ul>

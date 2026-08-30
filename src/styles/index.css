@@ -386,7 +386,6 @@ pre {
 
 h1,
 h2,
-h3,
 .serif {
   font-family: var(--serif);
   font-weight: 600;
@@ -571,6 +570,32 @@ h3,
   width: 0.38em;
   height: 0.38em;
   background: var(--amber);
+}
+
+.article h3 {
+  position: relative;
+  margin: 28px 0 10px;
+  padding-left: calc(0.28em + 10px);
+  color: var(--paper);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}
+
+.article h3::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.28em;
+  height: 0.28em;
+  background: var(--teal);
+}
+
+.article h2 + h3 {
+  margin-top: 20px;
 }
 
 .article p,
@@ -2256,6 +2281,10 @@ th {
 
   .article h2 {
     font-size: 20px;
+  }
+
+  .article h3 {
+    font-size: 16px;
   }
 
   .d-browser-table {

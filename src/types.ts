@@ -43,6 +43,7 @@ export type DiagramName =
 export type Block =
   | { type: "p"; text: string; link?: { label: string; to: string } }
   | { type: "h2"; text: string }
+  | { type: "h3"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "ol"; items: string[] }
   | { type: "code"; lang?: string; title?: string; code: string; codeScope?: "fragment-common" | "fragment-individual"; highlightLines?: number[]; highlightKind?: "error" }

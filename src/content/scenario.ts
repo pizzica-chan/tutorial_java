@@ -1,5 +1,4 @@
 import type { Track } from "../types";
-import { requestControllerSample } from "../data/entryPoint";
 
 export const scenarioTrack: Track = {
   id: "scenario",
@@ -343,11 +342,11 @@ WHERE id = 16;`,
         },
         {
           type: "p",
-          text: "「この申請は承認できません」で検索すると、Controller の分岐に当たりました。",
+          text: "「この申請は承認できません」で検索すると、Controller の分岐がヒットしました。",
         },
         {
           type: "code",
-          title: "検索で当たった箇所（申請くん）",
+          title: "検索でヒットした箇所（申請くん）",
           lang: "java",
           code: `var request = requestService.findById(id, user.getId());
 if (!"PENDING".equals(request.getStatus())) {
@@ -388,7 +387,7 @@ requestService.approve(id, user.getId());`,
           items: [
             "Network タブで、POST は飛んでいるが 500 ではないことを確認",
             "操作時刻のログに ERROR もスタックも無いことを確認",
-            "画面の文言でソースを検索し、Controller の分岐に当たる",
+            "画面の文言でソースを検索し、Controller の分岐がヒットする",
             "DB で申請 ID 11 の status が APPROVED であることを確認",
           ],
         },
@@ -1086,8 +1085,8 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
     },
     {
       id: "impact-status",
-      title: "[影響調査] 申請ステータスに CANCELLED を足したい",
-      minutes: 9,
+      title: "[影響調査] 申請ステータスに CANCELLED を追加したい",
+      minutes: 11,
       blocks: [
         {
           type: "callout",
@@ -1101,9 +1100,9 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
         {
           type: "ul",
           items: [
-            "現状の値は `PENDING` / `APPROVED` などがある（詳細は未確認）",
-            "DB には `t_request` があり、`status` カラムがあると聞いている",
-            "いつリリースするか、画面を変えるかはまだ決まっていない",
+            "対象は申請くん。既存のステータスには `PENDING` と `APPROVED` があると聞いている",
+            "DB には `t_request.status` がある",
+            "取り下げの画面や API を追加するかは、まだ決まっていない",
           ],
         },
         {
@@ -1112,44 +1111,181 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
         },
         {
           type: "p",
-          text: "まず既存の識別子でソースを検索し、ヒットを分類しましょう。",
+          text: "既存の値名でソースを検索し、ヒットを分岐・SQL・画面・更新に分類しましょう。妥当な仕様と照らし、修正の要否を判断します。依頼から分からないことは、断定しません。",
         },
         {
           type: "ol",
           items: [
-            "`status`、`PENDING`、`APPROVED`、`t_request` で全文検索する",
-            "enum や定数クラスがあれば、そこが値の定義元",
-            "Mapper XML の `WHERE status = …` と、Service の if 分岐をメモする",
-            "テンプレートの `th:if` や、一覧・詳細の表示文言を見る",
-            "同じ `status` を JSON で返す API や、夜間バッチが無いかも同じ語で検索する",
+            "`status`、`PENDING`、`APPROVED` で全文検索する",
+            "ヒットしたファイルを、if、SQL、テンプレート、`setStatus` に分ける",
+            "妥当な仕様と照らし、修正の要否を判断する。分からないときは断定しない",
           ],
         },
         { type: "diagram", name: "call-chain", caption: "例: 承認は Controller → Service → Mapper。status を触る箇所は、この鎖の複数点に散らばる。" },
         {
+          type: "h2",
+          text: "影響の追跡",
+        },
+        {
+          type: "h3",
+          text: "承認ボタン押下時の分岐",
+        },
+        {
+          type: "p",
+          text: "`PENDING` で検索すると、承認の入口の if がヒットします。",
+        },
+        {
           type: "code",
-          title: "検索で見つかった分岐の例（申請くん）",
+          title: "RequestController.approve（申請くん）",
           lang: "java",
-          code: `var request = requestService.findById(id, user.getId());
-if (!"PENDING".equals(request.getStatus())) {
+          code: `if (!"PENDING".equals(request.getStatus())) {
   redirectAttributes.addFlashAttribute(
       "errorMessage", "この申請は承認できません");
   return "redirect:/requests/" + id;
 }
-requestService.approve(id, user.getId());
-// 一覧 Mapper: AND r.status = 'PENDING'`,
+requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "`CANCELLED` を足すと、次を直す必要がある、と一覧にできます。全部を読み切らなくても、ヒットファイルと「分岐 / 表示 / SQL」の分類で見積もりに回せます。",
+          text: "PENDING 以外は承認できません。取り下げ済みの申請は承認できないのが正しい仕様です。そのため、`CANCELLED` を追加しても、この分岐の修正は不要です。",
         },
         {
-          type: "ul",
-          items: [
-            "承認可否の if",
-            "一覧の抽出条件",
-            "画面のラベル",
-            "帳票や API の返却値",
+          type: "h3",
+          text: "申請一覧の SQL",
+        },
+        {
+          type: "p",
+          text: "一覧の SQL は、未承認だけ取る条件です。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の findMine（申請くん）",
+          lang: "xml",
+          code: `WHERE (r.applicant_id = #{userId}
+   OR r.approver_id = #{userId})
+  AND r.status = 'PENDING'`,
+        },
+        {
+          type: "p",
+          text: "申請一覧は未承認の作業画面です。取り下げ済みは、この画面で扱う申請ではないので、一覧に出ないのは妥当です。この SQL の修正は不要です。",
+        },
+        {
+          type: "h3",
+          text: "履歴の検索フォーム",
+        },
+        {
+          type: "p",
+          text: "申請履歴の検索フォームは、未承認と承認済みです。「すべて」もあります。",
+        },
+        {
+          type: "code",
+          title: "history.html のステータス（申請くん）",
+          lang: "html",
+          code: `<option value="">すべて</option>
+<option value="PENDING">未承認</option>
+<option value="APPROVED">承認済み</option>`,
+        },
+        {
+          type: "p",
+          text: "「すべて」なら、`CANCELLED` の行も SQL に載ります。`CANCELLED` だけに絞る選択肢はありません。取り下げ済みを履歴検索画面でどう扱うかは依頼文に無いので、いまの情報では断定できません。",
+        },
+        {
+          type: "h3",
+          text: "ステータスの見た目",
+        },
+        {
+          type: "p",
+          text: "一覧・履歴・詳細の画面では、PENDING かどうかで色を分けています。",
+        },
+        {
+          type: "code",
+          title: "list.html のステータス（申請くん）",
+          lang: "html",
+          code: `<span class="status"
+      th:classappend="\${item.status == 'PENDING'} ? ' is-pending' : ' is-approved'"
+      th:text="\${item.status}">PENDING</span>`,
+        },
+        {
+          type: "p",
+          text: "PENDING 以外は `is-approved` なので、`CANCELLED` は画面上、承認済みと同じ見た目になります。取り下げ済みが承認済みに見えるのは妥当ではありません。",
+        },
+        {
+          type: "h3",
+          text: "新規申請の `INSERT` と、承認時の `UPDATE`",
+        },
+        {
+          type: "p",
+          text: "これは DB へ登録する値の話です。新規申請の `INSERT` では `status` に `PENDING` を入れます。承認の `UPDATE` では `APPROVED` にします。",
+        },
+        {
+          type: "code",
+          title: "RequestService.create（申請くん）",
+          lang: "java",
+          code: `request.setStatus("PENDING");
+requestMapper.insert(request);`,
+        },
+        {
+          type: "code",
+          title: "RequestService.approve（申請くん）",
+          lang: "java",
+          code: `request.setStatus("APPROVED");
+requestMapper.update(request);`,
+        },
+        {
+          type: "p",
+          text: "`CANCELLED` を追加しても、この2つの処理の修正は不要です。",
+        },
+        {
+          type: "h3",
+          text: "`CANCELLED` にする処理",
+        },
+        {
+          type: "p",
+          text: "`CANCELLED` にするメソッドは現時点ではありません。「取り下げの画面や API を追加するかは、まだ決まっていない」という前提があるため、`CANCELLED` への更新処理を追加するかは、いまの情報では断定できません。",
+        },
+        {
+          type: "h3",
+          text: "JSON の応答",
+        },
+        {
+          type: "p",
+          text: "JSON の `RequestResponse` は `status` を文字列で返すだけです。新しい値でもそのまま返ります。この DTO の修正は不要です。",
+        },
+        {
+          type: "h3",
+          text: "テーブル定義",
+        },
+        {
+          type: "p",
+          text: "`schema.sql` の `status` は `VARCHAR(32) NOT NULL` です。`CANCELLED` は収まります。長さの変更は不要です。CHECK は無いので、DB が値を拒むことはありません。制約を追加するかは依頼に無いので、いまの情報では断定できません。",
+        },
+        {
+          type: "h3",
+          text: "修正の要否",
+        },
+        {
+          type: "p",
+          text: "ここまでの判断は、次です。",
+        },
+        {
+          type: "table",
+          headers: ["箇所", "いま", "修正の要否"],
+          rows: [
+            ["`RequestController.approve`", "PENDING 以外は承認できない", "不要"],
+            ["`findMine`", "`status = 'PENDING'`", "不要"],
+            ["`history.html` の select", "すべて / PENDING / APPROVED", "断定できない"],
+            ["履歴・詳細の見た目", "PENDING でなければ `is-approved`", "断定できない。一覧の見た目は不要"],
+            ["`RequestService` の create / approve", "新規は PENDING、承認は APPROVED", "不要"],
+            ["`CANCELLED` にする処理", "メソッドが無い", "断定できない"],
+            ["`schema.sql`", "`VARCHAR(32) NOT NULL`", "長さは不要。制約の追加は断定できない"],
+            ["`RequestResponse`", "status を文字列で返す", "不要"],
           ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "申請くんに無いもの",
+          text: "enum、DB の CHECK、夜間バッチ、CSV エクスポートは、申請くんにはありません。同じ語で検索してヒットしなければ、見積もりに「無い」と書けます。現場のアプリではヒットすることがあります。",
         },
         {
           type: "h2",
@@ -1158,9 +1294,9 @@ requestService.approve(id, user.getId());
         {
           type: "ul",
           items: [
-            "既存の値名（PENDING）から逆引きすると漏れが減る",
-            "画面だけ見ても、Service やバッチの分岐は見落とす",
-            "DB の CHECK 制約や、他システム連携のコード値も確認対象",
+            "既存の値名（`PENDING`）から逆引きすると漏れが減る",
+            "ヒットしたファイルを、分岐・SQL・画面・更新に分ける",
+            "妥当な仕様と照らし、修正の要否を判断する。分からないときは断定しない",
           ],
         },
         {
@@ -1170,9 +1306,10 @@ requestService.approve(id, user.getId());
         {
           type: "investigation-flow",
           items: [
-            "status や PENDING など既存の識別子で全文検索する",
-            "ヒットを分岐・表示・SQL に分類する",
-            "CANCELLED を足すと直す必要がある箇所を一覧にする",
+            "`status` / `PENDING` / `APPROVED` で全文検索する",
+            "ヒットを分岐・SQL・画面・更新に分類する",
+            "妥当な仕様と照らし、修正の要否を判断する",
+            "断定できないものは、断定できないと書く",
           ],
         },
         { type: "quiz", id: "sc-impact-status" },
@@ -1180,8 +1317,8 @@ requestService.approve(id, user.getId());
     },
     {
       id: "impact-search",
-      title: "[影響調査] 一覧に部署で絞り込みを足したい",
-      minutes: 8,
+      title: "[影響調査] 一覧に部署で絞り込みを追加したい",
+      minutes: 10,
       blocks: [
         {
           type: "callout",
@@ -1196,8 +1333,8 @@ requestService.approve(id, user.getId());
           type: "ul",
           items: [
             "対象画面は申請一覧。URL は `/shinsei/requests`",
-            "フォームに部署のプルダウンを足す想定",
-            "CSV エクスポートがあるかは、依頼文には書いていない",
+            "フォームに部署のプルダウンを追加する想定",
+            "申請履歴は依頼文に入っていない",
           ],
         },
         {
@@ -1206,23 +1343,119 @@ requestService.approve(id, user.getId());
         },
         {
           type: "p",
-          text: "処理の入口は一覧の URL です。`/shinsei/requests` で検索し、Controller の Java メソッドから Service、Mapper へ降りましょう。同じ一覧を別経路から出していないかも確認しましょう。",
+          text: "処理の入口は一覧の URL です。`/shinsei/requests` で検索し、Controller から Service、Mapper へ降りましょう。同じ一覧データを別経路から出していないかも見ます。",
         },
         { type: "diagram", name: "read-entry", caption: "URL → Controller → Service → SQL。影響調査も処理の入口は同じです。" },
         {
-          type: "table",
-          headers: ["確認すること", "理由"],
-          rows: [
-            ["Controller の引数（クエリパラメータ）", "部署 ID をどこで受け取るか"],
-            ["Service の一覧メソッド", "条件を足す本体"],
-            ["Mapper の SELECT と WHERE", "SQL とインデックスの影響"],
-            ["テンプレートの form と `th:href`", "画面とパラメータ名の対応"],
-            ["export / download の URL", "一覧と同じ条件を使っているか"],
-          ],
+          type: "h2",
+          text: "影響の追跡",
+        },
+        {
+          type: "h3",
+          text: "一覧の入口",
         },
         {
           type: "p",
-          text: "検索で `RequestController.list` と `RequestMapper.findMine` だけでなく、CSV 用の export メソッドも同じ Mapper を呼んでいる、と分かれば、一覧とエクスポートの両方を直す必要がある、と書けます。",
+          text: "`GET /shinsei/requests` の入口は `RequestController.list` です。クエリの引数はありません。",
+        },
+        {
+          type: "code",
+          title: "RequestController.list（申請くん）",
+          lang: "java",
+          code: `@GetMapping
+public String list(Model model, @AuthenticationPrincipal LoginUser user) {
+  model.addAttribute("applications", requestService.findMine(user.getId()));
+  return "request/list";
+}`,
+        },
+        {
+          type: "h3",
+          text: "一覧の SQL",
+        },
+        {
+          type: "p",
+          text: "`findMine` はユーザ ID だけ受け取ります。Mapper は未承認だけ取ります。部署の条件はありません。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の findMine（申請くん）",
+          lang: "xml",
+          code: `WHERE (r.applicant_id = #{userId}
+   OR r.approver_id = #{userId})
+  AND r.status = 'PENDING'`,
+        },
+        {
+          type: "h3",
+          text: "一覧の画面",
+        },
+        {
+          type: "p",
+          text: "`list.html` に検索フォームはありません。プルダウンを追加すると、テンプレートと Controller の引数が増えます。フォームの `name` と `@RequestParam` の名前は揃えます。",
+        },
+        {
+          type: "h3",
+          text: "JSON の一覧",
+        },
+        {
+          type: "p",
+          text: "同じ `findMine` を、JSON の一覧も呼んでいます。",
+        },
+        {
+          type: "code",
+          title: "RequestApiController.list（申請くん）",
+          lang: "java",
+          code: `@GetMapping
+public List<RequestResponse> list(@AuthenticationPrincipal LoginUser user) {
+  return requestService.findMine(user.getId()).stream()
+      .map(RequestResponse::from)
+      .toList();
+}`,
+        },
+        {
+          type: "p",
+          text: "画面の SQL だけ部署を追加すると、`GET /shinsei/api/requests` は絞られません。両方直すか、API は現状のままか、見積もりに書きます。",
+        },
+        {
+          type: "h3",
+          text: "部署の列",
+        },
+        {
+          type: "p",
+          text: "`t_user` にも `t_request` にも、部署の列はありません。絞る値が無いので、列かマスタを追加する作業が先に乗ります。",
+        },
+        {
+          type: "h3",
+          text: "申請履歴",
+        },
+        {
+          type: "p",
+          text: "申請履歴は `searchHistory` です。依頼は一覧なので、今回の見積もりには入れません。",
+        },
+        {
+          type: "h3",
+          text: "直す対象",
+        },
+        {
+          type: "p",
+          text: "申請くんで直す対象は、次です。",
+        },
+        {
+          type: "table",
+          headers: ["箇所", "いま", "部署で絞ると"],
+          rows: [
+            ["`RequestController.list`", "クエリ引数が無い", "部署の `@RequestParam` を追加する"],
+            ["`RequestService.findMine`", "userId だけ", "部署の引数を追加して Mapper へ渡す"],
+            ["`RequestMapper.xml`", "ユーザと PENDING", "WHERE に部署を追加する"],
+            ["`list.html`", "検索フォームが無い", "プルダウンを追加する。`name` を Controller と揃える"],
+            ["`RequestApiController.list`", "同じ `findMine`", "画面だけ直すと JSON は絞られない"],
+            ["`schema.sql`", "部署の列が無い", "列かマスタを追加する"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "申請くんに無いもの",
+          text: "CSV エクスポートは、申請くんにはありません。同じ一覧を出す別経路としてヒットしたのは、JSON の API です。",
         },
         {
           type: "h2",
@@ -1231,9 +1464,9 @@ requestService.approve(id, user.getId());
         {
           type: "ul",
           items: [
-            "画面だけ追うと、裏の SQL やエクスポートを見落とす",
-            "クエリパラメータ名は、テンプレートと Controller で一致しているか確認する",
-            "影響一覧は「ファイル + 何を変えるか」で十分なことが多い",
+            "影響調査も処理の入口は URL",
+            "同じメソッドを呼ぶ API が無いかを見る",
+            "絞る値がスキーマに無ければ、画面より先に列の作業が乗る",
           ],
         },
         {
@@ -1243,16 +1476,11 @@ requestService.approve(id, user.getId());
         {
           type: "investigation-flow",
           items: [
-            "一覧の URL から Controller を特定する",
-            "Controller → Service → Mapper を辿る",
-            "export など別経路も同じ Mapper を使っていないか確認する",
+            "一覧の URL から `list` を特定する",
+            "`findMine` と Mapper の WHERE を確認する",
+            "同じ `findMine` を使う API がある",
+            "部署の列がスキーマに無い",
           ],
-        },
-        {
-          type: "code",
-          title: "RequestController.java（一覧の処理の入口）",
-          lang: "java",
-          code: requestControllerSample,
         },
         { type: "quiz", id: "sc-impact-search" },
       ],

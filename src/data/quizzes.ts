@@ -169,7 +169,7 @@ export const quizzes = {
     question: "disapprove を除き、`approve` という単語だけにマッチさせたい。適切なパターンは？",
     choices: ["`approve`", "`\\bapprove\\b`", "`.*approve.*`", "`approve$`"],
     answer: 1,
-    explanation: "`\\b` は単語の境目です。`\\bapprove\\b` なら `approve` だけにマッチし、`disapprove` は除外できます。`approve` だけだと部分一致で `disapprove` にも当たります。",
+    explanation: "`\\b` は単語の境目です。`\\bapprove\\b` なら `approve` だけにマッチし、`disapprove` は除外できます。`approve` だけだと部分一致で `disapprove` にもヒットします。",
   },
   "read-call": {
     id: "read-call",
@@ -413,15 +413,15 @@ export const quizzes = {
   },
   "sc-impact-status": {
     id: "sc-impact-status",
-    question: "ステータスに `CANCELLED` を足す影響調査。まず有効な手がかりは？",
+    question: "申請一覧の SQL は `status = 'PENDING'` です。`CANCELLED` を追加するとき、この SQL の修正は？",
     choices: [
-      "操作時刻の ERROR ログだけ",
-      "既存の `status` / `PENDING` / `t_request` で検索し、分岐・SQL・画面を分類する",
-      "CSS の font-size",
-      "favicon.ico の有無",
+      "取り下げ済みも一覧に出るよう、WHERE を直す",
+      "申請一覧は未承認の作業画面なので、修正は不要",
+      "履歴の選択肢が無いので、一覧の SQL も必ず直す",
+      "CSS の余白を疑う",
     ],
     answer: 1,
-    explanation: "不具合ではなく波及先の洗い出しです。既存の値名から逆引きし、表示・分岐・永続化に分類します。",
+    explanation: "申請一覧は未承認の作業画面です。取り下げ済みは、この画面で扱う申請ではないので、今の `status = 'PENDING'` のままで妥当です。ヒットしたから直す、ではありません。履歴の選択肢など、依頼文から分からない箇所は断定しません。",
   },
   "trace-sql-source": {
     id: "trace-sql-source",
@@ -437,15 +437,15 @@ export const quizzes = {
   },
   "sc-impact-search": {
     id: "sc-impact-search",
-    question: "一覧に部署の絞り込みを足す影響調査。処理の入口として先に決めるのは？",
+    question: "一覧に部署の絞り込みを追加する。`RequestController.list` から `findMine` へ降りた。同じ `findMine` を呼んでいる別経路は？",
     choices: [
-      "Mapper XML を上から通読する",
-      "一覧の URL（`/shinsei/requests`）から Controller を特定し、同じ一覧を使う export が無いかも見る",
-      "本番 DB の全テーブルを DROP する",
-      "ブラウザのテーマ",
+      "`RequestApiController.list`（JSON 一覧）",
+      "`RequestController.history`（`searchHistory`）",
+      "CSS の余白",
+      "`pom.xml` の作者名",
     ],
-    answer: 1,
-    explanation: "影響調査も処理の入口は URL です。Controller → Service → Mapper に降り、一覧と同じ条件の別経路（CSV など）を見落としません。",
+    answer: 0,
+    explanation: "申請くんに CSV エクスポートは無い。JSON 一覧が同じ `findMine` を使います。申請履歴は `searchHistory` で、別の SQL です。",
   },
 } satisfies Record<string, Quiz>;
 
