@@ -22,6 +22,24 @@ export function TermHighlightScope({ children }: { children: ReactNode }) {
   return <TermSeenContext.Provider value={isFirst}>{children}</TermSeenContext.Provider>;
 }
 
+function splitByCodeSpans(text: string): Array<{ type: "text" | "code"; value: string }> {
+  const parts: Array<{ type: "text" | "code"; value: string }> = [];
+  const pattern = /`([^`]+)`/g;
+  let last = 0;
+  let match: RegExpExecArray | null;
+  while ((match = pattern.exec(text))) {
+    if (match.index > last) {
+      parts.push({ type: "text", value: text.slice(last, match.index) });
+    }
+    parts.push({ type: "code", value: match[1] });
+    last = match.index + match[0].length;
+  }
+  if (last < text.length) {
+    parts.push({ type: "text", value: text.slice(last) });
+  }
+  return parts.length > 0 ? parts : [{ type: "text", value: text }];
+}
+
 export function TextWithTerms({
   text,
   highlight = true,
@@ -34,8 +52,52 @@ export function TextWithTerms({
   linkChapters?: boolean;
 }) {
   const isFirst = useContext(TermSeenContext);
-  if (!highlight) return text;
 
+  return (
+    <>
+      {splitByCodeSpans(text).map((span, spanIndex) => {
+        if (span.type === "code") {
+          return (
+            <code key={`s-${spanIndex}`} className="code-span">
+              {highlight ? (
+                <MarkedText
+                  text={span.value}
+                  isFirst={isFirst}
+                  linkTerms={linkTerms}
+                  linkChapters={false}
+                />
+              ) : (
+                span.value
+              )}
+            </code>
+          );
+        }
+        if (!highlight) return <span key={`s-${spanIndex}`}>{span.value}</span>;
+        return (
+          <MarkedText
+            key={`s-${spanIndex}`}
+            text={span.value}
+            isFirst={isFirst}
+            linkTerms={linkTerms}
+            linkChapters={linkChapters}
+          />
+        );
+      })}
+    </>
+  );
+}
+
+function MarkedText({
+  text,
+  isFirst,
+  linkTerms,
+  linkChapters,
+}: {
+  text: string;
+  isFirst: ClaimFirst | undefined;
+  linkTerms: boolean;
+  linkChapters: boolean;
+}) {
   const chunks = linkChapters ? splitByChapters(text) : [{ type: "text" as const, value: text }];
 
   return (

@@ -11,8 +11,7 @@ export const requestFlow: FlowStep[] = [
     id: "browser",
     layer: "Browser",
     title: "一覧を開く",
-    detail:
-      "利用者が /shinsei/requests にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引くキーになります。",
+    detail: "利用者が `/shinsei/requests` にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引くキーになります。",
     code: `GET /shinsei/requests HTTP/1.1
 Host: intranet.example.co.jp
 Cookie: JSESSIONID=AB12CD34
@@ -22,8 +21,7 @@ Accept: text/html`,
     id: "filter",
     layer: "Filter",
     title: "セキュリティフィルタ",
-    detail:
-      "Spring Security が、Cookie のセッション ID でサーバ側のセッションを引きます。そこにログインユーザがいれば「ログイン済み」です。この URL へのアクセスが許可されているかも、ここで判定します。弾かれると Controller まで届きません。ステータスコードや遷移先は実装次第です。",
+    detail: "Spring Security が、Cookie のセッション ID でサーバ側のセッションを引きます。そこにログインユーザがいれば「ログイン済み」です。この URL へのアクセスが許可されているかも、ここで判定します。弾かれると Controller まで届きません。ステータスコードや遷移先は実装次第です。",
     code: `Cookie: JSESSIONID=AB12CD34
   -> セッションを引く
   -> ログインユーザあり?  このURLはアクセス許可?
@@ -34,8 +32,7 @@ yes -> ログインユーザを次へ渡す`,
     id: "controller",
     layer: "Controller",
     title: "RequestController#list",
-    detail:
-      "引数の LoginUser は、フィルタがセッションから復元したログインユーザです。その ID を Service に渡し、自分の申請を取ります。画面用のデータを Model に載せ、テンプレート名を返します。",
+    detail: "引数の LoginUser は、フィルタがセッションから復元したログインユーザです。その ID を Service に渡し、自分の申請を取ります。画面用のデータを Model に載せ、テンプレート名を返します。",
     code: `@GetMapping
 public String list(Model model, @AuthenticationPrincipal LoginUser user) {
   model.addAttribute("applications", requestService.findMine(user.getId()));
@@ -46,8 +43,7 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     id: "service",
     layer: "Service",
     title: "RequestService#findMine",
-    detail:
-      "渡された userId は、Cookie から辿ったログインユーザの ID です。自分に関係する申請だけ返す、といった判定は Service に置かれることが多いです。Controller に寄っている構成もあります。",
+    detail: "渡された userId は、Cookie から辿ったログインユーザの ID です。自分に関係する申請だけ返す、といった判定は Service に置かれることが多いです。Controller に寄っている構成もあります。",
     code: `public List<RequestEntity> findMine(Long userId) {
   return requestMapper.findMine(userId);
 }`,
@@ -56,8 +52,7 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     id: "mapper",
     layer: "MyBatis",
     title: "RequestMapper#findMine",
-    detail:
-      "SQL の ? に、その userId が入ります。申請者または承認者である行だけが対象です。件数がおかしい、遅い、エラーになるといった症状は、この SQL の実体を見ます。",
+    detail: "SQL の ? に、その userId が入ります。申請者または承認者である行だけが対象です。件数がおかしい、遅い、エラーになるといった症状は、この SQL の実体を見ます。",
     code: `SELECT ... FROM t_request
  WHERE applicant_id = ?
     OR approver_id = ?
@@ -67,22 +62,19 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     id: "db",
     layer: "MySQL",
     title: "テーブル t_request",
-    detail:
-      "実データは DB にあります。検証用環境に該当データが無い、権限用のマスタが違うといったことは、コードではなくデータの問題です。",
+    detail: "実データは DB にあります。検証用環境に該当データが無い、権限用のマスタが違うといったことは、コードではなくデータの問題です。",
   },
   {
     id: "view",
     layer: "Thymeleaf",
     title: "request/list.html",
-    detail:
-      "Model の中身を HTML に流し込みます。ボタンの表示条件や th:action は、サーバのマッピングと対で確認します。",
+    detail: "Model の中身を HTML に流し込みます。ボタンの表示条件や `th:action` は、サーバのマッピングと対で確認します。",
   },
   {
     id: "response",
     layer: "HTTP",
     title: "200 OK と HTML",
-    detail:
-      "完成した HTML がブラウザに戻り、画面が描画されます。CSS/JS は別リクエストです。画面が崩れていてもサーバの 500 とは限りません。",
+    detail: "完成した HTML がブラウザに戻り、画面が描画されます。CSS/JS は別リクエストです。画面が崩れていてもサーバの 500 とは限りません。",
     code: `HTTP/1.1 200 OK
 Content-Type: text/html;charset=UTF-8`,
   },
@@ -119,11 +111,11 @@ export const stackCases: StackCase[] = [
       {
         kind: "exception",
         text: 'java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because the return value of "RequestEntity.getApproverId()" is null',
-        note: "例外の型とメッセージが本体です。getApproverId() の戻り値が null で、その null に equals を呼んだと読めます。",
+        note: "例外の型とメッセージが本体です。`getApproverId()` の戻り値が null で、その null に `equals` を呼んだと読めます。",
       },
       {
         kind: "app",
-        text: "    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)",
+        text: "    at `jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)`",
         note: "自分たちが書いたコードのパッケージ名で始まり、.java がある、上から最初の行。実ファイルの 47 行目を最初に調べます。",
       },
       {
@@ -190,8 +182,8 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "app",
-        text: "    at jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:20)",
-        note: "呼び出し元の Service。SQL の中身は Mapper の XML（findMine）にあります。",
+        text: "    at `jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:20)`",
+        note: "呼び出し元の Service。SQL の中身は Mapper の XML（`findMine`）にあります。",
       },
       {
         kind: "app",
@@ -218,11 +210,11 @@ export const stackCases: StackCase[] = [
       {
         kind: "framework",
         text: "o.s.security.web.csrf.CsrfFilter: Invalid CSRF token found for http://.../shinsei/requests/12/approve",
-        note: "Spring Security のログです。スタックが少なくても、クラス名 CsrfFilter から「自作の Service ではなくフィルタ手前」と分かります。",
+        note: "Spring Security のログです。スタックが少なくても、クラス名 `CsrfFilter` から「自作の Service ではなくフィルタ手前」と分かります。",
       },
       {
         kind: "hint",
-        text: "フォームに CSRF 用 hidden が無い / Ajax でヘッダを付け忘れ（Thymeleaf なら th:action で自動挿入されることが多い）",
+        text: "フォームに CSRF 用 hidden が無い / Ajax でヘッダを付け忘れ（Thymeleaf なら `th:action` で自動挿入されることが多い）",
         note: "トークン不正の典型は 403 です。設定によっては 302 やログイン画面の HTML になることもあります。500 ではないので「エラーになっていない」と誤解しがちです。",
       },
     ],
@@ -254,7 +246,7 @@ Content-Type: text/html;charset=UTF-8
     },
     {
       label: "Cookie",
-      text: "リクエストに Cookie を載せることで、サーバは JSESSIONID をもとに、どのセッションのログイン情報を取り出せばよいか判断できます。",
+      text: "リクエストに Cookie を載せることで、サーバは `JSESSIONID` をもとに、どのセッションのログイン情報を取り出せばよいか判断できます。",
     },
     {
       label: "200",
@@ -262,7 +254,7 @@ Content-Type: text/html;charset=UTF-8
     },
     {
       label: "Content-Type",
-      text: "Content-Type は、レスポンス本文の種類を表すヘッダです。text/html なら画面用の HTML です。application/json ならデータで、Web API の応答に多いです。",
+      text: "`Content-Type` は、レスポンス本文の種類を表すヘッダです。`text/html` なら画面用の HTML です。`application/json` ならデータで、Web API の応答に多いです。",
     },
   ],
 };

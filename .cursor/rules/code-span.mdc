@@ -1,0 +1,59 @@
+---
+description: 教材本文でコードスパン（`...`）を付ける／付けない
+alwaysApply: true
+---
+
+# コードスパン
+
+本文の `` `...` `` は、読者がソース・ログ・Network・HTML で同じ字面を探すときに付ける。等幅と薄い背景だけ。文字色は本文のまま。
+
+用語ヒント（点線）とは別。概念として読む語は用語集、字面として探す語はコードスパン。両方当たることもある。
+
+## 付ける
+
+```
+# よい
+`/shinsei/requests`
+`GET /shinsei/requests`
+`status=APPROVED`
+`RequestService.java:47`
+`request.getApproverId().equals(approverId)`
+`th:if`
+`@RequestParam`
+`context-path`
+`${results}`
+`t_request`
+```
+
+- パス、クエリ、ヘッダ名（`Content-Type`）
+- ファイル名と行番号、設定キー、SQL の識別子
+- アノテーション、テンプレート属性、フォームの `name`
+- メソッド呼び出しや式。読者がその行を開く手がかりになるもの
+
+ソースの1行を本文に書くときは、その行の字面を途中で切らない。
+
+```
+# 悪い
+const tokenEl = `document.getElementById("csrfToken")`;
+
+# よい
+`const tokenEl = document.getElementById("csrfToken");`
+```
+
+HTTP メソッドやステータスコードでも、パスやヘッダと一体の字面なら付ける（`GET /shinsei/requests`、`POST .../approve`）。
+
+## 付けない
+
+```
+# 悪い（概念なのにスパン）
+`HTTP` の約束、`GET` で取る、ステータスコードは `200`
+
+# よい（用語のまま）
+HTTP の約束、GET で取る、ステータスコードは 200
+```
+
+- HTTP、GET、POST、200、Controller、セッションなど、用語として読ませる語
+- 画面の日本語、見出し、タブ名（Network タブ）
+- `type: "code"` の抜粋そのもの。コードブロックの `title`、画像の `alt`
+- 変数を日本語の主語にしただけ（「request は DB から取る」）。式や呼び出しなら付ける
+- 抜粋全体が主題のとき。特定の字面を指していないなら付けない

@@ -51,11 +51,11 @@ export const javaMapTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "Java プロジェクトには、ソースをまとめて動かすための設定ファイルがあります。Maven なら pom.xml、Gradle なら build.gradle（と settings.gradle）です。",
+          text: "Java プロジェクトには、ソースをまとめて動かすための設定ファイルがあります。Maven なら `pom.xml`、Gradle なら `build.gradle`（と `settings.gradle`）です。",
         },
         {
           type: "p",
-          text: "どちらも、使うフレームワークやライブラリの一覧と、ビルドの仕方を書いたファイルです。プロジェクトによって Maven か Gradle かは決まっています。申請くんは Maven なので pom.xml があります。",
+          text: "どちらも、使うフレームワークやライブラリの一覧と、ビルドの仕方を書いたファイルです。プロジェクトによって Maven か Gradle かは決まっています。申請くんは Maven なので `pom.xml` があります。",
         },
         {
           type: "p",
@@ -97,7 +97,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "Gradle のプロジェクトなら、同じフレームワークやライブラリが build.gradle の dependencies に書かれています。書き方は違いますが、見る目的は同じです。",
+          text: "Gradle のプロジェクトなら、同じフレームワークやライブラリが `build.gradle` の dependencies に書かれています。書き方は違いますが、見る目的は同じです。",
         },
         {
           type: "code",
@@ -114,7 +114,7 @@ export const javaMapTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "Spring Boot 用の設定ファイルです。接続先、ポート、プロファイル、コンテキストパスは、Spring Boot ならここに書くことが多いです。外の Tomcat に載せるときは、ポートやコンテキストパスは Tomcat 側で決まることが多いです。yml でも properties でも、書き方が異なるだけで同じ意味です。申請くんは yml に /shinsei があります。",
+          text: "Spring Boot 用の設定ファイルです。接続先、ポート、プロファイル、コンテキストパスは、Spring Boot ならここに書くことが多いです。外の Tomcat に載せるときは、ポートやコンテキストパスは Tomcat 側で決まることが多いです。yml でも properties でも、書き方が異なるだけで同じ意味です。申請くんは yml に `/shinsei` があります。",
         },
         {
           type: "code",
@@ -149,8 +149,8 @@ server:
           type: "ul",
           items: [
             "active プロファイルは起動引数で上書きされることがある",
-            "application-dev.yml（または .properties）と prod でログ量が違う。出力先は logging.file や、Spring Boot 用の logback-spring.xml に書いてあることが多い",
-            "context-path が違うと CSS が 404 になり、画面だけ崩れる",
+            "`application-dev.yml`（または .properties）と prod でログ量が違う。出力先は `logging.file` や、Spring Boot 用の `logback-spring.xml` に書いてあることが多い",
+            "`context-path` が違うと CSS が 404 になり、画面だけ崩れる",
             "パスワードは環境変数や別ファイルのことがある",
           ],
         },
@@ -195,7 +195,7 @@ server:
         {
           type: "ol",
           items: [
-            "URL を受ける Java メソッド（Spring の @GetMapping など）",
+            "URL を受ける Java メソッド（Spring の `@GetMapping` など）",
             "それが呼ぶ Java メソッド（ビジネスロジック）",
             "DB または外部 API",
           ],
@@ -221,7 +221,7 @@ public class RequestController {
         },
         {
           type: "p",
-          text: "URL を受ける Java メソッドは list です。その中で呼んでいる requestService.findMine が、次に開く Java メソッドです。return は、すぐ下の「Controller の返し方」で見ます。",
+          text: "URL を受ける Java メソッドは `list` です。その中で呼んでいる `requestService.findMine` が、次に開く Java メソッドです。return は、すぐ下の「Controller の返し方」で見ます。",
         },
         {
           type: "h2",
@@ -249,8 +249,8 @@ public class RequestController {
         {
           type: "ul",
           items: [
-            "return \"request/list\" は HTML テンプレートの場所を指す",
-            "サーバが templates/request/list.html を組み立て、ブラウザに HTML が届く",
+            "`return \"request/list\"` は HTML テンプレートの場所を指す",
+            "サーバが `templates/request/list.html` を組み立て、ブラウザに HTML が届く",
             "表示がおかしいときは templates も見ましょう",
           ],
         },
@@ -306,7 +306,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "HTML は src/main/resources/templates 配下に置きます。Controller が名前で指定したテンプレートを組み立て、その HTML がブラウザに届きます。例えば return \"request/list\" なら templates/request/list.html を組み立てます。",
+          text: "HTML は `src/main/resources/templates` 配下に置きます。Controller が名前で指定したテンプレートを組み立て、その HTML がブラウザに届きます。例えば `return \"request/list\"` なら `templates/request/list.html` を組み立てます。",
         },
         {
           type: "code",
@@ -315,14 +315,14 @@ public class RequestApiController {
           highlightLines: [11],
           code: requestControllerSample,
         },
-        { type: "diagram", name: "view-file", caption: "return \"request/list\" が templates/request/list.html を指します。" },
+        { type: "diagram", name: "view-file", caption: "`return \"request/list\"` が `templates/request/list.html` を指します。" },
         {
           type: "h2",
           text: "静的ファイル（static）",
         },
         {
           type: "p",
-          text: "CSS や JS は Java ではなく src/main/resources/static 配下に置きます。テンプレートの head から読み込みます。",
+          text: "CSS や JS は Java ではなく `src/main/resources/static` 配下に置きます。テンプレートの head から読み込みます。",
         },
         {
           type: "code",
@@ -333,7 +333,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "th:href=\"@{/css/app.css}\" は、context-path を含めた URL に変換されます。申請くんでは /shinsei/css/app.css のように見えます。この head は templates/fragments/layout.html にあります。",
+          text: "`th:href=\"@{/css/app.css}\"` は、`context-path` を含めた URL に変換されます。申請くんでは `/shinsei/css/app.css` のように見えます。この head は `templates/fragments/layout.html` にあります。",
         },
         {
           type: "code",
@@ -379,11 +379,11 @@ public class RequestApiController {
           type: "callout",
           kind: "trap",
           title: "見た目だけ壊れる",
-          text: "画面は出るのにスタイルだけ当たらないときは、Network タブで /shinsei/css/app.css が 404 になっていないかを見ましょう。ファイルの有無と URL のずれが多いです。崩れた画面の例は、シナリオ章の「一覧は出るが、画面だけ崩れている」にあります。",
+          text: "画面は出るのにスタイルだけ当たらないときは、Network タブで `/shinsei/css/app.css` が 404 になっていないかを見ましょう。ファイルの有無と URL のずれが多いです。崩れた画面の例は、シナリオ章の「一覧は出るが、画面だけ崩れている」にあります。",
         },
         {
           type: "p",
-          text: "@RestController は templates を使いません。JSON を返す Web API は、前の項目のとおり出口が JSON です。",
+          text: "`@RestController` は templates を使いません。JSON を返す Web API は、前の項目のとおり出口が JSON です。",
         },
       ],
     },
@@ -406,7 +406,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "Controller の return が返す文字列が、templates 配下のパスになります。return \"request/list\" なら templates/request/list.html です。前の項目の図のとおりです。",
+          text: "Controller の return が返す文字列が、templates 配下のパスになります。`return \"request/list\"` なら `templates/request/list.html` です。前の項目の図のとおりです。",
         },
         {
           type: "h2",
@@ -418,11 +418,11 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "申請くんの画面は、共通部分と個別部分に分かれています。ヘッダと CSS は全画面で共通なので、fragments/layout.html にまとめています。一覧の表や詳細の項目など、画面ごとに変わる部分は、request/list.html や request/detail.html のように、画面ごとのファイルに書きます。",
+          text: "申請くんの画面は、共通部分と個別部分に分かれています。ヘッダと CSS は全画面で共通なので、`fragments/layout.html` にまとめています。一覧の表や詳細の項目など、画面ごとに変わる部分は、`request/list.html` や `request/detail.html` のように、画面ごとのファイルに書きます。",
         },
         {
           type: "p",
-          text: "画面ごとのファイルは th:replace で共通の layout.html を読み込みます。そのため list.html を開くと、その画面固有の <main> だけが見えます。共通のヘッダや CSS を追うときは layout.html も開きましょう。",
+          text: "画面ごとのファイルは `th:replace` で共通の `layout.html` を読み込みます。そのため `list.html` を開くと、その画面固有の <main> だけが見えます。共通のヘッダや CSS を追うときは `layout.html` も開きましょう。",
         },
         {
           type: "diagram",
@@ -477,7 +477,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "fragments/layout :: layout は、共通の layout.html を指します。list.html の <main>（一覧固有の部分）が、layout.html の <main> に入ります。",
+          text: "`fragments/layout :: layout` は、共通の `layout.html` を指します。`list.html` の <main>（一覧固有の部分）が、`layout.html` の <main> に入ります。",
         },
         {
           type: "h2",
@@ -491,17 +491,17 @@ public class RequestApiController {
           type: "table",
           headers: ["Controller の書き方", "テンプレートでの名前", "補足"],
           rows: [
-            ["model.addAttribute(\"applications\", list)", "${applications}", "いちばん多い。申請くんはこの形"],
-            ["mav.addObject(\"applications\", list) と ModelAndView", "${applications}", "addAttribute と同じ。戻り値が ModelAndView"],
-            ["model.put(\"applications\", list) と Map", "${applications}", "引数が Map のとき。Model と同じ役割"],
-            ["@ModelAttribute(\"form\") RequestForm form", "${form}", "フォーム表示・送信の両方で使うことがある"],
-            ["@ModelAttribute メソッド（Controller 内）", "メソッドが返すキー名", "全画面に共通の値を載せる。各メソッドの前に実行される"],
-            ["redirectAttributes.addFlashAttribute(\"msg\", ...)", "${msg}", "リダイレクト後の1回だけ。登録完了メッセージなど"],
+            ["`model.addAttribute(\"applications\", list)`", "`${applications}`", "いちばん多い。申請くんはこの形"],
+            ["`mav.addObject(\"applications\", list)` と `ModelAndView`", "`${applications}`", "`addAttribute` と同じ。戻り値が `ModelAndView`"],
+            ["`model.put(\"applications\", list)` と Map", "`${applications}`", "引数が Map のとき。Model と同じ役割"],
+            ["`@ModelAttribute(\"form\") RequestForm form`", "`${form}`", "フォーム表示・送信の両方で使うことがある"],
+            ["`@ModelAttribute` メソッド（Controller 内）", "メソッドが返すキー名", "全画面に共通の値を載せる。各メソッドの前に実行される"],
+            ["`redirectAttributes.addFlashAttribute(\"msg\", ...)`", "`${msg}`", "リダイレクト後の1回だけ。登録完了メッセージなど"],
           ],
         },
         {
           type: "p",
-          text: "値は、リストやオブジェクト1件、文字列など何でも載せられます。テンプレートでは \${applications} のようにキー名で取り出し、オブジェクトなら \${item.title} のようにプロパティを辿ります。",
+          text: "値は、リストやオブジェクト1件、文字列など何でも載せられます。テンプレートでは `${applications}` のようにキー名で取り出し、オブジェクトなら `${item.title}` のようにプロパティを辿ります。",
         },
         {
           type: "code",
@@ -530,7 +530,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "callout",
           kind: "note",
           title: "@ModelAttribute は向きが2つ",
-          text: "メソッドの引数に付く @ModelAttribute は、フォームから画面へ値を運ぶときにも使われます。Controller 内の @ModelAttribute メソッドは、別の共通データを毎回 Model に足す書き方です。名前が紛らわしいので、テンプレートでは \${...} のキー名だけを見ましょう。",
+          text: "メソッドの引数に付く `@ModelAttribute` は、フォームから画面へ値を運ぶときにも使われます。Controller 内の `@ModelAttribute` メソッドは、別の共通データを毎回 Model に足す書き方です。名前が紛らわしいので、テンプレートでは `${...}` のキー名だけを見ましょう。",
         },
         {
           type: "h2",
@@ -540,17 +540,17 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "table",
           headers: ["属性", "意味", "例"],
           rows: [
-            ["th:each", "リストの繰り返し。要素ごとに内側のタグを出す", "th:each=\"item : \${applications}\"\n申請の件数だけ行が増える"],
-            ["th:text", "画面に出す文字", "th:text=\"\${item.title}\"\n画面に「交通費申請」などが出る"],
-            ["th:if / th:unless", "条件が true のときだけタグを出す。ボタンが無い原因になりやすい", "th:if=\"\${item.status == 'PENDING'}\"\nPENDING の行だけ承認ボタンが出る"],
-            ["th:action / th:href", "form の送信先、リンク先。@{...} に書いたパスの前に、context-path（申請くんなら /shinsei）が付く", "th:action=\"@{/requests/{id}/approve(id=\${item.id})}\"\n承認ボタンの送信先になる"],
-            ["th:name / name", "フォームの項目名。Controller の @RequestParam と対応", "name=\"title\"\n送信時の項目名が title になる"],
-            ["th:fragment / th:replace", "共通の HTML を、個別の画面から読み込む", "layout.html が共通、list.html が個別"],
+            ["`th:each`", "リストの繰り返し。要素ごとに内側のタグを出す", "`th:each=\"item : ${applications}\"`\n申請の件数だけ行が増える"],
+            ["`th:text`", "画面に出す文字", "`th:text=\"${item.title}\"`\n画面に「交通費申請」などが出る"],
+            ["`th:if` / `th:unless`", "条件が true のときだけタグを出す。ボタンが無い原因になりやすい", "`th:if=\"${item.status == 'PENDING'}\"`\nPENDING の行だけ承認ボタンが出る"],
+            ["`th:action` / `th:href`", "form の送信先、リンク先。`@{...}` に書いたパスの前に、`context-path`（申請くんなら `/shinsei`）が付く", "`th:action=\"@{/requests/{id}/approve(id=${item.id})}\"`\n承認ボタンの送信先になる"],
+            ["`th:name` / `name`", "フォームの項目名。Controller の `@RequestParam` と対応", "`name=\"title\"`\n送信時の項目名が title になる"],
+            ["`th:fragment` / `th:replace`", "共通の HTML を、個別の画面から読み込む", "`layout.html` が共通、`list.html` が個別"],
           ],
         },
         {
           type: "p",
-          text: "タグの中にある「交通費申請」「PENDING」などは、プレビュー用のダミーです。実行時は th:text の \${...} が使われます。",
+          text: "タグの中にある「交通費申請」「PENDING」などは、プレビュー用のダミーです。実行時は `th:text` の `${...}` が使われます。",
         },
         {
           type: "code",
@@ -561,7 +561,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "サーバが組み立てたあとは、th: 属性は消え、値だけが残ります。status が PENDING の行だけ form が出ます。context-path が /shinsei なら action に付きます。",
+          text: "サーバが組み立てたあとは、th: 属性は消え、値だけが残ります。`status` が `PENDING` の行だけ form が出ます。`context-path` が `/shinsei` なら action に付きます。",
         },
         {
           type: "code",
@@ -583,11 +583,11 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "ol",
           items: [
             "Controller の return から HTML ファイルを開く",
-            "共通のヘッダや CSS は fragments/layout.html にある",
-            "Model に載せた名前と、th:each / th:text の ${...} が一致するか見る",
-            "ボタンやリンクが無いときは th:if の条件を読む",
-            "form の th:action と method で指定した送信先と HTTP メソッドが、想定の Controller のマッピングと一致するか見る",
-            "POST なのに CSRF エラーなら、hidden の _csrf や th:action の有無を見る",
+            "共通のヘッダや CSS は `fragments/layout.html` にある",
+            "Model に載せた名前と、`th:each` / `th:text` の `${...}` が一致するか見る",
+            "ボタンやリンクが無いときは `th:if` の条件を読む",
+            "form の `th:action` と method で指定した送信先と HTTP メソッドが、想定の Controller のマッピングと一致するか見る",
+            "POST なのに CSRF エラーなら、hidden の `_csrf` や `th:action` の有無を見る",
             "テンプレートと違う HTML がブラウザに出ているなら、別テンプレートか JS の書き換えを疑う（Elements タブで確認）",
           ],
         },
@@ -595,7 +595,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "callout",
           kind: "note",
           title: "ソースと画面の見比べ",
-          text: "テンプレートはサーバ側のファイルです。ブラウザの Elements タブは、組み立て後の HTML です。th:if で消えたボタンは、テンプレートにはあっても画面には出ません。切り分けでは、両方を見ましょう。",
+          text: "テンプレートはサーバ側のファイルです。ブラウザの Elements タブは、組み立て後の HTML です。`th:if` で消えたボタンは、テンプレートにはあっても画面には出ません。切り分けでは、両方を見ましょう。",
         },
         {
           type: "figure",
@@ -614,7 +614,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
       blocks: [
         {
           type: "p",
-          text: "Controller から Service を追うとき、ソースに書いてある Java メソッド呼び出しだけを見るのでは足りないことがあります。リクエストの前後や、service.approve() の実体の手前に、別クラスが挟まります。呼び出し元の Java メソッドには、その名前が出ません。",
+          text: "Controller から Service を追うとき、ソースに書いてある Java メソッド呼び出しだけを見るのでは足りないことがあります。リクエストの前後や、`requestService.approve()` の実体の手前に、別クラスが挟まります。呼び出し元の Java メソッドには、その名前が出ません。",
         },
         { type: "diagram", name: "cross-cut", caption: "Controller や Service のソースに、これらの呼び出しは書かれていません。" },
         {
@@ -622,9 +622,9 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           headers: ["種類", "動く位置", "ソースでの見え方"],
           rows: [
             ["Filter", "サーブレットコンテナ。Controller の前（静的ファイルも通ることがある）", "Controller から呼ばれない。Filter 実装や SecurityConfig を別検索する"],
-            ["Interceptor", "Spring MVC。Controller の Java メソッドの直前・直後", "HandlerInterceptor と WebMvcConfigurer の addInterceptors。Controller に呼び出しは無い"],
-            ["AOP / プロキシ", "Service などの Java メソッド呼び出しの手前", "見た目は requestService.approve()。実行時は $Proxy や CGLIB を経由する"],
-            ["@ControllerAdvice", "例外のあと。戻り値や画面を別クラスが決める", "throw したメソッドの return を追っても、実際の応答はここ"],
+            ["Interceptor", "Spring MVC。Controller の Java メソッドの直前・直後", "`HandlerInterceptor` と WebMvcConfigurer の `addInterceptors`。Controller に呼び出しは無い"],
+            ["AOP / プロキシ", "Service などの Java メソッド呼び出しの手前", "見た目は `requestService.approve()`。実行時は `$Proxy` や CGLIB を経由する"],
+            ["`@ControllerAdvice`", "例外のあと。戻り値や画面を別クラスが決める", "throw したメソッドの return を追っても、実際の応答はここ"],
           ],
         },
         {
@@ -681,7 +681,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "Spring MVC の HandlerInterceptor は、Controller の Java メソッドの直前（preHandle）と直後（postHandle / afterCompletion）に動きます。ログ、共通の権限、アクセス記録などで使います。Controller のソースを上から読んでも、呼び出しは出てきません。",
+          text: "Spring MVC の `HandlerInterceptor` は、Controller の Java メソッドの直前（preHandle）と直後（postHandle / afterCompletion）に動きます。ログ、共通の権限、アクセス記録などで使います。Controller のソースを上から読んでも、呼び出しは出てきません。",
         },
         {
           type: "code",
@@ -700,8 +700,8 @@ public void addInterceptors(InterceptorRegistry registry) {
         {
           type: "ul",
           items: [
-            "HandlerInterceptor",
-            "addInterceptors",
+            "`HandlerInterceptor`",
+            "`addInterceptors`",
             "WebMvcConfigurer",
           ],
         },
@@ -720,9 +720,9 @@ public void addInterceptors(InterceptorRegistry registry) {
         {
           type: "ul",
           items: [
-            "@Transactional",
-            "独自の @Aspect",
-            "メソッドの @PreAuthorize",
+            "`@Transactional`",
+            "独自の `@Aspect`",
+            "メソッドの `@PreAuthorize`",
           ],
         },
         {
@@ -741,7 +741,7 @@ public void addInterceptors(InterceptorRegistry registry) {
           type: "callout",
           kind: "trap",
           title: "Java メソッド本体より前",
-          text: "@Transactional が付いていても、通常はトランザクションを開始したあとに Java メソッド本体へ進むため、本体のブレークポイントで止まります。止まらないときは、メソッド認可や独自の @Aspect が本体を呼ばずに終了していないか、トランザクション開始時に失敗していないかを確認しましょう。Filter / Interceptor が Controller の前なら、Controller 自体が止まりません。",
+          text: "`@Transactional` が付いていても、通常はトランザクションを開始したあとに Java メソッド本体へ進むため、本体のブレークポイントで止まります。止まらないときは、メソッド認可や独自の `@Aspect` が本体を呼ばずに終了していないか、トランザクション開始時に失敗していないかを確認しましょう。Filter / Interceptor が Controller の前なら、Controller 自体が止まりません。",
         },
         {
           type: "h2",
@@ -749,15 +749,15 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "@ControllerAdvice や HandlerExceptionResolver は、throw したあとの応答を別クラスが決めます。業務例外を投げたメソッドの return を追っても、画面メッセージや JSON の形はここにあります。",
+          text: "`@ControllerAdvice` や `HandlerExceptionResolver` は、throw したあとの応答を別クラスが決めます。業務例外を投げたメソッドの return を追っても、画面メッセージや JSON の形はここにあります。",
         },
         {
           type: "ul",
           items: [
             "Controller に届かない → Filter、Interceptor、SecurityConfig",
             "Controller には入るが Service の本体に入らない → メソッド認可、独自の AOP、トランザクション開始時の失敗",
-            "例外の画面や JSON がメソッドに無い → @ControllerAdvice",
-            "検索語: HandlerInterceptor、addInterceptors、OncePerRequestFilter、@Aspect、@ControllerAdvice",
+            "例外の画面や JSON がメソッドに無い → `@ControllerAdvice`",
+            "検索語: `HandlerInterceptor`、`addInterceptors`、`OncePerRequestFilter`、`@Aspect`、`@ControllerAdvice`",
           ],
         },
         { type: "quiz", id: "java-crosscut" },

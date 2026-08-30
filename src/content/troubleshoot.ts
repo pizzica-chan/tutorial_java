@@ -174,8 +174,8 @@ export const troubleshootTrack: Track = {
           type: "ol",
           items: [
             "手順書、README、聞ける人に「今の環境のログはどこか」を確認する",
-            "application.yml や application.properties の logging.file や logging.path、logging.level を見る",
-            "logback-spring.xml や log4j2.xml があれば、file のパスを見る",
+            "`application.yml` や `application.properties` の `logging.file` や `logging.path`、`logging.level` を見る",
+            "`logback-spring.xml` や `log4j2.xml` があれば、file のパスを見る",
             "ローカル環境なら、起動したコンソールに同じ内容が出ていることが多い",
           ],
         },
@@ -231,7 +231,7 @@ export const troubleshootTrack: Track = {
         },
         {
           type: "p",
-          text: "上の例なら、/shinsei/css/app.css への GET が 404 です。同じ時刻に /shinsei/requests は 200 なら、動的処理は Java に届き、CSS だけ手前の設定がずれている、と切り分けできます。出力先と書式は環境次第です。",
+          text: "上の例なら、`/shinsei/css/app.css` への GET が 404 です。同じ時刻に `/shinsei/requests` は 200 なら、動的処理は Java に届き、CSS だけ手前の設定がずれている、と切り分けできます。出力先と書式は環境次第です。",
         },
         {
           type: "callout",
@@ -279,7 +279,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
         },
         {
           type: "p",
-          text: "角括弧 [ ] のなかの nio-8080-exec-3 はスレッド名です。同じ操作の行を揃える手順は「アプリのログで処理を追う」です。",
+          text: "角括弧 [ ] のなかの `nio-8080-exec-3` はスレッド名です。同じ操作の行を揃える手順は「アプリのログで処理を追う」です。",
         },
         {
           type: "callout",
@@ -526,13 +526,13 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
         },
         {
           type: "p",
-          text: "申請くんでは AccessLogInterceptor の GET、ServiceLoggingAspect の start、Mapper、ServiceLoggingAspect の end の順です。Mapper の 3 行（Preparing / Parameters / Total）は MyBatis の DEBUG の書き方で、JPA や JDBC なら文言は違います。Java のメソッド名は、メッセージに書いてあるときだけ分かります。",
+          text: "申請くんでは `AccessLogInterceptor` の GET、`ServiceLoggingAspect` の start、Mapper、`ServiceLoggingAspect` の end の順です。Mapper の 3 行（Preparing / Parameters / Total）は MyBatis の DEBUG の書き方で、JPA や JDBC なら文言は違います。Java のメソッド名は、メッセージに書いてあるときだけ分かります。",
         },
         {
           type: "ul",
           items: [
             "同じクラスの別の Java メソッドは、メッセージで見分ける",
-            "@Async やキューに渡すと、続きは別のスレッド名になる。メール送信の行が exec-3 に無い、など",
+            "`@Async` やキューに渡すと、続きは別のスレッド名になる。メール送信の行が exec-3 に無い、など",
             "start と done が対になっていれば、そのあいだがその Java メソッドの中",
           ],
         },
@@ -556,7 +556,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
         },
         {
           type: "p",
-          text: "山田の一覧なら、まず Parameters の 7(Long) や URL で検索しましょう。ヒットした行のスレッド名は nio-8080-exec-3 です。その名前と、操作の前後数秒で再検索すると、GET → findMine → Mapper の行が揃います。exec-5 は別の詳細表示です。",
+          text: "山田の一覧なら、まず Parameters の 7(Long) や URL で検索しましょう。ヒットした行のスレッド名は `nio-8080-exec-3` です。その名前と、操作の前後数秒で再検索すると、GET → `findMine` → Mapper の行が揃います。exec-5 は別の詳細表示です。",
         },
         {
           type: "ol",
@@ -607,13 +607,13 @@ ORDER BY r.created_at DESC
           type: "ul",
           items: [
             "Preparing が SQL 文。? がプレースホルダ",
-            "Parameters がバインドした値。上の例なら applicant_id も approver_id も 7",
+            "Parameters がバインドした値。上の例なら `applicant_id` も `approver_id` も 7",
             "Total がその SQL の件数。0 なら、その条件に合う行が無かった",
           ],
         },
         {
           type: "p",
-          text: "出す先は logging.level です。申請くんなら Mapper のパッケージ（jp.co.example.shinsei.mapper など）に DEBUG を付けましょう。XML の id と Java のメソッド名が Logger に出ることがあります。その SQL をソースで探す手順は、「リクエストの追跡」の「SQL からソースを探す」です。",
+          text: "出す先は `logging.level` です。申請くんなら Mapper のパッケージ（`jp.co.example.shinsei.mapper` など）に DEBUG を付けましょう。XML の id と Java のメソッド名が Logger に出ることがあります。その SQL をソースで探す手順は、「リクエストの追跡」の「SQL からソースを探す」です。",
         },
         {
           type: "callout",
@@ -650,7 +650,7 @@ ORDER BY r.created_at DESC
         { type: "diagram", name: "stack-line", caption: "右端の括弧が、ソースのファイルと行です。" },
         {
           type: "p",
-          text: "RequestService.java:47 なら、プロジェクト内の RequestService.java の 47 行目です。ログの :47 は、エディタ左端の行番号と同じものです。この教材の申請くんのスタック例は、実ファイルの行番号と一致しています。Unknown Source とだけある行は、ソースが無いので飛ばしましょう。",
+          text: "`RequestService.java:47` なら、プロジェクト内の `RequestService.java` の 47 行目です。ログの :47 は、エディタ左端の行番号と同じものです。この教材の申請くんのスタック例は、実ファイルの行番号と一致しています。Unknown Source とだけある行は、ソースが無いので飛ばしましょう。",
         },
         {
           type: "h2",
@@ -754,7 +754,7 @@ ORDER BY r.created_at DESC
           type: "callout",
           kind: "note",
           title: "パースエラーに見えるとき",
-          text: "フロントが JSON を期待しているのに、500 の HTML エラーページが返ると、画面にはパースエラーとだけ出ることがあります。Network タブのステータスコードと Content-Type を先に見ましょう。",
+          text: "フロントが JSON を期待しているのに、500 の HTML エラーページが返ると、画面にはパースエラーとだけ出ることがあります。Network タブのステータスコードと `Content-Type` を先に見ましょう。",
         },
         {
           type: "p",
@@ -764,10 +764,10 @@ ORDER BY r.created_at DESC
           type: "table",
           headers: ["例外", "まず見ること"],
           rows: [
-            ["NullPointerException", "その行のオブジェクト。DB の null、未バインド、未設定の関連"],
-            ["IllegalArgumentException / 業務例外", "メッセージと、throw している if 条件"],
+            ["`NullPointerException`", "その行のオブジェクト。DB の null、未バインド、未設定の関連"],
+            ["`IllegalArgumentException` / 業務例外", "メッセージと、throw している if 条件"],
             ["TemplateInputException など", "return したビュー名と、templates 配下の実ファイル"],
-            ["BadSqlGrammarException", "Mapper の列名と、DB の定義差"],
+            ["`BadSqlGrammarException`", "Mapper の列名と、DB の定義差"],
           ],
         },
         {
@@ -797,16 +797,16 @@ ORDER BY r.created_at DESC
           type: "table",
           headers: ["状況", "確認"],
           rows: [
-            ["HTML ごと 404", "Controller のパス、context-path、末尾スラッシュ"],
-            ["Web API が 404", "パス、HTTP メソッド、Spring の @RestController のプレフィックス"],
-            ["画面は出るが CSS/JS だけ 404", "static の置き場所、許可パス、context-path"],
-            ["GET では出るが POST で 404", "HTTP メソッドのマッピング。Spring の @GetMapping しか無いなど"],
-            ["リンク先だけ 404", "テンプレートの th:href / action と、実際のマッピング"],
+            ["HTML ごと 404", "Controller のパス、`context-path`、末尾スラッシュ"],
+            ["Web API が 404", "パス、HTTP メソッド、Spring の `@RestController` のプレフィックス"],
+            ["画面は出るが CSS/JS だけ 404", "static の置き場所、許可パス、`context-path`"],
+            ["GET では出るが POST で 404", "HTTP メソッドのマッピング。Spring の `@GetMapping` しか無いなど"],
+            ["リンク先だけ 404", "テンプレートの `th:href` / action と、実際のマッピング"],
           ],
         },
         {
           type: "p",
-          text: "画面 URL が /shinsei/requests なのに、検索語を /shinsei/requests のままにするとヒットしません。アプリ内パスは /requests であることが多いです。",
+          text: "画面 URL が `/shinsei/requests` なのに、検索語を `/shinsei/requests` のままにするとヒットしません。アプリ内パスは `/requests` であることが多いです。",
         },
       ],
     },
@@ -917,7 +917,7 @@ ORDER BY r.created_at DESC
         {
           type: "ul",
           items: [
-            "Spring Boot の起動プロファイルと application-*.yml / application-*.properties",
+            "Spring Boot の起動プロファイルと `application-*.yml` / `application-*.properties`",
             "DB の中身（マスタ、件数、文字コード、DDL）",
             "ログインユーザの権限",
             "ファイルパスと書き込み権限",
@@ -956,13 +956,13 @@ ORDER BY r.created_at DESC
         },
         {
           type: "p",
-          text: "上は計測ログを追加した例で、申請くんの実ログではありません。findMine の start と done のあいだが約 5 秒なので、遅いのは Service の中（SQL やその前後の I/O）です。申請くんの既存ログでは ServiceLoggingAspect が DEBUG で start / end を出します。",
+          text: "上は計測ログを追加した例で、申請くんの実ログではありません。`findMine` の start と done のあいだが約 5 秒なので、遅いのは Service の中（SQL やその前後の I/O）です。申請くんの既存ログでは `ServiceLoggingAspect` が DEBUG で start / end を出します。",
         },
         {
           type: "ul",
           items: [
             "ミリ秒まで見る。秒だけだと差が消える",
-            "スレッド名（nio-8080-exec-3 など）やリクエスト ID で、同じリクエストの行だけを揃える。別リクエストの行が混ざると差が無意味になる",
+            "スレッド名（`nio-8080-exec-3` など）やリクエスト ID で、同じリクエストの行だけを揃える。別リクエストの行が混ざると差が無意味になる",
             "Network タブの待ち時間と、サーバログの最初と最後の時刻を比べる。Network タブだけ長いなら、アプリに入る前（待ち行列、LB、DNS）",
             "通過点のログが少なければ、空いている区間の中を疑う。足りないときだけ、ID 付きの通過点を一時的に足す",
           ],
@@ -1059,7 +1059,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
           headers: ["確認", "理由"],
           rows: [
             ["ソースで外部呼び出し箇所を特定する", "RestTemplate、WebClient、Feign、HttpClient、メール送信クラスなど。名前はプロジェクト次第"],
-            ["application.yml の URL・タイムアウト・認証", "プロファイルごとに向き先が違うことがある"],
+            ["`application.yml` の URL・タイムアウト・認証", "プロファイルごとに向き先が違うことがある"],
             ["モックやスタブの有無", "ローカルだけ偽の応答を返し、検証用環境では本物につなぐ構成がある"],
             ["アプリサーバからの疎通", "開発 PC の curl が通っても、サーバからは FW で閉じていることがある → 「ネットワークの疎通確認」"],
             ["外部の応答本文", "200 でも JSON の形が違うと、パース例外になる。Network タブではアプリ⇔外部 API の通信は確認できない。サーバログや一時的なログ出力で見る"],
@@ -1078,7 +1078,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
         },
         {
           type: "p",
-          text: "承認処理は DB を更新したあと、MailService で申請者へメールを送る想定です。画面は承認済みなのにメールが来ないときは、Mapper の更新ログのあとに MailService の行があるかを見ましょう。SMTP サーバや通知 API の向き先は application.yml にあることが多いです。",
+          text: "承認処理は DB を更新したあと、MailService で申請者へメールを送る想定です。画面は承認済みなのにメールが来ないときは、Mapper の更新ログのあとに MailService の行があるかを見ましょう。SMTP サーバや通知 API の向き先は `application.yml` にあることが多いです。",
         },
         {
           type: "callout",
@@ -1109,7 +1109,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
           type: "callout",
           kind: "tip",
           title: "順番",
-          text: "URL とポートが分かってからコマンドです。application.yml の接続先を特定する前に ping しても、当たる先が定まりません。",
+          text: "URL とポートが分かってからコマンドです。`application.yml` の接続先を特定する前に ping しても、当たる先が定まりません。",
         },
         {
           type: "ol",

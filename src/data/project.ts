@@ -184,7 +184,7 @@ export const projectFiles: ProjectFile[] = [
   {
     path: "src/main/resources/application.yml",
     note: "Spring Boot 用。接続先とプロファイル",
-    why: "接続先、ID、ログレベル、ファイルパスは環境ごとに違います。コードを疑う前に、今どの設定で起動しているかを確認します。yml ではなく application.properties のプロジェクトもあります。username / password は教材用のサンプル値です。",
+    why: "接続先、ID、ログレベル、ファイルパスは環境ごとに違います。コードを疑う前に、今どの設定で起動しているかを確認します。yml ではなく `application.properties` のプロジェクトもあります。username / password は教材用のサンプル値です。",
     code: `spring:
   profiles:
     active: dev
@@ -203,7 +203,7 @@ logging:
   {
     path: "src/main/resources/application-dev.yml",
     note: "dev プロファイル用の上書き",
-    why: "spring.profiles.active が dev のとき、application.yml のあとにこのファイルが読み込まれます。同じ項目はこちらの設定が優先されます。ローカルだけ DB 名やログ量を変える、という使い方が多いです。",
+    why: "`spring.profiles.active` が `dev` のとき、`application.yml` のあとにこのファイルが読み込まれます。同じ項目はこちらの設定が優先されます。ローカルだけ DB 名やログ量を変える、という使い方が多いです。",
     code: `spring:
   datasource:
     url: jdbc:mysql://localhost:3306/shinsei_dev
@@ -215,7 +215,7 @@ logging:
   {
     path: "src/main/resources/application-stg.yml",
     note: "stg プロファイル用の追加分",
-    why: "spring.profiles.active が stg のとき、application.yml のあとにこのファイルが読み込まれます。同じ項目はこちらの設定が優先されます。検証環境の DB 接続先やログ量をまとめて書く、という使い方が多いです。password の ${DB_PASSWORD} は、起動時に環境変数 DB_PASSWORD の値に差し替わる書き方です。yml にパスワードを直書きしないときに使います。",
+    why: "`spring.profiles.active` が `stg` のとき、`application.yml` のあとにこのファイルが読み込まれます。同じ項目はこちらの設定が優先されます。検証環境の DB 接続先やログ量をまとめて書く、という使い方が多いです。password の `${DB_PASSWORD}` は、起動時に環境変数 `DB_PASSWORD` の値に差し替わる書き方です。yml にパスワードを直書きしないときに使います。",
     code: `spring:
   datasource:
     url: jdbc:mysql://stg-db.example.internal:3306/shinsei
@@ -321,7 +321,7 @@ public class MailService {
   {
     path: "src/main/java/.../entity/RequestEntity.java",
     note: "1 件の申請データ",
-    why: "DB の行と Java の対応です。Mapper の resultType や update の引数に使われます。null のフィールドがあると、Service の equals などで NullPointerException になることがあります。",
+    why: "DB の行と Java の対応です。Mapper の resultType や update の引数に使われます。null のフィールドがあると、Service の equals などで `NullPointerException` になることがあります。",
     code: `public class RequestEntity {
   private Long id;
   private String title;
@@ -336,7 +336,7 @@ public class MailService {
   {
     path: "src/main/resources/mapper/RequestMapper.xml",
     note: "実際の SQL",
-    why: "一覧が遅い、件数が合わない、更新されないといった症状は、SQL を見ないと終わりません。Java のメソッド名と XML の id が対になっています。findById は詳細表示と承認で 1 件取り、applicant_email は通知先です。",
+    why: "一覧が遅い、件数が合わない、更新されないといった症状は、SQL を見ないと終わりません。Java のメソッド名と XML の id が対になっています。`findById` は詳細表示と承認で 1 件取り、`applicant_email` は通知先です。",
     code: `<select id="findMine" resultType="RequestEntity">
   SELECT id, title, status, applicant_id, approver_id, applicant_email, created_at
   FROM t_request
@@ -367,13 +367,13 @@ public class MailService {
   {
     path: "src/main/resources/templates/request/list.html",
     note: "画面テンプレート",
-    why: "ボタンの遷移先、hidden 項目、表示条件（ステータスでボタンを出す等）は HTML 側にあります。サーバだけ見ても足りないことがあります。th:action なら CSRF 用 hidden が自動で付くことが多いです。教材では明示して見せています。欠けると POST が弾かれます。",
+    why: "ボタンの遷移先、hidden 項目、表示条件（ステータスでボタンを出す等）は HTML 側にあります。サーバだけ見ても足りないことがあります。`th:action` なら CSRF 用 hidden が自動で付くことが多いです。教材では明示して見せています。欠けると POST が弾かれます。",
     code: shinseiListTemplateSnippet,
   },
   {
     path: "src/main/resources/templates/request/detail.html",
     note: "申請詳細の画面テンプレート",
-    why: "表示する項目やフォームの送信先は HTML 側にあります。申請くんの詳細はシナリオでサーバ側の判定を確認できるよう、ステータスにかかわらず承認ボタンを表示します。通常の画面では th:if で表示を制限する実装もあります。",
+    why: "表示する項目やフォームの送信先は HTML 側にあります。申請くんの詳細はシナリオでサーバ側の判定を確認できるよう、ステータスにかかわらず承認ボタンを表示します。通常の画面では `th:if` で表示を制限する実装もあります。",
     code: `<h1 th:text="\${requestItem.title}">交通費申請</h1>
 <p>ステータス: <span th:text="\${requestItem.status}">PENDING</span></p>
 <form th:action="@{/requests/{id}/approve(id=\${requestItem.id})}"
@@ -396,13 +396,13 @@ public class MailService {
   {
     path: "src/main/resources/static/css/app.css",
     note: "画面用 CSS",
-    why: "見た目の調整は Java ではなく static 配下に置かれることが多いです。404 のときは、ファイルの有無と URL（context-path 付きか）を Network タブで確認します。",
+    why: "見た目の調整は Java ではなく static 配下に置かれることが多いです。404 のときは、ファイルの有無と URL（`context-path` 付きか）を Network タブで確認します。",
     code: shinseiAppCssSnippet,
   },
   {
     path: "src/main/resources/static/js/app.js",
     note: "画面用 JavaScript",
-    why: "ボタンの確認ダイアログなど、ブラウザ側の動きは static/js に置かれることが多いです。HTML から読み込みます。context-path があるときは th:src=\"@{/js/app.js}\" のように書くことが多いです。",
+    why: "ボタンの確認ダイアログなど、ブラウザ側の動きは static/js に置かれることが多いです。HTML から読み込みます。`context-path` があるときは `th:src=\"@{/js/app.js}\"` のように書くことが多いです。",
     code: shinseiAppJsSnippet,
   },
   {
@@ -435,7 +435,7 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
   {
     path: "src/test/java/.../ShinseiApplicationTests.java",
     note: "起動テスト",
-    why: "Spring Boot が生成することが多い、最小のテストです。@SpringBootTest でコンテキストが立ち上がるかを見ます。本番の業務ロジックのテストとは別枠です。",
+    why: "Spring Boot が生成することが多い、最小のテストです。`@SpringBootTest` でコンテキストが立ち上がるかを見ます。本番の業務ロジックのテストとは別枠です。",
     code: `@SpringBootTest
 class ShinseiApplicationTests {
 

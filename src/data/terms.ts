@@ -63,7 +63,7 @@ export const terms: TermDef[] = [
   {
     term: "ヘッダ",
     aliases: ["レスポンスヘッダ", "リクエストヘッダ", "ヘッダ"],
-    body: "HTTP の本文の前に付く付加情報。Content-Type、Cookie、Location などがあります。",
+    body: "HTTP の本文の前に付く付加情報。`Content-Type`、Cookie、`Location` などがあります。",
   },
   {
     term: "Cookie",
@@ -78,12 +78,12 @@ export const terms: TermDef[] = [
   {
     term: "リダイレクト",
     aliases: ["リダイレクト"],
-    body: "サーバが「別の URL を開き直して」と返すこと。302 と Location ヘッダの組み合わせが典型です。",
+    body: "サーバが「別の URL を開き直して」と返すこと。302 と `Location` ヘッダの組み合わせが典型です。",
   },
   {
     term: "コンテキストパス",
     aliases: ["コンテキストパス", "context-path"],
-    body: "アプリの根っこの URL。例: /shinsei。Controller のパスの手前に付きます。Spring Boot では server.servlet.context-path に書きます。",
+    body: "アプリの根っこの URL。例: `/shinsei`。Controller のパスの手前に付きます。Spring Boot では `server.servlet.context-path` に書きます。",
   },
   {
     term: "クエリ",
@@ -103,7 +103,7 @@ export const terms: TermDef[] = [
   {
     term: "処理の入口",
     aliases: ["処理の入口"],
-    body: "調べたい画面や機能で、サーバ側の処理が始まる場所。多くは URL に対応する Controller の Java メソッドです。申請くんでは RequestController.java の @GetMapping などが該当します。",
+    body: "調べたい画面や機能で、サーバ側の処理が始まる場所。多くは URL に対応する Controller の Java メソッドです。申請くんでは `RequestController.java` の `@GetMapping` などが該当します。",
   },
   {
     term: "RestController",
@@ -113,7 +113,7 @@ export const terms: TermDef[] = [
   {
     term: "@ResponseBody",
     aliases: ["@ResponseBody", "ResponseBody"],
-    body: "戻り値をテンプレート名ではなく、JSON などの本文にする印です。@RestController はクラス全体にこれを付けたもの、と考えてよいです。Spring のアノテーションです。",
+    body: "戻り値をテンプレート名ではなく、JSON などの本文にする印です。`@RestController` はクラス全体にこれを付けたもの、と考えてよいです。Spring のアノテーションです。",
   },
   {
     term: "Service",
@@ -168,7 +168,7 @@ export const terms: TermDef[] = [
   {
     term: "フラグメント",
     aliases: ["フラグメント", "th:fragment", "th:replace"],
-    body: "Thymeleaf で、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。複数画面で共通する HTML を1か所にまとめて共有できます。申請くんでは fragments/layout.html が全画面共通のヘッダと CSS を持ち、各画面の個別ファイルが th:replace で使います。",
+    body: "Thymeleaf で、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。複数画面で共通する HTML を1か所にまとめて共有できます。申請くんでは `fragments/layout.html` が全画面共通のヘッダと CSS を持ち、各画面の個別ファイルが `th:replace` で使います。",
   },
   {
     term: "JSP",
@@ -203,12 +203,12 @@ export const terms: TermDef[] = [
   {
     term: "Maven",
     aliases: ["Maven", "pom.xml"],
-    body: "Java のビルドと依存関係の管理の仕組み。pom.xml にフレームワークやライブラリを書きます。",
+    body: "Java のビルドと依存関係の管理の仕組み。`pom.xml` にフレームワークやライブラリを書きます。",
   },
   {
     term: "Gradle",
     aliases: ["Gradle", "build.gradle", "settings.gradle"],
-    body: "Java のビルドと依存関係の管理の仕組みのひとつです。build.gradle にフレームワークやライブラリを書きます。",
+    body: "Java のビルドと依存関係の管理の仕組みのひとつです。`build.gradle` にフレームワークやライブラリを書きます。",
   },
   {
     term: "application.yml",
@@ -226,17 +226,17 @@ export const terms: TermDef[] = [
   {
     term: "プロファイル",
     aliases: ["プロファイル"],
-    body: "dev / stg / prod など、設定の切り替え単位。今どれで起動しているかで接続先が変わります。Spring Boot では application-dev.yml や application-dev.properties のように使います。",
+    body: "dev / stg / prod など、設定の切り替え単位。今どれで起動しているかで接続先が変わります。Spring Boot では `application-dev.yml` や `application-dev.properties` のように使います。",
   },
   {
     term: "スタックトレース",
     aliases: ["スタックトレース"],
-    body: "例外が起きたときの呼び出し履歴。右端の (File.java:行番号) がソースの位置です。org.springframework や java. は飛ばして、自分たちが書いたコードのパッケージ名の行を上から探します。",
+    body: "例外が起きたときの呼び出し履歴。右端の `(File.java:行番号)` がソースの位置です。`org.springframework` や `java.` は飛ばして、自分たちが書いたコードのパッケージ名の行を上から探します。",
   },
   {
     term: "自作クラス",
     aliases: ["自作クラス", "自作パッケージ"],
-    body: "このプロジェクトで書いたコード。at 行のパッケージが、自分たちが書いたコードのもの（申請くんなら jp.co.example.shinsei）で始まる行です。",
+    body: "このプロジェクトで書いたコード。at 行のパッケージが、自分たちが書いたコードのもの（申請くんなら `jp.co.example.shinsei`）で始まる行です。",
   },
   {
     term: "NullPointerException",
@@ -266,12 +266,12 @@ export const terms: TermDef[] = [
   {
     term: "Interceptor",
     aliases: ["Interceptor", "HandlerInterceptor", "addInterceptors"],
-    body: "Spring MVC で、Controller の Java メソッドの直前・直後に動く処理。preHandle / postHandle。WebMvcConfigurer の addInterceptors で登録します。Controller のソースに呼び出しは出ません。",
+    body: "Spring MVC で、Controller の Java メソッドの直前・直後に動く処理。`preHandle` / `postHandle`。WebMvcConfigurer の `addInterceptors` で登録します。Controller のソースに呼び出しは出ません。",
   },
   {
     term: "AOP",
     aliases: ["AOP", "@Aspect", "アスペクト"],
-    body: "メソッド呼び出しの手前やあとに、別処理を挟む仕組み。トランザクションや独自ログがここに載ります。ソース上は service.approve() に見えて、実行時はプロキシが先に動きます。",
+    body: "メソッド呼び出しの手前やあとに、別処理を挟む仕組み。トランザクションや独自ログがここに載ります。ソース上は `service.approve()` に見えて、実行時はプロキシが先に動きます。",
   },
   {
     term: "@Transactional",
@@ -316,7 +316,7 @@ export const terms: TermDef[] = [
   {
     term: "@Bean",
     aliases: ["@Bean"],
-    body: "メソッドの戻り値を Spring のコンテナに登録する印です。SecurityConfig の filterChain などで使います。Spring のアノテーションです。",
+    body: "メソッドの戻り値を Spring のコンテナに登録する印です。SecurityConfig の `filterChain` などで使います。Spring のアノテーションです。",
   },
   {
     term: "アノテーション",
@@ -336,17 +336,17 @@ export const terms: TermDef[] = [
   {
     term: "@RequestMapping",
     aliases: ["@RequestMapping"],
-    body: "クラスや Java メソッドに付ける URL の土台。クラスに /requests と書くと、配下のメソッドのパスと合成されます。Spring のアノテーションです。",
+    body: "クラスや Java メソッドに付ける URL の土台。クラスに `/requests` と書くと、配下のメソッドのパスと合成されます。Spring のアノテーションです。",
   },
   {
     term: "@RequestParam",
     aliases: ["@RequestParam"],
-    body: "URL のクエリやフォームの name を、Java メソッドの引数に取り出す印です。Spring のアノテーションです。",
+    body: "URL のクエリやフォームの `name` を、Java メソッドの引数に取り出す印です。Spring のアノテーションです。",
   },
   {
     term: "マッピング",
     aliases: ["URLマッピング", "マッピング"],
-    body: "どの URL と HTTP メソッド（GET など）を、どの Java メソッドが処理するかの対応づけです。Spring では @GetMapping などで書きます。",
+    body: "どの URL と HTTP メソッド（GET など）を、どの Java メソッドが処理するかの対応づけです。Spring では `@GetMapping` などで書きます。",
   },
   {
     term: "バリデーション",
@@ -376,7 +376,7 @@ export const terms: TermDef[] = [
   {
     term: "プレースホルダ",
     aliases: ["プレースホルダ"],
-    body: "SQL の値の穴です。ログでは ? 、MyBatis の XML では #{userId} のように書きます。実行時に実際の値が入ります。",
+    body: "SQL の値の穴です。ログでは `?` 、MyBatis の XML では `#{userId}` のように書きます。実行時に実際の値が入ります。",
   },
   {
     term: "スロークエリ",
@@ -511,7 +511,7 @@ export const terms: TermDef[] = [
   {
     term: "Content-Type",
     aliases: ["Content-Type"],
-    body: "本文の種類を示すヘッダ。text/html は画面、application/json は API のデータです。",
+    body: "本文の種類を示すヘッダ。`text/html` は画面、`application/json` は API のデータです。",
   },
   {
     term: "Ajax",
@@ -611,7 +611,7 @@ export const terms: TermDef[] = [
   {
     term: "logback",
     aliases: ["logback", "logback-spring.xml", "logback.xml"],
-    body: "Java でよく使うログ出力のライブラリです。出力先は logback-spring.xml や logback.xml に書くことが多いです。logback-spring.xml は Spring Boot 用です。",
+    body: "Java でよく使うログ出力のライブラリです。出力先は `logback-spring.xml` や `logback.xml` に書くことが多いです。`logback-spring.xml` は Spring Boot 用です。",
   },
   {
     term: "MDC",
@@ -861,12 +861,12 @@ export const terms: TermDef[] = [
   {
     term: "name属性",
     aliases: ["name 属性", "name属性"],
-    body: "フォーム項目の名前。サーバの @RequestParam と対応づきます。名前が違うと null やバインドエラーになりやすいです。required = false なら必須ではありません。@RequestParam は Spring のアノテーションです。",
+    body: "フォーム項目の名前。サーバの `@RequestParam` と対応づきます。名前が違うと null やバインドエラーになりやすいです。`required = false` なら必須ではありません。`@RequestParam` は Spring のアノテーションです。",
   },
   {
     term: "@PathVariable",
     aliases: ["@PathVariable"],
-    body: "URL の /requests/12 の 12 のように、パスの一部を引数に取る印です。Spring のアノテーションです。",
+    body: "URL の `/requests/12` の 12 のように、パスの一部を引数に取る印です。Spring のアノテーションです。",
   },
   {
     term: "@Query",
@@ -891,17 +891,17 @@ export const terms: TermDef[] = [
   {
     term: "パッケージ",
     aliases: ["パッケージ"],
-    body: "クラスの住所。jp.co.example.shinsei のようにドットで区切り、フォルダと対応します。",
+    body: "クラスの住所。`jp.co.example.shinsei` のようにドットで区切り、フォルダと対応します。",
   },
   {
     term: "クラス",
     aliases: ["クラス"],
-    body: "データと処理をまとめた設計図。RequestService などがクラスです。",
+    body: "データと処理をまとめた設計図。`RequestService` などがクラスです。",
   },
   {
     term: "メソッド",
     aliases: ["メソッド"],
-    body: "HTTP の GET / POST / PUT などと Java の処理のまとまりのどちらも「メソッド」と呼ばれます。まず前後の文脈でどちらの話かを見分けます。Network タブや URL なら HTTP メソッド、list() やクラス名なら Java メソッドです。",
+    body: "HTTP の GET / POST / PUT などと Java の処理のまとまりのどちらも「メソッド」と呼ばれます。まず前後の文脈でどちらの話かを見分けます。Network タブや URL なら HTTP メソッド、`list()` やクラス名なら Java メソッドです。",
   },
   {
     term: "オブジェクト",
@@ -1131,7 +1131,7 @@ export const terms: TermDef[] = [
   {
     term: "依存関係",
     aliases: ["依存関係", "starter"],
-    body: "使うフレームワークやライブラリの一覧。pom.xml や build.gradle に書きます。",
+    body: "使うフレームワークやライブラリの一覧。`pom.xml` や `build.gradle` に書きます。",
   },
   {
     term: "DTO",

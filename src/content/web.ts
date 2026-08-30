@@ -46,14 +46,14 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "申請一覧を開いた瞬間です。ブラウザは /shinsei/requests へ GET リクエストを送り、レスポンスとして返ってきた HTML が画面になります。",
+          text: "申請一覧を開いた瞬間です。ブラウザは `/shinsei/requests` へ GET リクエストを送り、レスポンスとして返ってきた HTML が画面になります。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-list.jpg",
           alt: "申請くんの申請一覧画面",
-          caption: "申請一覧。ブラウザは /shinsei/requests へ GET リクエストを送り、この HTML がレスポンスとして返ります。",
+          caption: "申請一覧。ブラウザは `/shinsei/requests` へ GET リクエストを送り、この HTML がレスポンスとして返ります。",
         },
         { type: "widget", name: "http" },
         {
@@ -98,7 +98,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "https://intranet.example.co.jp/shinsei/requests/12 は次のように読めます。",
+          text: "`https://intranet.example.co.jp/shinsei/requests/12` は次のように読めます。",
         },
         { type: "diagram", name: "url-parts" },
         {
@@ -106,8 +106,8 @@ export const webTrack: Track = {
           headers: ["部分", "意味"],
           rows: [
             ["ホスト", "どのサーバ（またはその手前のLB）か"],
-            ["/shinsei", "コンテキストパス。アプリの根っこ"],
-            ["/requests/12", "アプリ内の資源。12番の申請"],
+            ["`/shinsei`", "コンテキストパス。アプリの根っこ"],
+            ["`/requests/12`", "アプリ内の資源。12番の申請"],
             ["?tab=history", "クエリ。同じ資源の見え方を変える"],
           ],
         },
@@ -181,10 +181,10 @@ export const webTrack: Track = {
           type: "table",
           headers: ["種類", "載る場所", "例"],
           rows: [
-            ["パス", "URL の /12 の部分", "/shinsei/requests/12"],
-            ["クエリ", "URL の ? 以降", "?status=PENDING&page=2"],
-            ["フォーム", "POST の本文（form）", "title=休暇申請&approverId=3"],
-            ["JSON", "POST / PUT の本文", '{"title":"休暇申請","approverId":3}'],
+            ["パス", "URL の /12 の部分", "`/shinsei/requests/12`"],
+            ["クエリ", "URL の ? 以降", "`?status=PENDING&page=2`"],
+            ["フォーム", "POST の本文（form）", "`title=休暇申請&approverId=3`"],
+            ["JSON", "POST / PUT の本文", '`{"title":"休暇申請","approverId":3}`'],
           ],
         },
         {
@@ -222,19 +222,19 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "申請 ID 12 の承認は POST /shinsei/requests/12/approve です。12 はパスに入っています。一覧に絞り込みを足すなら、GET /shinsei/requests?departmentId=5 のようにクエリに載せることが多いです。",
+          text: "申請 ID 12 の承認は `POST /shinsei/requests/12/approve` です。12 はパスに入っています。一覧に絞り込みを足すなら、`GET /shinsei/requests?departmentId=5` のようにクエリに載せることが多いです。",
         },
         {
           type: "callout",
           kind: "trap",
           title: "名前の不一致",
-          text: "フォームの name と Controller の @RequestParam の名前が違うと、値が null のまま届くことがあります。400 やバリデーションエラーになることもあります。画面、Network タブ、Java の引数を並べて見ましょう。",
+          text: "フォームの `name` と Controller の `@RequestParam` の名前が違うと、値が null のまま届くことがあります。400 やバリデーションエラーになることもあります。画面、Network タブ、Java の引数を並べて見ましょう。",
         },
         {
           type: "callout",
           kind: "note",
           title: "本文の読み方はフレームワーク次第",
-          text: "@RequestBody や @RequestParam など、引数への取り出し方は Spring の書き方です。JSON かフォームかで使う印が変わります。切り分けでは、まず Network タブでキーと値を確認しましょう。",
+          text: "`@RequestBody` や `@RequestParam` など、引数への取り出し方は Spring の書き方です。JSON かフォームかで使う印が変わります。切り分けでは、まず Network タブでキーと値を確認しましょう。",
         },
         { type: "quiz", id: "web-params" },
       ],
@@ -250,22 +250,22 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "HTML か JSON かは、レスポンスの Content-Type を見ましょう。",
+          text: "HTML か JSON かは、レスポンスの `Content-Type` を見ましょう。",
         },
         {
           type: "table",
-          headers: ["Content-Type", "中身"],
+          headers: ["`Content-Type`", "中身"],
           rows: [
-            ["text/html", "画面。ブラウザが描画する"],
-            ["application/json", "データ。Web API の応答"],
+            ["`text/html`", "画面。ブラウザが描画する"],
+            ["`application/json`", "データ。Web API の応答"],
           ],
         },
         {
           type: "ul",
           items: [
-            "Content-Type（レスポンス）… HTML か JSON か。API なのに HTML のログイン画面なら、認証リダイレクトの可能性が高い",
-            "Location（レスポンス）… リダイレクト先。意図しない /login ならセッションか権限",
-            "Set-Cookie（レスポンス）… サーバがブラウザへ渡す Cookie",
+            "`Content-Type`（レスポンス）… HTML か JSON か。API なのに HTML のログイン画面なら、認証リダイレクトの可能性が高い",
+            "`Location`（レスポンス）… リダイレクト先。意図しない `/login` ならセッションか権限",
+            "`Set-Cookie`（レスポンス）… サーバがブラウザへ渡す Cookie",
             "Cookie（リクエスト）… ブラウザが送る Cookie。ログイン状態の識別子",
             "Referer（リクエスト）… どの画面から POST されたか",
           ],
@@ -326,7 +326,7 @@ Cookie: JSESSIONID=AB12CD34`,
         {
           type: "ol",
           items: [
-            "ログイン成功時、サーバがセッションを作り JSESSIONID を Set-Cookie する",
+            "ログイン成功時、サーバがセッションを作り `JSESSIONID` を `Set-Cookie` する",
             "以降のリクエストでブラウザが Cookie を付ける",
             "サーバは ID からログインユーザを復元する",
             "タイムアウト、Cookie 削除、ドメイン / Path / Secure の不一致で未ログイン扱いになる",
@@ -433,7 +433,7 @@ Cookie: JSESSIONID=AB12CD34`,
           rows: [
             ["form の action / method", "送信先の URL と HTTP メソッド"],
             ["input の name / hidden", "サーバへ送る項目、ID、CSRF トークン"],
-            ["th:if / c:if", "サーバがその要素を HTML に出す条件"],
+            ["`th:if` / `c:if`", "サーバがその要素を HTML に出す条件"],
           ],
         },
         {
@@ -505,7 +505,7 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "Ajax で表だけを更新するアプリでは、サーバが HTML の一部分だけを返すことがあります。申請くんはページ全体を返します。申請くんで見るフラグメントは、全画面で共通のヘッダと CSS をまとめた layout.html です。詳しくは「テンプレートの読み方」です。",
+          text: "Ajax で表だけを更新するアプリでは、サーバが HTML の一部分だけを返すことがあります。申請くんはページ全体を返します。申請くんで見るフラグメントは、全画面で共通のヘッダと CSS をまとめた `layout.html` です。詳しくは「テンプレートの読み方」です。",
           link: {
             label: "テンプレートの読み方",
             to: "/tracks/java-map/template-read",
@@ -551,7 +551,7 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "GET /shinsei/api/requests は、申請一覧のデータを返します。このように、データを HTTP で提供する窓口を Web API と呼びます。",
+          text: "`GET /shinsei/api/requests` は、申請一覧のデータを返します。このように、データを HTTP で提供する窓口を Web API と呼びます。",
         },
         {
           type: "h2",
@@ -612,9 +612,9 @@ Cookie: JSESSIONID=AB12CD34`,
         {
           type: "steps",
           items: [
-            { title: "Web API へ GET", text: "ブラウザが /shinsei/api/requests を送ります。" },
-            { title: "応答の種類を確認", text: "ステータスコードが成功で、Content-Type が application/json かを確認します。" },
-            { title: "JSON を読む", text: "成功した応答の本文を res.json() で読み取ります。" },
+            { title: "Web API へ GET", text: "ブラウザが `/shinsei/api/requests` を送ります。" },
+            { title: "応答の種類を確認", text: "ステータスコードが成功で、`Content-Type` が `application/json` かを確認します。" },
+            { title: "JSON を読む", text: "成功した応答の本文を `res.json()` で読み取ります。" },
           ],
         },
         {
@@ -675,8 +675,8 @@ function RequestList() {
           type: "steps",
           items: [
             { title: "JSON を受け取る", text: "fetch が一覧 API の応答を読みます。" },
-            { title: "React の state に入れる", text: "setItems で、React が管理する値を更新します。" },
-            { title: "一覧を作る", text: "items.map が JSON の各要素を一覧の行にします。" },
+            { title: "React の state に入れる", text: "`setItems` で、React が管理する値を更新します。" },
+            { title: "一覧を作る", text: "`items.map` が JSON の各要素を一覧の行にします。" },
           ],
         },
         {

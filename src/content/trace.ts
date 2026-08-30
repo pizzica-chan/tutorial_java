@@ -15,17 +15,17 @@ export const traceTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "前章「ソースの読み方」の「処理の入口から読む」では、申請一覧の入口を RequestController.list と特定しました。この章では、その入口から Service、SQL、応答へ進みます。入口の探し方を見直す場合は、前章のその項目へ戻りましょう。",
+          text: "前章「ソースの読み方」の「処理の入口から読む」では、申請一覧の入口を `RequestController.list` と特定しました。この章では、その入口から Service、SQL、応答へ進みます。入口の探し方を見直す場合は、前章のその項目へ戻りましょう。",
         },
         {
           type: "p",
-          text: "list が呼ぶ Service を開き、Mapper の SQL と、最後に返す HTML までを一本につなぎます。JSON を返す Web API でも、応答まで追う考え方は同じです。",
+          text: "`list` が呼ぶ Service を開き、Mapper の SQL と、最後に返す HTML までを一本につなぎます。JSON を返す Web API でも、応答まで追う考え方は同じです。",
         },
         {
           type: "callout",
           kind: "tip",
           title: "コンテキストパス",
-          text: "前章で見た画面の URL は /shinsei/requests です。先頭の /shinsei はコンテキストパスなので、Controller は Spring の @RequestMapping(\"/requests\") だけのことがあります。入口を見直すときは、requests のように特徴的な部分で検索しましょう。",
+          text: "前章で見た画面の URL は `/shinsei/requests` です。先頭の `/shinsei` はコンテキストパスなので、Controller は Spring の `@RequestMapping(\"/requests\")` だけのことがあります。入口を見直すときは、`requests` のように特徴的な部分で検索しましょう。",
         },
         { type: "quiz", id: "trace-start" },
       ],
@@ -62,11 +62,11 @@ public class RequestController {
           kind: "screen",
           src: "/images/screen-detail.jpg",
           alt: "申請くんの申請詳細画面（交通費申請）",
-          caption: "申請詳細。アドレスバーは /shinsei/requests/12 です。list ではなく、パスに ID が付く detail です。",
+          caption: "申請詳細。アドレスバーは `/shinsei/requests/12` です。`list` ではなく、パスに ID が付く `detail` です。",
         },
         {
           type: "p",
-          text: "Java のメソッド名が list でも、今見ている画面とは限りません。HTTP メソッド（GET など）とパスの両方を確認しましょう。",
+          text: "Java のメソッド名が `list` でも、今見ている画面とは限りません。HTTP メソッド（GET など）とパスの両方を確認しましょう。",
         },
         {
           type: "p",
@@ -147,7 +147,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "探す前に、そのプロジェクトで SQL の実行に使っているライブラリを確認しましょう。pom.xml や build.gradle の依存を見ると、MyBatis、JPA（Hibernate）、JdbcTemplate などが分かります。依存の見方は、「Maven / Gradle」で説明しています。",
+          text: "探す前に、そのプロジェクトで SQL の実行に使っているライブラリを確認しましょう。`pom.xml` や `build.gradle` の依存を見ると、MyBatis、JPA（Hibernate）、JdbcTemplate などが分かります。依存の見方は、「Maven / Gradle」で説明しています。",
           link: {
             label: "Maven / Gradle",
             to: "/tracks/java-map/build",
@@ -186,7 +186,7 @@ FROM t_request WHERE applicant_id = 7 OR approver_id = 7 ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "上の例では applicant_id = 7 と出ますが、7 の部分はソースでは #{userId} と書きます。7 で検索しても XML には当たりません。テーブル名や列名から探しましょう。",
+          text: "上の例では `applicant_id` = 7 と出ますが、7 の部分はソースでは `#{userId}` と書きます。7 で検索しても XML には当たりません。テーブル名や列名から探しましょう。",
         },
         {
           type: "h2",
@@ -194,7 +194,7 @@ FROM t_request WHERE applicant_id = 7 OR approver_id = 7 ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "申請くんは MyBatis です。t_request や applicant_id で検索すると、Mapper の XML に当たります。",
+          text: "申請くんは MyBatis です。`t_request` や `applicant_id` で検索すると、Mapper の XML に当たります。",
         },
         {
           type: "code",
@@ -219,7 +219,7 @@ FROM t_request WHERE applicant_id = 7 OR approver_id = 7 ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "上の例では、XML の select の id が findMine で、Java の findMine メソッドと対応しています。参照検索で、誰がこのメソッドを呼んでいるかを辿りましょう。",
+          text: "上の例では、XML の select の id が `findMine` で、Java の `findMine` メソッドと対応しています。参照検索で、誰がこのメソッドを呼んでいるかを辿りましょう。",
         },
         {
           type: "h2",
@@ -227,7 +227,7 @@ FROM t_request WHERE applicant_id = 7 OR approver_id = 7 ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "JPA（Hibernate）のプロジェクトでは、実行された SQL がソースに無いことが多いです。同じ t_request を読む場合の例です。",
+          text: "JPA（Hibernate）のプロジェクトでは、実行された SQL がソースに無いことが多いです。同じ `t_request` を読む場合の例です。",
         },
         {
           type: "code",
@@ -240,7 +240,7 @@ FROM t_request WHERE applicant_id = 7 OR approver_id = 7 ORDER BY created_at DES
         },
         {
           type: "p",
-          text: "この SELECT で全文検索しても、プロジェクト内にはありません。r1_0 は Hibernate が付けた別名です。テーブル名 t_request で検索すると、Entity の @Table に当たります。",
+          text: "この SELECT で全文検索しても、プロジェクト内にはありません。r1_0 は Hibernate が付けた別名です。テーブル名 `t_request` で検索すると、Entity の `@Table` に当たります。",
         },
         {
           type: "code",
@@ -285,7 +285,7 @@ public class Request {
         },
         {
           type: "p",
-          text: "メソッド名だけ、または JPQL なら、実行された SQL では見つかりません。t_request で Entity を見つけ、参照検索で呼び出し元を辿りましょう。nativeQuery なら、実行された SQL に近い文で MyBatis と同じように検索できます。",
+          text: "メソッド名だけ、または JPQL なら、実行された SQL では見つかりません。`t_request` で Entity を見つけ、参照検索で呼び出し元を辿りましょう。`nativeQuery` なら、実行された SQL に近い文で MyBatis と同じように検索できます。",
         },
         {
           type: "callout",
@@ -329,7 +329,7 @@ public class Request {
       blocks: [
         {
           type: "p",
-          text: "申請一覧を開く処理を、区間ごとに追いましょう。障害調査は、この線のどこで期待と違うかを特定する作業です。JSON を返す API なら、テンプレートの区間は無く、Content-Type が application/json で終わります。Service より手前の探し方は同じです。",
+          text: "申請一覧を開く処理を、区間ごとに追いましょう。障害調査は、この線のどこで期待と違うかを特定する作業です。JSON を返す API なら、テンプレートの区間は無く、`Content-Type` が `application/json` で終わります。Service より手前の探し方は同じです。",
         },
         { type: "widget", name: "flow" },
       ],

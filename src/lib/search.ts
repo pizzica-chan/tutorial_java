@@ -12,8 +12,12 @@ export type SearchHit = {
   snippet: string;
 };
 
+function stripCodeMarks(value: string): string {
+  return value.replaceAll("`", "");
+}
+
 function normalizeForSearch(value: string): string {
-  return value.normalize("NFKC").toLowerCase();
+  return stripCodeMarks(value).normalize("NFKC").toLowerCase();
 }
 
 type Doc = {
@@ -138,19 +142,20 @@ const documents: Doc[] = [
 ];
 
 function snippetAround(original: string, needle: string) {
-  const lower = original.toLowerCase();
+  const source = stripCodeMarks(original);
+  const lower = source.toLowerCase();
   let at = lower.indexOf(needle);
   if (at < 0) {
-    const normalized = original.normalize("NFKC").toLowerCase();
+    const normalized = source.normalize("NFKC").toLowerCase();
     at = normalized.indexOf(needle);
-    if (at < 0 || original.length !== normalized.length) {
-      return original.replace(/\s+/g, " ").slice(0, 88);
+    if (at < 0 || source.length !== normalized.length) {
+      return source.replace(/\s+/g, " ").slice(0, 88);
     }
   }
   const start = Math.max(0, at - 22);
-  const end = Math.min(original.length, at + needle.length + 52);
-  const slice = original.slice(start, end).replace(/\s+/g, " ").trim();
-  return `${start > 0 ? "…" : ""}${slice}${end < original.length ? "…" : ""}`;
+  const end = Math.min(source.length, at + needle.length + 52);
+  const slice = source.slice(start, end).replace(/\s+/g, " ").trim();
+  return `${start > 0 ? "…" : ""}${slice}${end < source.length ? "…" : ""}`;
 }
 
 export function searchSite(query: string): SearchHit[] {

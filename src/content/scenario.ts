@@ -57,8 +57,7 @@ export const scenarioTrack: Track = {
           kind: "screen",
           src: "/images/screen-network-no-post.jpg",
           alt: "承認を押したあとも新しいリクエストが無く Console に TypeError が出ている Network タブ",
-          caption:
-            "承認を押したあとも新しいリクエストは増えていません。Console に TypeError のメッセージが出ています。",
+          caption: "承認を押したあとも新しいリクエストは増えていません。Console に TypeError のメッセージが出ています。",
         },
         {
           type: "table",
@@ -94,20 +93,20 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "上の list.js を、承認ボタンを押したときの流れに沿って読み、エラーの原因を追います。",
+          text: "上の `list.js` を、承認ボタンを押したときの流れに沿って読み、エラーの原因を追います。",
         },
         {
           type: "ul",
           items: [
-            "preventDefault() のあと、const tokenEl = document.getElementById(\"csrfToken\"); で要素を取り、tokenEl に入れる",
-            "その次の行 const token = tokenEl.value; で tokenEl.value を読もうとしてエラーになる",
+            "`event.preventDefault();` のあと、`const tokenEl = document.getElementById(\"csrfToken\");` で要素を取り、tokenEl に入れる",
+            "その次の行 `const token = tokenEl.value;` で `tokenEl.value` を読もうとしてエラーになる",
             "エラー内容は「null の value を読んだ」となっているので、読もうとした tokenEl が null だとわかる",
-            "tokenEl は 1 行上の getElementById(\"csrfToken\") の戻り値なので、HTML に id=\"csrfToken\" の要素が無かった、と考えられる",
+            "tokenEl は 1 行上の `document.getElementById(\"csrfToken\")` の戻り値なので、HTML に `id=\"csrfToken\"` の要素が無かった、と考えられる",
           ],
         },
         {
           type: "p",
-          text: "次は、一覧の HTML に id=\"csrfToken\" があるかを見ます。",
+          text: "次は、一覧の HTML に `id=\"csrfToken\"` があるかを見ます。",
         },
         {
           type: "code",
@@ -120,11 +119,11 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "id=\"csrfToken\" はありません。そのため getElementById は null を返し、tokenEl.value でエラーになります。その下の form.submit() まで進まないので、承認のリクエストは飛びません。",
+          text: "`id=\"csrfToken\"` はありません。そのため `document.getElementById(\"csrfToken\")` は null を返し、`tokenEl.value` でエラーになります。その下の `form.submit();` まで進まないので、承認のリクエストは飛びません。",
         },
         {
           type: "p",
-          text: "原因は、一覧用の JS が HTML に無い id を読んでいることです。フロント側の不具合です。",
+          text: "原因は、一覧用の JS が HTML に無い `id` を読んでいることです。フロント側の不具合です。",
         },
         {
           type: "h2",
@@ -177,8 +176,8 @@ export const scenarioTrack: Track = {
           type: "ul",
           items: [
             "山田（yamada）でログイン。申請詳細で ID 16「研修参加」の承認ボタンを押した。検証用環境",
-            "Network タブで POST /shinsei/requests/16/approve が 500",
-            "Content-Type は text/html",
+            "Network タブで `POST /shinsei/requests/16/approve` が 500",
+            "`Content-Type` は `text/html`",
           ],
         },
         {
@@ -196,11 +195,11 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "操作時刻のサーバログには、先のとおり NullPointerException がありました。",
+          text: "操作時刻のサーバログには、先のとおり `NullPointerException` がありました。",
         },
         {
           type: "p",
-          text: "例外メッセージの次にある最初の自作 at 行は RequestService.java:47 です。実ファイルの同じ行を開くと、request.getApproverId().equals(approverId) があります。",
+          text: "例外メッセージの次にある最初の自作 at 行は `RequestService.java:47` です。実ファイルの同じ行を開くと、`request.getApproverId().equals(approverId)` があります。",
         },
         {
           type: "code",
@@ -212,11 +211,11 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "getApproverId() の戻り値が null です。その null に対して equals を呼んだため、NullPointerException になっています。",
+          text: "`getApproverId()` の戻り値が null です。その null に対して `equals` を呼んだため、`NullPointerException` になっています。",
         },
         {
           type: "p",
-          text: "request は approve の冒頭で DB から取っています。approver_id が null なら、getApproverId() も null になります。",
+          text: "request は approve の冒頭で DB から取っています。`approver_id` が null なら、`getApproverId()` も null になります。",
         },
         {
           type: "code",
@@ -232,7 +231,7 @@ if (!request.getApproverId().equals(approverId)) {
         },
         {
           type: "p",
-          text: "ID 16 を DB で見ると、approver_id が NULL でした。詳細画面の承認者「未設定」と一致します。",
+          text: "ID 16 を DB で見ると、`approver_id` が NULL でした。詳細画面の承認者「未設定」と一致します。",
         },
         {
           type: "code",
@@ -244,12 +243,12 @@ WHERE id = 16;`,
         },
         {
           type: "table",
-          headers: ["id", "title", "approver_id", "status"],
+          headers: ["id", "title", "`approver_id`", "status"],
           rows: [["16", "研修参加", "NULL", "PENDING"]],
         },
         {
           type: "p",
-          text: "申請を登録するときは承認者が必須です。承認ボタンが押された際の処理の仕様も、承認者 ID が入っている前提となっており、未設定のときの考慮はありません。つまり ID 16 は、何らかの理由で作られた、仕様と食い違うレコードです。こうした不整合な行の作成を防ぐには、DB の approver_id に NOT NULL を付けるのが有効です。申請くんの列定義は NULL 可のままなので、値が空の行があると、今回のように 500 になります。",
+          text: "申請を登録するときは承認者が必須です。承認ボタンが押された際の処理の仕様も、承認者 ID が入っている前提となっており、未設定のときの考慮はありません。つまり ID 16 は、何らかの理由で作られた、仕様と食い違うレコードです。こうした不整合な行の作成を防ぐには、DB の `approver_id` に NOT NULL を付けるのが有効です。申請くんの列定義は NULL 可のままなので、値が空の行があると、今回のように 500 になります。",
         },
         {
           type: "h2",
@@ -271,9 +270,9 @@ WHERE id = 16;`,
           type: "investigation-flow",
           items: [
             "Network タブで、POST が 500 であることを確認",
-            "操作時刻のサーバログで NullPointerException を確認",
-            "スタックから RequestService.java:47 を開き、getApproverId() が null と分かる",
-            "DB で approver_id が NULL であることを確認",
+            "操作時刻のサーバログで `NullPointerException` を確認",
+            "スタックから `RequestService.java:47` を開き、`getApproverId()` が null と分かる",
+            "DB で `approver_id` が NULL であることを確認",
           ],
         },
         { type: "quiz", id: "sc-back" },
@@ -294,8 +293,7 @@ WHERE id = 16;`,
           kind: "screen",
           src: "/images/screen-network-cannot-approve.jpg",
           alt: "POST /shinsei/requests/11/approve が 500 ではない Network タブ",
-          caption:
-            "例：POST /shinsei/requests/11/approve は飛んでいます。500 ではありません。画面に「この申請は承認できません」が出ています。",
+          caption: "例：`POST /shinsei/requests/11/approve` は飛んでいます。500 ではありません。画面に「この申請は承認できません」が出ています。",
         },
         {
           type: "h2",
@@ -305,7 +303,7 @@ WHERE id = 16;`,
           type: "ul",
           items: [
             "山田（yamada）でログイン。申請詳細で ID 11「備品購入」の承認ボタンを押した。検証用環境。ステータスは APPROVED",
-            "Network タブで POST /shinsei/requests/11/approve は飛んでいる。500 ではない",
+            "Network タブで `POST /shinsei/requests/11/approve` は飛んでいる。500 ではない",
             "操作時刻のログに ERROR もスタックトレースも無い",
           ],
         },
@@ -406,8 +404,7 @@ requestService.approve(id, user.getId());`,
           kind: "screen",
           src: "/images/screen-network-list-empty.jpg",
           alt: "申請一覧が 0 件のとき、GET /shinsei/requests が 200 の Network タブ",
-          caption:
-            "例：GET /shinsei/requests は 200、text/html です。画面は 0 件ですが、応答自体は成功しています。",
+          caption: "例：`GET /shinsei/requests` は 200、`text/html` です。画面は 0 件ですが、応答自体は成功しています。",
         },
         {
           type: "h2",
@@ -416,7 +413,7 @@ requestService.approve(id, user.getId());`,
         {
           type: "ul",
           items: [
-            "Network タブは GET /shinsei/requests が 200、text/html",
+            "Network タブは `GET /shinsei/requests` が 200、`text/html`",
             "画面にエラーは出ていない",
             "デプロイされているコードは、ローカルと同じ commit / タグだ",
           ],
@@ -436,7 +433,7 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "操作時刻のログで findMine を見ると、Parameters は 7, 7 でした。Total は 0 です。",
+          text: "操作時刻のログで `findMine` を見ると、Parameters は 7, 7 でした。Total は 0 です。",
         },
         {
           type: "code",
@@ -466,7 +463,7 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
         },
         {
           type: "table",
-          headers: ["id", "title", "status", "applicant_id", "approver_id"],
+          headers: ["id", "title", "status", "`applicant_id`", "`approver_id`"],
           rows: [],
           empty: "0 行",
         },
@@ -484,7 +481,7 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
         },
         {
           type: "table",
-          headers: ["id", "title", "status", "applicant_id", "approver_id"],
+          headers: ["id", "title", "status", "`applicant_id`", "`approver_id`"],
           rows: [
             ["12", "交通費申請", "PENDING", "7", "3"],
             ["13", "休暇申請", "PENDING", "7", "3"],
@@ -537,8 +534,7 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
           kind: "screen",
           src: "/images/screen-history-search.jpg",
           alt: "ステータスが承認済みのまま、PENDING の行も出ている申請履歴",
-          caption:
-            "ステータスは「承認済み」です。表には PENDING の行もあります。承認済みは備品購入の 1 件だけです。",
+          caption: "ステータスは「承認済み」です。表には PENDING の行もあります。承認済みは備品購入の 1 件だけです。",
         },
         {
           type: "h2",
@@ -558,7 +554,7 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
         },
         {
           type: "p",
-          text: "Network タブを見ると、/shinsei/requests/history への GET は 200 です。クエリに status=APPROVED があるので、画面で指定した検索条件はリクエストに含まれてサーバに届いています。なので、次はサーバ側の処理を追います。",
+          text: "Network タブを見ると、`GET /shinsei/requests/history` は 200 です。クエリに `status=APPROVED` があるので、画面で指定した検索条件はリクエストに含まれてサーバに届いています。なので、次はサーバ側の処理を追います。",
         },
         {
           type: "figure",
@@ -572,7 +568,7 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
         },
         {
           type: "p",
-          text: "検索結果は、テンプレートの ${results} です。Controller で results に載せている値を開きます。",
+          text: "検索結果は、テンプレートの `${results}` です。Controller で results に載せている値を開きます。",
         },
         {
           type: "code",
@@ -600,7 +596,7 @@ public String history(
         },
         {
           type: "p",
-          text: "results の中身は searchHistory の戻り値です。Service は引数を Mapper に渡しているだけです。",
+          text: "results の中身は `searchHistory` の戻り値です。Service は引数を Mapper に渡しているだけです。",
         },
         {
           type: "code",
@@ -636,7 +632,7 @@ ORDER BY r.created_at DESC
         },
         {
           type: "p",
-          text: "WHERE に status がありません。この SQL を DB で実行すると、画面と同じ 5 件です。",
+          text: "WHERE に `status` がありません。この SQL を DB で実行すると、画面と同じ 5 件です。",
         },
         {
           type: "code",
@@ -649,7 +645,7 @@ ORDER BY created_at DESC;`,
         },
         {
           type: "table",
-          headers: ["id", "title", "status", "applicant_id", "approver_id"],
+          headers: ["id", "title", "status", "`applicant_id`", "`approver_id`"],
           rows: [
             ["16", "研修参加", "PENDING", "7", "NULL"],
             ["13", "休暇申請", "PENDING", "7", "3"],
@@ -660,7 +656,7 @@ ORDER BY created_at DESC;`,
         },
         {
           type: "p",
-          text: "DB の行は、その SQL に対しては正しいです。足りないのは WHERE の status です。Mapper の XML を開き、status を付ける箇所を見ます。",
+          text: "DB の行は、その SQL に対しては正しいです。足りないのは WHERE の `status` です。Mapper の XML を開き、`status` を付ける箇所を見ます。",
         },
         {
           type: "code",
@@ -680,11 +676,11 @@ ORDER BY created_at DESC;`,
         },
         {
           type: "p",
-          text: "status の条件は、requestStatus が空でなければ SQL に足されます。ログに status の ? が無いので、この if は偽です。requestStatus は null でした。",
+          text: "`status` の条件は、`requestStatus` が空でなければ SQL に足されます。ログに `status` の `?` が無いので、この if は偽です。`requestStatus` は null でした。",
         },
         {
           type: "p",
-          text: "requestStatus は Controller の引数です。@RequestParam の value が requestStatus なので、Spring はクエリの requestStatus を探します。Network タブの名前は status です。",
+          text: "`requestStatus` は Controller の引数です。`@RequestParam` の value が `requestStatus` なので、Spring はクエリの `requestStatus` を探します。Network タブの名前は `status` です。",
         },
         {
           type: "code",
@@ -702,7 +698,7 @@ ORDER BY created_at DESC;`,
         },
         {
           type: "p",
-          text: "フォームの name は status、サーバ側の識別子は requestStatus です。名前が違うので値は渡らず、DB 検索の条件に status が乗りません。件名の name は title で、@RequestParam の title と一致しているので、件名だけ効きます。",
+          text: "フォームの `name` は `status`、サーバ側の識別子は `requestStatus` です。名前が違うので値は渡らず、DB 検索の条件に `status` が乗りません。件名の `name` は `title` で、`@RequestParam` の `title` と一致しているので、件名だけ効きます。",
         },
         {
           type: "h2",
@@ -713,7 +709,7 @@ ORDER BY created_at DESC;`,
           items: [
             "件数がおかしくても 200 なら、検索結果の元になっている変数から追う",
             "MyBatis の SQL を DB で実行し、画面と同じなら、その SQL の条件を疑う",
-            "WHERE に使っている変数を、Mapper → Service → Controller → フォームの name まで戻る",
+            "WHERE に使っている変数を、Mapper → Service → Controller → フォームの `name` まで戻る",
           ],
         },
         {
@@ -723,10 +719,10 @@ ORDER BY created_at DESC;`,
         {
           type: "investigation-flow",
           items: [
-            "Network タブで、クエリに status=APPROVED があることを確認",
-            "検索結果が ${results} であること、searchHistory の戻り値であることを確認",
+            "Network タブで、クエリに `status=APPROVED` があることを確認",
+            "検索結果が `${results}` であること、`searchHistory` の戻り値であることを確認",
             "MyBatis の SQL を DB で実行し、画面と同じ 5 件であることを確認",
-            "WHERE の requestStatus が null で、フォームの name が status だと分かる",
+            "WHERE の `requestStatus` が null で、フォームの `name` が `status` だと分かる",
           ],
         },
         { type: "quiz", id: "sc-history" },
@@ -747,8 +743,7 @@ ORDER BY created_at DESC;`,
           kind: "screen",
           src: "/images/screen-network-login-fail.jpg",
           alt: "ログイン URL の document が失敗した Network タブ",
-          caption:
-            "例：ログイン URL を開いたとき、Network タブの document（HTML）が終わらない、または失敗しています。申請一覧も同様です。アプリのログにアクセスが無ければ、まだサーバに届いていません。",
+          caption: "例：ログイン URL を開いたとき、Network タブの document（HTML）が終わらない、または失敗しています。申請一覧も同様です。アプリのログにアクセスが無ければ、まだサーバに届いていません。",
         },
         {
           type: "h2",
@@ -823,7 +818,7 @@ TcpTestSucceeded : False`,
           type: "ul",
           items: [
             "ss -tlnp | grep 8080 … 8080 ポートで待ち受けしているプロセスがあるかを出す",
-            "curl -I http://localhost:8080/shinsei/login … サーバ自身（localhost）からログイン URL へ HTTP を送る。-I は本文を捨て、ステータスコードとヘッダだけを表示する",
+            "curl -I `http://localhost:8080/shinsei/login` … サーバ自身（localhost）からログイン URL へ HTTP を送る。-I は本文を捨て、ステータスコードとヘッダだけを表示する",
           ],
         },
         {
@@ -898,7 +893,7 @@ Content-Type: text/html;charset=UTF-8`,
           kind: "screen",
           src: "/images/screen-network-css-404.jpg",
           alt: "HTML は 200 で CSS が 404 の Network タブ",
-          caption: "HTML は 200、app.css だけ 404 の例です。一覧の Java 処理は通っています。",
+          caption: "HTML は 200、`app.css` だけ 404 の例です。一覧の Java 処理は通っています。",
         },
         {
           type: "h2",
@@ -908,7 +903,7 @@ Content-Type: text/html;charset=UTF-8`,
           type: "ul",
           items: [
             "画面の HTML は 200",
-            "app.css は 404。Request URL は /shinsei/css/app.css",
+            "`app.css` は 404。Request URL は `/shinsei/css/app.css`",
             "開発者ツールのコンソールに、CSS の 404 のエラーが出ている",
             "Java のログに、一覧の INFO は出ている",
             "見た目がおかしい以外のエラーは画面に無い",
@@ -929,12 +924,12 @@ Content-Type: text/html;charset=UTF-8`,
         },
         {
           type: "p",
-          text: "Network タブの 404 は /shinsei/css/app.css でした。一覧の HTML は Java まで届いています。検証用環境のサーバ上で、WAR を展開した先に app.css があるかを見ます。申請くんの Spring Boot WAR では、static は WEB-INF/classes/static に入ります。",
+          text: "Network タブの 404 は `/shinsei/css/app.css` でした。一覧の HTML は Java まで届いています。検証用環境のサーバ上で、WAR を展開した先に `app.css` があるかを見ます。申請くんの Spring Boot WAR では、static は `WEB-INF/classes/static` に入ります。",
         },
         {
           type: "ul",
           items: [
-            "ls -l /opt/tomcat/webapps/shinsei/WEB-INF/classes/static/css/ … 展開先の CSS ディレクトリを一覧する",
+            "ls -l `/opt/tomcat/webapps/shinsei/WEB-INF/classes/static/css/` … 展開先の CSS ディレクトリを一覧する",
           ],
         },
         {
@@ -974,7 +969,7 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
         },
         {
           type: "p",
-          text: "手前の nginx が /shinsei/css/ を先に受け、ディスクの別ディレクトリを見ています。そこには app.css が無いので 404 となっています。",
+          text: "手前の nginx が `/shinsei/css/` を先に受け、ディスクの別ディレクトリを見ています。そこには `app.css` が無いので 404 となっています。",
         },
         {
           type: "p",
@@ -986,9 +981,9 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
           rows: [
             [
               "nginx が見ているディレクトリ",
-              "app.css を置く",
+              "`app.css` を置く",
               "静的ファイルを nginx が返すので速い",
-              "アプリの app.css とは別に置く。片方だけ直すとずれる",
+              "アプリの `app.css` とは別に置く。片方だけ直すとずれる",
             ],
             [
               "nginx の設定（alias）",
@@ -1025,7 +1020,7 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
           items: [
             "Network タブで、HTML が 200 であることを確認",
             "CSS の行が 404 であることを確認",
-            "WAR を展開した先に app.css があることを ls で確認",
+            "WAR を展開した先に `app.css` があることを ls で確認",
             "手前の nginx が CSS の URL を先に受け、別ディレクトリを見ている",
           ],
         },
@@ -1040,7 +1035,7 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
         {
           type: "callout",
           kind: "scenario",
-          text: "取り下げ機能の見積もりのため、申請ステータスに CANCELLED を追加したときの影響範囲を調べてほしい、と依頼された。不具合報告ではない。",
+          text: "取り下げ機能の見積もりのため、申請ステータスに `CANCELLED` を追加したときの影響範囲を調べてほしい、と依頼された。不具合報告ではない。",
         },
         {
           type: "h2",
@@ -1049,8 +1044,8 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
         {
           type: "ul",
           items: [
-            "現状の値は PENDING / APPROVED などがある（詳細は未確認）",
-            "DB には t_request があり、status カラムがあると聞いている",
+            "現状の値は `PENDING` / `APPROVED` などがある（詳細は未確認）",
+            "DB には `t_request` があり、`status` カラムがあると聞いている",
             "いつリリースするか、画面を変えるかはまだ決まっていない",
           ],
         },
@@ -1065,11 +1060,11 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
         {
           type: "ol",
           items: [
-            "status、PENDING、APPROVED、t_request で全文検索する",
+            "`status`、`PENDING`、`APPROVED`、`t_request` で全文検索する",
             "enum や定数クラスがあれば、そこが値の定義元",
-            "Mapper XML の WHERE status = … と、Service の if 分岐をメモする",
-            "テンプレートの th:if や、一覧・詳細の表示文言を見る",
-            "同じ status を JSON で返す API や、夜間バッチが無いかも同じ語で検索する",
+            "Mapper XML の `WHERE status = …` と、Service の if 分岐をメモする",
+            "テンプレートの `th:if` や、一覧・詳細の表示文言を見る",
+            "同じ `status` を JSON で返す API や、夜間バッチが無いかも同じ語で検索する",
           ],
         },
         { type: "diagram", name: "call-chain", caption: "例: 承認は Controller → Service → Mapper。status を触る箇所は、この鎖の複数点に散らばる。" },
@@ -1088,7 +1083,7 @@ requestService.approve(id, user.getId());
         },
         {
           type: "p",
-          text: "CANCELLED を足すと、次を直す必要がある、と一覧にできます。全部を読み切らなくても、ヒットファイルと「分岐 / 表示 / SQL」の分類で見積もりに回せます。",
+          text: "`CANCELLED` を足すと、次を直す必要がある、と一覧にできます。全部を読み切らなくても、ヒットファイルと「分岐 / 表示 / SQL」の分類で見積もりに回せます。",
         },
         {
           type: "ul",
@@ -1143,7 +1138,7 @@ requestService.approve(id, user.getId());
         {
           type: "ul",
           items: [
-            "対象画面は申請一覧。URL は /shinsei/requests",
+            "対象画面は申請一覧。URL は `/shinsei/requests`",
             "フォームに部署のプルダウンを足す想定",
             "CSV エクスポートがあるかは、依頼文には書いていない",
           ],
@@ -1154,7 +1149,7 @@ requestService.approve(id, user.getId());
         },
         {
           type: "p",
-          text: "処理の入口は一覧の URL です。/shinsei/requests で検索し、Controller の Java メソッドから Service、Mapper へ降りましょう。同じ一覧を別経路から出していないかも確認しましょう。",
+          text: "処理の入口は一覧の URL です。`/shinsei/requests` で検索し、Controller の Java メソッドから Service、Mapper へ降りましょう。同じ一覧を別経路から出していないかも確認しましょう。",
         },
         { type: "diagram", name: "read-entry", caption: "URL → Controller → Service → SQL。影響調査も処理の入口は同じです。" },
         {
@@ -1164,13 +1159,13 @@ requestService.approve(id, user.getId());
             ["Controller の引数（クエリパラメータ）", "部署 ID をどこで受け取るか"],
             ["Service の一覧メソッド", "条件を足す本体"],
             ["Mapper の SELECT と WHERE", "SQL とインデックスの影響"],
-            ["テンプレートの form と th:href", "画面とパラメータ名の対応"],
+            ["テンプレートの form と `th:href`", "画面とパラメータ名の対応"],
             ["export / download の URL", "一覧と同じ条件を使っているか"],
           ],
         },
         {
           type: "p",
-          text: "検索で RequestController.list と RequestMapper.findMine だけでなく、CSV 用の export メソッドも同じ Mapper を呼んでいる、と分かれば、一覧とエクスポートの両方を直す必要がある、と書けます。",
+          text: "検索で `RequestController.list` と `RequestMapper.findMine` だけでなく、CSV 用の export メソッドも同じ Mapper を呼んでいる、と分かれば、一覧とエクスポートの両方を直す必要がある、と書けます。",
         },
         {
           type: "h2",
