@@ -259,7 +259,9 @@ public class RequestApiController {
 
   @GetMapping
   public List<RequestResponse> list(@AuthenticationPrincipal LoginUser user) {
-    return requestService.findMine(user.getId());
+    return requestService.findMine(user.getId()).stream()
+        .map(RequestResponse::from)
+        .toList();
   }
 
   @PostMapping
@@ -389,6 +391,53 @@ public class MailService {
 </form>`,
   },
   {
+    path: "src/main/resources/templates/request/form.html",
+    note: "新規申請の画面テンプレート",
+    why: "承認者のプルダウンは、Controller が Model に載せた `approvers` から `th:each` で作られます。送信先とパラメータ名は `RequestController.create` の `@RequestParam` と対応します。",
+    code: `<form class="stack" th:action="@{/requests}" method="post">
+  <label>
+    件名
+    <input type="text" name="title" required maxlength="255" />
+  </label>
+  <label>
+    承認者
+    <select name="approverId" required>
+      <option th:each="person : \${approvers}" th:value="\${person.id}" th:text="\${person.displayName}">佐藤花子</option>
+    </select>
+  </label>
+  <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
+  <button type="submit">提出</button>
+</form>`,
+  },
+  {
+    path: "src/main/resources/templates/request/history.html",
+    note: "申請履歴の検索画面テンプレート",
+    why: "検索フォームの `name`（`title` / `status` / `createdFrom` / `createdTo`）は、`RequestController.history` の `@RequestParam` と対応します。一覧と違い、承認は行わず検索だけの画面です。",
+    code: `<form class="search" th:action="@{/requests/history}" method="get">
+  <label>
+    件名
+    <input type="text" name="title" th:value="\${searchTitle}" />
+  </label>
+  <label>
+    ステータス
+    <select name="status">
+      <option value="">すべて</option>
+      <option value="PENDING">未承認</option>
+      <option value="APPROVED">承認済み</option>
+    </select>
+  </label>
+  <label>
+    申請日（開始）
+    <input type="date" name="createdFrom" th:value="\${createdFrom}" />
+  </label>
+  <label>
+    申請日（終了）
+    <input type="date" name="createdTo" th:value="\${createdTo}" />
+  </label>
+  <button type="submit">検索</button>
+</form>`,
+  },
+  {
     path: "src/main/resources/templates/login.html",
     note: "ログイン画面",
     why: "form の action、CSRF 用 hidden、エラー表示の有無はここにあります。SecurityConfig の loginPage とセットで見ます。",
@@ -410,6 +459,21 @@ public class MailService {
     note: "画面用 JavaScript",
     why: "ボタンの確認ダイアログなど、ブラウザ側の動きは static/js に置かれることが多いです。HTML から読み込みます。`context-path` があるときは `th:src=\"@{/js/app.js}\"` のように書くことが多いです。",
     code: shinseiAppJsSnippet,
+  },
+  {
+    path: "src/main/resources/static/js/list.js",
+    note: "一覧画面の JavaScript",
+    why: "`app.js` とは別のファイルです。一覧画面の承認ボタンを押したときに動きます。フォームを送信する前に、CSRF トークンをセットしています。",
+    code: `document.querySelectorAll("form[action*='/approve']").forEach((form) => {
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const tokenEl = document.getElementById("csrfToken");
+    const token = tokenEl.value;
+    const csrfInput = form.querySelector("input[name='_csrf']");
+    csrfInput.value = token;
+    form.submit();
+  });
+});`,
   },
   {
     path: "src/main/java/.../config/SecurityConfig.java",
@@ -555,6 +619,8 @@ export const projectTree: ProjectTreeNode = {
                       children: [
                         { name: "list.html", filePath: "src/main/resources/templates/request/list.html" },
                         { name: "detail.html", filePath: "src/main/resources/templates/request/detail.html" },
+                        { name: "form.html", filePath: "src/main/resources/templates/request/form.html" },
+                        { name: "history.html", filePath: "src/main/resources/templates/request/history.html" },
                       ],
                     },
                     { name: "login.html", filePath: "src/main/resources/templates/login.html" },
@@ -569,7 +635,10 @@ export const projectTree: ProjectTreeNode = {
                     },
                     {
                       name: "js",
-                      children: [{ name: "app.js", filePath: "src/main/resources/static/js/app.js" }],
+                      children: [
+                        { name: "app.js", filePath: "src/main/resources/static/js/app.js" },
+                        { name: "list.js", filePath: "src/main/resources/static/js/list.js" },
+                      ],
                     },
                   ],
                 },

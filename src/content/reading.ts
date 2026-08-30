@@ -273,9 +273,9 @@ export const readingTrack: Track = {
               "「`requestService.approve`」— ヒットする。「`disapprove`」— 単語としてはヒットしない",
             ],
             [
-              "`@GetMapping` と `requests` が同じ行",
-              "`@GetMapping.*requests`",
-              "「`@GetMapping(\"/requests\")`」— ヒットする",
+              "`@RequestMapping` と `requests` が同じ行",
+              "`@RequestMapping.*requests`",
+              "「`@RequestMapping(\"/requests\")`」— ヒットする",
             ],
             [
               "承認の POST マッピング",
@@ -283,9 +283,9 @@ export const readingTrack: Track = {
               "「`@PostMapping(\"/{id}/approve\")`」— ヒットする",
             ],
             [
-              "`list(` の呼び出し",
-              "`\\blist\\s*\\(`",
-              "「`requestService.list(`」— ヒットする",
+              "`findMine` の呼び出し",
+              "`\\bfindMine\\s*\\(`",
+              "「`requestService.findMine(user.getId())`」— ヒットする",
             ],
             [
               "`import Request` の行",

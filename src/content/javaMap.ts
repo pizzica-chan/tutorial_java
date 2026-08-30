@@ -132,6 +132,10 @@ server:
         },
         {
           type: "p",
+          text: "`active: dev` があるので、`application-dev.yml` の設定がこれに重なります。`application-dev.yml` は接続先だけ `shinsei_dev` に上書きしているので、実際に接続する DB 名は `shinsei` ではなく `shinsei_dev` です。設定は複数ファイルに分かれることがあるので、1ファイルだけ見て判断しないようにしましょう。",
+        },
+        {
+          type: "p",
           text: "ローカルでは動き、別環境では落ちる場合、まず設定差を見ましょう。",
         },
         {
@@ -349,6 +353,10 @@ public class RequestApiController {
         },
         {
           type: "p",
+          text: "`static/js` には `app.js` のほかに `list.js` もあります。一覧画面の承認ボタンを押したときの JavaScript は `list.js` の方です。1つの画面が複数の JS ファイルを読み込むことは珍しくありません。",
+        },
+        {
+          type: "p",
           text: "ブラウザは HTML のあと、CSS と JS を別リクエストで取りに行きます。Java の処理は通りません。",
         },
         {
@@ -433,7 +441,7 @@ public class RequestApiController {
           title: "fragments/layout.html（抜粋）",
           lang: "html",
           codeScope: "fragment-common",
-          highlightLines: [18],
+          highlightLines: [19],
           code: `<!-- ① ヘッダ（共通） -->
 <html th:fragment="layout (title, content)">
 <head>
@@ -446,6 +454,7 @@ public class RequestApiController {
     <a class="app-logo" th:href="@{/requests}">申請くん</a>
     <nav>
       <a th:href="@{/requests}">申請一覧</a>
+      <a th:href="@{/requests/history}">申請履歴</a>
       ...
     </nav>
     <button type="submit" class="btn-text">ログアウト</button>
@@ -507,11 +516,15 @@ public class RequestApiController {
           type: "code",
           title: "パターン1: Model に載せて、テンプレート名を return（申請くん）",
           lang: "java",
-          highlightLines: [3],
-          code: `@GetMapping("/requests")
-public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-  model.addAttribute("applications", requestMapper.findMine(user.getId()));
-  return "request/list";
+          highlightLines: [6],
+          code: `@Controller
+@RequestMapping("/requests")
+public class RequestController {
+  @GetMapping
+  public String list(Model model, @AuthenticationPrincipal LoginUser user) {
+    model.addAttribute("applications", requestService.findMine(user.getId()));
+    return "request/list";
+  }
 }`,
         },
         {

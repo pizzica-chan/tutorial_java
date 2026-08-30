@@ -47,16 +47,25 @@ export const traceTrack: Track = {
 @RequestMapping("/requests")
 public class RequestController {
   @GetMapping
-  public String list(...) { ... }           // GET /requests
+  public String list(...) { ... }              // GET /requests
 
-  @GetMapping("/{id}")
-  public String detail(...) { ... }         // GET /requests/12
+  @GetMapping("/{id:[0-9]+}")
+  public String detail(...) { ... }            // GET /requests/12
 
   @PostMapping("/{id}/approve")
-  public String approve(...) { ... }        // POST /requests/12/approve
+  public String approve(...) { ... }           // POST /requests/12/approve
+
+  @GetMapping("/history")
+  public String history(...) { ... }           // GET /requests/history
 }`,
         },
         { type: "diagram", name: "mapping" },
+        {
+          type: "callout",
+          kind: "note",
+          title: "`{id}` と固定のパスが重なるとき",
+          text: "`GET /requests/history` はパスの形だけ見ると `{id}` に当てはまりそうですが、`history` という固定のパスのマッピングが別にあるので、そちらに一致します。申請くんはさらに `{id:[0-9]+}` のように、`id` を数字だけに制限しています。こう書いておくと、`/requests/abc` のような URL では `detail` に一致しなくなります。",
+        },
         {
           type: "figure",
           kind: "screen",
