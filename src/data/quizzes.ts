@@ -392,12 +392,12 @@ export const quizzes = {
     question: "申請履歴の検索が遅い。`GET /shinsei/requests/history` は 200。ログでは `searchHistory` の `Preparing` と `Total` のあいだが数秒。`EXPLAIN` で `t_request` の `type` は `ALL`。原因は？",
     choices: [
       "一覧の `list.js` が例外を出している",
-      "履歴検索の SQL がフルスキャンになっている。インデックスが無い",
+      "履歴検索の SQL がフルスキャンになっている。この SQL で使えるインデックス候補が無い",
       "フォームの `name` と `@RequestParam` がずれている",
       "CSS の 404",
     ],
     answer: 1,
-    explanation: "`type` が `ALL` で `key` が `NULL` なら、テーブルを先頭から全部読むことが多いです。N+1 なら SQL の回数が増えます。このログの `Preparing` は 1 回です。",
+    explanation: "`type` が `ALL` なら、そのテーブルを先頭から全部読むことが多いです。`possible_keys` が `NULL` は、この SQL で使える候補が無い、という意味です。`PRIMARY KEY` があっても、この `WHERE` の候補になるとは限りません。",
   },
   "sc-net": {
     id: "sc-net",

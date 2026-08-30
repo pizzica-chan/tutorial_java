@@ -20,7 +20,7 @@
 
 - **一覧 SQL は `t_user` を JOIN している。** 申請者名・承認者名を画面に出すためです。教材の抜粋は `FROM t_request WHERE ...` だけです。MyBatis の DEBUG ログは抜粋と一致しません。実ファイルの XML とは一致します。
 - **初期データは 5 件。** 一覧は未承認の 4 件です。承認済みの備品購入は申請履歴に出ます。教材の一覧 HTML 例は「交通費申請」「休暇申請」の 2 行です。`ORDER BY created_at DESC` なので、交通費申請（ID 12）は先頭ではありません。
-- **申請履歴の検索が遅いシナリオは、検証用に履歴が多い想定。** ローカルの初期データでは遅くなりません。`schema.sql` に履歴検索向けの `INDEX` は足しません。原因を残すためです。教材の `EXPLAIN` は検証用の例です。MySQL は外部キー列にインデックスを付けることがあります。
+- **申請履歴の検索が遅いシナリオは、検証用に履歴が多い想定。** ローカルの初期データでは遅くなりません。`schema.sql` に履歴検索向けの `INDEX` は足しません。原因を残すためです。教材の `EXPLAIN` は検証用の例で、`possible_keys` も `NULL` にしています。`possible_keys` が `NULL` は、インデックスが存在しない、ではなく、この SQL で使える候補が無いとオプティマイザが見ている、と読みます。MySQL は外部キー列にインデックスを付けることがあります。`OR` と `ORDER BY` が重なるため、単純な `INDEX` 追加では足りないことがあります。
 - **教材に載せるスタックの行番号は実ファイルと合わせる。** `RequestService.java` と `RequestController.java` を変更したときは、ラボ、図、クイズ、シナリオの番号も更新します。
 - **教材のソースツリーに無いファイルがある。** `WebMvcConfig`、`LoggingJavaMailSender`、`AccessLogInterceptor`、`ServiceLoggingAspect`、エラー画面などです。Interceptor / AOP / メールログを動かすために足しています。
 - **`static/demo/` は教材キャプチャ用のモック HTML です。** 0 件や CSS 無しなど、起動中のアプリでは出しにくい見え方を撮るためのものです。業務の画面ではありません。Network タブは偽 HTML ではなく、headed Chrome の実物を撮ります。手順は `.cursor/rules/textbook-screenshots.mdc` です。

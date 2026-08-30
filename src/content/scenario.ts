@@ -787,7 +787,7 @@ public String history(
     {
       id: "history-slow",
       title: "[障害調査] 申請履歴の検索が遅い",
-      minutes: 11,
+      minutes: 13,
       blocks: [
         {
           type: "callout",
@@ -803,7 +803,6 @@ public String history(
           items: [
             "検証用環境。山田（yamada）で申請履歴を検索した。件名・ステータス・申請日は空",
             "画面にエラーは出ていない",
-            "山田は検証用で履歴が多い、と聞いている",
             "ローカルでは遅くない",
           ],
         },
@@ -839,10 +838,6 @@ public String history(
 04:12:08.895 DEBUG [nio-8080-exec-3] ...ServiceLoggingAspect : end RequestService.searchHistory(..)`,
         },
         {
-          type: "p",
-          text: "`Preparing` は 1 回です。N+1 ではありません。遅いのは、この 1 本の SQL です。",
-        },
-        {
           type: "h3",
           text: "`EXPLAIN`",
         },
@@ -863,7 +858,7 @@ ORDER BY r.created_at DESC;`,
         },
         {
           type: "p",
-          text: "`t_request` の `type` は `ALL` です。`key` は `NULL` です。`rows` は約 85 万です。フルスキャンです。",
+          text: "`EXPLAIN` の結果のうち、先頭の `r` は `t_request` です。",
         },
         {
           type: "code",
@@ -874,6 +869,37 @@ ORDER BY r.created_at DESC;`,
 r      ALL   NULL           NULL  850234  Using where; Using filesort
 a      eq_ref PRIMARY       PRIMARY  1    Using where
 v      eq_ref PRIMARY       PRIMARY  1    Using where`,
+        },
+        {
+          type: "p",
+          text: "次の表は、`r` の行を列ごとに示したものです。",
+        },
+        {
+          type: "table",
+          headers: ["列", "今回の例", "意味"],
+          rows: [
+            ["`type`", "`ALL`", "そのテーブルを先頭から全部読む。フルスキャン"],
+            ["`possible_keys`", "`NULL`", "この SQL で使えるインデックスの候補。`NULL` は候補が無い"],
+            ["`key`", "`NULL`", "使うと決めたインデックス。`NULL` なので使わない"],
+            ["`rows`", "`850234`", "このテーブルを何件読むかの見積もり"],
+            ["`Extra`", "`Using where; Using filesort`", "`Using filesort` は、`ORDER BY r.created_at DESC` の並べ替えをインデックスでは行えず、追加のソートが必要"],
+          ],
+        },
+        {
+          type: "p",
+          text: "`possible_keys` が `NULL` でも、インデックスが一つも無いわけではありません。`t_request` には `PRIMARY KEY` の `id` がありますが、この検索は `applicant_id` と `approver_id` で探すので、`id` は使えず、`possible_keys` が `NULL` となっています。",
+        },
+        {
+          type: "p",
+          text: "ログの `Total: 1204` は SQL が返した件数です。`type` が `ALL` なので、`rows` の約 85 万件に近い件数を実際に読んでから、1204 件に絞っています。",
+        },
+        {
+          type: "p",
+          text: "インデックスが使えないと、条件に合わないレコードも読む必要があります。返す件数より多く読むのは、そのためです。約 85 万件読んでいるので、フルスキャンに時間がかかっています。",
+        },
+        {
+          type: "p",
+          text: "直すときは、絞り込みと並べ替えの両方を見ます。この SQL では、絞り込みが `applicant_id` と `approver_id` の `OR` で、並べ替えは `created_at` です。`INDEX` を 1 本足すだけでは両方を満たせないことが多いです。",
         },
         {
           type: "h3",
@@ -904,7 +930,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
           type: "callout",
           kind: "note",
           title: "外部キーとインデックス",
-          text: "MySQL では、外部キーがあると参照側のカラムにインデックスが付くことがあります。この検証用環境の `EXPLAIN` は `type` が `ALL` でした。履歴検索の条件ではインデックスが使われていない、と読みます。",
+          text: "MySQL では、外部キーがあると参照側のカラムにインデックスが付くことがあります。付いていても、この `WHERE` の候補になるとは限りません。この検証用の `EXPLAIN` では `possible_keys` が `NULL` です。",
         },
         {
           type: "h2",
@@ -912,7 +938,17 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "検証用 DB の `t_request` に、履歴検索で使うインデックスがありません。`searchHistory` の SQL がフルスキャンになり、履歴が多いユーザで応答が遅くなっていました。",
+          text: "検証用 DB では、`t_request` がフルスキャンです。約 85 万件読んで、返しているのは 1204 件でした。履歴が多いユーザで、応答が遅くなっていました。",
+        },
+        {
+          type: "p",
+          text: "絞り込みが `applicant_id` と `approver_id` の `OR` で、並べ替えは `created_at` です。`INDEX` を 1 本足すだけでは足りないことが多いです。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "直す対象",
+          text: "今回はインデックス設計を見直すケースですが、SQL の作りが悪いだけのケースもあります。その場合は、アプリに実装されている SQL を直すのが正しいチューニングです。",
         },
         {
           type: "h2",
@@ -923,8 +959,11 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
           items: [
             "遅さはエラーログに出ないことが多い。Network の待ち時間と、ログの時刻差を見る",
             "`Preparing` と `Total` のあいだが空いていれば、遅いのはその SQL",
-            "`EXPLAIN` の `type` が `ALL` なら、フルスキャンが多い",
-            "DB の定義に `INDEX` があるかを見る",
+            "`EXPLAIN` の `type` が `ALL` なら、フルスキャンであることが多い",
+            "`rows` は読む件数の見積もり、`Total` は返した件数。`ALL` なら見積もりに近い件数を実際に読む",
+            "`possible_keys` が `NULL` は、この SQL で使える候補が無いという意味。インデックスが一つも無い、とは限らない",
+            "`OR` の左右が別カラムで `ORDER BY` があると、`INDEX` を 1 本足すだけでは足りないことが多い",
+            "今回はインデックス設計を見直す。SQL の作りが悪いだけのときは、アプリの SQL を直す",
           ],
         },
         {
@@ -936,8 +975,8 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
           items: [
             "Network で `GET /shinsei/requests/history` が 200、待ち時間が数秒と分かる",
             "ログで `searchHistory` の SQL 実行が約 6 秒と分かる",
-            "`EXPLAIN` で `t_request` の `type` が `ALL` と分かる",
-            "`schema.sql` に履歴検索向けの `INDEX` が無いと分かる",
+            "`EXPLAIN` で `t_request` の `type` が `ALL`、`possible_keys` が `NULL` と分かる",
+            "`OR` と `ORDER BY` が重なっていること、`schema.sql` に履歴検索向けの `INDEX` が無いと分かる",
           ],
         },
         { type: "quiz", id: "sc-history-slow" },
