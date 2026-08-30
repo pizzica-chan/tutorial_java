@@ -42,7 +42,7 @@ npm run deploy
 
 `wrangler.jsonc` は Worker スクリプトなしの静的配信です。SPA のため、存在しないパスは `index.html` にフォールバックします。
 
-Cloudflare Pages を使う場合は、ビルドコマンド `npm run build`、出力ディレクトリ `dist` を指定してください。SPA の fallback は `public/_redirects`（ビルドで `dist/` にコピーされます）で行っているので、Workers 側の `not_found_handling` のような追加設定は不要です。
+Cloudflare Pages を使う場合は、ビルドコマンド `npm run build`、出力ディレクトリ `dist` を指定してください。`wrangler.jsonc` の `not_found_handling` は Workers 静的アセット専用で Pages には効かないので、Pages 側で `/tracks/web/letter` のような個別 URL を直接開くと 404 になります。SPA として使うなら、Pages のプロジェクト設定で SPA フォールバックを有効にするか、`dist/` に `_redirects`（`/* /index.html 200`）を別途追加してください。このファイルをリポジトリの `public/` に置くと、Workers 経由の `npm run deploy` 側で `not_found_handling` と衝突してデプロイに失敗するため、リポジトリには含めていません。
 
 アカウントなしで一時公開するなら、ビルド後の `dist/` を [Cloudflare Drop](https://cloudflare.com/drop) にアップロードする方法もあります。
 
