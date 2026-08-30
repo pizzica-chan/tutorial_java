@@ -1138,6 +1138,7 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
           type: "code",
           title: "RequestController.approve（申請くん）",
           lang: "java",
+          highlightLines: [1],
           code: `if (!"PENDING".equals(request.getStatus())) {
   redirectAttributes.addFlashAttribute(
       "errorMessage", "この申請は承認できません");
@@ -1161,6 +1162,7 @@ requestService.approve(id, user.getId());`,
           type: "code",
           title: "RequestMapper.xml の findMine（申請くん）",
           lang: "xml",
+          highlightLines: [3],
           code: `WHERE (r.applicant_id = #{userId}
    OR r.approver_id = #{userId})
   AND r.status = 'PENDING'`,
@@ -1201,6 +1203,7 @@ requestService.approve(id, user.getId());`,
           type: "code",
           title: "list.html のステータス（申請くん）",
           lang: "html",
+          highlightLines: [2],
           code: `<span class="status"
       th:classappend="\${item.status == 'PENDING'} ? ' is-pending' : ' is-approved'"
       th:text="\${item.status}">PENDING</span>`,
@@ -1221,6 +1224,7 @@ requestService.approve(id, user.getId());`,
           type: "code",
           title: "RequestService.create（申請くん）",
           lang: "java",
+          highlightLines: [1],
           code: `request.setStatus("PENDING");
 requestMapper.insert(request);`,
         },
@@ -1228,6 +1232,7 @@ requestMapper.insert(request);`,
           type: "code",
           title: "RequestService.approve（申請くん）",
           lang: "java",
+          highlightLines: [1],
           code: `request.setStatus("APPROVED");
 requestMapper.update(request);`,
         },
@@ -1258,6 +1263,12 @@ requestMapper.update(request);`,
         {
           type: "p",
           text: "`schema.sql` の `status` は `VARCHAR(32) NOT NULL` です。`CANCELLED` は収まります。長さの変更は不要です。CHECK は無いので、DB が値を拒むことはありません。制約を追加するかは依頼に無いので、いまの情報では断定できません。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "テーブル定義の場所",
+          text: "申請くんは `schema.sql` で管理していますが、実際の現場では別のファイル名のことがあります。ファイルと稼働している DB がずれていることもあるので、実際に稼働している DB の定義を見るのが最も正確です。",
         },
         {
           type: "h3",
@@ -1362,6 +1373,7 @@ requestMapper.update(request);`,
           type: "code",
           title: "RequestController.list（申請くん）",
           lang: "java",
+          highlightLines: [2, 3],
           code: `@GetMapping
 public String list(Model model, @AuthenticationPrincipal LoginUser user) {
   model.addAttribute("applications", requestService.findMine(user.getId()));
@@ -1378,6 +1390,15 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "code",
+          title: "RequestService.findMine（申請くん）",
+          lang: "java",
+          highlightLines: [1],
+          code: `public List<RequestEntity> findMine(Long userId) {
+  return requestMapper.findMine(userId);
+}`,
+        },
+        {
+          type: "code",
           title: "RequestMapper.xml の findMine（申請くん）",
           lang: "xml",
           code: `WHERE (r.applicant_id = #{userId}
@@ -1390,7 +1411,22 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "`list.html` に検索フォームはありません。プルダウンを追加すると、テンプレートと Controller の引数が増えます。フォームの `name` と `@RequestParam` の名前は揃えます。",
+          text: "`list.html` に検索フォームはありません。",
+        },
+        {
+          type: "code",
+          title: "list.html（申請くん）",
+          lang: "html",
+          code: `<div class="page-head">
+  <h1>申請一覧</h1>
+  <a class="btn" th:href="@{/requests/new}">新規申請</a>
+</div>
+<p class="lead">未承認の申請です。承認と新規申請は、この画面から行います。</p>
+<table class="data">`,
+        },
+        {
+          type: "p",
+          text: "プルダウンを追加すると、テンプレートと Controller の引数が増えます。フォームの `name` と `@RequestParam` の名前は揃えます。",
         },
         {
           type: "h3",
@@ -1404,6 +1440,7 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
           type: "code",
           title: "RequestApiController.list（申請くん）",
           lang: "java",
+          highlightLines: [3],
           code: `@GetMapping
 public List<RequestResponse> list(@AuthenticationPrincipal LoginUser user) {
   return requestService.findMine(user.getId()).stream()
@@ -1421,7 +1458,43 @@ public List<RequestResponse> list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "`t_user` にも `t_request` にも、部署の列はありません。絞る値が無いので、列かマスタを追加する作業が先に乗ります。",
+          text: "`t_user` にも `t_request` にも、部署の列はありません。",
+        },
+        {
+          type: "code",
+          title: "schema.sql（申請くん）",
+          lang: "sql",
+          code: `CREATE TABLE IF NOT EXISTS t_user (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(64) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  display_name VARCHAR(64) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  role VARCHAR(32) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS t_request (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  status VARCHAR(32) NOT NULL,
+  applicant_id BIGINT NOT NULL,
+  approver_id BIGINT,
+  applicant_email VARCHAR(255),
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME,
+  CONSTRAINT fk_request_applicant FOREIGN KEY (applicant_id) REFERENCES t_user (id),
+  CONSTRAINT fk_request_approver FOREIGN KEY (approver_id) REFERENCES t_user (id)
+);`,
+        },
+        {
+          type: "p",
+          text: "絞る値が無いので、列かマスタを追加する作業が先に乗ります。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "テーブル定義の場所",
+          text: "申請くんは `schema.sql` で管理していますが、実際の現場では別のファイル名のことがあります。ファイルと稼働している DB がずれていることもあるので、実際に稼働している DB の定義を見るのが最も正確です。",
         },
         {
           type: "h3",
@@ -1430,6 +1503,28 @@ public List<RequestResponse> list(@AuthenticationPrincipal LoginUser user) {
         {
           type: "p",
           text: "申請履歴は `searchHistory` です。依頼は一覧なので、今回の見積もりには入れません。",
+        },
+        {
+          type: "code",
+          title: "RequestController.history（申請くん）",
+          lang: "java",
+          highlightLines: [1, 12],
+          code: `@GetMapping("/history")
+public String history(
+    @RequestParam(value = "title", required = false) String title,
+    @RequestParam(value = "requestStatus", required = false) String requestStatus,
+    @RequestParam(value = "createdFrom", required = false) String createdFrom,
+    @RequestParam(value = "createdTo", required = false) String createdTo,
+    Model model,
+    @AuthenticationPrincipal LoginUser user
+) {
+  model.addAttribute(
+      "results",
+      requestService.searchHistory(
+          user.getId(), title, requestStatus, createdFrom, createdTo)
+  );
+  return "request/history";
+}`,
         },
         {
           type: "h3",
