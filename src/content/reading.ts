@@ -622,7 +622,7 @@ requestService.approve(id, user.getId());`,
           type: "ol",
           items: [
             "変数の宣言と代入を見る",
-            "DB から来ているなら、列の null 許容と、データが欠ける条件を見る",
+            "DB から来ているなら、カラムの null 許容と、データが欠ける条件を見る",
             "画面から来ているなら、name 属性とバインドを見る",
             "セッションや ThreadLocal なら、セットするフィルタを見る",
           ],

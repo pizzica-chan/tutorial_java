@@ -893,7 +893,7 @@ function SqlToSource() {
         </h4>
         <div className="d-stack">
           <Layer icon="terminal">調べたい SQL</Layer>
-          <Arrow down label="テーブル名や列名で探す" />
+          <Arrow down label="テーブル名やカラム名で探す" />
           <Layer icon="file" accent>
             Mapper XML
           </Layer>

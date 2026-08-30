@@ -52,7 +52,7 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     id: "mapper",
     layer: "MyBatis",
     title: "RequestMapper#findMine",
-    detail: "SQL の ? に、その userId が入ります。申請者または承認者である、未承認の行だけが対象です。件数がおかしい、遅い、エラーになるといった症状は、この SQL の実体を見ます。",
+    detail: "SQL の ? に、その userId が入ります。申請者または承認者である、未承認のレコードだけが対象です。件数がおかしい、遅い、エラーになるといった症状は、この SQL の実体を見ます。",
     code: `SELECT ... FROM t_request
  WHERE (applicant_id = ?
     OR approver_id = ?)
@@ -164,7 +164,7 @@ export const stackCases: StackCase[] = [
       {
         kind: "exception",
         text: "org.springframework.jdbc.BadSqlGrammarException: Error querying database. Cause: java.sql.SQLSyntaxErrorException: Unknown column 'priority' in 'field list'",
-        note: "例外の型は Spring でも、中身は SQL の列名エラーです。フレームワーク名に引っ張られず、メッセージを先に読みます。",
+        note: "例外の型は Spring でも、中身は SQL のカラム名エラーです。フレームワーク名に引っ張られず、メッセージを先に読みます。",
       },
       {
         kind: "framework",

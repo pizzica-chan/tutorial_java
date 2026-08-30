@@ -326,7 +326,7 @@ public class MailService {
   {
     path: "src/main/java/.../entity/RequestEntity.java",
     note: "1 件の申請データ",
-    why: "DB の行と Java の対応です。Mapper の resultType や update の引数に使われます。null のフィールドがあると、Service の equals などで `NullPointerException` になることがあります。",
+    why: "DB のレコードと Java の対応です。Mapper の resultType や update の引数に使われます。null のフィールドがあると、Service の equals などで `NullPointerException` になることがあります。",
     code: `public class RequestEntity {
   private Long id;
   private String title;

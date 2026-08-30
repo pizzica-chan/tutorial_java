@@ -1435,38 +1435,53 @@ th {
 
 .d-arrow i {
   position: relative;
-  width: 72px;
-  height: 2px;
+  width: 56px;
+  height: 3px;
   background: var(--amber);
 }
 
 .d-arrow i::after {
   content: "";
   position: absolute;
-  top: -4px;
-  right: -1px;
-  border: 5px solid transparent;
-  border-left-color: var(--amber);
+  top: -5.5px;
+  right: -10px;
+  border-style: solid;
+  border-width: 7px 0 7px 11px;
+  border-color: transparent transparent transparent var(--amber);
 }
 
 .d-arrow.reverse i::after {
   right: auto;
-  left: -1px;
-  border-left-color: transparent;
-  border-right-color: var(--amber);
+  left: -10px;
+  border-width: 7px 11px 7px 0;
+  border-color: transparent var(--amber) transparent transparent;
 }
 
 .d-arrow.down i {
-  width: 2px;
-  height: 22px;
+  width: 3px;
+  height: 18px;
 }
 
 .d-arrow.down i::after {
   top: auto;
-  right: -4px;
-  bottom: -1px;
-  border: 5px solid transparent;
-  border-top-color: var(--amber);
+  right: auto;
+  left: -5.5px;
+  bottom: -10px;
+  border-width: 10px 7px 0 7px;
+  border-color: var(--amber) transparent transparent transparent;
+}
+
+.d-arrow:not(.down) {
+  padding-inline-end: 10px;
+}
+
+.d-arrow.reverse:not(.down) {
+  padding-inline-end: 0;
+  padding-inline-start: 10px;
+}
+
+.d-arrow.down {
+  padding-bottom: 10px;
 }
 
 .d-template-fragment {
@@ -1611,6 +1626,10 @@ th {
   max-width: 640px;
 }
 
+.investigation-flow:has(.investigation-flow-fork) {
+  max-width: 720px;
+}
+
 .investigation-flow-item {
   display: contents;
 }
@@ -1620,6 +1639,59 @@ th {
   font-size: 15px;
   line-height: 1.5;
   letter-spacing: normal;
+}
+
+.investigation-flow-fork {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 16px;
+  align-items: stretch;
+  min-width: 440px;
+}
+
+.investigation-flow-track {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+  padding: 10px;
+  border: 1px solid var(--line);
+}
+
+.investigation-flow-track-label {
+  margin: 0;
+  color: var(--quiet);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.investigation-flow-track-steps {
+  flex: 0 0 auto;
+  max-width: none;
+}
+
+.investigation-flow-track .investigation-flow-step {
+  padding: 10px 12px;
+}
+
+.investigation-flow-track-tail {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  min-height: 28px;
+}
+
+.investigation-flow-track-line {
+  flex: 1 1 auto;
+  width: 3px;
+  min-height: 8px;
+  background: var(--amber);
+}
+
+.investigation-flow-track-tail .d-arrow.down i {
+  height: 8px;
 }
 
 .d-plus {
@@ -2194,29 +2266,38 @@ th {
     justify-items: center;
   }
 
+  .d-arrow:not(.down) {
+    padding-inline-end: 0;
+    padding-inline-start: 0;
+    padding-bottom: 10px;
+  }
+
   .d-arrow:not(.down) i {
-    width: 2px;
-    height: 22px;
+    width: 3px;
+    height: 18px;
+  }
+
+  .d-arrow.reverse:not(.down) {
+    padding-bottom: 0;
+    padding-top: 10px;
   }
 
   .d-arrow:not(.down) i::after {
     top: auto;
-    right: -4px;
-    bottom: -1px;
-    left: auto;
-    border: 5px solid transparent;
-    border-top-color: var(--amber);
+    right: auto;
+    left: -5.5px;
+    bottom: -10px;
+    border-width: 10px 7px 0 7px;
+    border-color: var(--amber) transparent transparent transparent;
   }
 
   .d-arrow.reverse:not(.down) i::after {
-    top: -1px;
-    right: -4px;
+    top: -10px;
+    right: auto;
     bottom: auto;
-    left: auto;
-    border-left-color: transparent;
-    border-right-color: transparent;
-    border-top-color: transparent;
-    border-bottom-color: var(--amber);
+    left: -5.5px;
+    border-width: 0 7px 10px 7px;
+    border-color: transparent transparent var(--amber) transparent;
   }
 
   .d-formula .d-plus {

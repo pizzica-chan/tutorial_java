@@ -18,12 +18,12 @@ export const quizzes = {
     question: "申請一覧の件数がおかしい。先に見るのはどれ？",
     choices: [
       "一覧テンプレートの色や余白",
-      "実行された SQL と、その条件の DB の行",
+      "実行された SQL と、その条件の DB のレコード",
       "ブラウザのキャッシュを消すだけ",
       "`pom.xml` の Java の版",
     ],
     answer: 1,
-    explanation: "一覧の件数は、SQL が読んだ DB の行です。先に実行された SQL を見て、同じ条件で行を数えます。見た目の CSS とは切り分けが違います。",
+    explanation: "一覧の件数は、SQL が読んだ DB のレコードです。先に実行された SQL を見て、同じ条件でレコードを数えます。見た目の CSS とは切り分けが違います。",
   },
   "web-ajax": {
     id: "web-ajax",
@@ -272,12 +272,12 @@ export const quizzes = {
     question: "MyBatis の DEBUG に Preparing と Parameters、Total: 0 と出た。読み方は？",
     choices: [
       "SQL は実行されていない",
-      "その SQL は実行され、条件に合う行が 0 件だった",
+      "その SQL は実行され、条件に合うレコードが 0 件だった",
       "Controller が無い",
       "CSS が 404",
     ],
     answer: 1,
-    explanation: "Preparing が文、Parameters がバインド値、Total が件数です。0 は実行失敗ではなく、その条件の行が無かった、と読みます。",
+    explanation: "Preparing が文、Parameters がバインド値、Total が件数です。0 は実行失敗ではなく、その条件のレコードが無かった、と読みます。",
   },
   "ts-env": {
     id: "ts-env",
@@ -310,7 +310,7 @@ export const quizzes = {
       "Mapper の XML のインデント",
       "8080 が FW で閉じている、または HTTP サーバやアプリがそのポートで待ち受けていない",
       "Thymeleaf の `th:if`",
-      "ORDER BY の列名",
+      "ORDER BY のカラム名",
     ],
     answer: 1,
     explanation: "ping はホスト到達、TCP はポート到達です。層が違います。TCP が失敗すると HTTP も届きません。FW と、HTTP サーバやアプリの待ち受けを見ます。",
@@ -373,7 +373,7 @@ export const quizzes = {
       "エディタの配色",
     ],
     answer: 1,
-    explanation: "200 で件数が違うなら、原因は多くは DB の行や接続先です。コード通読より先に、実行された SQL と、その条件での件数を確認しましょう。キャッシュでずれることもあります。",
+    explanation: "200 で件数が違うなら、原因は多くは DB のレコードや接続先です。コード通読より先に、実行された SQL と、その条件での件数を確認しましょう。キャッシュでずれることもあります。",
   },
   "sc-history": {
     id: "sc-history",
@@ -386,6 +386,18 @@ export const quizzes = {
     ],
     answer: 1,
     explanation: "その SQL の結果としては正しいので、DB を作り直しても原因は残りません。条件に載っていない変数を、Mapper から Controller、フォームの `name` まで辿って確認します。このシナリオでは `requestStatus` と `status` が違っていました。",
+  },
+  "sc-history-slow": {
+    id: "sc-history-slow",
+    question: "申請履歴の検索が遅い。`GET /shinsei/requests/history` は 200。ログでは `searchHistory` の `Preparing` と `Total` のあいだが数秒。`EXPLAIN` で `t_request` の `type` は `ALL`。原因は？",
+    choices: [
+      "一覧の `list.js` が例外を出している",
+      "履歴検索の SQL がフルスキャンになっている。インデックスが無い",
+      "フォームの `name` と `@RequestParam` がずれている",
+      "CSS の 404",
+    ],
+    answer: 1,
+    explanation: "`type` が `ALL` で `key` が `NULL` なら、テーブルを先頭から全部読むことが多いです。N+1 なら SQL の回数が増えます。このログの `Preparing` は 1 回です。",
   },
   "sc-net": {
     id: "sc-net",
@@ -421,7 +433,7 @@ export const quizzes = {
       "CSS の余白を疑う",
     ],
     answer: 1,
-    explanation: "申請一覧は未承認の作業画面です。取り下げ済みは、この画面で扱う申請ではないので、今の `status = 'PENDING'` のままで妥当です。ヒットしたから直す、ではありません。履歴の選択肢など、依頼文から分からない箇所は断定しません。",
+    explanation: "申請一覧は未承認の作業画面です。取り下げ済みは、この画面で扱う申請ではないので、今の `status = 'PENDING'` のままで妥当です。ヒットしたから直す、ではありません。履歴の選択肢など、依頼内容から断定できない箇所は、依頼者へ確認するため情報をまとめます。",
   },
   "trace-sql-source": {
     id: "trace-sql-source",

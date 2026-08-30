@@ -40,6 +40,13 @@ export type DiagramName =
   | "template-fragment"
   | "sql-to-source";
 
+export type InvestigationFlowTrack = {
+  label?: string;
+  steps: string[];
+};
+
+export type InvestigationFlowItem = string | { tracks: InvestigationFlowTrack[] };
+
 export type Block =
   | { type: "p"; text: string; link?: { label: string; to: string } }
   | { type: "h2"; text: string }
@@ -54,7 +61,7 @@ export type Block =
   | { type: "figure"; src: string; alt: string; caption?: string; kind?: "photo" | "screen"; size?: "small" }
   | { type: "table"; headers: string[]; rows: string[][]; empty?: string }
   | { type: "steps"; items: { title: string; text: string }[] }
-  | { type: "investigation-flow"; items: string[] };
+  | { type: "investigation-flow"; items: InvestigationFlowItem[] };
 
 export type Lesson = {
   id: string;

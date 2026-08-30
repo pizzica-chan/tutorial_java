@@ -11,7 +11,7 @@
 | `screen-login.jpg` | 申請くん GET `/shinsei/login` |
 | `screen-login-error.jpg` | 申請くん ログイン失敗 |
 | `screen-list.jpg` | 申請くん GET `http://intranet.example.co.jp:8080/shinsei/requests`（山田太郎。検証用シナリオ用） |
-| `screen-history-search.jpg` | 申請くん GET `http://intranet.example.co.jp:8080/shinsei/requests/history?title=申請&status=APPROVED&createdFrom=&createdTo=`（山田太郎。件名「申請」で絞り、ステータス承認済みでも PENDING の行が出る） |
+| `screen-history-search.jpg` | 申請くん GET `http://intranet.example.co.jp:8080/shinsei/requests/history?title=申請&status=APPROVED&createdFrom=&createdTo=`（山田太郎。件名「申請」で絞り、ステータス承認済みでも PENDING のレコードが出る） |
 | `screen-network-history-search.jpg` | 申請くん GET `http://intranet.example.co.jp:8080/shinsei/requests/history`（クエリに `title=申請` と `status=APPROVED`）の Network タブ |
 | `screen-network-history-search-request.jpg` | 上の Network で検索 GET を開き、Payload の Query String Parameters（`title=申請` と `status=APPROVED`）を切り出した画像 |
 | `screen-detail.jpg` | 申請くん GET `/shinsei/requests/12` |

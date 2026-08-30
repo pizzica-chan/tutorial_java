@@ -70,7 +70,13 @@ function blockText(block: Block): string {
     case "steps":
       return block.items.map((item) => `${item.title}\n${item.text}`).join("\n");
     case "investigation-flow":
-      return block.items.join("\n");
+      return block.items
+        .flatMap((item) => {
+          if (typeof item === "string") return [item];
+          return item.tracks.flatMap((track) => [track.label ?? "", ...track.steps]);
+        })
+        .filter(Boolean)
+        .join("\n");
     case "widget":
       return widgetText(block.name);
     default:

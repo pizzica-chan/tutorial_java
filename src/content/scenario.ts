@@ -253,7 +253,7 @@ WHERE id = 16;`,
           type: "callout",
           kind: "note",
           title: "テーブル定義で不正データを防ぐ",
-          text: "こうした不整合な行の作成を防ぐには、DB の `approver_id` に NOT NULL を付けるのが有効です。申請くんの列定義は NULL 可のままなので、値が空の行があると、今回のように 500 になります。",
+          text: "こうした不整合なレコードの作成を防ぐには、DB の `approver_id` に NOT NULL を付けるのが有効です。申請くんのカラム定義は NULL 可のままなので、値が空のレコードがあると、今回のように 500 になります。",
         },
         {
           type: "h2",
@@ -463,7 +463,7 @@ ORDER BY r.created_at DESC
         },
         {
           type: "p",
-          text: "検証用環境の DB で同じ条件を実行すると、行は 0 件でした。",
+          text: "検証用環境の DB で同じ条件を実行すると、レコードは 0 件でした。",
         },
         {
           type: "code",
@@ -478,7 +478,7 @@ WHERE (applicant_id = 7 OR approver_id = 7)
           type: "table",
           headers: ["id", "title", "status", "`applicant_id`", "`approver_id`"],
           rows: [],
-          empty: "0 行",
+          empty: "0 レコード",
         },
         {
           type: "p",
@@ -514,8 +514,8 @@ WHERE (applicant_id = 7 OR approver_id = 7)
         {
           type: "ul",
           items: [
-            "GET が 200 で件数が違うなら、コード通読より先に、実行された SQL とその条件の行を見る",
-            "同じ SQL を、アプリが接続している DB で実行し、画面と同じ 0 件なら、コードよりその DB の行を疑う",
+            "GET が 200 で件数が違うなら、コード通読より先に、実行された SQL とその条件のレコードを見る",
+            "同じ SQL を、アプリが接続している DB で実行し、画面と同じ 0 件なら、コードよりその DB のレコードを疑う",
             "検証用環境とローカルで件数が違うときは、接続先の DB が同じかを確認する",
           ],
         },
@@ -528,7 +528,7 @@ WHERE (applicant_id = 7 OR approver_id = 7)
           items: [
             "Network タブで、GET が 200 であることを確認",
             "実行された SQL とその条件を確認",
-            "同じ条件で DB を検索し、行が 0 件であることを確認",
+            "同じ条件で DB を検索し、レコードが 0 件であることを確認",
           ],
         },
         { type: "quiz", id: "sc-db" },
@@ -542,13 +542,13 @@ WHERE (applicant_id = 7 OR approver_id = 7)
         {
           type: "callout",
           kind: "scenario",
-          text: "申請履歴画面で、件名を「申請」、ステータスを「承認済み」にして検索すると、未承認の行が出る。エラーメッセージは出ない。",
+          text: "申請履歴画面で、件名を「申請」、ステータスを「承認済み」にして検索すると、未承認のレコードが出る。エラーメッセージは出ない。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-history-search.jpg",
-          alt: "件名は申請、ステータスは承認済みなのに、PENDING の行が出ている申請履歴",
+          alt: "件名は申請、ステータスは承認済みなのに、PENDING のレコードが出ている申請履歴",
           caption: "件名は「申請」、ステータスは「承認済み」です。表は休暇申請と交通費申請の 2 件で、どちらも PENDING です。",
         },
         {
@@ -782,6 +782,165 @@ public String history(
           ],
         },
         { type: "quiz", id: "sc-history" },
+      ],
+    },
+    {
+      id: "history-slow",
+      title: "[障害調査] 申請履歴の検索が遅い",
+      minutes: 11,
+      blocks: [
+        {
+          type: "callout",
+          kind: "scenario",
+          text: "検証用環境で、申請履歴が多いユーザが申請履歴を検索すると、応答が遅い。エラーメッセージは出ない。ローカルでは同じ操作でもすぐ終わる。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "検証用環境。山田（yamada）で申請履歴を検索した。件名・ステータス・申請日は空",
+            "画面にエラーは出ていない",
+            "山田は検証用で履歴が多い、と聞いている",
+            "ローカルでは遅くない",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先に見ること",
+        },
+        {
+          type: "p",
+          text: "Network タブを見ましょう。`GET /shinsei/requests/history` は 200 です。待ち時間が数秒あります。失敗ではないので、次はサーバのログの時刻差です。",
+        },
+        {
+          type: "h2",
+          text: "原因の追跡",
+        },
+        {
+          type: "h3",
+          text: "ログの時刻差",
+        },
+        {
+          type: "p",
+          text: "操作時刻のログで、`searchHistory` の Mapper を見ます。`Preparing` から `Total` まで約 6 秒空いています。SQL の実行が遅いです。",
+        },
+        {
+          type: "code",
+          title: "操作時刻のサーバログ（申請くん・検証用環境）",
+          lang: "text",
+          highlightLines: [2, 4],
+          code: `04:12:03.105 DEBUG [nio-8080-exec-3] ...ServiceLoggingAspect : start RequestService.searchHistory(..)
+04:12:03.110 DEBUG [nio-8080-exec-3] ...RequestMapper.searchHistory : ==>  Preparing: SELECT ... FROM t_request r ... WHERE (r.applicant_id = ? OR r.approver_id = ?) ORDER BY r.created_at DESC
+04:12:03.112 DEBUG [nio-8080-exec-3] ...RequestMapper.searchHistory : ==> Parameters: 7(Long), 7(Long)
+04:12:08.890 DEBUG [nio-8080-exec-3] ...RequestMapper.searchHistory : <==      Total: 1204
+04:12:08.895 DEBUG [nio-8080-exec-3] ...ServiceLoggingAspect : end RequestService.searchHistory(..)`,
+        },
+        {
+          type: "p",
+          text: "`Preparing` は 1 回です。N+1 ではありません。遅いのは、この 1 本の SQL です。",
+        },
+        {
+          type: "h3",
+          text: "`EXPLAIN`",
+        },
+        {
+          type: "p",
+          text: "実行された SQL を、アプリが接続している検証用 DB で `EXPLAIN` します。",
+        },
+        {
+          type: "code",
+          title: "EXPLAIN（検証用環境の MySQL）",
+          lang: "sql",
+          code: `EXPLAIN SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id
+FROM t_request r
+JOIN t_user a ON a.id = r.applicant_id
+LEFT JOIN t_user v ON v.id = r.approver_id
+WHERE (r.applicant_id = 7 OR r.approver_id = 7)
+ORDER BY r.created_at DESC;`,
+        },
+        {
+          type: "p",
+          text: "`t_request` の `type` は `ALL` です。`key` は `NULL` です。`rows` は約 85 万です。フルスキャンです。",
+        },
+        {
+          type: "code",
+          title: "EXPLAIN の結果（検証用環境）",
+          lang: "text",
+          highlightLines: [2],
+          code: `table  type  possible_keys  key   rows    Extra
+r      ALL   NULL           NULL  850234  Using where; Using filesort
+a      eq_ref PRIMARY       PRIMARY  1    Using where
+v      eq_ref PRIMARY       PRIMARY  1    Using where`,
+        },
+        {
+          type: "h3",
+          text: "DB の定義",
+        },
+        {
+          type: "p",
+          text: "`schema.sql` の `t_request` を見ます。`PRIMARY KEY` の `id` はあります。`INDEX` の定義はありません。",
+        },
+        {
+          type: "code",
+          title: "schema.sql の t_request（申請くん）",
+          lang: "sql",
+          code: `CREATE TABLE IF NOT EXISTS t_request (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  status VARCHAR(32) NOT NULL,
+  applicant_id BIGINT NOT NULL,
+  approver_id BIGINT,
+  applicant_email VARCHAR(255),
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME,
+  CONSTRAINT fk_request_applicant FOREIGN KEY (applicant_id) REFERENCES t_user (id),
+  CONSTRAINT fk_request_approver FOREIGN KEY (approver_id) REFERENCES t_user (id)
+);`,
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "外部キーとインデックス",
+          text: "MySQL では、外部キーがあると参照側のカラムにインデックスが付くことがあります。この検証用環境の `EXPLAIN` は `type` が `ALL` でした。履歴検索の条件ではインデックスが使われていない、と読みます。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの原因",
+        },
+        {
+          type: "p",
+          text: "検証用 DB の `t_request` に、履歴検索で使うインデックスがありません。`searchHistory` の SQL がフルスキャンになり、履歴が多いユーザで応答が遅くなっていました。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "遅さはエラーログに出ないことが多い。Network の待ち時間と、ログの時刻差を見る",
+            "`Preparing` と `Total` のあいだが空いていれば、遅いのはその SQL",
+            "`EXPLAIN` の `type` が `ALL` なら、フルスキャンが多い",
+            "DB の定義に `INDEX` があるかを見る",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "Network で `GET /shinsei/requests/history` が 200、待ち時間が数秒と分かる",
+            "ログで `searchHistory` の SQL 実行が約 6 秒と分かる",
+            "`EXPLAIN` で `t_request` の `type` が `ALL` と分かる",
+            "`schema.sql` に履歴検索向けの `INDEX` が無いと分かる",
+          ],
+        },
+        { type: "quiz", id: "sc-history-slow" },
       ],
     },
     {
@@ -1111,17 +1270,22 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
         },
         {
           type: "p",
-          text: "既存の値名でソースを検索し、ヒットを分岐・SQL・画面・更新に分類しましょう。妥当な仕様と照らし、修正の要否を判断します。依頼から分からないことは、断定しません。",
+          text: "ヒットしたソースをひとつひとつ確認し、修正の要否を判断しましょう。依頼内容から修正の要否が断定できない箇所は、依頼者へ確認する必要があるので、情報をまとめておきましょう。",
         },
         {
           type: "ol",
           items: [
             "`status`、`PENDING`、`APPROVED` で全文検索する",
-            "ヒットしたファイルを、if、SQL、テンプレート、`setStatus` に分ける",
-            "妥当な仕様と照らし、修正の要否を判断する。分からないときは断定しない",
+            "ヒットしたソースをひとつひとつ確認し、修正の要否を判断する",
+            "依頼内容から断定できない箇所は、依頼者へ確認するため情報をまとめる",
           ],
         },
-        { type: "diagram", name: "call-chain", caption: "例: 承認は Controller → Service → Mapper。status を触る箇所は、この鎖の複数点に散らばる。" },
+        {
+          type: "callout",
+          kind: "note",
+          title: "検索ですべて見つかるとは限らない",
+          text: "カラム名や既存のステータスの値で検索しても、影響する箇所をすべて洗い出せるとは限りません。機械的に調べられない部分を洗い出すには、仕様やドメイン知識が要ります。",
+        },
         {
           type: "h2",
           text: "影響の追跡",
@@ -1189,7 +1353,7 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "「すべて」なら、`CANCELLED` の行も SQL に載ります。`CANCELLED` だけに絞る選択肢はありません。取り下げ済みを履歴検索画面でどう扱うかは依頼文に無いので、いまの情報では断定できません。",
+          text: "「すべて」なら、`CANCELLED` のレコードも SQL に載ります。`CANCELLED` だけに絞る選択肢はありません。取り下げ済みを履歴検索画面でどう扱うかは依頼文に無いので、依頼者へ確認します。",
         },
         {
           type: "h3",
@@ -1246,7 +1410,7 @@ requestMapper.update(request);`,
         },
         {
           type: "p",
-          text: "`CANCELLED` にするメソッドは現時点ではありません。「取り下げの画面や API を追加するかは、まだ決まっていない」という前提があるため、`CANCELLED` への更新処理を追加するかは、いまの情報では断定できません。",
+          text: "`CANCELLED` にするメソッドは現時点ではありません。「取り下げの画面や API を追加するかは、まだ決まっていない」という前提があるため、`CANCELLED` への更新処理を追加するかは、依頼者へ確認します。",
         },
         {
           type: "h3",
@@ -1262,7 +1426,7 @@ requestMapper.update(request);`,
         },
         {
           type: "p",
-          text: "`schema.sql` の `status` は `VARCHAR(32) NOT NULL` です。`CANCELLED` は収まります。長さの変更は不要です。CHECK は無いので、DB が値を拒むことはありません。制約を追加するかは依頼に無いので、いまの情報では断定できません。",
+          text: "`schema.sql` の `status` は `VARCHAR(32) NOT NULL` です。`CANCELLED` は収まります。長さの変更は不要です。CHECK は無いので、DB が値を拒むことはありません。制約を追加するかは依頼に無いので、依頼者へ確認します。",
         },
         {
           type: "callout",
@@ -1284,11 +1448,11 @@ requestMapper.update(request);`,
           rows: [
             ["`RequestController.approve`", "PENDING 以外は承認できない", "不要"],
             ["`findMine`", "`status = 'PENDING'`", "不要"],
-            ["`history.html` の select", "すべて / PENDING / APPROVED", "断定できない"],
-            ["履歴・詳細の見た目", "PENDING でなければ `is-approved`", "断定できない。一覧の見た目は不要"],
+            ["`history.html` の select", "すべて / PENDING / APPROVED", "依頼者へ確認"],
+            ["履歴・詳細の見た目", "PENDING でなければ `is-approved`", "依頼者へ確認。一覧の見た目は不要"],
             ["`RequestService` の create / approve", "新規は PENDING、承認は APPROVED", "不要"],
-            ["`CANCELLED` にする処理", "メソッドが無い", "断定できない"],
-            ["`schema.sql`", "`VARCHAR(32) NOT NULL`", "長さは不要。制約の追加は断定できない"],
+            ["`CANCELLED` にする処理", "メソッドが無い", "依頼者へ確認"],
+            ["`schema.sql`", "`VARCHAR(32) NOT NULL`", "長さは不要。制約の追加は依頼者へ確認"],
             ["`RequestResponse`", "status を文字列で返す", "不要"],
           ],
         },
@@ -1306,8 +1470,9 @@ requestMapper.update(request);`,
           type: "ul",
           items: [
             "既存の値名（`PENDING`）から逆引きすると漏れが減る",
-            "ヒットしたファイルを、分岐・SQL・画面・更新に分ける",
-            "妥当な仕様と照らし、修正の要否を判断する。分からないときは断定しない",
+            "検索ですべて見つかるとは限らない。機械的に調べられない部分を洗い出すには、仕様やドメイン知識が要る",
+            "ヒットしたソースをひとつひとつ確認し、修正の要否を判断する",
+            "依頼内容から断定できない箇所は、依頼者へ確認するため情報をまとめる",
           ],
         },
         {
@@ -1318,9 +1483,8 @@ requestMapper.update(request);`,
           type: "investigation-flow",
           items: [
             "`status` / `PENDING` / `APPROVED` で全文検索する",
-            "ヒットを分岐・SQL・画面・更新に分類する",
-            "妥当な仕様と照らし、修正の要否を判断する",
-            "断定できないものは、断定できないと書く",
+            "ヒットしたソースをひとつひとつ確認し、修正の要否を判断する",
+            "断定できない箇所は、依頼者へ確認するため情報をまとめる",
           ],
         },
         { type: "quiz", id: "sc-impact-status" },
@@ -1353,9 +1517,8 @@ requestMapper.update(request);`,
         },
         {
           type: "p",
-          text: "処理の入口は各画面の URL です。一覧は `/shinsei/requests`、履歴は `/shinsei/requests/history` で検索し、Controller から Service、Mapper へ降りましょう。同じ一覧データを別経路から出していないかも見ます。",
+          text: "処理の入口は各画面の URL です。一覧は `/shinsei/requests`、履歴は `/shinsei/requests/history` で検索し、Controller から Service、Mapper へと呼び出しを辿りましょう。同じ処理を別の画面や API からも呼んでいないかも見ます。",
         },
-        { type: "diagram", name: "read-entry", caption: "URL → Controller → Service → SQL。影響調査も処理の入口は同じです。" },
         {
           type: "h2",
           text: "影響の追跡",
@@ -1556,11 +1719,11 @@ public List<RequestResponse> list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "h3",
-          text: "部署の列",
+          text: "部署のカラム",
         },
         {
           type: "p",
-          text: "`t_user` にも `t_request` にも、部署の列はありません。",
+          text: "`t_user` にも `t_request` にも、部署のカラムはありません。",
         },
         {
           type: "code",
@@ -1590,7 +1753,7 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "p",
-          text: "絞る値が無いので、列かマスタを追加する作業が先に乗ります。",
+          text: "DB の定義の修正が必要です。修正案は複数あり、案によって修正規模が変わります。",
         },
         {
           type: "callout",
@@ -1619,7 +1782,7 @@ CREATE TABLE IF NOT EXISTS t_request (
             ["`RequestMapper.xml` の searchHistory", "ユーザと任意の件名など", "WHERE に部署を追加する"],
             ["`history.html`", "件名・ステータス・申請日", "プルダウンを追加する。`name` を Controller と揃える"],
             ["`RequestApiController.list`", "同じ `findMine`", "画面だけ直すと JSON は絞られない"],
-            ["`schema.sql`", "部署の列が無い", "列かマスタを追加する"],
+            ["`schema.sql`", "部署のカラムが無い", "DB の定義を直す。修正案は複数あり、案によって修正規模が変わる"],
           ],
         },
         {
@@ -1635,10 +1798,11 @@ CREATE TABLE IF NOT EXISTS t_request (
         {
           type: "ul",
           items: [
-            "影響調査も処理の入口は URL",
+            "対象画面が決まっていれば、影響調査も処理の入口は URL",
             "同じメソッドを呼ぶ API が無いかを見る",
             "履歴は `searchHistory` で、一覧とは別の SQL になる",
-            "絞る値がスキーマに無ければ、画面より先に列の作業が乗る",
+            "絞る値がスキーマに無ければ、画面より先に DB の定義を直す",
+            "修正案は複数あり、案によって修正規模が変わる",
           ],
         },
         {
@@ -1648,11 +1812,23 @@ CREATE TABLE IF NOT EXISTS t_request (
         {
           type: "investigation-flow",
           items: [
-            "一覧の URL から `list` を特定する",
-            "`findMine` と Mapper の WHERE を確認する",
-            "履歴の URL から `history` と `searchHistory` を特定する",
-            "同じ `findMine` を使う API がある",
-            "部署の列がスキーマに無い",
+            {
+              tracks: [
+                {
+                  label: "一覧",
+                  steps: [
+                    "URL から `list` を特定する",
+                    "`findMine` と Mapper の WHERE を確認する",
+                    "同じ `findMine` を使う API がある",
+                  ],
+                },
+                {
+                  label: "履歴",
+                  steps: ["URL から `history` と `searchHistory` を特定する"],
+                },
+              ],
+            },
+            "部署のカラムがスキーマに無い",
           ],
         },
         { type: "quiz", id: "sc-impact-search" },

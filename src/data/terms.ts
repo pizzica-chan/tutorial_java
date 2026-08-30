@@ -133,7 +133,7 @@ export const terms: TermDef[] = [
   {
     term: "Entity",
     aliases: ["Entity"],
-    body: "テーブルの 1 行に相当する Java のオブジェクトです。",
+    body: "テーブルのレコード 1 件に相当する Java のオブジェクトです。",
   },
   {
     term: "@Table",
@@ -386,7 +386,7 @@ export const terms: TermDef[] = [
   {
     term: "論理削除",
     aliases: ["論理削除"],
-    body: "行を物理的に消さず、削除フラグで「無いもの」として扱う方式です。",
+    body: "レコードを物理的に消さず、削除フラグで「無いもの」として扱う方式です。",
   },
   {
     term: "DDL",
@@ -396,7 +396,17 @@ export const terms: TermDef[] = [
   {
     term: "インデックス",
     aliases: ["インデックス"],
-    body: "検索を速くするための DB の索引。無いと全件スキャンになりやすいです。",
+    body: "検索を速くするための DB の索引。無いとフルスキャンになりやすいです。",
+  },
+  {
+    term: "フルスキャン",
+    aliases: ["フルスキャン", "全件スキャン"],
+    body: "テーブルを先頭から全部読む実行の仕方です。インデックスが無いとこうなりやすいです。",
+  },
+  {
+    term: "EXPLAIN",
+    aliases: ["EXPLAIN"],
+    body: "SQL の実行計画を見るコマンドです。MySQL では type が ALL だと、フルスキャンであることが多いです。",
   },
   {
     term: "接続プール",
@@ -685,8 +695,8 @@ export const terms: TermDef[] = [
   },
   {
     term: "ロック",
-    aliases: ["行ロック", "ロック"],
-    body: "同時更新を防ぐため、DB が行や表を一時的に専有すること。待ちの原因になります。",
+    aliases: ["行ロック", "レコードロック", "ロック"],
+    body: "同時更新を防ぐため、DB がレコードや表を一時的に専有すること。待ちの原因になります。",
   },
   {
     term: "モック",
@@ -786,17 +796,17 @@ export const terms: TermDef[] = [
   {
     term: "テーブル",
     aliases: ["テーブル"],
-    body: "DB の表。行が 1 件のデータ、列が項目です。",
+    body: "DB の表。レコードが 1 件のデータ、カラムが項目です。",
   },
   {
     term: "レコード",
     aliases: ["レコード"],
-    body: "テーブルの 1 行のこと。1 件のデータを指すときによく使います。Java では同じ行を Entity として扱うことが多いです。",
+    body: "テーブルの 1 件のデータです。Java では同じレコードを Entity として扱うことが多いです。",
   },
   {
     term: "カラム",
-    aliases: ["カラム", "列名"],
-    body: "テーブルの項目。コードの列名と DB の定義がずれると SQL エラーになります。",
+    aliases: ["カラム", "カラム名", "列名"],
+    body: "テーブルの項目。コードのカラム名と DB の定義がずれると SQL エラーになります。",
   },
   {
     term: "XML",
@@ -837,6 +847,11 @@ export const terms: TermDef[] = [
     term: "ドメイン",
     aliases: ["ドメイン"],
     body: "example.co.jp のようなサイトの範囲。Cookie の届く先もここで決まります。",
+  },
+  {
+    term: "ドメイン知識",
+    aliases: ["ドメイン知識"],
+    body: "その業務の決まりや慣習についての知識です。ソースを読んだだけでは分からないことがあります。",
   },
   {
     term: "ポート",
@@ -991,7 +1006,7 @@ export const terms: TermDef[] = [
   {
     term: "SELECT",
     aliases: ["SELECT"],
-    body: "DB から行を読む SQL です。",
+    body: "DB からレコードを読む SQL です。",
   },
   {
     term: "UPDATE",
