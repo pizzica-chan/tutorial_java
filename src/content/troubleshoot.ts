@@ -869,7 +869,6 @@ ORDER BY r.created_at DESC
             "DB 上のロールや承認者マスタ（コードは通っているのにデータで落ちる）",
           ],
         },
-        { type: "widget", name: "http" },
       ],
     },
     {

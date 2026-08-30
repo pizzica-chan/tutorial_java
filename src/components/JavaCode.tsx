@@ -1,13 +1,16 @@
 import { tokenizeJava, javaTokenClass, type JavaToken } from "../lib/highlight";
 import { TermMark } from "./TermMark";
+import { useTermFirst } from "./TextWithTerms";
 
-function TokenView({ token }: { token: JavaToken }) {
+function TokenView({ token, isFirst }: { token: JavaToken; isFirst: ReturnType<typeof useTermFirst> }) {
   if (token.kind === "annotation" && token.term) {
+    const toGlossary = isFirst ? isFirst(token.term.term) : true;
     return (
       <TermMark
         def={token.term}
         text={token.text}
         className={`${javaTokenClass(token.kind)} code-term`}
+        toGlossary={toGlossary}
       />
     );
   }
@@ -38,12 +41,13 @@ function splitLines(tokens: JavaToken[]): JavaToken[][] {
 }
 
 export function JavaCode({ code, highlightLines }: { code: string; highlightLines?: number[] }) {
+  const isFirst = useTermFirst();
   const tokens = tokenizeJava(code);
   if (!highlightLines?.length) {
     return (
       <>
         {tokens.map((token, index) => (
-          <TokenView key={index} token={token} />
+          <TokenView key={index} token={token} isFirst={isFirst} />
         ))}
       </>
     );
@@ -61,7 +65,7 @@ export function JavaCode({ code, highlightLines }: { code: string; highlightLine
           <span key={lineNo} className={`code-line${marked ? " code-line-mark" : ""}`}>
             {lineTokens.length
               ? lineTokens.map((token, tokenIndex) => (
-                  <TokenView key={tokenIndex} token={token} />
+                  <TokenView key={tokenIndex} token={token} isFirst={isFirst} />
                 ))
               : "\u00a0"}
           </span>

@@ -22,6 +22,11 @@ export function TermHighlightScope({ children }: { children: ReactNode }) {
   return <TermSeenContext.Provider value={isFirst}>{children}</TermSeenContext.Provider>;
 }
 
+/** 配下で TermHighlightScope の初出判定を再利用したいコンポーネント（JavaCode など）向け */
+export function useTermFirst(): ClaimFirst | undefined {
+  return useContext(TermSeenContext);
+}
+
 function splitByCodeSpans(text: string): Array<{ type: "text" | "code"; value: string }> {
   const parts: Array<{ type: "text" | "code"; value: string }> = [];
   const pattern = /`([^`]+)`/g;

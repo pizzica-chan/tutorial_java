@@ -6,6 +6,7 @@ import { Icon } from "./Icon";
 export function QuizBlock({ id }: { id: string }) {
   const quiz = getQuiz(id);
   const [picked, setPicked] = useState<number | null>(null);
+  const [focusIndex, setFocusIndex] = useState(0);
   const questionId = useId();
   const groupRef = useRef<HTMLDivElement>(null);
   if (!quiz) return null;
@@ -20,23 +21,23 @@ export function QuizBlock({ id }: { id: string }) {
 
   function choose(index: number) {
     setPicked(index);
+    setFocusIndex(index);
   }
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const last = choices.length - 1;
     if (last < 0) return;
-    const current = picked ?? 0;
-    let next = current;
+    let next = focusIndex;
     switch (event.key) {
       case "ArrowDown":
       case "ArrowRight":
         event.preventDefault();
-        next = (current + 1) % choices.length;
+        next = (focusIndex + 1) % choices.length;
         break;
       case "ArrowUp":
       case "ArrowLeft":
         event.preventDefault();
-        next = (current - 1 + choices.length) % choices.length;
+        next = (focusIndex - 1 + choices.length) % choices.length;
         break;
       case "Home":
         event.preventDefault();
@@ -49,7 +50,7 @@ export function QuizBlock({ id }: { id: string }) {
       default:
         return;
     }
-    choose(next);
+    setFocusIndex(next);
     focusChoice(next);
   }
 
@@ -79,7 +80,7 @@ export function QuizBlock({ id }: { id: string }) {
               type="button"
               role="radio"
               aria-checked={selected}
-              tabIndex={picked === null ? (index === 0 ? 0 : -1) : selected ? 0 : -1}
+              tabIndex={picked === null ? (index === focusIndex ? 0 : -1) : selected ? 0 : -1}
               onClick={() => choose(index)}
             >
               <TextWithTerms highlight={false} text={choice} />

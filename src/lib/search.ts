@@ -27,9 +27,10 @@ type Doc = {
   text: string;
   titleN: string;
   textN: string;
+  kind: "page" | "glossary";
 };
 
-function toDoc(href: string, title: string, crumb: string, text: string): Doc {
+function toDoc(href: string, title: string, crumb: string, text: string, kind: Doc["kind"] = "page"): Doc {
   return {
     href,
     title,
@@ -37,6 +38,7 @@ function toDoc(href: string, title: string, crumb: string, text: string): Doc {
     text,
     titleN: normalizeForSearch(title),
     textN: normalizeForSearch(text),
+    kind,
   };
 }
 
@@ -124,12 +126,14 @@ const documents: Doc[] = [
       ),
     ),
   ),
+  toDoc("/glossary", "用語集", "GLOSSARY", ["用語集", "用語ヒント", ...terms.map((item) => item.term)].join("\n")),
   ...terms.map((item) =>
     toDoc(
       `/glossary#${glossaryAnchor(item.term)}`,
       item.term,
       "用語集",
       [item.term, ...item.aliases, item.body].join("\n"),
+      "glossary",
     ),
   ),
   toDoc(
@@ -174,16 +178,25 @@ export function searchSite(query: string): SearchHit[] {
       const titleHit = doc.titleN.includes(needle);
       const bodyHit = doc.textN.includes(needle);
       if (!titleHit && !bodyHit) return null;
+      const exactTitle = doc.titleN === needle;
+      const glossary = doc.kind === "glossary";
+      // レッスン・章・トップなどの本文ページを、用語集より先に出す。完全一致だけは種類を問わず最優先
+      let rank: number;
+      if (exactTitle) rank = 0;
+      else if (!glossary && titleHit) rank = 1;
+      else if (!glossary && bodyHit) rank = 2;
+      else if (glossary && titleHit) rank = 3;
+      else rank = 4;
       return {
         href: doc.href,
         title: doc.title,
         crumb: doc.crumb,
         snippet: snippetAround(titleHit ? doc.title : doc.text, needle),
-        rank: titleHit ? 0 : 1,
+        rank,
       };
     })
     .filter((hit): hit is SearchHit & { rank: number } => hit !== null)
     .sort((a, b) => a.rank - b.rank || a.title.localeCompare(b.title, "ja"))
-    .slice(0, 12)
+    .slice(0, 24)
     .map(({ rank: _rank, ...hit }) => hit);
 }

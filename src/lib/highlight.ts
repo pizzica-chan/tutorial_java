@@ -8,6 +8,7 @@ import javascript from "highlight.js/lib/languages/javascript";
 import json from "highlight.js/lib/languages/json";
 import css from "highlight.js/lib/languages/css";
 import nginx from "highlight.js/lib/languages/nginx";
+import gradle from "highlight.js/lib/languages/gradle";
 import { lookupTerm, type TermDef } from "../data/terms";
 
 hljs.registerLanguage("java", java);
@@ -20,6 +21,7 @@ hljs.registerLanguage("javascript", javascript);
 hljs.registerLanguage("json", json);
 hljs.registerLanguage("css", css);
 hljs.registerLanguage("nginx", nginx);
+hljs.registerLanguage("gradle", gradle);
 
 const aliases: Record<string, string> = {
   java: "java",
@@ -35,6 +37,7 @@ const aliases: Record<string, string> = {
   json: "json",
   css: "css",
   nginx: "nginx",
+  gradle: "gradle",
 };
 
 const JAVA_KEYWORDS = new Set([
@@ -145,8 +148,8 @@ export function javaTokenClass(kind: JavaTokenKind): string | undefined {
 }
 
 export function inferLang(code: string, hint?: string, path?: string): string | undefined {
-  const fromHint = hint ? aliases[hint.toLowerCase()] : undefined;
-  if (fromHint) return fromHint;
+  // 明示された lang は、認識できる別名が無くてもそのまま使う（中身の推測で上書きしない）
+  if (hint) return aliases[hint.toLowerCase()] ?? hint.toLowerCase();
 
   const file = (path ?? "").toLowerCase();
   if (file.endsWith(".java")) return "java";

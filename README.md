@@ -42,7 +42,7 @@ npm run deploy
 
 `wrangler.jsonc` は Worker スクリプトなしの静的配信です。SPA のため、存在しないパスは `index.html` にフォールバックします。
 
-Cloudflare Pages を使う場合は、ビルドコマンド `npm run build`、出力ディレクトリ `dist` を指定してください。
+Cloudflare Pages を使う場合は、ビルドコマンド `npm run build`、出力ディレクトリ `dist` を指定してください。SPA の fallback は `public/_redirects`（ビルドで `dist/` にコピーされます）で行っているので、Workers 側の `not_found_handling` のような追加設定は不要です。
 
 アカウントなしで一時公開するなら、ビルド後の `dist/` を [Cloudflare Drop](https://cloudflare.com/drop) にアップロードする方法もあります。
 

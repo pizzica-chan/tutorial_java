@@ -28,7 +28,6 @@ const quizzesSrc = read(join(src, "data", "quizzes.ts"));
 const definedQuizzes = new Set(
   [...quizzesSrc.matchAll(/^\s+"([^"]+)": \{/gm)].map((match) => match[1]),
 );
-const usedQuizzes = new Set([...sourceText.matchAll(/id:\s*"([^"]+)"/g)].map((match) => match[1]));
 const quizIdsFromBlocks = [...sourceText.matchAll(/type:\s*"quiz",\s*id:\s*"([^"]+)"/g)].map((match) => match[1]);
 const quizIdsFromLab = [...read(join(src, "pages", "LabPage.tsx")).matchAll(/QuizBlock id="([^"]+)"/g)].map(
   (match) => match[1],
@@ -39,7 +38,7 @@ for (const id of [...quizIdsFromBlocks, ...quizIdsFromLab]) {
 }
 
 for (const id of definedQuizzes) {
-  const referenced = quizIdsFromBlocks.includes(id) || quizIdsFromLab.includes(id) || usedQuizzes.has(id);
+  const referenced = quizIdsFromBlocks.includes(id) || quizIdsFromLab.includes(id);
   if (!referenced) errors.push(`未使用のクイズ ID: ${id}`);
 }
 
