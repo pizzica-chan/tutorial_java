@@ -74,7 +74,7 @@ export function getLesson(trackId: string | undefined, lessonId: string | undefi
 
 export function pageDescription(pathname: string): string {
   const fallback =
-    "既存の Java Web アプリを、処理の入口から追い、届いた箱から切り分ける教材です。ゼロからアプリを作る入門ではありません。";
+    "既存の Java Web アプリを、処理の入口から追い、リクエストがどこまで届いたかで切り分ける教材です。ゼロからアプリを作る入門ではありません。";
   if (pathname === "/") return fallback;
   if (pathname === "/lab") return "通読とは独立して、申請くんの HTTP とソース、リクエストの区間を確認できます。";
   if (pathname === "/glossary" || pathname.startsWith("/glossary")) {
