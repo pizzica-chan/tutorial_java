@@ -366,7 +366,22 @@ Content-Type: application/json
       blocks: [
         {
           type: "p",
-          text: "ヘッダはリクエスト側とレスポンス側の両方にあります。Network タブでは、行を選んで Headers 欄の Request Headers と Response Headers を切り替えて見ましょう。実務では、まず返ってきたレスポンスのヘッダを見ることが多いです。",
+          text: "ヘッダはリクエスト側とレスポンス側の両方にあります。Network タブでは、行を選んで Headers 欄の Response Headers と Request Headers を見ましょう。実務では、まず返ってきたレスポンスのヘッダを見ることが多いです。",
+        },
+        {
+          type: "h2",
+          text: "申請くんの例",
+        },
+        {
+          type: "p",
+          text: "申請一覧を開いたときの、実際の Headers です。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-headers-detail.jpg",
+          alt: "Network タブの Headers。Response headers に Content-Type、Request Headers に Cookie が見える",
+          caption: "上が Response headers、下が Request Headers。`Content-Type` はレスポンス側、`Cookie` はリクエスト側にあります。",
         },
         {
           type: "p",
@@ -383,8 +398,8 @@ Content-Type: application/json
         {
           type: "ul",
           items: [
-            "`Content-Type`（レスポンス）… HTML か JSON か。API なのに HTML のログイン画面なら、認証リダイレクトの可能性が高い",
-            "`Location`（レスポンス）… リダイレクト先。意図しない `/login` ならセッションか権限",
+            "`Content-Type`（レスポンス）… HTML か JSON か",
+            "`Location`（レスポンス）… リダイレクト先",
             "`Set-Cookie`（レスポンス）… サーバがブラウザへ渡す Cookie",
             "Cookie（リクエスト）… ブラウザが送る Cookie。ログイン状態の識別子",
             "Referer（リクエスト）… どの画面から POST されたか",

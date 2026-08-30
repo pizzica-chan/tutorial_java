@@ -32,6 +32,7 @@
 | `screen-network-500.jpg` | 申請くん POST `http://intranet.example.co.jp:8080/shinsei/requests/16/approve`（研修参加、承認者 NULL、500）の Network タブ |
 | `screen-network-login-fail.jpg` | GET `http://intranet.example.co.jp:8080/shinsei/login` の document が失敗した Network タブ（hosts で 127.0.0.1 に向ける） |
 | `screen-network-approve-payload.jpg` | 申請くん POST `/shinsei/requests/15/approve`（山田、出張旅費、成功）の Network タブ。Payload の Form Data（`_csrf`）を切り出した画像 |
+| `screen-network-headers-detail.jpg` | 申請くん GET `/shinsei/requests` の Network タブ。Headers の Response headers と Request Headers を切り出した画像 |
 
 ## 図のアイコン（インライン SVG）
 

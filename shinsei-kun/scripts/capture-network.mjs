@@ -331,6 +331,30 @@ async function captureHistorySearch(page, appBase = verifyBase) {
   });
 }
 
+async function captureRequestHeaders(page, appBase = base) {
+  await page.bringToFront();
+  prepareNetworkPanel({ clear: true });
+  await page.goto(`${appBase}/requests`, { waitUntil: "networkidle0" });
+  await sleep(600);
+  await page.bringToFront();
+  prepareNetworkPanel();
+  await sleep(300);
+  shotWindow("screen-network-headers.jpg", true);
+  waitForManualStep(
+    "次の操作を実施した後、OK を押してください。\n\n" +
+      "1. Network タブで、先頭の document（requests）をクリックする\n" +
+      "2. Headers を開き、General の下に Response Headers、その下に Request Headers が\n" +
+      "   両方見える状態にする（折りたたみは開いたまま）\n" +
+      "3. マウスを DevTools の外へ移す（ツールチップが残らないように）",
+  );
+  const headersShot = join(tmpdir(), "screen-network-headers-full.jpg");
+  shotWindow("screen-network-headers.jpg", false, {
+    outPath: headersShot,
+    preserveUi: true,
+  });
+  console.log("headers shot saved to", headersShot, "- crop manually once coordinates are known");
+}
+
 async function captureApprovePayload(page, appBase = base) {
   await page.goto(`${appBase}/requests/15`, { waitUntil: "networkidle0" });
   await page.evaluate(() => {
@@ -510,6 +534,16 @@ if (process.argv.includes("--rows-only")) {
   await page.keyboard.press("Escape").catch(() => {});
   await sleep(400);
   await captureRows(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
+if (process.argv.includes("--headers-only")) {
+  const appBase = process.argv.includes("--verify") ? verifyBase : base;
+  await login(page, appBase);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  await captureRequestHeaders(page, appBase);
   await browser.close();
   process.exit(0);
 }
