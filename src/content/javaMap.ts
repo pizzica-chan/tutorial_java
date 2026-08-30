@@ -132,7 +132,23 @@ server:
         },
         {
           type: "p",
-          text: "`active: dev` があるので、`application-dev.yml` の設定がこれに重なります。`application-dev.yml` は接続先だけ `shinsei_dev` に上書きしているので、実際に接続する DB 名は `shinsei` ではなく `shinsei_dev` です。設定は複数ファイルに分かれることがあるので、1ファイルだけ見て判断しないようにしましょう。",
+          text: "`active: dev` があるので、`application-dev.yml` の設定がこれに重なります。",
+        },
+        {
+          type: "code",
+          title: "application-dev.yml（抜粋）",
+          lang: "yaml",
+          highlightLines: [3],
+          code: `spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/shinsei_dev?characterEncoding=UTF-8
+logging:
+  level:
+    jp.co.example.shinsei: DEBUG`,
+        },
+        {
+          type: "p",
+          text: "`application-dev.yml` は接続先だけ `shinsei_dev` に上書きしています。`application.yml` 側の `shinsei` と `application-dev.yml` 側の `shinsei_dev` を重ねると、後から読み込む方が勝つので、実際に接続する DB 名は `shinsei_dev` です。設定は複数ファイルに分かれることがあるので、1ファイルだけ見て判断しないようにしましょう。",
         },
         {
           type: "p",
