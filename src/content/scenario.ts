@@ -70,7 +70,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "h2",
-          text: "このシナリオの原因",
+          text: "原因の追跡",
         },
         {
           type: "p",
@@ -191,7 +191,7 @@ export const scenarioTrack: Track = {
         { type: "diagram", name: "stack-own" },
         {
           type: "h2",
-          text: "このシナリオの原因",
+          text: "原因の追跡",
         },
         {
           type: "p",
@@ -248,7 +248,13 @@ WHERE id = 16;`,
         },
         {
           type: "p",
-          text: "申請を登録するときは承認者が必須です。承認ボタンが押された際の処理の仕様も、承認者 ID が入っている前提となっており、未設定のときの考慮はありません。つまり ID 16 は、何らかの理由で作られた、仕様と食い違うレコードです。こうした不整合な行の作成を防ぐには、DB の `approver_id` に NOT NULL を付けるのが有効です。申請くんの列定義は NULL 可のままなので、値が空の行があると、今回のように 500 になります。",
+          text: "申請を登録するときは承認者が必須です。承認ボタンが押された際の処理の仕様も、承認者 ID が入っている前提となっており、未設定のときの考慮はありません。つまり ID 16 は、何らかの理由で作られた、仕様と食い違うレコードです。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "テーブル定義で不正データを防ぐ",
+          text: "こうした不整合な行の作成を防ぐには、DB の `approver_id` に NOT NULL を付けるのが有効です。申請くんの列定義は NULL 可のままなので、値が空の行があると、今回のように 500 になります。",
         },
         {
           type: "h2",
@@ -302,7 +308,7 @@ WHERE id = 16;`,
         {
           type: "ul",
           items: [
-            "山田（yamada）でログイン。申請詳細で ID 11「備品購入」の承認ボタンを押した。検証用環境。ステータスは APPROVED",
+            "山田（yamada）でログイン。申請履歴から ID 11「備品購入」の詳細を開き、承認ボタンを押した。検証用環境。ステータスは APPROVED",
             "Network タブで `POST /shinsei/requests/11/approve` は飛んでいる。500 ではない",
             "操作時刻のログに ERROR もスタックトレースも無い",
           ],
@@ -333,7 +339,7 @@ WHERE id = 16;`,
         },
         {
           type: "h2",
-          text: "このシナリオの原因",
+          text: "原因の追跡",
         },
         {
           type: "p",
@@ -354,6 +360,12 @@ requestService.approve(id, user.getId());`,
         {
           type: "p",
           text: "ID 11 は既に APPROVED です。PENDING ではないため Controller の分岐に入り、flash メッセージを設定して詳細へ戻ります。throw しておらず、承認処理の本体にも入らないため、例外ログは出ません。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "理想的な設計",
+          text: "承認できない場合は承認ボタンを押せないようにするのが理想的な設計です。申請くんの詳細は、このシナリオを追えるように、ステータスに関係なくボタンを押せるようにしています。",
         },
         {
           type: "h2",
@@ -397,7 +409,7 @@ requestService.approve(id, user.getId());`,
         {
           type: "callout",
           kind: "scenario",
-          text: "申請一覧画面が、検証用環境だけ 0 件になる。ローカル環境の起動では、同じログインユーザで 3 件出る。",
+          text: "申請一覧画面が、検証用環境だけ 0 件になる。ローカル環境の起動では、同じログインユーザで 4 件出る。",
         },
         {
           type: "figure",
@@ -429,7 +441,7 @@ requestService.approve(id, user.getId());`,
         { type: "diagram", name: "front-back", caption: "データは DB にある。実行された SQL の条件で、アプリが接続している DB を見る。" },
         {
           type: "h2",
-          text: "このシナリオの原因",
+          text: "原因の追跡",
         },
         {
           type: "p",
@@ -444,7 +456,8 @@ requestService.approve(id, user.getId());`,
 FROM t_request r
 JOIN t_user a ON a.id = r.applicant_id
 LEFT JOIN t_user v ON v.id = r.approver_id
-WHERE r.applicant_id = ? OR r.approver_id = ?
+WHERE (r.applicant_id = ? OR r.approver_id = ?)
+AND r.status = 'PENDING'
 ORDER BY r.created_at DESC
 ==> Parameters: 7(Long), 7(Long)
 <==      Total: 0`,
@@ -459,7 +472,8 @@ ORDER BY r.created_at DESC
           lang: "sql",
           code: `SELECT id, title, status, applicant_id, approver_id
 FROM t_request
-WHERE applicant_id = 7 OR approver_id = 7;`,
+WHERE (applicant_id = 7 OR approver_id = 7)
+  AND status = 'PENDING';`,
         },
         {
           type: "table",
@@ -469,7 +483,7 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
         },
         {
           type: "p",
-          text: "ローカル環境で同じ SQL を実行すると、3 件ありました。",
+          text: "ローカル環境で同じ SQL を実行すると、4 件ありました。",
         },
         {
           type: "code",
@@ -477,15 +491,17 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
           lang: "sql",
           code: `SELECT id, title, status, applicant_id, approver_id
 FROM t_request
-WHERE applicant_id = 7 OR approver_id = 7;`,
+WHERE (applicant_id = 7 OR approver_id = 7)
+  AND status = 'PENDING';`,
         },
         {
           type: "table",
           headers: ["id", "title", "status", "`applicant_id`", "`approver_id`"],
           rows: [
-            ["12", "交通費申請", "PENDING", "7", "3"],
-            ["13", "休暇申請", "PENDING", "7", "3"],
             ["16", "研修参加", "PENDING", "7", "NULL"],
+            ["13", "休暇申請", "PENDING", "7", "3"],
+            ["15", "出張旅費", "PENDING", "3", "7"],
+            ["12", "交通費申請", "PENDING", "7", "3"],
           ],
         },
         {
@@ -527,14 +543,14 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
         {
           type: "callout",
           kind: "scenario",
-          text: "申請履歴画面で、ステータスを「承認済み」にして検索すると、未承認の行も出る。エラーメッセージは出ない。",
+          text: "申請履歴画面で、件名を「申請」、ステータスを「承認済み」にして検索すると、未承認の行が出る。エラーメッセージは出ない。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-history-search.jpg",
-          alt: "ステータスが承認済みのまま、PENDING の行も出ている申請履歴",
-          caption: "ステータスは「承認済み」です。表には PENDING の行もあります。承認済みは備品購入の 1 件だけです。",
+          alt: "件名は申請、ステータスは承認済みなのに、PENDING の行が出ている申請履歴",
+          caption: "件名は「申請」、ステータスは「承認済み」です。表は休暇申請と交通費申請の 2 件で、どちらも PENDING です。",
         },
         {
           type: "h2",
@@ -543,8 +559,8 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
         {
           type: "ul",
           items: [
-            "山田（yamada）でログイン。検証用環境。申請履歴でステータス「承認済み」を選んで検索した",
-            "件名と申請日は空",
+            "山田（yamada）でログイン。検証用環境。申請履歴で件名「申請」、ステータス「承認済み」を選んで検索した",
+            "申請日は空",
             "画面にエラーは出ていない",
           ],
         },
@@ -554,21 +570,21 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
         },
         {
           type: "p",
-          text: "Network タブを見ると、`GET /shinsei/requests/history` は 200 です。クエリに `status=APPROVED` があるので、画面で指定した検索条件はリクエストに含まれてサーバに届いています。なので、次はサーバ側の処理を追います。",
+          text: "Network タブを見ると、`GET /shinsei/requests/history` は 200 です。クエリに `title=申請` と `status=APPROVED` があるので、画面で指定した検索条件はリクエストに含まれてサーバに届いています。なので、次はサーバ側の処理を追います。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-history-search.jpg",
-          alt: "申請履歴の検索 GET が 200 で、クエリに status=APPROVED がある Network タブ",
+          alt: "申請履歴の検索 GET が 200 で、クエリに title=申請 と status=APPROVED がある Network タブ",
         },
         {
           type: "h2",
-          text: "このシナリオの原因",
+          text: "原因の追跡",
         },
         {
           type: "p",
-          text: "検索結果は、テンプレートの `${results}` です。Controller で results に載せている値を開きます。",
+          text: "画面に表示している検索結果は、テンプレートが `${results}` から出しています。Controller で `results` に載せている値を開きましょう。",
         },
         {
           type: "code",
@@ -626,13 +642,14 @@ FROM t_request r
 JOIN t_user a ON a.id = r.applicant_id
 LEFT JOIN t_user v ON v.id = r.approver_id
 WHERE (r.applicant_id = ? OR r.approver_id = ?)
+AND r.title LIKE CONCAT('%', ?, '%')
 ORDER BY r.created_at DESC
-==> Parameters: 7(Long), 7(Long)
-<==      Total: 5`,
+==> Parameters: 7(Long), 7(Long), 申請(String)
+<==      Total: 2`,
         },
         {
           type: "p",
-          text: "WHERE に `status` がありません。この SQL を DB で実行すると、画面と同じ 5 件です。",
+          text: "WHERE に `title` の条件はあり、`status` がありません。この SQL を DB で実行すると、画面と同じ 2 件です。",
         },
         {
           type: "code",
@@ -640,23 +657,21 @@ ORDER BY r.created_at DESC
           lang: "sql",
           code: `SELECT id, title, status, applicant_id, approver_id
 FROM t_request
-WHERE applicant_id = 7 OR approver_id = 7
+WHERE (applicant_id = 7 OR approver_id = 7)
+  AND title LIKE '%申請%'
 ORDER BY created_at DESC;`,
         },
         {
           type: "table",
           headers: ["id", "title", "status", "`applicant_id`", "`approver_id`"],
           rows: [
-            ["16", "研修参加", "PENDING", "7", "NULL"],
             ["13", "休暇申請", "PENDING", "7", "3"],
-            ["15", "出張旅費", "PENDING", "3", "7"],
             ["12", "交通費申請", "PENDING", "7", "3"],
-            ["11", "備品購入", "APPROVED", "7", "3"],
           ],
         },
         {
           type: "p",
-          text: "DB の行は、その SQL に対しては正しいです。足りないのは WHERE の `status` です。Mapper の XML を開き、`status` を付ける箇所を見ます。",
+          text: "Mapper の XML を開き、SQL に `status` の絞り込み条件を足している箇所を見ます。",
         },
         {
           type: "code",
@@ -676,18 +691,58 @@ ORDER BY created_at DESC;`,
         },
         {
           type: "p",
-          text: "`status` の条件は、`requestStatus` が空でなければ SQL に足されます。ログに `status` の `?` が無いので、この if は偽です。`requestStatus` は null でした。",
+          text: "`requestStatus` が空でなければ、SQL に `AND r.status = #{requestStatus}` が足されます。",
         },
         {
           type: "p",
-          text: "`requestStatus` は Controller の引数です。`@RequestParam` の value が `requestStatus` なので、Spring はクエリの `requestStatus` を探します。Network タブの名前は `status` です。",
+          text: "この `requestStatus` をセットしている元は、Controller の引数です。",
+        },
+        {
+          type: "code",
+          title: "RequestController.history（申請くん）",
+          lang: "java",
+          highlightLines: [4, 15],
+          code: `@GetMapping("/history")
+public String history(
+    @RequestParam(value = "title", required = false) String title,
+    @RequestParam(value = "requestStatus", required = false) String requestStatus,
+    @RequestParam(value = "createdFrom", required = false) String createdFrom,
+    @RequestParam(value = "createdTo", required = false) String createdTo,
+    Model model,
+    @AuthenticationPrincipal LoginUser user
+) {
+  model.addAttribute("searchTitle", title);
+  model.addAttribute("createdFrom", createdFrom);
+  model.addAttribute("createdTo", createdTo);
+  model.addAttribute(
+      "results",
+      requestService.searchHistory(user.getId(), title, requestStatus, createdFrom, createdTo)
+  );
+  return "request/history";
+}`,
+        },
+        {
+          type: "p",
+          text: "`@RequestParam` の value が `requestStatus` なので、Spring は HTTP リクエストから `requestStatus` を探します。しかし、Network タブを見るとクエリパラメータ名は `status` でした。HTTP リクエストに載っている名前は、この `status` です。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-history-search-request.jpg",
+          alt: "申請履歴の検索 GET の Payload。Query String Parameters に title と status がある",
+          caption: "Payload の Query String Parameters。ステータス側の名前は `status` です。サーバが探す `requestStatus` とは違います。",
+          size: "small",
         },
         {
           type: "code",
           title: "申請履歴の検索フォーム（申請くん）",
           lang: "html",
-          highlightLines: [3],
+          highlightLines: [3, 7],
           code: `<label>
+  件名
+  <input type="text" name="title" />
+</label>
+<label>
   ステータス
   <select name="status">
     <option value="">すべて</option>
@@ -698,7 +753,7 @@ ORDER BY created_at DESC;`,
         },
         {
           type: "p",
-          text: "フォームの `name` は `status`、サーバ側の識別子は `requestStatus` です。名前が違うので値は渡らず、DB 検索の条件に `status` が乗りません。件名の `name` は `title` で、`@RequestParam` の `title` と一致しているので、件名だけ効きます。",
+          text: "フォームの `name` は `status`、サーバ側の識別子は `requestStatus` です。名前が違うので値は渡らず、DB 検索の条件に `status` が乗りません。件名の `name` は `title` で、`@RequestParam` の `title` と一致しているので、件名の「申請」は効いています。",
         },
         {
           type: "h2",
@@ -709,7 +764,7 @@ ORDER BY created_at DESC;`,
           items: [
             "件数がおかしくても 200 なら、検索結果の元になっている変数から追う",
             "MyBatis の SQL を DB で実行し、画面と同じなら、その SQL の条件を疑う",
-            "WHERE に使っている変数を、Mapper → Service → Controller → フォームの `name` まで戻る",
+            "WHERE に使っている変数を、Mapper → Service → Controller → フォームの `name` まで辿る",
           ],
         },
         {
@@ -719,10 +774,12 @@ ORDER BY created_at DESC;`,
         {
           type: "investigation-flow",
           items: [
-            "Network タブで、クエリに `status=APPROVED` があることを確認",
+            "Network タブで、クエリに `title=申請` と `status=APPROVED` があることを確認",
             "検索結果が `${results}` であること、`searchHistory` の戻り値であることを確認",
-            "MyBatis の SQL を DB で実行し、画面と同じ 5 件であることを確認",
-            "WHERE の `requestStatus` が null で、フォームの `name` が `status` だと分かる",
+            "MyBatis の SQL を DB で実行し、画面と同じ 2 件であることを確認",
+            "Mapper の XML で、`status` 条件の変数が `requestStatus` だと分かる",
+            "`requestStatus` を Controller まで辿り、`@RequestParam` の value だと分かる",
+            "フォームの `name` が `status` で、サーバ側の `requestStatus` と不一致だと分かる",
           ],
         },
         { type: "quiz", id: "sc-history" },
@@ -778,7 +835,7 @@ ORDER BY created_at DESC;`,
         { type: "diagram", name: "env-diff", caption: "コードが同じでも、届く道が違うことがあります。" },
         {
           type: "h2",
-          text: "このシナリオの原因",
+          text: "原因の追跡",
         },
         {
           type: "p",
@@ -817,8 +874,8 @@ TcpTestSucceeded : False`,
         {
           type: "ul",
           items: [
-            "ss -tlnp | grep 8080 … 8080 ポートで待ち受けしているプロセスがあるかを出す",
-            "curl -I `http://localhost:8080/shinsei/login` … サーバ自身（localhost）からログイン URL へ HTTP を送る。-I は本文を捨て、ステータスコードとヘッダだけを表示する",
+            "`ss -tlnp | grep 8080` … 8080 ポートで待ち受けしているプロセスがあるかを出す",
+            "`curl -I http://localhost:8080/shinsei/login` … サーバ自身（localhost）からログイン URL へ HTTP を送る。`-I` は本文を捨て、ステータスコードとヘッダだけを表示する",
           ],
         },
         {
@@ -835,8 +892,8 @@ Content-Type: text/html;charset=UTF-8`,
         {
           type: "ul",
           items: [
-            "LISTEN と *:8080 … 8080 で待ち受けしている（java は申請くんのプロセス）",
-            "HTTP/1.1 200 … サーバ自身からはログイン URL に応答できている",
+            "`LISTEN` と `*:8080` … 8080 で待ち受けしている（java は申請くんのプロセス）",
+            "`HTTP/1.1 200` … サーバ自身からはログイン URL に応答できている",
           ],
         },
         {
@@ -920,7 +977,7 @@ Content-Type: text/html;charset=UTF-8`,
         { type: "diagram", name: "not-found", caption: "HTML が 200 でも、静的ファイルだけ 404 のことがあります。" },
         {
           type: "h2",
-          text: "このシナリオの原因",
+          text: "原因の追跡",
         },
         {
           type: "p",
@@ -929,7 +986,7 @@ Content-Type: text/html;charset=UTF-8`,
         {
           type: "ul",
           items: [
-            "ls -l `/opt/tomcat/webapps/shinsei/WEB-INF/classes/static/css/` … 展開先の CSS ディレクトリを一覧する",
+            "`ls -l /opt/tomcat/webapps/shinsei/WEB-INF/classes/static/css/` … 展開先の CSS ディレクトリを一覧する",
           ],
         },
         {
@@ -1079,7 +1136,7 @@ if (!"PENDING".equals(request.getStatus())) {
   return "redirect:/requests/" + id;
 }
 requestService.approve(id, user.getId());
-// 一覧 Mapper: WHERE status IN ('PENDING', 'APPROVED')`,
+// 一覧 Mapper: AND r.status = 'PENDING'`,
         },
         {
           type: "p",
@@ -1123,7 +1180,7 @@ requestService.approve(id, user.getId());
     },
     {
       id: "impact-search",
-      title: "[影響調査] 一覧の検索条件に部署を足したい",
+      title: "[影響調査] 一覧に部署で絞り込みを足したい",
       minutes: 8,
       blocks: [
         {

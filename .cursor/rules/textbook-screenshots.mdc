@@ -34,7 +34,7 @@ node shinsei-kun/scripts/capture-screens.mjs
 
 ページ画像のアドレスバーは合成（macOS 風の三点）。Network タブは Windows の実 Chrome。枠の見た目は揃えない。
 
-承認の `window.confirm` で puppeteer の遷移待ちが落ちることがある。権限エラー画面はモックで撮る。申請履歴は山田でステータス「承認済み」を検索して撮る。PENDING の行も出るのが意図どおりです。`node shinsei-kun/scripts/capture-screens.mjs --history-only`（検証用ホストなら `--verify`）。
+承認の `window.confirm` で puppeteer の遷移待ちが落ちることがある。権限エラー画面はモックで撮る。申請履歴は山田で件名「申請」、ステータス「承認済み」を検索して撮る。PENDING の行も出るのが意図どおりです。`node shinsei-kun/scripts/capture-screens.mjs --history-only`（検証用ホストなら `--verify`）。
 
 ## Network タブ
 
@@ -53,7 +53,7 @@ node shinsei-kun/scripts/capture-network.mjs
 - CSS 404 は `app.css` を intercept して 404 にし、リロードする。ページが崩れた状態と Network の 404 を同時に撮る
 - `screen-network-login-fail.jpg` は `http://intranet.example.co.jp:8080/shinsei/login` を撮る。検証用シナリオ向けの画面・Network も同じホスト名。撮影 PC の hosts で `127.0.0.1 intranet.example.co.jp` を足す（`shinsei-kun/scripts/setup-capture-hosts.ps1`、管理者 PowerShell）。一括再撮影は `capture-screens.mjs --verify-scenarios` と `capture-network.mjs --verify-scenarios`
 - HTML / CSS / JS が並ぶ Network は `--rows-only`（検証用ホストなら `--verify`）。撮影前に Network パネルを選ぶ。Elements タブのまま撮らない
-- 申請履歴は `--history-search-only`（検証用ホストなら `--verify`）。クエリの `status=APPROVED` と PENDING の行が同時に見える状態で撮る
+- 申請履歴は `--history-search-only`（検証用ホストなら `--verify`）。クエリの `title=申請` と `status=APPROVED`、PENDING の行が同時に見える状態で撮る。検索 GET のクエリ詳細は手動。スクリプトがダイアログで案内する。`screen-network-history-search-request.jpg` は Payload の Query String Parameters から `crop-jpeg.ps1` で切り出す
 - 承認 500 は、山田で ID 16「研修参加」を開き、実際に承認を送信して撮る。`request.getApproverId()` が null のため、実アプリが 500 を返す
 - POST 後にログが消えるので、403 / 500 は遷移後の document 行を撮る（preserve log は必須ではない）
 - 画面にエラーが出ているが POST が無い見え方は、ページ単体ではなく Network のウィンドウ全体で撮る。`screen-network-js-error.jpg` は Network のログを消してから押す。ログ消去は手動。スクリプトがダイアログで案内する（`capture-network.mjs` の js-error 撮影）。キャプションは「例」

@@ -519,9 +519,9 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
           title: "同じスレッドの通過点（申請くん・MyBatis）",
           code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests
 04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : start RequestService.findMine(..)
-04:12:03.110 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findMine : ==>  Preparing: SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at, a.display_name AS applicant_name, v.display_name AS approver_name FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.id = r.approver_id WHERE r.applicant_id = ? OR r.approver_id = ? ORDER BY r.created_at DESC
+04:12:03.110 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findMine : ==>  Preparing: SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at, a.display_name AS applicant_name, v.display_name AS approver_name FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.id = r.approver_id WHERE (r.applicant_id = ? OR r.approver_id = ?) AND r.status = 'PENDING' ORDER BY r.created_at DESC
 04:12:03.112 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findMine : ==> Parameters: 7(Long), 7(Long)
-04:12:03.115 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findMine : <==      Total: 5
+04:12:03.115 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findMine : <==      Total: 4
 04:12:03.118 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : end RequestService.findMine(..)`,
         },
         {
@@ -598,10 +598,11 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
 FROM t_request r
 JOIN t_user a ON a.id = r.applicant_id
 LEFT JOIN t_user v ON v.id = r.approver_id
-WHERE r.applicant_id = ? OR r.approver_id = ?
+WHERE (r.applicant_id = ? OR r.approver_id = ?)
+AND r.status = 'PENDING'
 ORDER BY r.created_at DESC
 ==> Parameters: 7(Long), 7(Long)
-<==      Total: 5`,
+<==      Total: 4`,
         },
         {
           type: "ul",
@@ -727,7 +728,7 @@ ORDER BY r.created_at DESC
         },
         {
           type: "p",
-          text: "Console にも何も無ければ、エラーでは止まっていません。開発者ツールで、いま画面にある HTML からエラーの文言を検索しましょう。click が付いているか、ボタンが無効になっていないかも確認しましょう。",
+          text: "Console にも何も無ければ、未捕捉の例外で処理が止まったわけではありません。開発者ツールで、いま画面にある HTML からエラーの文言を検索しましょう。click が付いているか、ボタンが無効になっていないかも確認しましょう。",
         },
         {
           type: "callout",
@@ -1101,7 +1102,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
             ["connection timed out、Read timed out", "アプリが動いているホストから、外部のホスト名・ポートへ TCP が開くか"],
             ["Connection refused", "ホストまでは届いたが、そのポートで待ち受けが無い。URL のポート番号と向き先を再確認"],
             ["UnknownHostException、名前解決できない", "ping や nslookup でホスト名が引けるか"],
-            ["SSLHandshakeException、証明書エラー", "curl -vk で HTTPS まで届くか。TLS はアプリより手前で失敗することもある"],
+            ["SSLHandshakeException、証明書エラー", "`curl -vk` で HTTPS まで届くか。TLS はアプリより手前で失敗することもある"],
             ["開発 PC の curl は 200、サーバ上のアプリだけ失敗", "打つ場所をアプリサーバに変える。経路と FW が PC と違う"],
           ],
         },

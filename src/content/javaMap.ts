@@ -561,19 +561,19 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "サーバが組み立てたあとは、th: 属性は消え、値だけが残ります。`status` が `PENDING` の行だけ form が出ます。`context-path` が `/shinsei` なら action に付きます。",
+          text: "サーバが組み立てたあとは、th: 属性は消え、値だけが残ります。申請くんの一覧は未承認だけなので、今の画面では各行に form が出ます。テンプレートの `th:if` は、PENDING のときだけボタンを出す条件です。`context-path` が `/shinsei` なら action に付きます。",
         },
         {
           type: "code",
           title: "組み立て後の HTML（ブラウザが受け取る抜粋）",
           lang: "html",
-          highlightLines: [5, 14],
+          highlightLines: [5, 16],
           code: shinseiListRenderedSnippet,
         },
         {
           type: "diagram",
           name: "template-rendered",
-          caption: "組み立て後の HTML をブラウザが描画したイメージ。PENDING の行だけ承認ボタンが出る。",
+          caption: "組み立て後の HTML をブラウザが描画したイメージ。申請くんの一覧は未承認だけなので、各行に承認ボタンが出る。",
         },
         {
           type: "h2",
@@ -602,7 +602,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           kind: "screen",
           src: "/images/screen-list.jpg",
           alt: "組み立て後の申請一覧画面",
-          caption: "PENDING の行だけ承認ボタンが出ます。APPROVED の備品購入にはボタンがありません。",
+          caption: "一覧は未承認だけです。各行に承認ボタンがあります。承認済みは申請履歴で探します。",
         },
         { type: "quiz", id: "java-template" },
       ],

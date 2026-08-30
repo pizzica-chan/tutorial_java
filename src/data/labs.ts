@@ -32,7 +32,7 @@ yes -> ログインユーザを次へ渡す`,
     id: "controller",
     layer: "Controller",
     title: "RequestController#list",
-    detail: "引数の LoginUser は、フィルタがセッションから復元したログインユーザです。その ID を Service に渡し、自分の申請を取ります。画面用のデータを Model に載せ、テンプレート名を返します。",
+    detail: "引数の LoginUser は、フィルタがセッションから復元したログインユーザです。その ID を Service に渡し、未承認の申請を取ります。画面用のデータを Model に載せ、テンプレート名を返します。",
     code: `@GetMapping
 public String list(Model model, @AuthenticationPrincipal LoginUser user) {
   model.addAttribute("applications", requestService.findMine(user.getId()));
@@ -52,10 +52,11 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     id: "mapper",
     layer: "MyBatis",
     title: "RequestMapper#findMine",
-    detail: "SQL の ? に、その userId が入ります。申請者または承認者である行だけが対象です。件数がおかしい、遅い、エラーになるといった症状は、この SQL の実体を見ます。",
+    detail: "SQL の ? に、その userId が入ります。申請者または承認者である、未承認の行だけが対象です。件数がおかしい、遅い、エラーになるといった症状は、この SQL の実体を見ます。",
     code: `SELECT ... FROM t_request
- WHERE applicant_id = ?
-    OR approver_id = ?
+ WHERE (applicant_id = ?
+    OR approver_id = ?)
+   AND status = 'PENDING'
  ORDER BY created_at DESC`,
   },
   {
@@ -235,7 +236,7 @@ Content-Type: text/html;charset=UTF-8
     <h1>申請一覧</h1>
     <table>
       <tr><td>交通費申請</td><td>PENDING</td></tr>
-      <tr><td>備品購入</td><td>APPROVED</td></tr>
+      <tr><td>休暇申請</td><td>PENDING</td></tr>
     </table>
   </body>
 </html>`,

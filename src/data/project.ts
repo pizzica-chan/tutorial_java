@@ -143,9 +143,14 @@ export const shinseiListRenderedSnippet = `<tr>
   </td>
 </tr>
 <tr>
-  <td>備品購入</td>
-  <td>APPROVED</td>
-  <td></td>
+  <td>休暇申請</td>
+  <td>PENDING</td>
+  <td>
+    <form action="/shinsei/requests/13/approve" method="post">
+      <input type="hidden" name="_csrf" value="8f3a2b1c-4e5f-6789-abcd-ef0123456789" />
+      <button type="submit">承認</button>
+    </form>
+  </td>
 </tr>`;
 
 /** 教材用。テンプレートから static を読み込む抜粋 */
@@ -340,8 +345,9 @@ public class MailService {
     code: `<select id="findMine" resultType="RequestEntity">
   SELECT id, title, status, applicant_id, approver_id, applicant_email, created_at
   FROM t_request
-  WHERE applicant_id = #{userId}
-     OR approver_id = #{userId}
+  WHERE (applicant_id = #{userId}
+     OR approver_id = #{userId})
+    AND status = 'PENDING'
   ORDER BY created_at DESC
 </select>
 

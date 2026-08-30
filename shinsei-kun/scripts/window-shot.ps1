@@ -4,6 +4,7 @@ param(
   [switch] $SelectNetwork,
   [switch] $ClearNetwork,
   [switch] $ShowConsole,
+  [switch] $PreserveUi,
   [string] $NetworkFilter = ""
 )
 
@@ -72,10 +73,12 @@ if ($w -lt 200 -or $h -lt 200) {
   throw "window too small: $w x $h title=$($proc.MainWindowTitle)"
 }
 
-[System.Windows.Forms.SendKeys]::SendWait("{ESC}")
-Start-Sleep -Milliseconds 150
-[System.Windows.Forms.SendKeys]::SendWait("{ESC}")
-Start-Sleep -Milliseconds 200
+if (-not $PreserveUi) {
+  [System.Windows.Forms.SendKeys]::SendWait("{ESC}")
+  Start-Sleep -Milliseconds 150
+  [System.Windows.Forms.SendKeys]::SendWait("{ESC}")
+  Start-Sleep -Milliseconds 200
+}
 
 if ($SelectNetwork -or $ClearNetwork) {
   $clickX = [int]($rect.Left + ($w * 0.82))

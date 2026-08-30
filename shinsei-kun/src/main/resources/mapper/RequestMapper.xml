@@ -10,8 +10,9 @@
     FROM t_request r
     JOIN t_user a ON a.id = r.applicant_id
     LEFT JOIN t_user v ON v.id = r.approver_id
-    WHERE r.applicant_id = #{userId}
-       OR r.approver_id = #{userId}
+    WHERE (r.applicant_id = #{userId}
+       OR r.approver_id = #{userId})
+      AND r.status = 'PENDING'
     ORDER BY r.created_at DESC
   </select>
 

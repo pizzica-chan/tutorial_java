@@ -50,7 +50,7 @@ export type Block =
   | { type: "quiz"; id: string }
   | { type: "widget"; name: WidgetName }
   | { type: "diagram"; name: DiagramName; caption?: string }
-  | { type: "figure"; src: string; alt: string; caption?: string; kind?: "photo" | "screen" }
+  | { type: "figure"; src: string; alt: string; caption?: string; kind?: "photo" | "screen"; size?: "small" }
   | { type: "table"; headers: string[]; rows: string[][]; empty?: string }
   | { type: "steps"; items: { title: string; text: string }[] }
   | { type: "investigation-flow"; items: string[] };

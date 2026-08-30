@@ -18,7 +18,7 @@ export const quizzes = {
     question: "申請一覧の件数がおかしい。先に見るのはどれ？",
     choices: [
       "一覧テンプレートの色や余白",
-      "検索条件や SQL、DB の行",
+      "実行された SQL と、その条件の DB の行",
       "ブラウザのキャッシュを消すだけ",
       "`pom.xml` の Java の版",
     ],
@@ -75,10 +75,10 @@ export const quizzes = {
   },
   "web-params": {
     id: "web-params",
-    question: "`GET /shinsei/requests?status=PENDING` で一覧を絞り込んでいる。`status=PENDING` はどこに載っている？",
+    question: "`GET /shinsei/requests/history?status=APPROVED` で申請履歴を絞り込んでいる。`status=APPROVED` はどこに載っている？",
     choices: [
       "クエリパラメータ（URL の ? 以降）",
-      "パス `/requests` の一部",
+      "パス `/requests/history` の一部",
       "レスポンスの HTML 本文",
       "CSS ファイル",
     ],
@@ -118,19 +118,19 @@ export const quizzes = {
   },
   "java-template": {
     id: "java-template",
-    question: "承認ボタンが一覧に出ない。Controller は `list` を返し、Model に `applications` は入っている。次に見るのは？",
+    question: "申請くんの一覧は未承認だけ出る。テンプレートの `th:if=\"${item.status == 'PENDING'}\"` は何をする？",
     choices: [
-      "`templates/request/list.html` の `th:if` など表示条件",
-      "`pom.xml` の groupId",
-      "MySQL のポート番号だけ",
-      "favicon.ico",
+      "PENDING のときだけ承認ボタンを出す表示条件",
+      "一覧の SQL で未承認だけ取る条件",
+      "POST を止める JS",
+      "`pom.xml` の Java の版",
     ],
     answer: 0,
-    explanation: "データは届いていても、テンプレートの `th:if` でボタンを出さない実装はあります。return から HTML を開き、表示条件と form の `th:action` を見ます。",
+    explanation: "未承認だけ取るのは Mapper の SQL です。`th:if` は、組み立てる HTML にボタンを出すかどうかです。今の一覧は未承認だけなので、画面では各行にボタンが出ます。",
   },
   "java-crosscut": {
     id: "java-crosscut",
-    question: "Controller の `approve` にブレークポイントを置いたが止まらない。ソース上はボタンからこの Java メソッドに来る。先に疑うのは？",
+    question: "詳細の承認ボタンから Controller の `approve` に来る。ブレークポイントを置いたが止まらない。先に疑うのは？",
     choices: [
       "CSS の class 名",
       "Filter、Interceptor、Spring Security など、Controller に届く前の処理",
@@ -185,7 +185,7 @@ export const quizzes = {
   },
   "read-debug": {
     id: "read-debug",
-    question: "画面に「承認済み」と出る。Network タブの JSON は `status: PENDING`。次は？",
+    question: "JSON から画面を組むアプリで、画面に「承認済み」と出る。Network タブの JSON は `status: PENDING`。次は？",
     choices: [
       "RequestService に IDE のブレークポイントを置く",
       "ブラウザの開発者ツールで、JSON を画面に出している JS を見る",
@@ -377,7 +377,7 @@ export const quizzes = {
   },
   "sc-history": {
     id: "sc-history",
-    question: "申請履歴で承認済みを選んだ。Network のクエリには `status=APPROVED` がある。MyBatis の SQL の WHERE に `status` が無く、同じ SQL を DB で実行すると画面と同じ件数になる。次は？",
+    question: "申請履歴で件名「申請」、ステータス承認済みを選んだ。Network のクエリには `title=申請` と `status=APPROVED` がある。MyBatis の SQL の WHERE に `title` の条件はあり、`status` が無い。同じ SQL を DB で実行すると画面と同じ 2 件になる。次は？",
     choices: [
       "検証用環境の DB を作り直す",
       "WHERE に使う変数が、どこでセットされているかを追う",
@@ -385,7 +385,7 @@ export const quizzes = {
       "本番のテーブルを DROP する",
     ],
     answer: 1,
-    explanation: "その SQL の結果としては正しいので、DB を作り直しても原因は残りません。条件に載っていない変数を、Mapper から Controller、フォームの `name` まで戻って確認します。このシナリオでは `requestStatus` と `status` が違っていました。",
+    explanation: "その SQL の結果としては正しいので、DB を作り直しても原因は残りません。条件に載っていない変数を、Mapper から Controller、フォームの `name` まで辿って確認します。このシナリオでは `requestStatus` と `status` が違っていました。",
   },
   "sc-net": {
     id: "sc-net",

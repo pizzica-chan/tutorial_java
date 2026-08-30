@@ -688,9 +688,9 @@ function TemplateFragment() {
                 <td>承認</td>
               </tr>
               <tr>
-                <td>備品購入</td>
-                <td>APPROVED</td>
-                <td />
+                <td>休暇申請</td>
+                <td>PENDING</td>
+                <td>承認</td>
               </tr>
             </tbody>
           </table>
@@ -732,9 +732,13 @@ function TemplateRendered() {
               </td>
             </tr>
             <tr>
-              <td>備品購入</td>
-              <td>APPROVED</td>
-              <td />
+              <td>休暇申請</td>
+              <td>PENDING</td>
+              <td>
+                <button type="button" className="d-browser-btn">
+                  承認
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>

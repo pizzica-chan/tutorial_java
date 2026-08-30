@@ -13,6 +13,7 @@ const chrome = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const base = "http://localhost:8080/shinsei";
 const profile = join(tmpdir(), "shinsei-capture-profile");
 const ps1 = join(root, "shinsei-kun", "scripts", "window-shot.ps1");
+const cropPs1 = join(root, "shinsei-kun", "scripts", "crop-jpeg.ps1");
 const manualPromptPs1 = join(root, "shinsei-kun", "scripts", "manual-prompt.ps1");
 mkdirSync(outDir, { recursive: true });
 rmSync(profile, { recursive: true, force: true });
@@ -45,7 +46,7 @@ writeFileSync(
 
 let browserPid = 0;
 
-function shotWindow(name, selectNetwork = false) {
+function shotWindow(name, selectNetwork = false, { outPath, preserveUi = false } = {}) {
   const args = [
     "-NoProfile",
     "-ExecutionPolicy",
@@ -55,10 +56,38 @@ function shotWindow(name, selectNetwork = false) {
     "-ProcessId",
     String(browserPid),
     "-OutPath",
-    join(outDir, name),
+    outPath ?? join(outDir, name),
   ];
   if (selectNetwork) args.push("-SelectNetwork");
+  if (preserveUi) args.push("-PreserveUi");
   const result = execFileSync("powershell", args, { encoding: "utf8" });
+  console.log(result.trim());
+}
+
+function cropJpeg(srcPath, destName, { left, top, width, height }) {
+  const result = execFileSync(
+    "powershell",
+    [
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      cropPs1,
+      "-InPath",
+      srcPath,
+      "-OutPath",
+      join(outDir, destName),
+      "-Left",
+      String(left),
+      "-Top",
+      String(top),
+      "-Width",
+      String(width),
+      "-Height",
+      String(height),
+    ],
+    { encoding: "utf8" },
+  );
   console.log(result.trim());
 }
 
@@ -274,7 +303,7 @@ async function captureCannotApprove(page, appBase = verifyBase) {
 }
 
 async function captureHistorySearch(page, appBase = verifyBase) {
-  const url = `${appBase}/requests/history?title=&status=APPROVED&createdFrom=&createdTo=`;
+  const url = `${appBase}/requests/history?title=申請&status=APPROVED&createdFrom=&createdTo=`;
   await page.bringToFront();
   prepareNetworkPanel({ clear: true });
   await page.goto(url, { waitUntil: "networkidle0" });
@@ -283,6 +312,23 @@ async function captureHistorySearch(page, appBase = verifyBase) {
   prepareNetworkPanel();
   await sleep(300);
   shotWindow("screen-network-history-search.jpg", true);
+  waitForManualStep(
+    "次の操作を実施した後、OK を押してください。\n\n" +
+      "1. Network タブで、先頭の document（history?title=申請&status=...）をクリックする\n" +
+      "2. Payload を開き、Query String Parameters で title=申請 と status=APPROVED が見える状態にする\n" +
+      "3. マウスを DevTools の外へ移す（ツールチップが残らないように）",
+  );
+  const headersShot = join(tmpdir(), "screen-network-history-headers.jpg");
+  shotWindow("screen-network-history-search.jpg", false, {
+    outPath: headersShot,
+    preserveUi: true,
+  });
+  cropJpeg(headersShot, "screen-network-history-search-request.jpg", {
+    left: 900 / 1444,
+    top: 210 / 893,
+    width: 530 / 1444,
+    height: 240 / 893,
+  });
 }
 
 async function captureCss404(page, appBase = verifyBase) {

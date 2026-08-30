@@ -30,14 +30,16 @@ alwaysApply: true
 - アノテーション、テンプレート属性、フォームの `name`
 - メソッド呼び出しや式。読者がその行を開く手がかりになるもの
 
-ソースの1行を本文に書くときは、その行の字面を途中で切らない。
+ソースやコマンドの1行を本文に書くときは、その行の字面を途中で切らない。
 
 ```
 # 悪い
 const tokenEl = `document.getElementById("csrfToken")`;
+curl -I `http://localhost:8080/shinsei/login`
 
 # よい
 `const tokenEl = document.getElementById("csrfToken");`
+`curl -I http://localhost:8080/shinsei/login`
 ```
 
 HTTP メソッドやステータスコードでも、パスやヘッダと一体の字面なら付ける（`GET /shinsei/requests`、`POST .../approve`）。

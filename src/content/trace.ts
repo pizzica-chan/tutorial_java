@@ -176,9 +176,9 @@ mailService.notifyApplicant(request);`,
           highlightLines: [5],
           code: `# Time: 2026-04-10T09:15:23.456789Z
 # User@Host: app[app] @ localhost []
-# Query_time: 2.103421  Lock_time: 0.000120  Rows_sent: 5  Rows_examined: 5
+# Query_time: 2.103421  Lock_time: 0.000120  Rows_sent: 4  Rows_examined: 4
 SELECT id, title, status, applicant_id, approver_id, created_at
-FROM t_request WHERE applicant_id = 7 OR approver_id = 7 ORDER BY created_at DESC;`,
+FROM t_request WHERE (applicant_id = 7 OR approver_id = 7) AND status = 'PENDING' ORDER BY created_at DESC;`,
         },
         {
           type: "p",
@@ -200,12 +200,13 @@ FROM t_request WHERE applicant_id = 7 OR approver_id = 7 ORDER BY created_at DES
           type: "code",
           title: "RequestMapper.xml（抜粋）",
           lang: "xml",
-          highlightLines: [1, 4, 5],
+          highlightLines: [1, 4, 5, 6],
           code: `<select id="findMine" resultType="RequestEntity">
   SELECT id, title, status, applicant_id, approver_id, created_at
   FROM t_request
-  WHERE applicant_id = #{userId}
-     OR approver_id = #{userId}
+  WHERE (applicant_id = #{userId}
+     OR approver_id = #{userId})
+    AND status = 'PENDING'
   ORDER BY created_at DESC
 </select>`,
         },

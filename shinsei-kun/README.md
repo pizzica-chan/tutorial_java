@@ -49,13 +49,14 @@ mvn spring-boot:run
 | --- | --- |
 | ログイン | GET `/shinsei/login` |
 | 申請一覧 | GET `/shinsei/requests` |
+| 申請履歴 | GET `/shinsei/requests/history` |
 | 申請詳細 | GET `/shinsei/requests/12` |
 | 承認 | POST `/shinsei/requests/12/approve` |
 | 新規申請 | GET `/shinsei/requests/new` |
 | 利用者管理 | GET `/shinsei/admin/users` |
 | JSON 一覧 | GET `/shinsei/api/requests` |
 
-初期データは `src/main/resources/data.sql` です。交通費申請の ID は 12、備品購入は承認済みです。承認したあとにこの状態へ戻すには、アプリを再起動します。教材用の初期行（ID 11〜15）のステータスが戻ります。画面から新規に作った申請は残ります。
+初期データは `src/main/resources/data.sql` です。交通費申請の ID は 12、備品購入は承認済みです。備品購入は申請一覧には出ず、申請履歴で探せます。承認したあとにこの状態へ戻すには、アプリを再起動します。教材用の初期行（ID 11〜13、15、16）のステータスが戻ります。画面から新規に作った申請は残ります。
 
 承認後のメールは SMTP には出さず、アプリのログ（コンソールと `logs/shinsei.log`）に内容を出します。
 

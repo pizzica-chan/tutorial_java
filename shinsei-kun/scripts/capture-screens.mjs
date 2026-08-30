@@ -98,7 +98,7 @@ async function login(page, username, password = "password", appBase = base) {
 }
 
 async function shotHistorySearch(page, appBase) {
-  const url = `${appBase}/requests/history?title=&status=APPROVED&createdFrom=&createdTo=`;
+  const url = `${appBase}/requests/history?title=申請&status=APPROVED&createdFrom=&createdTo=`;
   await page.goto(url, { waitUntil: "networkidle0" });
   await shot(page, "screen-history-search.jpg", url);
 }

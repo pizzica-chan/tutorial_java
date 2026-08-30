@@ -659,7 +659,7 @@ request.getApproverId().equals(userId); // NPE`,
         },
         {
           type: "p",
-          text: "申請くんには「PENDING 以外は承認できない」という分岐があります。山田でログインし、申請 ID 11「備品購入」の詳細から承認を送信します。`findById` の直後にある if で止めると、`status` が `APPROVED` だと確認できます。",
+          text: "申請くんには「PENDING 以外は承認できない」という分岐があります。山田でログインし、申請履歴から申請 ID 11「備品購入」の詳細を開き、承認を送信します。`findById` の直後にある if で止めると、`status` が `APPROVED` だと確認できます。",
         },
         {
           type: "code",
