@@ -75,7 +75,7 @@ export const quizzes = {
   },
   "web-params": {
     id: "web-params",
-    question: "`GET /shinsei/requests/history?status=APPROVED` で申請履歴を絞り込んでいる。`status=APPROVED` はどこに載っている？",
+    question: "`GET /shinsei/requests/history?title=交通費` で申請履歴を絞り込んでいる。`title=交通費` はどこに載っている？",
     choices: [
       "クエリパラメータ（URL の ? 以降）",
       "パス `/requests/history` の一部",

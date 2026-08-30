@@ -341,6 +341,32 @@ public class MailService {
 }`,
   },
   {
+    path: "src/main/resources/schema.sql",
+    note: "テーブル定義",
+    why: "カラムの型・NOT NULL・INDEX の有無はここにあります。件数が合わない、遅い、桁が入らないといった調査では、SQL やコードより先にここを見ることがあります。",
+    code: `CREATE TABLE IF NOT EXISTS t_user (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  username VARCHAR(64) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  display_name VARCHAR(64) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  role VARCHAR(32) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS t_request (
+  id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(255) NOT NULL,
+  status VARCHAR(32) NOT NULL,
+  applicant_id BIGINT NOT NULL,
+  approver_id BIGINT,
+  applicant_email VARCHAR(255),
+  created_at DATETIME NOT NULL,
+  updated_at DATETIME,
+  CONSTRAINT fk_request_applicant FOREIGN KEY (applicant_id) REFERENCES t_user (id),
+  CONSTRAINT fk_request_approver FOREIGN KEY (approver_id) REFERENCES t_user (id)
+);`,
+  },
+  {
     path: "src/main/resources/mapper/RequestMapper.xml",
     note: "実際の SQL",
     why: "一覧が遅い、件数が合わない、更新されないといった症状は、SQL を見ないと終わりません。Java のメソッド名と XML の id が対になっています。`findById` は詳細表示と承認で 1 件取り、`applicant_email` は通知先です。",
@@ -361,8 +387,9 @@ public class MailService {
 </select>
 
 <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-  INSERT INTO t_request (title, status, applicant_id, approver_id, created_at)
-  VALUES (#{title}, #{status}, #{applicantId}, #{approverId}, NOW())
+  INSERT INTO t_request (title, status, applicant_id, approver_id, applicant_email, created_at)
+  VALUES (#{title}, #{status}, #{applicantId}, #{approverId},
+          (SELECT email FROM t_user WHERE id = #{applicantId}), NOW())
 </insert>
 
 <update id="update">
@@ -384,7 +411,8 @@ public class MailService {
     why: "表示する項目やフォームの送信先は HTML 側にあります。申請くんの詳細はシナリオでサーバ側の判定を確認できるよう、ステータスにかかわらず承認ボタンを表示します。通常の画面では `th:if` で表示を制限する実装もあります。",
     code: `<h1 th:text="\${requestItem.title}">交通費申請</h1>
 <p>ステータス: <span th:text="\${requestItem.status}">PENDING</span></p>
-<form th:action="@{/requests/{id}/approve(id=\${requestItem.id})}"
+<form class="js-approve-confirm"
+      th:action="@{/requests/{id}/approve(id=\${requestItem.id})}"
       method="post">
   <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
   <button type="submit">承認</button>
@@ -412,7 +440,7 @@ public class MailService {
   {
     path: "src/main/resources/templates/request/history.html",
     note: "申請履歴の検索画面テンプレート",
-    why: "検索フォームの `name`（`title` / `status` / `createdFrom` / `createdTo`）は、`RequestController.history` の `@RequestParam` と対応します。一覧と違い、承認は行わず検索だけの画面です。",
+    why: "検索フォームの `name` は、`RequestController.history` の `@RequestParam` と対応する想定です。一覧と違い、承認は行わず検索だけの画面です。",
     code: `<form class="search" th:action="@{/requests/history}" method="get">
   <label>
     件名
@@ -463,7 +491,7 @@ public class MailService {
   {
     path: "src/main/resources/static/js/list.js",
     note: "一覧画面の JavaScript",
-    why: "`app.js` とは別のファイルです。一覧画面の承認ボタンを押したときに動きます。フォームを送信する前に、CSRF トークンをセットしています。",
+    why: "`app.js` とは別のファイルです。一覧画面の承認ボタンを押したときに動く想定で、フォーム送信前に CSRF トークンを取得しようとします。",
     code: `document.querySelectorAll("form[action*='/approve']").forEach((form) => {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -478,7 +506,7 @@ public class MailService {
   {
     path: "src/main/java/.../config/SecurityConfig.java",
     note: "Spring Security。ログインと権限",
-    why: "401/403、ログイン画面への飛ばされ、CSRFエラーはまずここを疑います。",
+    why: "401/403、ログイン画面への飛ばされ、CSRFエラーはまずここを疑います。`/api/**` だけ未ログインの応答を 401 にしているので、画面（302 でログインへ）と Web API（401 で JSON）の違いはここで分かれます。",
     code: `@Bean
 SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
   http.authorizeHttpRequests(auth -> auth
@@ -487,7 +515,13 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
       .anyRequest().authenticated()
     )
     .formLogin(login -> login.loginPage("/login").defaultSuccessUrl("/requests"))
-    .logout(logout -> logout.logoutSuccessUrl("/login"));
+    .logout(logout -> logout.logoutSuccessUrl("/login"))
+    .exceptionHandling(ex -> ex
+      .defaultAuthenticationEntryPointFor(
+          new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED),
+          new AntPathRequestMatcher("/api/**")
+      )
+    );
   return http.build();
 }`,
   },
@@ -607,6 +641,7 @@ export const projectTree: ProjectTreeNode = {
                 { name: "application-dev.yml", filePath: "src/main/resources/application-dev.yml" },
                 { name: "application-stg.yml", filePath: "src/main/resources/application-stg.yml" },
                 { name: "logback-spring.xml", filePath: "src/main/resources/logback-spring.xml" },
+                { name: "schema.sql", filePath: "src/main/resources/schema.sql" },
                 {
                   name: "mapper",
                   children: [{ name: "RequestMapper.xml", filePath: "src/main/resources/mapper/RequestMapper.xml" }],

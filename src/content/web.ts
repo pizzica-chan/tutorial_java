@@ -687,13 +687,13 @@ Cookie: JSESSIONID=AB12CD34`,
           lang: "json",
           code: `[
   {
-    "id": 12,
-    "title": "交通費申請",
+    "id": 16,
+    "title": "研修参加",
     "status": "PENDING",
     "applicantId": 7,
-    "approverId": 3,
+    "approverId": null,
     "applicantEmail": "yamada@example.co.jp",
-    "createdAt": "2026-04-10T09:15:00"
+    "createdAt": "2026-04-13T10:00:00"
   }
 ]`,
         },

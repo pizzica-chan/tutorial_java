@@ -290,13 +290,15 @@ public class RequestController {
           type: "code",
           title: "パターン2: オブジェクトを返す（Web API）",
           lang: "java",
-          highlightLines: [6],
+          highlightLines: [6, 7, 8],
           code: `@RestController
 @RequestMapping("/api/requests")
 public class RequestApiController {
   @GetMapping
   public List<RequestResponse> list(@AuthenticationPrincipal LoginUser user) {
-    return requestService.findMine(user.getId());
+    return requestService.findMine(user.getId()).stream()
+        .map(RequestResponse::from)
+        .toList();
   }
 }`,
         },
