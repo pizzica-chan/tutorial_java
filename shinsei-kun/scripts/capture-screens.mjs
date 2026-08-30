@@ -1,4 +1,5 @@
 // 教材用画面キャプチャ。方針は .cursor/rules/textbook-screenshots.mdc
+import { execFileSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -7,6 +8,7 @@ import { verifyBase } from "./capture-hosts.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const outDir = join(root, "public", "images");
+const cropPs1 = join(root, "shinsei-kun", "scripts", "crop-jpeg.ps1");
 const demoDir = join(root, "shinsei-kun", "src", "main", "resources", "static", "demo");
 const chrome = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const origin = "http://localhost:8080";
@@ -86,6 +88,33 @@ async function shot(page, name, url, pageWidth = width) {
   console.log("wrote", name, `${pageWidth}x${height}`);
 }
 
+function cropJpeg(srcName, destName, { left, top, width, height }) {
+  const result = execFileSync(
+    "powershell",
+    [
+      "-NoProfile",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      cropPs1,
+      "-InPath",
+      join(outDir, srcName),
+      "-OutPath",
+      join(outDir, destName),
+      "-Left",
+      String(left),
+      "-Top",
+      String(top),
+      "-Width",
+      String(width),
+      "-Height",
+      String(height),
+    ],
+    { encoding: "utf8" },
+  );
+  console.log(result.trim());
+}
+
 async function login(page, username, password = "password", appBase = base) {
   await page.goto(`${appBase}/login`, { waitUntil: "networkidle0" });
   await page.setViewport({ width, height: 720, deviceScaleFactor: 2 });
@@ -101,6 +130,12 @@ async function shotHistorySearch(page, appBase) {
   const url = `${appBase}/requests/history?title=申請&status=APPROVED&createdFrom=&createdTo=`;
   await page.goto(url, { waitUntil: "networkidle0" });
   await shot(page, "screen-history-search.jpg", url);
+  cropJpeg("screen-history-search.jpg", "screen-history-search-query.jpg", {
+    left: 0,
+    top: 0,
+    width: 1,
+    height: 0.58,
+  });
 }
 
 const browser = await puppeteer.launch({
@@ -166,6 +201,12 @@ if (!mocksOnly) {
 
   await page.goto(`${base}/requests/12`, { waitUntil: "networkidle0" });
   await shot(page, "screen-detail.jpg", `${base}/requests/12`);
+  cropJpeg("screen-detail.jpg", "screen-detail-path.jpg", {
+    left: 0,
+    top: 0,
+    width: 1,
+    height: 0.62,
+  });
 
   await page.goto(`${base}/requests/16`, { waitUntil: "networkidle0" });
   await Promise.allSettled([

@@ -59,7 +59,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "切り分けでは、ファイルを上から通読する必要はありません。どのフレームワークか、DB アクセスが MyBatis / JPA / JDBC のどれかが分かれば、以降の検索語やログの読み方が決まります。",
+          text: "実務では、ファイルを上から通読する必要はありません。どのフレームワークか、DB アクセスが MyBatis / JPA / JDBC のどれかが分かれば、以降の検索語やログの読み方が決まります。",
         },
         {
           type: "h2",
@@ -595,7 +595,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "callout",
           kind: "note",
           title: "ソースと画面の見比べ",
-          text: "テンプレートはサーバ側のファイルです。ブラウザの Elements タブは、組み立て後の HTML です。`th:if` で消えたボタンは、テンプレートにはあっても画面には出ません。切り分けでは、両方を見ましょう。",
+          text: "テンプレートはサーバ側のファイルです。ブラウザの Elements タブは、組み立て後の HTML です。`th:if` で消えたボタンは、テンプレートにはあっても画面には出ません。実務では、両方を見ましょう。",
         },
         {
           type: "figure",
@@ -857,7 +857,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "ログの出る場所や、ブロックされたときの応答は環境次第です。切り分けでは「アプリに届いたか」を先に確認しましょう。",
+          text: "ログの出る場所や、ブロックされたときの応答は環境次第です。実務では「アプリに届いたか」を先に確認しましょう。",
         },
         { type: "quiz", id: "java-arch" },
       ],

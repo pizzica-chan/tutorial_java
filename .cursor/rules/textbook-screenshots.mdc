@@ -29,6 +29,8 @@ URL が見える。ウィンドウ幅はアプリの幅。
 node shinsei-kun/scripts/capture-screens.mjs
 ```
 
+パラメータ章用の切り出しは、同じスクリプトが `crop-jpeg.ps1` で作ります。`screen-history-search-query.jpg` はアドレスバーと検索フォーム（結果表は切る）。`screen-detail-path.jpg` はアドレスバーと申請IDまで。
+
 実アプリから撮る: login / login-error / list / 申請履歴（ステータス承認済み） / detail（ID 12）/ 承認 500（ID 16）/ 承認済みの業務メッセージ（ID 11）/ not-found（99999）。
 起動中のアプリでは出しにくい見え方（0 件、CSS 無し、権限エラー画面）は `shinsei-kun/src/main/resources/static/demo/` を `file://` で撮る。実行中コンテナは再ビルドしないと `/demo/**` を配信しない。画面にエラーが出ているがリクエストが無い見え方は、ページ単体ではなく Network のウィンドウ全体で撮る。
 

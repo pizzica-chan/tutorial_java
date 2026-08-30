@@ -12,9 +12,11 @@
 | `screen-login-error.jpg` | 申請くん ログイン失敗 |
 | `screen-list.jpg` | 申請くん GET `http://intranet.example.co.jp:8080/shinsei/requests`（山田太郎。検証用シナリオ用） |
 | `screen-history-search.jpg` | 申請くん GET `http://intranet.example.co.jp:8080/shinsei/requests/history?title=申請&status=APPROVED&createdFrom=&createdTo=`（山田太郎。件名「申請」で絞り、ステータス承認済みでも PENDING のレコードが出る） |
+| `screen-history-search-query.jpg` | 上の申請履歴画面から、アドレスバーと検索フォームだけを切り出した画像 |
 | `screen-network-history-search.jpg` | 申請くん GET `http://intranet.example.co.jp:8080/shinsei/requests/history`（クエリに `title=申請` と `status=APPROVED`）の Network タブ |
 | `screen-network-history-search-request.jpg` | 上の Network で検索 GET を開き、Payload の Query String Parameters（`title=申請` と `status=APPROVED`）を切り出した画像 |
 | `screen-detail.jpg` | 申請くん GET `/shinsei/requests/12` |
+| `screen-detail-path.jpg` | 上の詳細画面から、アドレスバーと申請ID 12 までを切り出した画像 |
 | `screen-not-found.jpg` | 申請くん GET `/shinsei/requests/99999` |
 | `screen-forbidden.jpg` | モック `demo/forbidden.html`（承認権限が無いときの画面） |
 | `screen-error-500.jpg` | 申請くん POST `http://intranet.example.co.jp:8080/shinsei/requests/16/approve`（研修参加、承認者 NULL、500） |

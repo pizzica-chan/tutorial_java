@@ -11,7 +11,7 @@ export const webTrack: Track = {
     {
       id: "letter",
       title: "HTTP のリクエストとレスポンス",
-      minutes: 9,
+      minutes: 11,
       blocks: [
         {
           type: "p",
@@ -55,6 +55,28 @@ export const webTrack: Track = {
           alt: "申請くんの申請一覧画面",
           caption: "申請一覧。ブラウザは `/shinsei/requests` へ GET リクエストを送り、この HTML がレスポンスとして返ります。",
         },
+        {
+          type: "p",
+          text: "返ってきたレスポンスは、次のようなテキストです。画面は、この HTML をブラウザが表示したものです。",
+        },
+        {
+          type: "code",
+          lang: "http",
+          title: "申請一覧のレスポンス（例）",
+          code: `HTTP/1.1 200 OK
+Content-Type: text/html;charset=UTF-8
+
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>申請一覧</h1>
+    <table>
+      <tr><td>交通費申請</td><td>PENDING</td></tr>
+      <tr><td>休暇申請</td><td>PENDING</td></tr>
+    </table>
+  </body>
+</html>`,
+        },
         { type: "widget", name: "http" },
         {
           type: "h2",
@@ -81,6 +103,50 @@ export const webTrack: Track = {
           type: "p",
           text: "HTML は、ブラウザが画面として表示するためのデータ形式です。JSON は、画面の JavaScript や他のシステムが読み取るためのデータ形式です。JSON を返す URL は、Web API と呼ばれることが多いです。",
         },
+        {
+          type: "p",
+          text: "申請一覧を HTML で返すと、次のようになります。",
+        },
+        {
+          type: "code",
+          lang: "http",
+          title: "HTML のレスポンス（例）",
+          highlightLines: [2],
+          code: `HTTP/1.1 200 OK
+Content-Type: text/html;charset=UTF-8
+
+<!DOCTYPE html>
+<html>
+  <body>
+    <h1>申請一覧</h1>
+    <table>
+      <tr><td>交通費申請</td><td>PENDING</td></tr>
+      <tr><td>休暇申請</td><td>PENDING</td></tr>
+    </table>
+  </body>
+</html>`,
+        },
+        {
+          type: "p",
+          text: "同じ申請データを JSON で返すと、次のようになります。見出しや表は無く、名前と値が並びます。",
+        },
+        {
+          type: "code",
+          lang: "http",
+          title: "JSON のレスポンス（例）",
+          highlightLines: [2],
+          code: `HTTP/1.1 200 OK
+Content-Type: application/json
+
+[
+  {"id": 12, "title": "交通費申請", "status": "PENDING"},
+  {"id": 13, "title": "休暇申請", "status": "PENDING"}
+]`,
+        },
+        {
+          type: "p",
+          text: "どちらも HTTP のレスポンスです。違うのは `Content-Type` と本文の形です。",
+        },
       ],
     },
     {
@@ -105,7 +171,7 @@ export const webTrack: Track = {
           type: "table",
           headers: ["部分", "意味"],
           rows: [
-            ["ホスト", "どのサーバ（またはその手前のLB）か"],
+            ["ホスト", "どのサーバか"],
             ["`/shinsei`", "コンテキストパス。アプリの根っこ"],
             ["`/requests/12`", "アプリ内の資源。12番の申請"],
             ["?tab=history", "クエリ。同じ資源の見え方を変える"],
@@ -130,7 +196,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "ただし、更新を POST だけで送る、削除を GET で呼ぶといった、約束と違う実装も現場では多いです。同じ URL でも HTTP メソッドが違えば、別の処理が呼ばれることがあります。切り分けでは、教科書どおりの意味より、実際に送っている HTTP メソッドと URL を見ましょう。",
+          text: "ただし、更新を POST だけで送る、削除を GET で呼ぶといった、約束と違う実装も現場では多いです。同じ URL でも HTTP メソッドが違えば、別の処理が呼ばれることがあります。実務では、教科書どおりの意味より、実際に送っている HTTP メソッドと URL を見ましょう。",
         },
         { type: "diagram", name: "get-post" },
         {
@@ -154,7 +220,7 @@ export const webTrack: Track = {
           type: "callout",
           kind: "note",
           title: "ステータスコードの読み方と、アプリの応答",
-          text: "403 は「権限が無い」と読むステータスコードです。権限不足が必ず 403 になるわけではありません。未ログインも 401 とは限らず、ログイン画面へ飛ばす実装が多いです。切り分けでは Network タブのステータスコードと本文を見ましょう。",
+          text: "403 は「権限が無い」と読むステータスコードです。権限不足が必ず 403 になるわけではありません。未ログインも 401 とは限らず、ログイン画面へ飛ばす実装が多いです。実務では Network タブのステータスコードと本文を見ましょう。",
         },
         { type: "quiz", id: "web-status" },
       ],
@@ -162,7 +228,7 @@ export const webTrack: Track = {
     {
       id: "params",
       title: "リクエストのパラメータ",
-      minutes: 9,
+      minutes: 10,
       blocks: [
         {
           type: "p",
@@ -189,7 +255,53 @@ export const webTrack: Track = {
         },
         {
           type: "h2",
-          text: "Network タブでの見方",
+          text: "申請くんの例",
+        },
+        {
+          type: "h3",
+          text: "パス",
+        },
+        {
+          type: "p",
+          text: "申請詳細では、パスの `/12` が申請IDです。アドレスバーと画面の申請IDが同じ値となっています。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-detail-path.jpg",
+          alt: "申請詳細のアドレスバーが /shinsei/requests/12。画面の申請IDも 12",
+          caption: "申請詳細。アドレスバーの `/12` が申請IDです。",
+        },
+        {
+          type: "h3",
+          text: "クエリ",
+        },
+        {
+          type: "p",
+          text: "申請履歴の検索では、件名とステータスがクエリに載ります。アドレスバーの `?` 以降と、フォームの入力が対応しています。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-history-search-query.jpg",
+          alt: "申請履歴の検索。アドレスバーに title=申請 と status=APPROVED。フォームの件名とステータスがそれに対応",
+          caption: "申請履歴の検索。アドレスバーの `?` 以降が、フォームの件名・ステータスと対応しています。",
+        },
+        {
+          type: "h3",
+          text: "Network タブ",
+        },
+        {
+          type: "p",
+          text: "同じクエリは、Network タブでは次の欄に出ます。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-history-search-request.jpg",
+          alt: "Network の Payload。Query String Parameters に title と status がある",
+          caption: "Payload の Query String Parameters。GET の `?` 以降のキーと値です。",
+          size: "small",
         },
         {
           type: "table",
@@ -205,6 +317,14 @@ export const webTrack: Track = {
           text: "ブラウザやバージョンで欄の表示名は少し違います。載っているキーと値を見れば十分です。",
         },
         {
+          type: "h3",
+          text: "承認",
+        },
+        {
+          type: "p",
+          text: "申請 ID 12 の承認は `POST /shinsei/requests/12/approve` です。12 はパスに入っています。",
+        },
+        {
           type: "h2",
           text: "GET と POST",
         },
@@ -217,14 +337,6 @@ export const webTrack: Track = {
           ],
         },
         {
-          type: "h2",
-          text: "申請くんの例",
-        },
-        {
-          type: "p",
-          text: "申請 ID 12 の承認は `POST /shinsei/requests/12/approve` です。12 はパスに入っています。一覧に絞り込みを追加するなら、`GET /shinsei/requests?departmentId=5` のようにクエリに載せることが多いです。",
-        },
-        {
           type: "callout",
           kind: "trap",
           title: "名前の不一致",
@@ -234,7 +346,7 @@ export const webTrack: Track = {
           type: "callout",
           kind: "note",
           title: "本文の読み方はフレームワーク次第",
-          text: "`@RequestBody` や `@RequestParam` など、引数への取り出し方は Spring の書き方です。JSON かフォームかで使う印が変わります。切り分けでは、まず Network タブでキーと値を確認しましょう。",
+          text: "`@RequestBody` や `@RequestParam` など、引数への取り出し方は Spring の書き方です。JSON かフォームかで使う印が変わります。実務では、まず Network タブでキーと値を確認しましょう。",
         },
         { type: "quiz", id: "web-params" },
       ],
@@ -246,7 +358,7 @@ export const webTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "ヘッダはリクエスト側とレスポンス側の両方にあります。Network タブでは、行を選んで Headers 欄の Request Headers と Response Headers を切り替えて見ましょう。切り分けでは、まず返ってきたレスポンスのヘッダを見ることが多いです。",
+          text: "ヘッダはリクエスト側とレスポンス側の両方にあります。Network タブでは、行を選んで Headers 欄の Request Headers と Response Headers を切り替えて見ましょう。実務では、まず返ってきたレスポンスのヘッダを見ることが多いです。",
         },
         {
           type: "p",
