@@ -51,4 +51,11 @@ class RequestServiceTest {
     verify(requestMapper, never()).update(request);
     verify(mailService, never()).notifyApplicant(request);
   }
+
+  @Test
+  void searchHistory_passesArgumentsToMapper() {
+    requestService.searchHistory(7L, "備品", "APPROVED", "2026-04-01", "2026-04-30");
+
+    verify(requestMapper).searchHistory(7L, "備品", "APPROVED", "2026-04-01", "2026-04-30");
+  }
 }

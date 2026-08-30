@@ -399,13 +399,27 @@ export const quizzes = {
     question: "検証用環境だけ一覧が 0 件。GET は 200。コードは同じと言われている。先に疑うのは？",
     choices: [
       "CSS の font-size",
-      "今つないでいる DB を、実行された SQL と同じ条件で見る",
+      "アプリが接続している DB を、実行された SQL と同じ条件で見る",
       "Java のインデント",
       "エディタの配色",
     ],
     answer: 1,
     explanation:
       "200 で件数が違うなら、原因は多くは DB の行や接続先です。コード通読より先に、実行された SQL と、その条件での件数を確認しましょう。キャッシュでずれることもあります。",
+  },
+  "sc-history": {
+    id: "sc-history",
+    question:
+      "申請履歴で承認済みを選んだ。Network のクエリには status=APPROVED がある。MyBatis の SQL の WHERE に status が無く、同じ SQL を DB で実行すると画面と同じ件数になる。次は？",
+    choices: [
+      "検証用環境の DB を作り直す",
+      "WHERE に使う変数が、どこでセットされているかを追う",
+      "CSS の余白を疑う",
+      "本番のテーブルを DROP する",
+    ],
+    answer: 1,
+    explanation:
+      "その SQL の結果としては正しいので、DB を作り直しても原因は残りません。条件に載っていない変数を、Mapper から Controller、フォームの name まで戻って確認します。このシナリオでは requestStatus と status が違っていました。",
   },
   "sc-net": {
     id: "sc-net",

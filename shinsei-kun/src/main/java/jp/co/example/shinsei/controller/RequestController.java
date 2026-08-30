@@ -47,7 +47,7 @@ public class RequestController {
   }
 
   // 処理の入口: GET /shinsei/requests/12
-  @GetMapping("/{id}")
+  @GetMapping("/{id:[0-9]+}")
   public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
     model.addAttribute("requestItem", requestService.findById(id, user.getId()));
     model.addAttribute("currentUserId", user.getId());
@@ -69,5 +69,25 @@ public class RequestController {
     }
     requestService.approve(id, user.getId());
     return "redirect:/requests";
+  }
+
+  // 処理の入口: GET /shinsei/requests/history
+  @GetMapping("/history")
+  public String history(
+      @RequestParam(value = "title", required = false) String title,
+      @RequestParam(value = "requestStatus", required = false) String requestStatus,
+      @RequestParam(value = "createdFrom", required = false) String createdFrom,
+      @RequestParam(value = "createdTo", required = false) String createdTo,
+      Model model,
+      @AuthenticationPrincipal LoginUser user
+  ) {
+    model.addAttribute("searchTitle", title);
+    model.addAttribute("createdFrom", createdFrom);
+    model.addAttribute("createdTo", createdTo);
+    model.addAttribute(
+        "results",
+        requestService.searchHistory(user.getId(), title, requestStatus, createdFrom, createdTo)
+    );
+    return "request/history";
   }
 }

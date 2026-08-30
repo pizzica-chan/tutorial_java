@@ -120,6 +120,7 @@ export const javaMapTrack: Track = {
           type: "code",
           title: "application.yml（抜粋）",
           lang: "yaml",
+          highlightLines: [8],
           code: `spring:
   profiles:
     active: dev
@@ -207,6 +208,7 @@ server:
           type: "code",
           title: "たどる例（RequestController 抜粋）",
           lang: "java",
+          highlightLines: [4, 5, 6],
           code: `@Controller
 @RequestMapping("/requests")
 public class RequestController {
@@ -233,6 +235,7 @@ public class RequestController {
           type: "code",
           title: "パターン1: テンプレート名を返す（画面）",
           lang: "java",
+          highlightLines: [7],
           code: `@Controller
 @RequestMapping("/requests")
 public class RequestController {
@@ -255,6 +258,7 @@ public class RequestController {
           type: "code",
           title: "パターン2: オブジェクトを返す（Web API）",
           lang: "java",
+          highlightLines: [6],
           code: `@RestController
 @RequestMapping("/api/requests")
 public class RequestApiController {
@@ -308,6 +312,7 @@ public class RequestApiController {
           type: "code",
           title: "RequestController.java（抜粋）",
           lang: "java",
+          highlightLines: [11],
           code: requestControllerSample,
         },
         { type: "diagram", name: "view-file", caption: "return \"request/list\" が templates/request/list.html を指します。" },
@@ -323,6 +328,7 @@ public class RequestApiController {
           type: "code",
           title: "templates から static を読み込む（抜粋）",
           lang: "html",
+          highlightLines: [2],
           code: shinseiLayoutStaticSnippet,
         },
         {
@@ -427,6 +433,7 @@ public class RequestApiController {
           title: "fragments/layout.html（抜粋）",
           lang: "html",
           codeScope: "fragment-common",
+          highlightLines: [18],
           code: `<!-- ① ヘッダ（共通） -->
 <html th:fragment="layout (title, content)">
 <head>
@@ -453,6 +460,7 @@ public class RequestApiController {
           title: "request/list.html（先頭）",
           lang: "html",
           codeScope: "fragment-individual",
+          highlightLines: [1],
           code: `<html th:replace="fragments/layout :: layout(title='申請一覧', content=~{::main})">
 <!-- ③ 個別（この画面の <main>） -->
 <main>
@@ -499,6 +507,7 @@ public class RequestApiController {
           type: "code",
           title: "パターン1: Model に載せて、テンプレート名を return（申請くん）",
           lang: "java",
+          highlightLines: [3],
           code: `@GetMapping("/requests")
 public String list(Model model, @AuthenticationPrincipal LoginUser user) {
   model.addAttribute("applications", requestMapper.findMine(user.getId()));
@@ -509,6 +518,7 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
           type: "code",
           title: "パターン2: テンプレート名も値も ModelAndView に載せて return",
           lang: "java",
+          highlightLines: [4],
           code: `@GetMapping("/requests")
 public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
   ModelAndView mav = new ModelAndView("request/list");
@@ -546,6 +556,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "code",
           title: "templates/request/list.html（抜粋）",
           lang: "html",
+          highlightLines: [5, 6],
           code: shinseiListTemplateSnippet,
         },
         {
@@ -556,6 +567,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "code",
           title: "組み立て後の HTML（ブラウザが受け取る抜粋）",
           lang: "html",
+          highlightLines: [5, 14],
           code: shinseiListRenderedSnippet,
         },
         {
@@ -657,6 +669,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "code",
           title: "静的ファイルの許可漏れ",
           lang: "java",
+          highlightLines: [1],
           code: `.antMatchers("/login", "/css/**").permitAll()
 .anyRequest().authenticated();
 // /images を許可し忘れ -> 画像だけ 302 でログインへ

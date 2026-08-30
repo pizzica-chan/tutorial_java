@@ -15,6 +15,29 @@
     ORDER BY r.created_at DESC
   </select>
 
+  <select id="searchHistory" resultType="RequestEntity">
+    SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+           a.display_name AS applicant_name,
+           v.display_name AS approver_name
+    FROM t_request r
+    JOIN t_user a ON a.id = r.applicant_id
+    LEFT JOIN t_user v ON v.id = r.approver_id
+    WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
+    <if test="title != null and title != ''">
+      AND r.title LIKE CONCAT('%', #{title}, '%')
+    </if>
+    <if test="requestStatus != null and requestStatus != ''">
+      AND r.status = #{requestStatus}
+    </if>
+    <if test="createdFrom != null and createdFrom != ''">
+      AND r.created_at &gt;= #{createdFrom}
+    </if>
+    <if test="createdTo != null and createdTo != ''">
+      AND r.created_at &lt; DATE_ADD(#{createdTo}, INTERVAL 1 DAY)
+    </if>
+    ORDER BY r.created_at DESC
+  </select>
+
   <select id="findById" resultType="RequestEntity">
     SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
            a.display_name AS applicant_name,

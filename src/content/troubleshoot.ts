@@ -257,6 +257,8 @@ export const troubleshootTrack: Track = {
         {
           type: "code",
           title: "例外が出たとき（申請くん・ID 16）",
+          highlightLines: [3],
+          highlightKind: "error",
           code: `04:12:03.512 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[/shinsei].[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] threw exception
 java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null
     at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)
@@ -545,6 +547,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
         {
           type: "code",
           title: "同じ秒に混ざった行（MyBatis の Parameters 例）",
+          highlightLines: [1, 5],
           code: `04:12:03.100 INFO  [nio-8080-exec-3] ...AccessLogInterceptor : GET /shinsei/requests
 04:12:03.102 INFO  [nio-8080-exec-5] ...AccessLogInterceptor : GET /shinsei/requests/12
 04:12:03.105 DEBUG [nio-8080-exec-3] ...ServiceLoggingAspect : start RequestService.findMine(..)
@@ -945,6 +948,7 @@ ORDER BY r.created_at DESC
         {
           type: "code",
           title: "計測ログを追加した例（申請くんの実ログではない）",
+          highlightLines: [2, 3],
           code: `2026-08-16 04:12:03.100 INFO  ... [nio-8080-exec-3] j.c.e.s.controller.RequestController : list start
 2026-08-16 04:12:03.105 INFO  ... [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine start
 2026-08-16 04:12:08.410 INFO  ... [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine done
@@ -1033,6 +1037,8 @@ ORDER BY r.created_at DESC
         {
           type: "code",
           title: "計測ログと通知 API の例（申請くんの実ログではない）",
+          highlightLines: [4],
+          highlightKind: "error",
           code: `04:12:03.200 INFO  ... RequestService : approve start requestId=12
 04:12:03.205 DEBUG ... RequestMapper : <==      Total: 1
 04:12:03.206 INFO  ... RequestService : db updated requestId=12

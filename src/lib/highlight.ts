@@ -306,7 +306,7 @@ export function highlightCode(code: string, lang?: string): string {
   return escapeHtml(code);
 }
 
-export function highlightCodeLines(code: string, lang: string, highlightLines: number[]): string {
+export function highlightCodeLines(code: string, lang: string | undefined, highlightLines: number[]): string {
   const lines = code.split("\n");
   return lines
     .map((line, index) => {

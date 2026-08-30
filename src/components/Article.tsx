@@ -81,6 +81,7 @@ function BlockView({ block }: { block: Block }) {
           title={block.title}
           codeScope={block.codeScope}
           highlightLines={block.highlightLines}
+          highlightKind={block.highlightKind}
         />
       );
     case "callout":

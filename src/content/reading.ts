@@ -109,6 +109,7 @@ export const readingTrack: Track = {
           type: "code",
           title: "RequestController.java（抜粋）",
           lang: "java",
+          highlightLines: [9, 10, 12],
           code: requestListEntryPointReadingSnippet,
         },
         {
@@ -437,6 +438,7 @@ export const readingTrack: Track = {
           type: "code",
           title: "RequestController.java（呼び出し元・抜粋）",
           lang: "java",
+          highlightLines: [19],
           code: `@Controller
 @RequestMapping("/requests")
 @RequiredArgsConstructor
@@ -464,6 +466,7 @@ public class RequestController {
           type: "code",
           title: "RequestService.java（呼び出し先）",
           lang: "java",
+          highlightLines: [25],
           code: requestServiceSample,
         },
         {
@@ -529,6 +532,7 @@ public class RequestController {
           type: "code",
           title: "同じ Service を呼ぶ箇所（例）",
           lang: "java",
+          highlightLines: [2, 5],
           code: `// RequestController（画面）
 requestService.approve(id, user.getId());
 
@@ -627,6 +631,7 @@ requestService.approve(id, user.getId());`,
           type: "code",
           title: "未設定のまま保存される例",
           lang: "java",
+          highlightLines: [1, 3],
           code: `request.setApproverId(form.getApproverId()); // null のまま保存
 // 後日の承認処理で
 request.getApproverId().equals(userId); // NPE`,
@@ -660,6 +665,7 @@ request.getApproverId().equals(userId); // NPE`,
           type: "code",
           title: "RequestController.java（申請くん）",
           lang: "java",
+          highlightLines: [2],
           code: `var request = requestService.findById(id, user.getId());
 if (!"PENDING".equals(request.getStatus())) {
   redirectAttributes.addFlashAttribute(

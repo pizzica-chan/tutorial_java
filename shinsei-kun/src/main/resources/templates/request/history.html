@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title='申請履歴', content=~{::main})">
+<main>
+  <div class="page-head">
+    <h1>申請履歴</h1>
+  </div>
+  <p class="lead">過去の申請を、件名・ステータス・申請日で検索できます。</p>
+  <form class="search" th:action="@{/requests/history}" method="get">
+    <label>
+      件名
+      <input type="text" name="title" th:value="${searchTitle}" placeholder="一部でも可" />
+    </label>
+    <label>
+      ステータス
+      <select name="status">
+        <option value="">すべて</option>
+        <option value="PENDING" th:selected="${#request.getParameter('status') == 'PENDING'}">未承認</option>
+        <option value="APPROVED" th:selected="${#request.getParameter('status') == 'APPROVED'}">承認済み</option>
+      </select>
+    </label>
+    <label>
+      申請日（開始）
+      <input type="date" name="createdFrom" th:value="${createdFrom}" />
+    </label>
+    <label>
+      申請日（終了）
+      <input type="date" name="createdTo" th:value="${createdTo}" />
+    </label>
+    <button type="submit">検索</button>
+  </form>
+  <p class="lead" th:text="|検索結果: ${#lists.size(results)} 件|">検索結果: 0 件</p>
+  <table class="data">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>件名</th>
+        <th>申請者</th>
+        <th>承認者</th>
+        <th>ステータス</th>
+        <th>申請日時</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="item : ${results}">
+        <td th:text="${item.id}">12</td>
+        <td>
+          <a th:href="@{/requests/{id}(id=${item.id})}" th:text="${item.title}">交通費申請</a>
+        </td>
+        <td th:text="${item.applicantName}">山田太郎</td>
+        <td th:text="${item.approverName != null ? item.approverName : '未設定'}">佐藤花子</td>
+        <td>
+          <span class="status" th:classappend="${item.status == 'PENDING'} ? ' is-pending' : ' is-approved'" th:text="${item.status}">PENDING</span>
+        </td>
+        <td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-10 09:15</td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(results)}">
+        <td colspan="6">条件に合う申請はありません。</td>
+      </tr>
+    </tbody>
+  </table>
+</main>
+</html>

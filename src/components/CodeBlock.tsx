@@ -8,19 +8,22 @@ type Props = {
   path?: string;
   codeScope?: "fragment-common" | "fragment-individual";
   highlightLines?: number[];
+  highlightKind?: "error";
 };
 
-export function CodeBlock({ code, lang, title, path, codeScope, highlightLines }: Props) {
+export function CodeBlock({ code, lang, title, path, codeScope, highlightLines, highlightKind }: Props) {
   const resolved = inferLang(code, lang, path);
   const html =
     resolved === "java"
       ? undefined
-      : highlightLines?.length && resolved
+      : highlightLines?.length
         ? highlightCodeLines(code, resolved, highlightLines)
         : highlightCode(code, resolved);
 
+  const markClass = highlightKind === "error" ? " codeblock-mark-error" : "";
+
   return (
-    <div className={`codeblock${codeScope ? ` codeblock-${codeScope}` : ""}`}>
+    <div className={`codeblock${codeScope ? ` codeblock-${codeScope}` : ""}${markClass}`}>
       <header>
         <span>{title ?? path ?? "code"}</span>
         <span>{resolved ?? ""}</span>
@@ -28,7 +31,7 @@ export function CodeBlock({ code, lang, title, path, codeScope, highlightLines }
       <pre>
         {resolved === "java" ? (
           <code className="language-java">
-            <JavaCode code={code} />
+            <JavaCode code={code} highlightLines={highlightLines} />
           </code>
         ) : (
           <code

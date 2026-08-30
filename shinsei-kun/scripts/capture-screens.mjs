@@ -97,6 +97,12 @@ async function login(page, username, password = "password", appBase = base) {
   ]);
 }
 
+async function shotHistorySearch(page, appBase) {
+  const url = `${appBase}/requests/history?title=&status=APPROVED&createdFrom=&createdTo=`;
+  await page.goto(url, { waitUntil: "networkidle0" });
+  await shot(page, "screen-history-search.jpg", url);
+}
+
 const browser = await puppeteer.launch({
   executablePath: chrome,
   headless: "new",
@@ -108,9 +114,18 @@ page.on("dialog", (dialog) => dialog.accept());
 await page.emulateTimezone("Asia/Tokyo");
 await page.setViewport({ width, height: 720, deviceScaleFactor: 2 });
 
+if (process.argv.includes("--history-only")) {
+  const appBase = process.argv.includes("--verify") ? verifyBase : base;
+  await login(page, "yamada", "password", appBase);
+  await shotHistorySearch(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
 if (process.argv.includes("--verify-scenarios")) {
   await login(page, "yamada", "password", verifyBase);
   await shot(page, "screen-list.jpg", `${verifyBase}/requests`);
+  await shotHistorySearch(page, verifyBase);
 
   await page.goto(`${verifyBase}/requests/16`, { waitUntil: "networkidle0" });
   await Promise.allSettled([
@@ -147,6 +162,7 @@ if (!mocksOnly) {
 
   await login(page, "yamada");
   await shot(page, "screen-list.jpg", `${base}/requests`);
+  await shotHistorySearch(page, base);
 
   await page.goto(`${base}/requests/12`, { waitUntil: "networkidle0" });
   await shot(page, "screen-detail.jpg", `${base}/requests/12`);

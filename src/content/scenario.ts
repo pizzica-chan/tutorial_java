@@ -82,6 +82,7 @@ export const scenarioTrack: Track = {
           title: "list.js（申請くん・一覧）",
           lang: "javascript",
           highlightLines: [4],
+          highlightKind: "error",
           code: `form.addEventListener("submit", (event) => {
   event.preventDefault();
   const tokenEl = document.getElementById("csrfToken");
@@ -416,7 +417,7 @@ requestService.approve(id, user.getId());`,
           type: "ul",
           items: [
             "Network タブは GET /shinsei/requests が 200、text/html",
-            "画面に例外は出ていない",
+            "画面にエラーは出ていない",
             "デプロイされているコードは、ローカルと同じ commit / タグだ",
           ],
         },
@@ -426,9 +427,9 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "応答は成功しています。フロントや CSS の問題でも、500 でもありません。実行された SQL を見て、同じ条件で今つないでいる DB の行を数えましょう。",
+          text: "応答は成功しています。フロントや CSS の問題でも、500 でもありません。実行された SQL を見て、同じ SQL を、アプリが接続している DB で実行しましょう。",
         },
-        { type: "diagram", name: "front-back", caption: "データは DB にある。実行された SQL の条件で、今の DB を見る。" },
+        { type: "diagram", name: "front-back", caption: "データは DB にある。実行された SQL の条件で、アプリが接続している DB を見る。" },
         {
           type: "h2",
           text: "このシナリオの原因",
@@ -471,7 +472,7 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
         },
         {
           type: "p",
-          text: "ローカル環境の同じ SQL では 3 件ありました。WHERE は同じでも、つないでいる DB が違うと一覧は空になります。",
+          text: "ローカル環境で同じ SQL を実行すると、3 件ありました。",
         },
         {
           type: "code",
@@ -491,15 +492,19 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
           ],
         },
         {
+          type: "p",
+          text: "WHERE は検証用環境と同じです。件数が違うのは、各環境のアプリが接続している DB が違うからです。",
+        },
+        {
           type: "h2",
           text: "このシナリオの要点",
         },
         {
           type: "ul",
           items: [
-            "200 で件数が違うなら、コード通読より先に、実行された SQL とその条件の行",
-            "今見ている接続先が、思っている検証用環境の DB かを確認する",
-            "論理削除フラグが立っている、別のログインユーザの行しか無い、といった場合も同じ型",
+            "GET が 200 で件数が違うなら、コード通読より先に、実行された SQL とその条件の行を見る",
+            "同じ SQL を、アプリが接続している DB で実行し、画面と同じ 0 件なら、コードよりその DB の行を疑う",
+            "検証用環境とローカルで件数が違うときは、接続先の DB が同じかを確認する",
           ],
         },
         {
@@ -515,6 +520,216 @@ WHERE applicant_id = 7 OR approver_id = 7;`,
           ],
         },
         { type: "quiz", id: "sc-db" },
+      ],
+    },
+    {
+      id: "history",
+      title: "[障害調査] 申請履歴検索の結果が不正",
+      minutes: 12,
+      blocks: [
+        {
+          type: "callout",
+          kind: "scenario",
+          text: "申請履歴画面で、ステータスを「承認済み」にして検索すると、未承認の行も出る。エラーメッセージは出ない。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-history-search.jpg",
+          alt: "ステータスが承認済みのまま、PENDING の行も出ている申請履歴",
+          caption:
+            "ステータスは「承認済み」です。表には PENDING の行もあります。承認済みは備品購入の 1 件だけです。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "山田（yamada）でログイン。検証用環境。申請履歴でステータス「承認済み」を選んで検索した",
+            "件名と申請日は空",
+            "画面にエラーは出ていない",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先に見ること",
+        },
+        {
+          type: "p",
+          text: "Network タブを見ると、/shinsei/requests/history への GET は 200 です。クエリに status=APPROVED があるので、画面で指定した検索条件はリクエストに含まれてサーバに届いています。なので、次はサーバ側の処理を追います。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-history-search.jpg",
+          alt: "申請履歴の検索 GET が 200 で、クエリに status=APPROVED がある Network タブ",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの原因",
+        },
+        {
+          type: "p",
+          text: "検索結果は、テンプレートの ${results} です。Controller で results に載せている値を開きます。",
+        },
+        {
+          type: "code",
+          title: "RequestController.history（申請くん）",
+          lang: "java",
+          highlightLines: [13, 14, 15, 16],
+          code: `@GetMapping("/history")
+public String history(
+    @RequestParam(value = "title", required = false) String title,
+    @RequestParam(value = "requestStatus", required = false) String requestStatus,
+    @RequestParam(value = "createdFrom", required = false) String createdFrom,
+    @RequestParam(value = "createdTo", required = false) String createdTo,
+    Model model,
+    @AuthenticationPrincipal LoginUser user
+) {
+  model.addAttribute("searchTitle", title);
+  model.addAttribute("createdFrom", createdFrom);
+  model.addAttribute("createdTo", createdTo);
+  model.addAttribute(
+      "results",
+      requestService.searchHistory(user.getId(), title, requestStatus, createdFrom, createdTo)
+  );
+  return "request/history";
+}`,
+        },
+        {
+          type: "p",
+          text: "results の中身は searchHistory の戻り値です。Service は引数を Mapper に渡しているだけです。",
+        },
+        {
+          type: "code",
+          title: "RequestService.searchHistory（申請くん）",
+          lang: "java",
+          code: `public List<RequestEntity> searchHistory(
+    Long userId,
+    String title,
+    String requestStatus,
+    String createdFrom,
+    String createdTo
+) {
+  return requestMapper.searchHistory(userId, title, requestStatus, createdFrom, createdTo);
+}`,
+        },
+        {
+          type: "p",
+          text: "操作時刻の MyBatis ログが、実際に走った SQL です。",
+        },
+        {
+          type: "code",
+          title: "操作時刻のサーバログ（申請くん）",
+          lang: "text",
+          code: `==>  Preparing: SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+       a.display_name AS applicant_name, v.display_name AS approver_name
+FROM t_request r
+JOIN t_user a ON a.id = r.applicant_id
+LEFT JOIN t_user v ON v.id = r.approver_id
+WHERE (r.applicant_id = ? OR r.approver_id = ?)
+ORDER BY r.created_at DESC
+==> Parameters: 7(Long), 7(Long)
+<==      Total: 5`,
+        },
+        {
+          type: "p",
+          text: "WHERE に status がありません。この SQL を DB で実行すると、画面と同じ 5 件です。",
+        },
+        {
+          type: "code",
+          title: "t_request（申請くん・検証用環境）",
+          lang: "sql",
+          code: `SELECT id, title, status, applicant_id, approver_id
+FROM t_request
+WHERE applicant_id = 7 OR approver_id = 7
+ORDER BY created_at DESC;`,
+        },
+        {
+          type: "table",
+          headers: ["id", "title", "status", "applicant_id", "approver_id"],
+          rows: [
+            ["16", "研修参加", "PENDING", "7", "NULL"],
+            ["13", "休暇申請", "PENDING", "7", "3"],
+            ["15", "出張旅費", "PENDING", "3", "7"],
+            ["12", "交通費申請", "PENDING", "7", "3"],
+            ["11", "備品購入", "APPROVED", "7", "3"],
+          ],
+        },
+        {
+          type: "p",
+          text: "DB の行は、その SQL に対しては正しいです。足りないのは WHERE の status です。Mapper の XML を開き、status を付ける箇所を見ます。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の searchHistory（申請くん）",
+          lang: "xml",
+          highlightLines: [5, 6],
+          code: `WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
+<if test="title != null and title != ''">
+  AND r.title LIKE CONCAT('%', #{title}, '%')
+</if>
+<if test="requestStatus != null and requestStatus != ''">
+  AND r.status = #{requestStatus}
+</if>
+<if test="createdFrom != null and createdFrom != ''">
+  AND r.created_at >= #{createdFrom}
+</if>`,
+        },
+        {
+          type: "p",
+          text: "status の条件は、requestStatus が空でなければ SQL に足されます。ログに status の ? が無いので、この if は偽です。requestStatus は null でした。",
+        },
+        {
+          type: "p",
+          text: "requestStatus は Controller の引数です。@RequestParam の value が requestStatus なので、Spring はクエリの requestStatus を探します。Network タブの名前は status です。",
+        },
+        {
+          type: "code",
+          title: "申請履歴の検索フォーム（申請くん）",
+          lang: "html",
+          highlightLines: [3],
+          code: `<label>
+  ステータス
+  <select name="status">
+    <option value="">すべて</option>
+    <option value="PENDING">未承認</option>
+    <option value="APPROVED">承認済み</option>
+  </select>
+</label>`,
+        },
+        {
+          type: "p",
+          text: "フォームの name は status、サーバ側の識別子は requestStatus です。名前が違うので値は渡らず、DB 検索の条件に status が乗りません。件名の name は title で、@RequestParam の title と一致しているので、件名だけ効きます。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "件数がおかしくても 200 なら、検索結果の元になっている変数から追う",
+            "MyBatis の SQL を DB で実行し、画面と同じなら、その SQL の条件を疑う",
+            "WHERE に使っている変数を、Mapper → Service → Controller → フォームの name まで戻る",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "Network タブで、クエリに status=APPROVED があることを確認",
+            "検索結果が ${results} であること、searchHistory の戻り値であることを確認",
+            "MyBatis の SQL を DB で実行し、画面と同じ 5 件であることを確認",
+            "WHERE の requestStatus が null で、フォームの name が status だと分かる",
+          ],
+        },
+        { type: "quiz", id: "sc-history" },
       ],
     },
     {

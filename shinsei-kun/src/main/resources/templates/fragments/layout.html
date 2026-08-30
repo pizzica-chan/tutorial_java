@@ -13,6 +13,7 @@
       <a class="app-logo" th:href="@{/requests}">申請くん</a>
       <nav class="app-nav" sec:authorize="isAuthenticated()">
         <a th:href="@{/requests}">申請一覧</a>
+        <a th:href="@{/requests/history}">申請履歴</a>
         <a th:href="@{/requests/new}">新規申請</a>
         <a th:href="@{/admin/users}" sec:authorize="hasRole('ADMIN')">利用者管理</a>
       </nav>

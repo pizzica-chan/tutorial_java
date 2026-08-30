@@ -180,6 +180,15 @@ async function captureNoPost(page, appBase) {
   await finishNoPostShot();
 }
 
+async function captureRows(page, appBase) {
+  await page.goto(`${appBase}/requests`, { waitUntil: "networkidle0" });
+  await sleep(600);
+  await page.bringToFront();
+  prepareNetworkPanel();
+  await sleep(300);
+  shotWindow("screen-network-rows.jpg", true);
+}
+
 async function captureListEmpty200(page) {
   await page.goto(`${verifyBase}/requests`, { waitUntil: "networkidle0" });
   await page.evaluate(() => {
@@ -264,6 +273,18 @@ async function captureCannotApprove(page, appBase = verifyBase) {
   shotWindow("screen-network-cannot-approve.jpg", true);
 }
 
+async function captureHistorySearch(page, appBase = verifyBase) {
+  const url = `${appBase}/requests/history?title=&status=APPROVED&createdFrom=&createdTo=`;
+  await page.bringToFront();
+  prepareNetworkPanel({ clear: true });
+  await page.goto(url, { waitUntil: "networkidle0" });
+  await sleep(600);
+  await page.bringToFront();
+  prepareNetworkPanel();
+  await sleep(300);
+  shotWindow("screen-network-history-search.jpg", true);
+}
+
 async function captureCss404(page, appBase = verifyBase) {
   await page.goto(`${appBase}/requests`, { waitUntil: "networkidle0" });
   await page.setRequestInterception(true);
@@ -303,6 +324,8 @@ async function captureVerifyScenarios(page) {
   shotWindow("screen-network-500.jpg", true);
 
   await captureCannotApprove(page, verifyBase);
+
+  await captureHistorySearch(page, verifyBase);
 
   await captureCss404(page, verifyBase);
 
@@ -397,6 +420,26 @@ if (process.argv.includes("--no-post-only")) {
   process.exit(0);
 }
 
+if (process.argv.includes("--history-search-only")) {
+  const appBase = process.argv.includes("--verify") ? verifyBase : base;
+  await login(page, appBase);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  await captureHistorySearch(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
+if (process.argv.includes("--rows-only")) {
+  const appBase = process.argv.includes("--verify") ? verifyBase : base;
+  await login(page, appBase);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  await captureRows(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
 if (process.argv.includes("--css-404-only")) {
   await login(page, verifyBase);
   await page.keyboard.press("Escape").catch(() => {});
@@ -415,9 +458,7 @@ if (process.argv.includes("--verify-scenarios")) {
 await login(page);
 await page.keyboard.press("Escape").catch(() => {});
 await sleep(400);
-await page.goto(`${base}/requests`, { waitUntil: "networkidle0" });
-await sleep(800);
-shotWindow("screen-network-rows.jpg", true);
+await captureRows(page, base);
 
 await login(page, verifyBase);
 await page.keyboard.press("Escape").catch(() => {});

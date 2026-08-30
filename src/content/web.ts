@@ -295,6 +295,7 @@ export const webTrack: Track = {
           type: "code",
           lang: "http",
           title: "ログイン成功の応答（例）",
+          highlightLines: [3],
           code: `HTTP/1.1 302 Found
 Location: /shinsei/requests
 Set-Cookie: JSESSIONID=AB12CD34; Path=/shinsei; HttpOnly`,
@@ -303,6 +304,7 @@ Set-Cookie: JSESSIONID=AB12CD34; Path=/shinsei; HttpOnly`,
           type: "code",
           lang: "http",
           title: "続く一覧のリクエスト（例）",
+          highlightLines: [3],
           code: `GET /shinsei/requests HTTP/1.1
 Host: intranet.example.co.jp
 Cookie: JSESSIONID=AB12CD34`,
@@ -595,6 +597,7 @@ Cookie: JSESSIONID=AB12CD34`,
           type: "code",
           title: "一覧 API を呼ぶ",
           lang: "javascript",
+          highlightLines: [3, 4, 7],
           code: `fetch("/shinsei/api/requests")
   .then((res) => {
     if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
@@ -638,6 +641,7 @@ Cookie: JSESSIONID=AB12CD34`,
           type: "code",
           title: "React で一覧を組む例",
           lang: "javascript",
+          highlightLines: [15, 21, 23],
           code: `import { useEffect, useState } from "react";
 
 function RequestList() {

@@ -121,6 +121,7 @@ public class RequestApiController {
           type: "code",
           title: "承認処理（申請くん）",
           lang: "java",
+          highlightLines: [6],
           code: `if (request == null) throw new NotFoundException(...);
 if (!request.getApproverId().equals(approverId))
   throw new ForbiddenException(...);
@@ -172,6 +173,7 @@ mailService.notifyApplicant(request);`,
         {
           type: "code",
           title: "MySQL のスロークエリログ（例）",
+          highlightLines: [5],
           code: `# Time: 2026-04-10T09:15:23.456789Z
 # User@Host: app[app] @ localhost []
 # Query_time: 2.103421  Lock_time: 0.000120  Rows_sent: 5  Rows_examined: 5
@@ -198,6 +200,7 @@ FROM t_request WHERE applicant_id = 7 OR approver_id = 7 ORDER BY created_at DES
           type: "code",
           title: "RequestMapper.xml（抜粋）",
           lang: "xml",
+          highlightLines: [1, 4, 5],
           code: `<select id="findMine" resultType="RequestEntity">
   SELECT id, title, status, applicant_id, approver_id, created_at
   FROM t_request
@@ -229,6 +232,7 @@ FROM t_request WHERE applicant_id = 7 OR approver_id = 7 ORDER BY created_at DES
         {
           type: "code",
           title: "ログに出た SQL の例（JPA / Hibernate）",
+          highlightLines: [3],
           code: `Hibernate:
     select r1_0.id, r1_0.title, r1_0.status, r1_0.applicant_id
     from t_request r1_0
@@ -242,6 +246,7 @@ FROM t_request WHERE applicant_id = 7 OR approver_id = 7 ORDER BY created_at DES
           type: "code",
           title: "Request.java（JPA の例）",
           lang: "java",
+          highlightLines: [2],
           code: `@Entity
 @Table(name = "t_request")
 public class Request {
@@ -262,6 +267,7 @@ public class Request {
           type: "code",
           title: "RequestRepository.java（JPA の例）",
           lang: "java",
+          highlightLines: [9, 10, 11],
           code: `public interface RequestRepository extends JpaRepository<Request, Long> {
   List<Request> findByApplicantId(Long applicantId);
   // メソッド名から組み立てる。SQL の文字列は無い

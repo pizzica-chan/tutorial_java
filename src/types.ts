@@ -45,7 +45,7 @@ export type Block =
   | { type: "h2"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "ol"; items: string[] }
-  | { type: "code"; lang?: string; title?: string; code: string; codeScope?: "fragment-common" | "fragment-individual"; highlightLines?: number[] }
+  | { type: "code"; lang?: string; title?: string; code: string; codeScope?: "fragment-common" | "fragment-individual"; highlightLines?: number[]; highlightKind?: "error" }
   | { type: "callout"; kind: CalloutKind; title?: string; text: string }
   | { type: "quiz"; id: string }
   | { type: "widget"; name: WidgetName }

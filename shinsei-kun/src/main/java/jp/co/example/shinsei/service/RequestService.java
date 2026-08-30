@@ -51,4 +51,14 @@ public class RequestService {
     requestMapper.update(request);
     mailService.notifyApplicant(request);
   }
+
+  public List<RequestEntity> searchHistory(
+      Long userId,
+      String title,
+      String requestStatus,
+      String createdFrom,
+      String createdTo
+  ) {
+    return requestMapper.searchHistory(userId, title, requestStatus, createdFrom, createdTo);
+  }
 }

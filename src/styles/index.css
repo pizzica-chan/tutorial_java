@@ -744,6 +744,11 @@ h3,
 .codeblock .code-line-mark {
   margin: 0 -16px;
   padding: 0 16px;
+  background: rgba(232, 165, 75, 0.14);
+  box-shadow: inset 3px 0 0 var(--amber);
+}
+
+.codeblock.codeblock-mark-error .code-line-mark {
   background: rgba(212, 106, 92, 0.12);
   box-shadow: inset 3px 0 0 var(--rose);
 }
