@@ -133,10 +133,10 @@ export const shinseiListTemplateSnippet = `<tr th:each="item : \${applications}"
 
 /** 教材用。上のテンプレートを組み立てたあとの HTML（申請2件の例） */
 export const shinseiListRenderedSnippet = `<tr>
-  <td>交通費申請</td>
+  <td>研修参加</td>
   <td>PENDING</td>
   <td>
-    <form action="/shinsei/requests/12/approve" method="post">
+    <form action="/shinsei/requests/16/approve" method="post">
       <input type="hidden" name="_csrf" value="8f3a2b1c-4e5f-6789-abcd-ef0123456789" />
       <button type="submit">承認</button>
     </form>
@@ -211,11 +211,12 @@ logging:
     why: "`spring.profiles.active` が `dev` のとき、`application.yml` のあとにこのファイルが読み込まれます。同じ項目はこちらの設定が優先されます。ローカルだけ DB 名やログ量を変える、という使い方が多いです。",
     code: `spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/shinsei_dev
+    url: jdbc:mysql://localhost:3306/shinsei_dev?characterEncoding=UTF-8
 logging:
   level:
     jp.co.example.shinsei: DEBUG
-    org.mybatis: DEBUG`,
+    org.mybatis: DEBUG
+    jp.co.example.shinsei.mapper: DEBUG`,
   },
   {
     path: "src/main/resources/application-stg.yml",

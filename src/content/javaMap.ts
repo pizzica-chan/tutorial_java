@@ -156,7 +156,7 @@ logging:
         },
         {
           type: "p",
-          text: "`application-dev.yml` は接続先だけ `shinsei_dev` に上書きしています。`application.yml` 側の `shinsei` と `application-dev.yml` 側の `shinsei_dev` を重ねると、後から読み込む方が勝つので、実際に接続する DB 名は `shinsei_dev` です。設定は複数ファイルに分かれることがあるので、1ファイルだけ見て判断しないようにしましょう。",
+          text: "`application-dev.yml` は接続先とログの出力レベルを上書きしています。`application.yml` 側の `shinsei` と `application-dev.yml` 側の `shinsei_dev` を重ねると、後から読み込む方が勝つので、実際に接続する DB 名は `shinsei_dev` です。設定は複数ファイルに分かれることがあるので、1ファイルだけ見て判断しないようにしましょう。",
         },
         {
           type: "h2",
