@@ -51,15 +51,15 @@ export const javaMapTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "Java プロジェクトには、ソースをまとめて動かすための設定ファイルがあります。Maven なら `pom.xml`、Gradle なら `build.gradle`（と `settings.gradle`）です。",
+          text: "Java プロジェクトには、依存ライブラリとビルド方法をまとめた設定ファイルがあります。Maven なら `pom.xml`、Gradle なら `build.gradle`（と `settings.gradle`）です。",
         },
         {
           type: "p",
-          text: "どちらも、使うフレームワークやライブラリの一覧と、ビルドの仕方を書いたファイルです。プロジェクトによって Maven か Gradle かは決まっています。申請くんは Maven なので `pom.xml` があります。",
+          text: "どちらも、使うフレームワークやライブラリの一覧と、ビルドの仕方を書いたファイルです。プロジェクトによって Maven か Gradle かは決まっています。",
         },
         {
           type: "p",
-          text: "実務では、ファイルを上から通読する必要はありません。どのフレームワークか、DB アクセスが MyBatis / JPA / JDBC のどれかが分かれば、以降の検索語やログの読み方が決まります。",
+          text: "どのフレームワークを使っているか、DB アクセスが MyBatis / JPA / JDBC のどれかを先に確認しましょう。分かれば、この先ソースを探すときに、どこを見ればよいかが分かります。",
         },
         {
           type: "h2",
@@ -114,13 +114,21 @@ export const javaMapTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "Spring Boot 用の設定ファイルです。接続先、ポート、プロファイル、コンテキストパスは、Spring Boot ならここに書くことが多いです。外の Tomcat に載せるときは、ポートやコンテキストパスは Tomcat 側で決まることが多いです。yml でも properties でも、書き方が異なるだけで同じ意味です。申請くんは yml に `/shinsei` があります。",
+          text: "Spring Boot 用の設定ファイルです。接続先、ポート、プロファイル、コンテキストパスは、Spring Boot ならここに書くことが多いです。",
+        },
+        {
+          type: "p",
+          text: "外の Tomcat に載せるときは、ポートやコンテキストパスは Tomcat 側で決まることが多いです。",
+        },
+        {
+          type: "h2",
+          text: "申請くんの例",
         },
         {
           type: "code",
           title: "application.yml（抜粋）",
           lang: "yaml",
-          highlightLines: [8],
+          highlightLines: [3],
           code: `spring:
   profiles:
     active: dev
@@ -151,8 +159,12 @@ logging:
           text: "`application-dev.yml` は接続先だけ `shinsei_dev` に上書きしています。`application.yml` 側の `shinsei` と `application-dev.yml` 側の `shinsei_dev` を重ねると、後から読み込む方が勝つので、実際に接続する DB 名は `shinsei_dev` です。設定は複数ファイルに分かれることがあるので、1ファイルだけ見て判断しないようにしましょう。",
         },
         {
+          type: "h2",
+          text: "設定差を疑うとき",
+        },
+        {
           type: "p",
-          text: "ローカルでは動き、別環境では落ちる場合、まず設定差を見ましょう。",
+          text: "ローカルでは動き、別環境ではうまく動かない場合、まず設定差を見ましょう。",
         },
         {
           type: "ul",
