@@ -136,7 +136,9 @@ export function Layout() {
                   onClick={() => setOpen(false)}
                 >
                   <span className="no">{track.no}</span>
-                  <span>{track.title}</span>
+                  <span className="label" title={track.title}>
+                    {track.title}
+                  </span>
                 </NavLink>
                 <button
                   className="nav-group-toggle"

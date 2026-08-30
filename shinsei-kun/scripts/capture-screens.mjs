@@ -138,6 +138,17 @@ async function shotHistorySearch(page, appBase) {
   });
 }
 
+async function shotDetail(page, appBase) {
+  await page.goto(`${appBase}/requests/12`, { waitUntil: "networkidle0" });
+  await shot(page, "screen-detail.jpg", `${appBase}/requests/12`);
+  cropJpeg("screen-detail.jpg", "screen-detail-path.jpg", {
+    left: 0,
+    top: 0,
+    width: 1,
+    height: 0.62,
+  });
+}
+
 const browser = await puppeteer.launch({
   executablePath: chrome,
   headless: "new",
@@ -157,10 +168,19 @@ if (process.argv.includes("--history-only")) {
   process.exit(0);
 }
 
+if (process.argv.includes("--detail-only")) {
+  const appBase = process.argv.includes("--verify") ? verifyBase : base;
+  await login(page, "yamada", "password", appBase);
+  await shotDetail(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
 if (process.argv.includes("--verify-scenarios")) {
   await login(page, "yamada", "password", verifyBase);
   await shot(page, "screen-list.jpg", `${verifyBase}/requests`);
   await shotHistorySearch(page, verifyBase);
+  await shotDetail(page, verifyBase);
 
   await page.goto(`${verifyBase}/requests/16`, { waitUntil: "networkidle0" });
   await Promise.allSettled([

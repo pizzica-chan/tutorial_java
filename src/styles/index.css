@@ -19,7 +19,7 @@
   --sans: "IBM Plex Sans JP", "Hiragino Sans", sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, monospace;
   --radius: 18px;
-  --sidebar: 320px;
+  --sidebar: 340px;
 }
 
 * {
@@ -162,6 +162,12 @@ pre {
   color: var(--amber);
   font-family: var(--mono);
   font-size: 12px;
+}
+
+.nav-link .label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
 }
 
 .nav-group-head {

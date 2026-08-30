@@ -71,7 +71,7 @@ Content-Type: text/html;charset=UTF-8
   <body>
     <h1>申請一覧</h1>
     <table>
-      <tr><td>交通費申請</td><td>PENDING</td></tr>
+      <tr><td>研修参加</td><td>PENDING</td></tr>
       <tr><td>休暇申請</td><td>PENDING</td></tr>
     </table>
   </body>
@@ -120,7 +120,7 @@ Content-Type: text/html;charset=UTF-8
   <body>
     <h1>申請一覧</h1>
     <table>
-      <tr><td>交通費申請</td><td>PENDING</td></tr>
+      <tr><td>研修参加</td><td>PENDING</td></tr>
       <tr><td>休暇申請</td><td>PENDING</td></tr>
     </table>
   </body>
@@ -139,7 +139,7 @@ Content-Type: text/html;charset=UTF-8
 Content-Type: application/json
 
 [
-  {"id": 12, "title": "交通費申請", "status": "PENDING"},
+  {"id": 16, "title": "研修参加", "status": "PENDING"},
   {"id": 13, "title": "休暇申請", "status": "PENDING"}
 ]`,
         },

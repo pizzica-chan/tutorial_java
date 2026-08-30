@@ -92,7 +92,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "上の `list.js` を、承認ボタンを押したときの流れに沿って読み、エラーの原因を追います。",
+          text: "開いた `list.js` を、承認ボタンを押したときの流れに沿って読むと以下の通りとなります。",
         },
         {
           type: "ul",
@@ -887,7 +887,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "`possible_keys` が `NULL` でも、インデックスが一つも無いわけではありません。`t_request` には `PRIMARY KEY` の `id` がありますが、この検索は `applicant_id` と `approver_id` で探すので、`id` は使えず、`possible_keys` が `NULL` となっています。",
+          text: "`possible_keys` が `NULL` は、インデックスが一つも無いという意味ではありません。この検索は `applicant_id` と `approver_id` で探すため、`PRIMARY KEY` の `id` は候補になりません。",
         },
         {
           type: "p",
@@ -930,7 +930,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
           type: "callout",
           kind: "note",
           title: "外部キーとインデックス",
-          text: "MySQL では、外部キーがあると参照側のカラムにインデックスが付くことがあります。付いていても、この `WHERE` の候補になるとは限りません。この検証用の `EXPLAIN` では `possible_keys` が `NULL` です。",
+          text: "MySQL では、外部キー制約があると参照側のカラムに自動でインデックスが付くことがあります。この教材の `EXPLAIN` は、説明のために `possible_keys` を `NULL` にした簡略な例です。実際の環境では、外部キーの自動インデックスが `possible_keys` の候補に挙がることもあります。それでも `OR` と `ORDER BY` が重なると、`type` が `ALL` のままフルスキャンになることがあります。",
         },
         {
           type: "h2",
@@ -961,7 +961,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
             "`Preparing` と `Total` のあいだが空いていれば、遅いのはその SQL",
             "`EXPLAIN` の `type` が `ALL` なら、フルスキャンであることが多い",
             "`rows` は読む件数の見積もり、`Total` は返した件数。`ALL` なら見積もりに近い件数を実際に読む",
-            "`possible_keys` が `NULL` は、この SQL で使える候補が無いという意味。インデックスが一つも無い、とは限らない",
+            "`possible_keys` が `NULL` は、この検証用の簡略な例での結果。インデックスが一つも無い、という意味ではない",
             "`OR` の左右が別カラムで `ORDER BY` があると、`INDEX` を 1 本足すだけでは足りないことが多い",
             "今回はインデックス設計を見直す。SQL の作りが悪いだけのときは、アプリの SQL を直す",
           ],
@@ -1731,6 +1731,12 @@ public String history(
     <input type="date" name="createdTo" />
   </label>
 </form>`,
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "ステータスの name",
+          text: "この `status` と Controller の `requestStatus` の食い違いは「申請履歴検索の結果が不正」で扱った別シナリオの不具合です。ここでは部署の追加に集中し、既存のずれには触れません。",
         },
         {
           type: "h3",
