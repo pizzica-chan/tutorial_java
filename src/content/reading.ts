@@ -62,7 +62,7 @@ export const readingTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "リポジトリを上から読む必要はありません。操作が特定できているときは、画面と URL から処理の入口を探しましょう。手がかりの選び方は前のレッスンです。",
+          text: "リポジトリを上から読む必要はありません。操作が特定できているときは、画面と URL から処理の入口を探しましょう。",
         },
         {
           type: "p",
@@ -109,7 +109,7 @@ export const readingTrack: Track = {
           type: "code",
           title: "RequestController.java（抜粋）",
           lang: "java",
-          highlightLines: [9, 10, 12],
+          highlightLines: [3, 9, 10, 12],
           code: requestListEntryPointReadingSnippet,
         },
         {
