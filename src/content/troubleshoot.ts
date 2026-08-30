@@ -840,14 +840,14 @@ ORDER BY r.created_at DESC
           kind: "screen",
           src: "/images/screen-forbidden.jpg",
           alt: "権限がありませんと出た申請くんの画面",
-          caption: "承認者ではない利用者が承認しようとした例です。ステータスコードは 403 と読むことが多いですが、画面の形はアプリ次第です。",
+          caption: "承認者ではない利用者が承認しようとした画面です。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-403.jpg",
           alt: "承認 POST が 403 の Network タブ",
-          caption: "申請くんの例。山田が承認すると POST は 403 です。権限不足が必ず 403 になるわけではありません。",
+          caption: "申請くんの例。山田が承認すると POST は 403 です。",
         },
         {
           type: "table",
@@ -855,7 +855,7 @@ ORDER BY r.created_at DESC
           rows: [
             ["最初からログイン画面", "未ログイン、Cookie 未送信、セッション無効"],
             ["操作後にログイン画面", "セッションタイムアウト、セッション失効、Cookie 属性の不一致、CSRF 不一致"],
-            ["権限がありません", "ステータスコードは 403 と読むことが多いが、200 のエラー画面などアプリ次第。ロール、hasRole、承認者 ID"],
+            ["権限がありません", "ステータスコードは 403 のことが多いが、200 のエラー画面などアプリ次第。ロール、hasRole、承認者 ID"],
             ["API が 401 の JSON", "画面側でログインへ飛ばすのと同じ未ログイン、という実装が多い。形はアプリ次第"],
             ["API なのに HTML が返る", "認証リダイレクト。JSON ではなくログイン画面。Content-Type を見る"],
           ],
