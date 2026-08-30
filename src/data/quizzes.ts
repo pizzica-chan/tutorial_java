@@ -437,7 +437,7 @@ export const quizzes = {
   },
   "sc-impact-search": {
     id: "sc-impact-search",
-    question: "一覧に部署の絞り込みを追加する。`RequestController.list` から `findMine` へ降りた。同じ `findMine` を呼んでいる別経路は？",
+    question: "一覧と履歴に部署の絞り込みを追加する。`RequestController.list` から `findMine` へ降りた。同じ `findMine` を呼んでいる別経路は？",
     choices: [
       "`RequestApiController.list`（JSON 一覧）",
       "`RequestController.history`（`searchHistory`）",
@@ -445,7 +445,7 @@ export const quizzes = {
       "`pom.xml` の作者名",
     ],
     answer: 0,
-    explanation: "申請くんに CSV エクスポートは無い。JSON 一覧が同じ `findMine` を使います。申請履歴は `searchHistory` で、別の SQL です。",
+    explanation: "申請履歴は今回の対象ですが、`searchHistory` で別の SQL です。同じ `findMine` を呼んでいるのは JSON 一覧です。申請くんに CSV エクスポートは無い。",
   },
 } satisfies Record<string, Quiz>;
 

@@ -1328,13 +1328,13 @@ requestMapper.update(request);`,
     },
     {
       id: "impact-search",
-      title: "[影響調査] 一覧に部署で絞り込みを追加したい",
-      minutes: 10,
+      title: "[影響調査] 一覧と申請履歴に部署で絞り込みを追加したい",
+      minutes: 14,
       blocks: [
         {
           type: "callout",
           kind: "scenario",
-          text: "申請一覧に「部署で絞り込み」を追加したい。既存の一覧処理への影響を教えてほしい、と依頼された。",
+          text: "申請一覧と申請履歴に「部署で絞り込み」を追加したい。既存の処理への影響を教えてほしい、と依頼された。",
         },
         {
           type: "h2",
@@ -1343,9 +1343,8 @@ requestMapper.update(request);`,
         {
           type: "ul",
           items: [
-            "対象画面は申請一覧。URL は `/shinsei/requests`",
+            "対象画面は申請一覧と申請履歴。URL は `/shinsei/requests` と `/shinsei/requests/history`",
             "フォームに部署のプルダウンを追加する想定",
-            "申請履歴は依頼文に入っていない",
           ],
         },
         {
@@ -1354,7 +1353,7 @@ requestMapper.update(request);`,
         },
         {
           type: "p",
-          text: "処理の入口は一覧の URL です。`/shinsei/requests` で検索し、Controller から Service、Mapper へ降りましょう。同じ一覧データを別経路から出していないかも見ます。",
+          text: "処理の入口は各画面の URL です。一覧は `/shinsei/requests`、履歴は `/shinsei/requests/history` で検索し、Controller から Service、Mapper へ降りましょう。同じ一覧データを別経路から出していないかも見ます。",
         },
         { type: "diagram", name: "read-entry", caption: "URL → Controller → Service → SQL。影響調査も処理の入口は同じです。" },
         {
@@ -1373,7 +1372,7 @@ requestMapper.update(request);`,
           type: "code",
           title: "RequestController.list（申請くん）",
           lang: "java",
-          highlightLines: [2, 3],
+          highlightLines: [1, 3],
           code: `@GetMapping
 public String list(Model model, @AuthenticationPrincipal LoginUser user) {
   model.addAttribute("applications", requestService.findMine(user.getId()));
@@ -1430,11 +1429,114 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "h3",
+          text: "申請履歴",
+        },
+        {
+          type: "p",
+          text: "申請履歴の入口は `GET /shinsei/requests/history` です。`RequestController.history` が `searchHistory` を呼びます。部署の引数はありません。",
+        },
+        {
+          type: "code",
+          title: "RequestController.history（申請くん）",
+          lang: "java",
+          highlightLines: [1, 12],
+          code: `@GetMapping("/history")
+public String history(
+    @RequestParam(value = "title", required = false) String title,
+    @RequestParam(value = "requestStatus", required = false) String requestStatus,
+    @RequestParam(value = "createdFrom", required = false) String createdFrom,
+    @RequestParam(value = "createdTo", required = false) String createdTo,
+    Model model,
+    @AuthenticationPrincipal LoginUser user
+) {
+  model.addAttribute(
+      "results",
+      requestService.searchHistory(
+          user.getId(), title, requestStatus, createdFrom, createdTo)
+  );
+  return "request/history";
+}`,
+        },
+        {
+          type: "p",
+          text: "`searchHistory` は、一覧の `findMine` とは別メソッドです。部署の引数はありません。",
+        },
+        {
+          type: "code",
+          title: "RequestService.searchHistory（申請くん）",
+          lang: "java",
+          highlightLines: [1],
+          code: `public List<RequestEntity> searchHistory(
+    Long userId,
+    String title,
+    String requestStatus,
+    String createdFrom,
+    String createdTo
+) {
+  return requestMapper.searchHistory(
+      userId, title, requestStatus, createdFrom, createdTo);
+}`,
+        },
+        {
+          type: "p",
+          text: "Mapper の条件は、ユーザと、任意の件名・ステータス・申請日です。部署はありません。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の searchHistory（申請くん）",
+          lang: "xml",
+          code: `WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
+<if test="title != null and title != ''">
+  AND r.title LIKE CONCAT('%', #{title}, '%')
+</if>
+<if test="requestStatus != null and requestStatus != ''">
+  AND r.status = #{requestStatus}
+</if>
+<if test="createdFrom != null and createdFrom != ''">
+  AND r.created_at &gt;= #{createdFrom}
+</if>
+<if test="createdTo != null and createdTo != ''">
+  AND r.created_at &lt; DATE_ADD(#{createdTo}, INTERVAL 1 DAY)
+</if>`,
+        },
+        {
+          type: "p",
+          text: "履歴には検索フォームがあります。部署のプルダウンは無いので、追加します。フォームの `name` と `@RequestParam` の名前は揃えます。",
+        },
+        {
+          type: "code",
+          title: "history.html の検索フォーム（申請くん）",
+          lang: "html",
+          code: `<form class="search" th:action="@{/requests/history}" method="get">
+  <label>
+    件名
+    <input type="text" name="title" />
+  </label>
+  <label>
+    ステータス
+    <select name="status">
+      <option value="">すべて</option>
+      <option value="PENDING">未承認</option>
+      <option value="APPROVED">承認済み</option>
+    </select>
+  </label>
+  <label>
+    申請日（開始）
+    <input type="date" name="createdFrom" />
+  </label>
+  <label>
+    申請日（終了）
+    <input type="date" name="createdTo" />
+  </label>
+</form>`,
+        },
+        {
+          type: "h3",
           text: "JSON の一覧",
         },
         {
           type: "p",
-          text: "同じ `findMine` を、JSON の一覧も呼んでいます。",
+          text: "同じ `findMine` を、JSON の一覧も呼んでいます。依頼の画面ではありませんが、同じデータを出す経路です。",
         },
         {
           type: "code",
@@ -1450,7 +1552,7 @@ public List<RequestResponse> list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "画面の SQL だけ部署を追加すると、`GET /shinsei/api/requests` は絞られません。両方直すか、API は現状のままか、見積もりに書きます。",
+          text: "一覧と履歴の SQL だけ部署を追加すると、`GET /shinsei/api/requests` は絞られません。画面と API の両方を直すか、API は現状のままか、見積もりに書きます。",
         },
         {
           type: "h3",
@@ -1498,36 +1600,6 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "h3",
-          text: "申請履歴",
-        },
-        {
-          type: "p",
-          text: "申請履歴は `searchHistory` です。依頼は一覧なので、今回の見積もりには入れません。",
-        },
-        {
-          type: "code",
-          title: "RequestController.history（申請くん）",
-          lang: "java",
-          highlightLines: [1, 12],
-          code: `@GetMapping("/history")
-public String history(
-    @RequestParam(value = "title", required = false) String title,
-    @RequestParam(value = "requestStatus", required = false) String requestStatus,
-    @RequestParam(value = "createdFrom", required = false) String createdFrom,
-    @RequestParam(value = "createdTo", required = false) String createdTo,
-    Model model,
-    @AuthenticationPrincipal LoginUser user
-) {
-  model.addAttribute(
-      "results",
-      requestService.searchHistory(
-          user.getId(), title, requestStatus, createdFrom, createdTo)
-  );
-  return "request/history";
-}`,
-        },
-        {
-          type: "h3",
           text: "直す対象",
         },
         {
@@ -1540,8 +1612,12 @@ public String history(
           rows: [
             ["`RequestController.list`", "クエリ引数が無い", "部署の `@RequestParam` を追加する"],
             ["`RequestService.findMine`", "userId だけ", "部署の引数を追加して Mapper へ渡す"],
-            ["`RequestMapper.xml`", "ユーザと PENDING", "WHERE に部署を追加する"],
+            ["`RequestMapper.xml` の findMine", "ユーザと PENDING", "WHERE に部署を追加する"],
             ["`list.html`", "検索フォームが無い", "プルダウンを追加する。`name` を Controller と揃える"],
+            ["`RequestController.history`", "件名・ステータス・申請日", "部署の `@RequestParam` を追加する"],
+            ["`RequestService.searchHistory`", "userId と件名など", "部署の引数を追加して Mapper へ渡す"],
+            ["`RequestMapper.xml` の searchHistory", "ユーザと任意の件名など", "WHERE に部署を追加する"],
+            ["`history.html`", "件名・ステータス・申請日", "プルダウンを追加する。`name` を Controller と揃える"],
             ["`RequestApiController.list`", "同じ `findMine`", "画面だけ直すと JSON は絞られない"],
             ["`schema.sql`", "部署の列が無い", "列かマスタを追加する"],
           ],
@@ -1561,6 +1637,7 @@ public String history(
           items: [
             "影響調査も処理の入口は URL",
             "同じメソッドを呼ぶ API が無いかを見る",
+            "履歴は `searchHistory` で、一覧とは別の SQL になる",
             "絞る値がスキーマに無ければ、画面より先に列の作業が乗る",
           ],
         },
@@ -1573,6 +1650,7 @@ public String history(
           items: [
             "一覧の URL から `list` を特定する",
             "`findMine` と Mapper の WHERE を確認する",
+            "履歴の URL から `history` と `searchHistory` を特定する",
             "同じ `findMine` を使う API がある",
             "部署の列がスキーマに無い",
           ],
