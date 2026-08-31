@@ -9,11 +9,21 @@ export function HomePage() {
       <div className="section-head">
         <h1>目次</h1>
       </div>
+      <p className="lede">
+        既存の Java Web アプリを、処理の入口から追い、リクエストがどこまで届いたかで切り分ける教材です。ゼロからアプリを作る入門ではありません。架空の申請アプリ「申請くん」を例に進めます。
+      </p>
+      <p>
+        <Link to="/tracks/intro/about">この教材について →</Link>
+      </p>
       <div className="grid">
         {tracks.map((track) => (
           <Link
             className="card"
-            to={`/tracks/${track.id}`}
+            to={
+              track.lessons.length === 1
+                ? `/tracks/${track.id}/${track.lessons[0].id}`
+                : `/tracks/${track.id}`
+            }
             key={track.id}
             style={{ borderLeft: `3px solid ${track.accent}` }}
           >
