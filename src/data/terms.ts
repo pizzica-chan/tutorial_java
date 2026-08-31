@@ -51,6 +51,11 @@ export const terms: TermDef[] = [
     body: "Internal Server Error。サーバ側の失敗を示す応答です。",
   },
   {
+    term: "502 / 503",
+    aliases: ["502", "503"],
+    body: "502 は Bad Gateway、503 は Service Unavailable。どちらも、手前の HTTP サーバやロードバランサが、後ろのアプリまで到達できない、または応答を受け取れないときに返します。",
+  },
+  {
     term: "302",
     aliases: ["302", "303"],
     body: "リダイレクト。別の URL へ誘導する応答です。ログイン画面へ飛ばすときや、POST 後の画面遷移でよく使います。",
