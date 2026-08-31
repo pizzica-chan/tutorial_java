@@ -600,7 +600,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "code",
           title: "組み立て後の HTML（ブラウザが受け取る抜粋）",
           lang: "html",
-          highlightLines: [5, 16],
+          highlightLines: [5, 15],
           code: shinseiListRenderedSnippet,
         },
         {
@@ -642,7 +642,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
     },
     {
       id: "security-filter",
-      title: "Filter / Interceptor / AOP",
+      title: "Filter / Interceptor / AOP / @ControllerAdvice",
       minutes: 11,
       blocks: [
         {

@@ -153,10 +153,12 @@ public class RequestApiController {
           type: "code",
           title: "承認処理（申請くん）",
           lang: "java",
-          highlightLines: [5],
+          highlightLines: [7],
           code: `if (request == null) throw new NotFoundException(...);
 if (!request.getApproverId().equals(approverId))
   throw new ForbiddenException(...);
+if (!"PENDING".equals(request.getStatus()))
+  throw new ConflictException(...);
 request.setStatus("APPROVED");
 requestMapper.update(request);
 mailService.notifyApplicant(request);`,
