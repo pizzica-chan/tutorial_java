@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "npm run check",
+    "prebuild": "npm run check && npm run zip:shinsei-kun",
     "build": "tsc -b && vite build",
     "check": "node scripts/check-content.mjs",
+    "zip:shinsei-kun": "node scripts/build-shinsei-zip.mjs",
     "preview": "vite preview",
     "deploy": "npm run build && wrangler deploy"
   },

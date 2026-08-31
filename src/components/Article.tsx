@@ -195,6 +195,20 @@ function BlockView({ block }: { block: Block }) {
       );
     case "investigation-flow":
       return <InvestigationFlow items={block.items} />;
+    case "download":
+      return (
+        <p className="download-block">
+          <a className="btn btn-primary" href={block.href} download>
+            <Icon name="package" size={16} />
+            {block.label}
+          </a>
+          {block.note ? (
+            <span className="download-note">
+              <TextWithTerms text={block.note} />
+            </span>
+          ) : null}
+        </p>
+      );
     default: {
       const _exhaustive: never = block;
       return _exhaustive;

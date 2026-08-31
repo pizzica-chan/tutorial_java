@@ -60,7 +60,8 @@ export type Block =
   | { type: "figure"; src: string; alt: string; caption?: string; kind?: "photo" | "screen"; size?: "small" }
   | { type: "table"; headers: string[]; rows: string[][]; empty?: string }
   | { type: "steps"; items: { title: string; text: string }[] }
-  | { type: "investigation-flow"; items: InvestigationFlowItem[] };
+  | { type: "investigation-flow"; items: InvestigationFlowItem[] }
+  | { type: "download"; href: string; label: string; note?: string };
 
 export type Lesson = {
   id: string;
