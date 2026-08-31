@@ -79,7 +79,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "Spring Boot 2.7 と 3.x では javax と jakarta が違います。参照するサンプルは、対象プロジェクトの版に合わせましょう。",
+          text: "Spring Boot 2.7 と 3.x では、Servlet などの import パッケージ名が `javax` か `jakarta` かで変わります。参照するサンプルは、対象プロジェクトの版に合わせましょう。",
         },
         {
           type: "h2",
@@ -87,7 +87,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "申請くんは Maven です。上の項目が、dependencies では次のとおりです。",
+          text: "申請くんは Maven です。いま挙げた項目は、`pom.xml` の dependencies では次のとおりです。",
         },
         {
           type: "code",
@@ -187,7 +187,7 @@ logging:
           type: "ul",
           items: [
             "active プロファイルは起動引数で上書きされることがある",
-            "`application-dev.yml`（または .properties）と prod でログ量が違う。出力先は `logging.file` や、Spring Boot 用の `logback-spring.xml` に書いてあることが多い",
+            "`application-dev.yml`（または .properties）と `prod`（本番環境）用の設定でログ量が違う。出力先は `logging.file` や、Spring Boot 用の `logback-spring.xml` に書いてあることが多い",
             "`context-path` が違うと CSS が 404 になり、画面だけ崩れる",
             "パスワードは環境変数や別ファイルのことがある",
           ],
@@ -227,7 +227,7 @@ logging:
         },
         {
           type: "p",
-          text: "申請くんの承認を例にすると、承認可否の判定、ステータスの更新、メール送信が Service にあります。",
+          text: "申請くんの一覧を例にすると、ログインユーザに関係する未承認の申請だけへの絞り込みが Service にあります。",
         },
         { type: "diagram", name: "layers", caption: "探す順番。クラス名が違っても、受付 → ビジネスロジック → DB の流れは同じです。" },
         {
@@ -373,11 +373,11 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "`static/js` には `app.js` のほかに `list.js` もあります。一覧画面の承認ボタンを押したときの JavaScript は `list.js` の方です。1つの画面が複数の JS ファイルを読み込むことは珍しくありません。",
+          text: "`static/js` には `app.js` のほかに `list.js` もあります。今見た `app.js` の確認ダイアログは申請詳細画面の承認ボタン用で、一覧画面の承認ボタンを押したときに動く JavaScript は `list.js` の方です。1つの画面が複数の JS ファイルを読み込むことは珍しくありません。",
         },
         {
           type: "p",
-          text: "ブラウザは HTML のあと、CSS と JS を別リクエストで取りに行きます。Java の処理は通りません。",
+          text: "ブラウザは HTML のあと、CSS と JS を別リクエストで取りに行きます。これらの静的ファイルは、Java の処理を通りません。",
         },
         {
           type: "p",
@@ -594,7 +594,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "サーバが組み立てたあとは、th: 属性は消え、値だけが残ります。申請くんの一覧は未承認だけなので、今の画面では各行に form が出ます。テンプレートの `th:if` は、PENDING のときだけボタンを出す条件です。`context-path` が `/shinsei` なら action に付きます。",
+          text: "サーバが組み立てたあとは、th: 属性は消え、値だけが残ります。申請くんの一覧は、Mapper の SQL で未承認（PENDING）だけに絞り込まれています。テンプレートの `th:if` は、その一覧の各行について、PENDING のときだけボタンを出す条件です。",
         },
         {
           type: "code",
@@ -781,10 +781,14 @@ public void addInterceptors(InterceptorRegistry registry) {
 // 本体の1行目で止まった時点では、トランザクションが始まっていることがある`,
         },
         {
+          type: "p",
+          text: "このうち、よくあるのは `@Transactional` です。ここを例に確認方法を挙げます。",
+        },
+        {
           type: "callout",
           kind: "trap",
           title: "Java メソッド本体より前",
-          text: "`@Transactional` が付いていても、通常はトランザクションを開始したあとに Java メソッド本体へ進むため、本体のブレークポイントで止まります。止まらないときは、メソッド認可や独自の `@Aspect` が本体を呼ばずに終了していないか、トランザクション開始時に失敗していないかを確認しましょう。Filter / Interceptor が Controller の前なら、Controller 自体が止まりません。",
+          text: "`@Transactional` が付いていても、通常はトランザクションを開始したあとに Java メソッド本体へ進むため、本体のブレークポイントで止まります。止まらないときは、メソッド認可や独自の `@Aspect` が本体を呼ばずに終了していないか、トランザクション開始時に失敗していないかを確認しましょう。",
         },
         {
           type: "h2",
@@ -866,7 +870,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "上の3パターンのどれかかで、ログの見る場所が変わります。",
+          text: "上の3パターンのどれかによって、ログの見る場所が変わります。",
         },
         {
           type: "ul",

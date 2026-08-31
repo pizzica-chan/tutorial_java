@@ -110,12 +110,12 @@ public class RequestApiController {
     },
     {
       id: "down",
-      title: "Service から SQL",
+      title: "Service から Mapper へ",
       minutes: 9,
       blocks: [
         {
           type: "p",
-          text: "Controller の次に、ビジネスロジックを扱う Java メソッドを見ましょう。次の箇条書きにある処理を探します。",
+          text: "Controller の次に、ビジネスロジックを扱う Java メソッドを見ましょう。ここでは、枝分かれ（if / throw / 他クラス呼び出し）が分かりやすい例として、`list` ではなく承認（`approve`）の処理を見ます。Service のメソッドでよく見る処理は、次の4種類です。",
         },
         {
           type: "ul",
@@ -127,10 +127,29 @@ public class RequestApiController {
           ],
         },
         {
+          type: "p",
+          text: "申請くんの例には無いですが、ファイルの入出力やデータの加工が中心の Service もあります。",
+        },
+        {
+          type: "code",
+          title: "ファイル入出力とデータの加工（例）",
+          lang: "java",
+          code: `public void exportCsv(List<Order> orders) throws IOException {
+  List<String> lines = orders.stream()
+      .map(o -> o.getId() + "," + o.getAmount())
+      .collect(Collectors.toList());
+  Files.write(Paths.get("orders.csv"), lines);
+}`,
+        },
+        {
+          type: "p",
+          text: "次のコード例では、強調した行に注目します。",
+        },
+        {
           type: "code",
           title: "承認処理（申請くん）",
           lang: "java",
-          highlightLines: [6],
+          highlightLines: [5],
           code: `if (request == null) throw new NotFoundException(...);
 if (!request.getApproverId().equals(approverId))
   throw new ForbiddenException(...);
@@ -140,9 +159,20 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "承認はできたがメールが来ないなら、更新は成功して notify だけ失敗している可能性があります。処理は一本ではなく枝分かれします。",
+          text: "永続化を担っているのは `requestMapper.update` です。呼び出し先のインターフェースを見ると、SQL の実行そのものは Mapper に任せていると分かります。",
         },
-        { type: "diagram", name: "service-fork" },
+        {
+          type: "code",
+          title: "RequestMapper.java（update の宣言）",
+          lang: "java",
+          code: `public interface RequestMapper {
+  int update(RequestEntity request);
+}`,
+        },
+        {
+          type: "p",
+          text: "この宣言だけでは、実際に発行される SQL は分かりません。次の「SQL からソースを探す」で確認します。",
+        },
       ],
     },
     {
@@ -300,8 +330,8 @@ public class Request {
         {
           type: "callout",
           kind: "note",
-          title: "SQL の置き場所は、MyBatis か JPA かで違う",
-          text: "JdbcTemplate のように、Java の文字列に SQL を書く書き方もあります。ログの文言は設定次第です。",
+          title: "JdbcTemplate という書き方もある",
+          text: "MyBatis や JPA のほかに、JdbcTemplate のように Java の文字列に SQL を直接書く書き方もあります。ログの文言は設定次第です。",
         },
         {
           type: "h2",

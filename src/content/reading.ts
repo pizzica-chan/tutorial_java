@@ -143,7 +143,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "入口から先は、現象 → 処理の入口 → 分岐 → 永続化 → 出口 です。",
+          text: "全体の流れは、現象 → 処理の入口 → 分岐 → 永続化 → 出口 です。",
         },
         {
           type: "steps",
@@ -151,7 +151,7 @@ export const readingTrack: Track = {
             { title: "現象", text: "誰が、どの画面で、何をすると、何が起きるか。" },
             { title: "処理の入口", text: "URL と HTTP メソッド。Controller またはバッチから読み始める。" },
             { title: "分岐", text: "権限、ステータス、null。該当する if を特定。止められるならデバッガで値を見る。" },
-            { title: "永続化", text: "SQL、ファイル、外部 API。" },
+            { title: "永続化", text: "DB への SQL 実行やファイルの書き込みなど永続化のほか、外部 API の呼び出しもここに含みます。" },
             { title: "出口", text: "画面メッセージ、リダイレクト、非同期の後処理。" },
           ],
         },

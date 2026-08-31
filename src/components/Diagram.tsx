@@ -32,7 +32,6 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "read-entry": ReadEntry,
   "call-chain": CallChain,
   "value-origin": ValueOrigin,
-  "service-fork": ServiceFork,
   "stack-own": StackOwn,
   "stack-line": StackLine,
   "not-found": NotFound,
@@ -583,25 +582,6 @@ function CallChain() {
       <IconNode icon="cog" kicker="HERE" title="今のメソッド" />
       <Arrow label="呼ぶ" />
       <IconNode icon="file" kicker="CALLEE" title="呼び出し先" sub="Mapper / メール" />
-    </div>
-  );
-}
-
-function ServiceFork() {
-  return (
-    <div className="d-n1">
-      <Layer icon="cog" accent>
-        RequestService.approve
-      </Layer>
-      <Arrow down label="成功したあと枝が分かれる" />
-      <div className="d-cols">
-        <ColCard icon="database" title="DB 更新">
-          status = APPROVED
-        </ColCard>
-        <ColCard icon="mail" title="メール">
-          ここだけ失敗すると「承認できたが通知が無い」
-        </ColCard>
-      </div>
     </div>
   );
 }

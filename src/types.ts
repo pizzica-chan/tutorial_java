@@ -19,7 +19,6 @@ export type DiagramName =
   | "read-entry"
   | "call-chain"
   | "value-origin"
-  | "service-fork"
   | "stack-own"
   | "stack-line"
   | "not-found"
