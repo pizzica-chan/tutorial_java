@@ -295,7 +295,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
           type: "callout",
           kind: "note",
           title: "SSL 終端の位置",
-          text: "SSL 終端は、必ずしも Apache / nginx で行われるとは限りません。ロードバランサや CDN など、HTTP サーバより前のレイヤで TLS を解読する構成もあります。WAF で遮断されたリクエストもアプリまで届かないことが多いです。証明書エラーはその手前で起きていることが多く、アプリの logback には出ません。",
+          text: "SSL 終端は、必ずしも Apache / nginx で行われるとは限りません。ロードバランサや CDN など、HTTP サーバより前のレイヤで TLS を復号する構成もあります。WAF で遮断されたリクエストもアプリまで届かないことが多いです。証明書エラーはその手前で起きていることが多く、アプリの logback には出ません。",
         },
         {
           type: "code",

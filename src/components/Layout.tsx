@@ -44,15 +44,23 @@ export function Layout() {
   }, [currentTrackId]);
 
   const hasNavigatedRef = useRef(false);
+  const pendingFocusRef = useRef(false);
   useEffect(() => {
     if (location.hash) return;
     window.scrollTo(0, 0);
     // 初回表示ではフォーカスを奪わない。ページャーなどでの遷移時だけ本文へ移す
     if (hasNavigatedRef.current) {
-      document.getElementById("main")?.focus();
+      pendingFocusRef.current = true;
     }
     hasNavigatedRef.current = true;
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!pendingFocusRef.current || mobileDialogOpen) return;
+    // モバイルの目次を開いたまま選ぶと、この時点ではまだ #main が inert なので待つ
+    pendingFocusRef.current = false;
+    document.getElementById("main")?.focus();
+  }, [mobileDialogOpen, location.pathname]);
 
   // 目次を開いたまま広い画面になると、常時表示のサイドバーと本文の inert が食い違う
   useEffect(() => {

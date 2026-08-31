@@ -64,45 +64,47 @@ export function InvestigationFlow({ items }: { items: InvestigationFlowItem[] })
   return (
     <figure className="diagram">
       <figcaption className="kicker">FIGURE</figcaption>
-      <div className="d-stack investigation-flow">
-        {items.map((item, index) => {
-          const prev = items[index - 1];
-          const prevIsFork = prev !== undefined && typeof prev !== "string";
-          const showLeadArrow = index > 0 && !prevIsFork;
+      <div className="diagram-scroll">
+        <div className="d-stack investigation-flow">
+          {items.map((item, index) => {
+            const prev = items[index - 1];
+            const prevIsFork = prev !== undefined && typeof prev !== "string";
+            const showLeadArrow = index > 0 && !prevIsFork;
 
-          if (typeof item === "string") {
-            const icon = defaultIcons[iconIndex] ?? "eye";
-            iconIndex += 1;
+            if (typeof item === "string") {
+              const icon = defaultIcons[iconIndex] ?? "eye";
+              iconIndex += 1;
+              return (
+                <div className="investigation-flow-item" key={index}>
+                  {showLeadArrow ? <FlowArrow /> : null}
+                  <FlowStep icon={icon} text={item} />
+                </div>
+              );
+            }
+
+            const startIcons = item.tracks.map((track) => {
+              const start = iconIndex;
+              iconIndex += track.steps.length;
+              return start;
+            });
+
             return (
               <div className="investigation-flow-item" key={index}>
                 {showLeadArrow ? <FlowArrow /> : null}
-                <FlowStep icon={icon} text={item} />
+                <div className="investigation-flow-fork">
+                  {item.tracks.map((track, trackIndex) => (
+                    <FlowColumn
+                      key={trackIndex}
+                      track={track}
+                      iconStart={startIcons[trackIndex] ?? 0}
+                      showTail={index < items.length - 1}
+                    />
+                  ))}
+                </div>
               </div>
             );
-          }
-
-          const startIcons = item.tracks.map((track) => {
-            const start = iconIndex;
-            iconIndex += track.steps.length;
-            return start;
-          });
-
-          return (
-            <div className="investigation-flow-item" key={index}>
-              {showLeadArrow ? <FlowArrow /> : null}
-              <div className="investigation-flow-fork">
-                {item.tracks.map((track, trackIndex) => (
-                  <FlowColumn
-                    key={trackIndex}
-                    track={track}
-                    iconStart={startIcons[trackIndex] ?? 0}
-                    showTail={index < items.length - 1}
-                  />
-                ))}
-              </div>
-            </div>
-          );
-        })}
+          })}
+        </div>
       </div>
     </figure>
   );
