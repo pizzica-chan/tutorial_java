@@ -394,7 +394,7 @@ function StackLine() {
           <em>メソッド</em>
         </span>
         <span className="url-part query">
-          (RequestService.java:47)
+          (RequestService.java:48)
           <em>ソースのファイルと行</em>
         </span>
       </div>
@@ -422,8 +422,8 @@ const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: stri
   },
   {
     kind: "hit",
-    text: "    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)",
-    note: "このファイルの 47 行目を最初に調べる",
+    text: "    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:48)",
+    note: "このファイルの 48 行目を最初に調べる",
   },
   {
     kind: "dim",

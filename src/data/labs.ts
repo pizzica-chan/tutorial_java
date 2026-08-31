@@ -118,8 +118,8 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "app",
-        text: "    at `jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)`",
-        note: "自分たちが書いたコードのパッケージ名で始まり、.java がある、上から最初の行。実ファイルの 47 行目を最初に調べます。",
+        text: "    at `jp.co.example.shinsei.service.RequestService.approve(RequestService.java:48)`",
+        note: "自分たちが書いたコードのパッケージ名で始まり、.java がある、上から最初の行。実ファイルの 48 行目を最初に調べます。",
       },
       {
         kind: "framework",

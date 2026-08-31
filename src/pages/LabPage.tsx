@@ -33,7 +33,7 @@ export function LabPage() {
 
       <h2 className="serif">4. スタックトレース</h2>
       <p>
-        <TextWithTerms text="at 行の右端が、ソースの位置です。`RequestService.java:47` なら、そのファイルの 47 行目を見ましょう。この教材の申請くんのスタック例は、実ファイルの行番号と一致しています。" />
+        <TextWithTerms text="at 行の右端が、ソースの位置です。`RequestService.java:48` なら、そのファイルの 48 行目を見ましょう。この教材の申請くんのスタック例は、実ファイルの行番号と一致しています。" />
       </p>
       <p>
         <TextWithTerms text="`org.springframework` や `java.` で始まる行は、自分たちが書いたコードではありません。申請くんなら、パッケージ名 `jp.co.example.shinsei` で始まる行を、上から最初に見つけたところから調べましょう。" />

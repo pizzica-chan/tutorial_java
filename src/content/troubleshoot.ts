@@ -210,7 +210,7 @@ export const troubleshootTrack: Track = {
           highlightKind: "error",
           code: `04:12:03.512 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[/shinsei].[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] threw exception
 java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null
-    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)
+    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:48)
     at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)`,
         },
         {
@@ -660,7 +660,7 @@ ORDER BY r.created_at DESC
         { type: "diagram", name: "stack-line", caption: "右端の括弧が、ソースのファイルと行です。" },
         {
           type: "p",
-          text: "`RequestService.java:47` なら、プロジェクト内の `RequestService.java` の 47 行目です。ログの :47 は、エディタ左端の行番号と同じものです。この教材の申請くんのスタック例は、実ファイルの行番号と一致しています。Unknown Source とだけある行は、ソースが無いので飛ばしましょう。",
+          text: "`RequestService.java:48` なら、プロジェクト内の `RequestService.java` の 48 行目です。ログの :48 は、エディタ左端の行番号と同じものです。この教材の申請くんのスタック例は、実ファイルの行番号と一致しています。Unknown Source とだけある行は、ソースが無いので飛ばしましょう。",
         },
         {
           type: "h2",

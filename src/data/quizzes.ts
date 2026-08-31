@@ -212,7 +212,7 @@ export const quizzes = {
     question: "次のうち、スタックトレースで原因調査の起点にしやすいのはどれ？",
     choices: [
       "org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod",
-      "`jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)`",
+      "`jp.co.example.shinsei.service.RequestService.approve(RequestService.java:48)`",
       "java.base/java.lang.Thread.run",
       "jdk.proxy2.$Proxy128.approve(Unknown Source)",
     ],

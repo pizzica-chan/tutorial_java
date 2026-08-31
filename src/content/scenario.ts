@@ -202,11 +202,11 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "例外メッセージの次にある最初の自作 at 行は `RequestService.java:47` です。実ファイルの同じ行を開くと、`request.getApproverId().equals(approverId)` があります。",
+          text: "例外メッセージの次にある最初の自作 at 行は `RequestService.java:48` です。実ファイルの同じ行を開くと、`request.getApproverId().equals(approverId)` があります。",
         },
         {
           type: "code",
-          title: "RequestService.java:47（申請くん）",
+          title: "RequestService.java:48（申請くん）",
           lang: "java",
           code: `if (!request.getApproverId().equals(approverId)) {
   throw new ForbiddenException("承認権限がありません");
@@ -280,7 +280,7 @@ WHERE id = 16;`,
           items: [
             "Network タブで、POST が 500 であることを確認",
             "操作時刻のサーバログで `NullPointerException` を確認",
-            "スタックから `RequestService.java:47` を開き、`getApproverId()` が null と分かる",
+            "スタックから `RequestService.java:48` を開き、`getApproverId()` が null と分かる",
             "DB で `approver_id` が NULL であることを確認",
           ],
         },
