@@ -270,7 +270,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
         },
         {
           type: "p",
-          text: "手前に Apache や nginx がある構成では、ブラウザのリクエストが最初に届くのは HTTP サーバです。logback のアプリログに載るのは、後ろの Java まで転送されたリクエストだけです。CSS や JS を HTTP サーバが直接返しているとき、Controller のログには出ません。",
+          text: "手前に Apache や nginx がある構成では、ブラウザのリクエストが最初に届くのは HTTP サーバです。logback のアプリログに載るのは、後ろの Java まで転送されたリクエストだけです。CSS や JS は Controller を通らないため、そもそも Controller のログには出ません。手前の HTTP サーバが直接返している場合は、そのリクエスト自体が Java にも届きません。",
         },
         {
           type: "ul",
