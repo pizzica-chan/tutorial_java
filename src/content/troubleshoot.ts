@@ -156,7 +156,7 @@ export const troubleshootTrack: Track = {
     {
       id: "logs",
       title: "ログの場所と読み方",
-      minutes: 12,
+      minutes: 8,
       blocks: [
         {
           type: "p",
@@ -194,8 +194,74 @@ export const troubleshootTrack: Track = {
         },
         {
           type: "h2",
-          text: "HTTP サーバのログを見る",
+          text: "アプリのログの 1 行を読む",
         },
+        {
+          type: "p",
+          text: "書式は設定次第ですが、次の要素が並ぶことが多いです。",
+        },
+        { type: "diagram", name: "log-line", caption: "ログの名前は、原因のクラスとは限りません。原因は下の at 行で見ます。" },
+        {
+          type: "code",
+          title: "例外が出たとき（申請くん・ID 16）",
+          highlightLines: [3],
+          highlightKind: "error",
+          code: `04:12:03.512 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[/shinsei].[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] threw exception
+java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null
+    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)
+    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)`,
+        },
+        {
+          type: "ol",
+          items: [
+            "操作した時刻と、ログの時刻を合わせる。日付が違うファイルなら、まず日付を合わせる",
+            "ERROR と WARN を先に見る。INFO は「処理がそこに届いたか」の確認に使う",
+            "メッセージで何が起きたかを読む。その下に at 行が続けばスタックトレース",
+            "自分たちが書いたコードのパッケージ名なら、そのソースの行番号を調べる",
+          ],
+        },
+        {
+          type: "p",
+          text: "DEBUG は量が多いので、普段は出していないことが多いです。必要なときだけログレベルを上げましょう。",
+        },
+        {
+          type: "p",
+          text: "角括弧 [ ] のなかの `nio-8080-exec-3` はスレッド名です。同じ操作の行を揃える手順は「アプリのログで処理を追う」です。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "ログが無い",
+          text: "操作時刻にアプリログが無いこと自体が情報です。別インスタンス、別ファイル、リクエストが Java まで届いていないことを疑いましょう。手前に HTTP サーバがあるなら、次の「HTTP サーバのログを見る」で access.log も確認しましょう。",
+        },
+        {
+          type: "h2",
+          text: "足りないときだけ足す",
+        },
+        {
+          type: "p",
+          text: "既存ログで到達も例外も分からないとき、一時的に ID と通過点を出しましょう。調査が終わったら戻しましょう。値を今の行で見たいだけなら、ログを足すよりデバッガが有効です。共有環境など、処理を止めるのが難しいときは、ログで対応しましょう。",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "共有環境",
+          text: "検証用環境など他人と使っている場合、ログレベルの変更や調査用の出力は、他の人のログを読みにくくし、ディスクも食います。足す前に、その環境でよいか確認しましょう。",
+        },
+        {
+          type: "code",
+          title: "調査用（あとで戻す）",
+          lang: "java",
+          code: `log.info("approve start requestId={} userId={}", id, userId);`,
+        },
+        { type: "quiz", id: "ts-log" },
+      ],
+    },
+    {
+      id: "http-server-log",
+      title: "HTTP サーバのログを見る",
+      minutes: 6,
+      blocks: [
         {
           type: "p",
           text: "手前に Apache や nginx がある構成では、ブラウザが最初に当たるのは HTTP サーバです。logback のアプリログに載るのは、後ろの Java まで転送されたリクエストだけです。CSS や JS を HTTP サーバが直接返しているとき、Controller のログには出ません。",
@@ -245,69 +311,6 @@ export const troubleshootTrack: Track = {
           title: "複数台",
           text: "ロードバランサの後ろだと、ログは別インスタンスに出ることがあります。操作が当たったサーバを特定してから読みましょう。",
         },
-        {
-          type: "h2",
-          text: "アプリのログの 1 行を読む",
-        },
-        {
-          type: "p",
-          text: "書式は設定次第ですが、次の要素が並ぶことが多いです。",
-        },
-        { type: "diagram", name: "log-line", caption: "ログの名前は、原因のクラスとは限りません。原因は下の at 行で見ます。" },
-        {
-          type: "code",
-          title: "例外が出たとき（申請くん・ID 16）",
-          highlightLines: [3],
-          highlightKind: "error",
-          code: `04:12:03.512 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[/shinsei].[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] threw exception
-java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null
-    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:47)
-    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)`,
-        },
-        {
-          type: "ol",
-          items: [
-            "操作した時刻と、ログの時刻を合わせる。日付が違うファイルなら、まず日付を合わせる",
-            "ERROR と WARN を先に見る。INFO は「処理がそこに届いたか」の確認に使う",
-            "メッセージで何が起きたかを読む。その下に at 行が続けばスタックトレース",
-            "自分たちが書いたコードのパッケージ名なら、そのソースの行番号を調べる",
-          ],
-        },
-        {
-          type: "p",
-          text: "DEBUG は量が多いので、普段は出していないことが多いです。必要なときだけログレベルを上げましょう。",
-        },
-        {
-          type: "p",
-          text: "角括弧 [ ] のなかの `nio-8080-exec-3` はスレッド名です。同じ操作の行を揃える手順は「アプリのログで処理を追う」です。",
-        },
-        {
-          type: "callout",
-          kind: "trap",
-          title: "ログが無い",
-          text: "操作時刻にアプリログが無いこと自体が情報です。別インスタンス、別ファイル、リクエストが Java まで届いていないことを疑いましょう。手前に HTTP サーバがあるなら、access.log に行があるかも見ましょう。",
-        },
-        {
-          type: "h2",
-          text: "足りないときだけ足す",
-        },
-        {
-          type: "p",
-          text: "既存ログで到達も例外も分からないとき、一時的に ID と通過点を出しましょう。調査が終わったら戻しましょう。値を今の行で見たいだけなら、ログを足すよりデバッガが有効です。共有環境など、処理を止めるのが難しいときは、ログで対応しましょう。",
-        },
-        {
-          type: "callout",
-          kind: "warn",
-          title: "共有環境",
-          text: "検証用環境など他人と使っている場合、ログレベルの変更や調査用の出力は、他の人のログを読みにくくし、ディスクも食います。足す前に、その環境でよいか確認しましょう。",
-        },
-        {
-          type: "code",
-          title: "調査用（あとで戻す）",
-          lang: "java",
-          code: `log.info("approve start requestId={} userId={}", id, userId);`,
-        },
-        { type: "quiz", id: "ts-log" },
         { type: "quiz", id: "ts-http-log" },
       ],
     },
