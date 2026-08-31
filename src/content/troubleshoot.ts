@@ -266,7 +266,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
       blocks: [
         {
           type: "p",
-          text: "アプリ自身のログは前のレッスンで見ました。ここでは、リクエストが Java まで届いていない、または静的ファイルだけがおかしいときに確認する、手前の HTTP サーバのログを見ます。",
+          text: "アプリ自身のログは前のレッスンで見ました。ここでは、手前の HTTP サーバのログを見ます。",
         },
         {
           type: "p",
