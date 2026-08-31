@@ -99,7 +99,7 @@ export const quizzes = {
   },
   "web-api": {
     id: "web-api",
-    question: "画面の JS が JSON を期待しているのに「パースできない」と出る。Network タブでは `/api/requests` が 200 で、`Content-Type` は `text/html`。疑うのは？",
+    question: "画面の JS が JSON を期待しているのに「パースできない」と出る。Network タブでは `/shinsei/api/requests` が 200 で、`Content-Type` は `text/html`。疑うのは？",
     choices: [
       "JSON のキー名の綴りだけ",
       "ログイン画面など HTML が返っている",

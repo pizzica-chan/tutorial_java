@@ -162,7 +162,7 @@ function UrlParts() {
           <em>アプリ内のパス</em>
         </span>
         <span className="url-part query">
-          ?tab=history
+          ?page=2
           <em>クエリ</em>
         </span>
       </div>

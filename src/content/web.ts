@@ -39,7 +39,7 @@ export const webTrack: Track = {
           type: "p",
           text: "画面に出ているのは、返ってきた HTML をブラウザが表示したものです。不具合は画面で気づくことが多いですが、画面だけ見て原因を決めず、リクエストとレスポンスも確認しましょう。",
         },
-        { type: "diagram", name: "http-roundtrip", caption: "ブラウザが送り、サーバが返す。画面は、返ってきた HTML を表示したものです。" },
+        { type: "diagram", name: "http-roundtrip", caption: "ブラウザが送り、サーバが返す。" },
         {
           type: "h2",
           text: "申請くんの例",
@@ -57,25 +57,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "返ってきたレスポンスは、次のようなテキストです。画面は、この HTML をブラウザが表示したものです。",
-        },
-        {
-          type: "code",
-          lang: "http",
-          title: "申請一覧のレスポンス（例）",
-          code: `HTTP/1.1 200 OK
-Content-Type: text/html;charset=UTF-8
-
-<!DOCTYPE html>
-<html>
-  <body>
-    <h1>申請一覧</h1>
-    <table>
-      <tr><td>研修参加</td><td>PENDING</td></tr>
-      <tr><td>休暇申請</td><td>PENDING</td></tr>
-    </table>
-  </body>
-</html>`,
+          text: "実際のリクエストとレスポンスは、次のようなテキストです。",
         },
         { type: "widget", name: "http" },
         {
@@ -84,7 +66,7 @@ Content-Type: text/html;charset=UTF-8
         },
         {
           type: "p",
-          text: "ブラウザは、まず画面の HTML を取ります。HTML の中には、CSS や JS、画像などの URL が書いてあります。ブラウザはそれを見て、それぞれ別のリクエストを送ります。Network タブでは、HTML のあとにそれらの行が並びます。",
+          text: "ブラウザは、まず画面の HTML を取ります。HTML の中には、CSS や JS、画像などの URL が書いてあります。ブラウザはそれを見て、それぞれ別のリクエストを送ります。開発者ツール（Chrome や Edge では F12、または右クリック→「検証」）を開き、Network タブを見ると、HTML のあとにそれらの行が並びます。",
         },
         {
           type: "figure",
@@ -156,7 +138,7 @@ Content-Type: application/json
       blocks: [
         {
           type: "p",
-          text: "リクエストは、URL と HTTP メソッドとステータスコードで読みます。",
+          text: "ここから、リクエストとレスポンスを具体的に読む方法を見ていきます。まずは URL、HTTP メソッド、ステータスコードの3つです。",
         },
         {
           type: "h2",
@@ -164,7 +146,7 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "`https://intranet.example.co.jp/shinsei/requests/12` は次のように読めます。",
+          text: "`https://intranet.example.co.jp/shinsei/requests/12?page=2` は次のように読めます。",
         },
         { type: "diagram", name: "url-parts" },
         {
@@ -174,7 +156,7 @@ Content-Type: application/json
             ["ホスト", "どのサーバか"],
             ["`/shinsei`", "コンテキストパス。アプリの根っこ"],
             ["`/requests/12`", "アプリ内の資源。12番の申請"],
-            ["?tab=history", "クエリ。同じ資源の見え方を変える"],
+            ["`?page=2`", "クエリ。絞り込みやページ番号などの条件"],
           ],
         },
         {
@@ -202,6 +184,10 @@ Content-Type: application/json
         {
           type: "h2",
           text: "HTTPステータスコード",
+        },
+        {
+          type: "p",
+          text: "ステータスコードは、応答の結果を表す3桁の数字です。",
         },
         { type: "diagram", name: "status-codes" },
         {
@@ -232,7 +218,7 @@ Content-Type: application/json
       blocks: [
         {
           type: "p",
-          text: "リクエストには、操作の対象や条件を伝える値が付きます。これをパラメータと呼びます。URL のパスだけでは足りないとき、クエリ・フォーム・本文に載せます。",
+          text: "リクエストには、操作の対象や条件を伝える値が付きます。これをパラメータと呼びます。載る場所は、パス・クエリ・フォーム・本文のいずれかです。",
         },
         {
           type: "p",
@@ -241,7 +227,7 @@ Content-Type: application/json
         {
           type: "diagram",
           name: "request-params",
-          caption: "載せ方はいくつかある。JSON の行は申請くんの API 登録です。GET と POST でよく使う場所が違う。",
+          caption: "載せ方はいくつかあります。JSON の行は、申請を新しく登録するときの例です。GET と POST でよく使う場所が違います。",
         },
         {
           type: "table",
@@ -288,12 +274,8 @@ Content-Type: application/json
           caption: "申請履歴の検索。アドレスバーの `?` 以降が、フォームの件名・ステータスと対応しています。",
         },
         {
-          type: "h3",
-          text: "Network タブ",
-        },
-        {
           type: "p",
-          text: "同じクエリは、Network タブでは次の欄に出ます。",
+          text: "Network タブでは次の欄に出ます。",
         },
         {
           type: "figure",
@@ -322,7 +304,7 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "申請 ID 15 の承認は `POST /shinsei/requests/15/approve` です。15 はパスに入っているので、フォーム本文には乗りません。",
+          text: "ここでは、山田が承認できる別の申請（ID 15）を例にします。承認は `POST /shinsei/requests/15/approve` です。15 はパスに入っているので、フォーム本文には乗りません。",
         },
         {
           type: "figure",
@@ -348,7 +330,7 @@ Content-Type: application/json
           type: "callout",
           kind: "trap",
           title: "名前の不一致",
-          text: "フォームの `name` と Controller の `@RequestParam` の名前が違うと、値が null のまま届くことがあります。400 やバリデーションエラーになることもあります。画面、Network タブ、Java の引数を並べて見ましょう。",
+          text: "フォームの `name` と、サーバ側で受け取る名前（Spring なら `@RequestParam`）が違うと、値が null のまま届くことがあります。400 やバリデーションエラーになることもあります。画面、Network タブ、Java の引数を並べて見ましょう。",
         },
         {
           type: "callout",
@@ -522,7 +504,7 @@ Cookie: JSESSIONID=AB12CD34`,
             "見た目だけおかしい（色、位置、CSS の 404）→ フロント側を先に見る",
             "件数や中身がおかしい → 実行された SQL を見て、同じ条件で DB のレコードを数える",
             "500 が出る → サーバ側のエラーログ",
-            "ボタンを押しても画面が変わらない → Network タブで、リクエストが飛んだか、応答は HTML か JSON かを確認しましょう",
+            "ボタンを押しても画面が変わらない → Network タブで、リクエストが飛んだか、応答は HTML か JSON かを確認",
           ],
         },
         {
@@ -568,7 +550,7 @@ Cookie: JSESSIONID=AB12CD34`,
           rows: [
             ["form の action / method", "送信先の URL と HTTP メソッド"],
             ["input の name / hidden", "サーバへ送る項目、ID、CSRF トークン"],
-            ["`th:if` / `c:if`", "サーバがその要素を HTML に出す条件"],
+            ["`th:if`", "サーバがその要素を HTML に出す条件"],
           ],
         },
         {
@@ -640,7 +622,7 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "Ajax で表だけを更新するアプリでは、サーバが HTML の一部分だけを返すことがあります。申請くんはページ全体を返します。申請くんで見るフラグメントは、全画面で共通のヘッダと CSS をまとめた `layout.html` です。詳しくは「テンプレートの読み方」です。",
+          text: "Ajax で表だけを更新するアプリでは、サーバが HTML の一部分だけを返すことがあります。申請くんはページ全体を返すので、この意味でのフラグメントはありません。なお、Thymeleaf のテンプレートにも「フラグメント」という同じ言葉が別の意味で登場します。共通のヘッダと CSS をまとめた `layout.html` がそれで、Ajax の話とは別です。詳しくは「テンプレートの読み方」です。",
           link: {
             label: "テンプレートの読み方",
             to: "/tracks/java-map/template-read",
@@ -708,17 +690,15 @@ Cookie: JSESSIONID=AB12CD34`,
           type: "code",
           title: "GET /shinsei/api/requests の応答から 1 件を抜粋",
           lang: "json",
-          code: `[
-  {
-    "id": 16,
-    "title": "研修参加",
-    "status": "PENDING",
-    "applicantId": 7,
-    "approverId": null,
-    "applicantEmail": "yamada@example.co.jp",
-    "createdAt": "2026-04-13T10:00:00"
-  }
-]`,
+          code: `{
+  "id": 16,
+  "title": "研修参加",
+  "status": "PENDING",
+  "applicantId": 7,
+  "approverId": null,
+  "applicantEmail": "yamada@example.co.jp",
+  "createdAt": "2026-04-13T10:00:00"
+}`,
         },
         {
           type: "h2",
@@ -727,6 +707,10 @@ Cookie: JSESSIONID=AB12CD34`,
         {
           type: "p",
           text: "JavaScript では fetch を使って Web API を呼べます。この例では画面と API が同じオリジン（URL のスキーム・ホスト・ポートが同じ）にあるため、ログイン済みならセッション Cookie も送られます。",
+        },
+        {
+          type: "p",
+          text: "JavaScript の文法を細かく追う必要はありません。流れだけ見ましょう。",
         },
         {
           type: "code",
