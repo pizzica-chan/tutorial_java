@@ -155,7 +155,7 @@ export const troubleshootTrack: Track = {
     },
     {
       id: "logs",
-      title: "ログの場所と読み方",
+      title: "アプリログの場所と読み方",
       minutes: 8,
       blocks: [
         {
@@ -507,7 +507,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
       blocks: [
         {
           type: "p",
-          text: "出力先と 1 行の読み方は「ログの場所と読み方」です。ここでは、並んだ行から今の操作だけを取り出し、通った Java メソッドの順を見ましょう。ログ例は申請くんです。",
+          text: "出力先と 1 行の読み方は「アプリログの場所と読み方」です。ここでは、並んだ行から今の操作だけを取り出し、通った Java メソッドの順を見ましょう。ログ例は申請くんです。",
         },
         {
           type: "h2",
