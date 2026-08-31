@@ -53,7 +53,7 @@ export const terms: TermDef[] = [
   {
     term: "502 / 503",
     aliases: ["502", "503"],
-    body: "502 は Bad Gateway、503 は Service Unavailable。どちらも、手前の HTTP サーバやロードバランサが、後ろのアプリまで到達できない、または応答を受け取れないときに返します。",
+    body: "502 は Bad Gateway、503 は Service Unavailable。502 は、手前の HTTP サーバやロードバランサが後ろのアプリに届かないときに多いステータスコードです。503 はそれに加え、アプリ自身が過負荷やメンテナンスで返すこともあるので、手前だけでなくアプリのログも確認しましょう。",
   },
   {
     term: "302",
@@ -451,7 +451,7 @@ export const terms: TermDef[] = [
   {
     term: "CDN",
     aliases: ["CDN"],
-    body: "Content Delivery Network。静的ファイルをキャッシュして近くから配る仕組み。SSL 終端やキャッシュの都合で、ブラウザが当たる先がアプリ本体とずれることがあります。",
+    body: "Content Delivery Network。静的ファイルをキャッシュして近くから配る仕組み。SSL 終端やキャッシュの都合で、ブラウザのリクエストが届く先がアプリ本体とずれることがあります。",
   },
   {
     term: "WAF",
