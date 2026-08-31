@@ -208,6 +208,13 @@ export function Layout() {
           </span>
           <span>用語集</span>
         </NavLink>
+        <div className="nav-label">SAMPLE APP</div>
+        <a className="nav-link" href="/downloads/shinsei-kun.zip" download onClick={() => setOpen(false)}>
+          <span className="no">
+            <Icon name="package" size={14} />
+          </span>
+          <span>申請くんのソース</span>
+        </a>
       </aside>
 
       <main className="main" id="main" tabIndex={-1} inert={mobileDialogOpen}>
