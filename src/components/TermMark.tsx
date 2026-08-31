@@ -1,4 +1,4 @@
-import { useEffect, useId, useState, type FocusEvent, type MouseEvent } from "react";
+import { useEffect, useId, useRef, useState, type FocusEvent, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { glossaryAnchor, type TermDef } from "../data/terms";
@@ -15,6 +15,7 @@ export function TermMark({ def, text, className, toGlossary = true }: Props) {
   const id = useId();
   const [open, setOpen] = useState(false);
   const [coords, setCoords] = useState({ top: 0, left: 0, flip: false });
+  const openBeforeTap = useRef(false);
   const href = `/glossary#${glossaryAnchor(def.term)}`;
   const classNames = className ? `term ${className}` : "term";
 
@@ -28,6 +29,20 @@ export function TermMark({ def, text, className, toGlossary = true }: Props) {
     const flip = below > window.innerHeight - 140;
     setCoords({ top: flip ? rect.top - 8 : below, left, flip });
     setOpen(true);
+  }
+
+  function handleTouchStart() {
+    // click の前に focus が open を true にしてしまうため、タップ開始時点の状態を控えておく
+    openBeforeTap.current = open;
+  }
+
+  function handleClick(event: MouseEvent<HTMLAnchorElement>) {
+    const hoverCapable = window.matchMedia("(hover: hover)").matches;
+    if (!hoverCapable && !openBeforeTap.current) {
+      // タッチ端末は hover が無いため、最初のタップはツールチップだけ開く（2回目のタップで遷移）
+      event.preventDefault();
+      show(event);
+    }
   }
 
   useEffect(() => {
@@ -69,6 +84,8 @@ export function TermMark({ def, text, className, toGlossary = true }: Props) {
         onMouseLeave={() => setOpen(false)}
         onFocus={show}
         onBlur={() => setOpen(false)}
+        onTouchStart={handleTouchStart}
+        onClick={handleClick}
       >
         {text}
       </Link>
