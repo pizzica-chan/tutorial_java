@@ -125,7 +125,7 @@ export const troubleshootTrack: Track = {
         },
         {
           type: "p",
-          text: "上の表は、最初に見るものの目安です。届いた箱の切り方は、次の「どこまで届いたか」です。",
+          text: "上の表は、最初に見るものの目安です。ここからの切り分け方は、次の「どこまで届いたか」で詳しく見ます。",
         },
         { type: "quiz", id: "ts-symptom-start" },
       ],
