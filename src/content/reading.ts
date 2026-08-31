@@ -12,7 +12,7 @@ export const readingTrack: Track = {
   lessons: [
     {
       id: "where-start",
-      title: "どこから読み始めるか",
+      title: "手がかりで読み方を選ぶ",
       minutes: 5,
       blocks: [
         {
@@ -114,7 +114,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "ここでは入口の特定までです。次の項目「読む順番」で、入口からどこを見るかを押さえます。そのあと、次章「リクエストの追跡」で、この `list` から Service、SQL、応答へ進みます。",
+          text: "ここでは入口の特定までです。次の項目「入口のあとの順番」で、入口からどこを見るかを押さえます。そのあと、次章「リクエストの追跡」で、この `list` から Service、SQL、応答へ進みます。",
         },
         {
           type: "h2",
@@ -143,12 +143,12 @@ export const readingTrack: Track = {
     },
     {
       id: "order",
-      title: "読む順番",
+      title: "入口のあとの順番",
       minutes: 6,
       blocks: [
         {
           type: "p",
-          text: "手がかりの選び方は「どこから読み始めるか」です。入口の取り方は直前の項目です。",
+          text: "読み方の選び方は「手がかりで読み方を選ぶ」、入口の取り方は「処理の入口から読む」のとおりです。",
         },
         {
           type: "p",
