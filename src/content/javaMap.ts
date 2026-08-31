@@ -227,7 +227,7 @@ logging:
         },
         {
           type: "p",
-          text: "申請くんの一覧を例にすると、ログインユーザに関係する未承認の申請だけへの絞り込みが Service にあります。",
+          text: "申請くんの一覧を例にすると、Service の `findMine` は Mapper を呼ぶだけで、ログインユーザに関係する未承認の申請だけへの絞り込みは Mapper の SQL にあります。",
         },
         { type: "diagram", name: "layers", caption: "探す順番。クラス名が違っても、受付 → ビジネスロジック → DB の流れは同じです。" },
         {
