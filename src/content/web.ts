@@ -459,6 +459,41 @@ Cookie: JSESSIONID=AB12CD34`,
           text: "`@AuthenticationPrincipal` が、セッションに結び付いたログインユーザを渡します。`user.getId()` が、上のセッションの `id: 7` にあたります。Cookie の値そのものを自分で読んでいるわけではありません。ここで確認できるのは、同じ ID でログインユーザを引けていることです。",
         },
         {
+          type: "h2",
+          text: "ログインユーザ以外の情報を扱う",
+        },
+        {
+          type: "p",
+          text: "セッションに乗せられるのは、ログインユーザだけではありません。任意の情報を `HttpSession` に直接読み書きできます。次は申請くんではない、一般的な例です。",
+        },
+        {
+          type: "code",
+          title: "セッションへの読み書き（例。申請くんではありません）",
+          lang: "java",
+          highlightLines: [8, 14],
+          code: `@PostMapping("/cart/add")
+public String addToCart(@RequestParam String itemId, HttpSession session) {
+  List<String> cart = (List<String>) session.getAttribute("cart");
+  if (cart == null) {
+    cart = new ArrayList<>();
+  }
+  cart.add(itemId);
+  session.setAttribute("cart", cart);
+  return "redirect:/cart";
+}
+
+@GetMapping("/cart")
+public String showCart(HttpSession session, Model model) {
+  List<String> cart = (List<String>) session.getAttribute("cart");
+  model.addAttribute("items", cart != null ? cart : List.of());
+  return "cart";
+}`,
+        },
+        {
+          type: "p",
+          text: "1つ目のメソッドで `session.setAttribute` した値を、別のリクエストで動く2つ目のメソッドが `session.getAttribute` で読み出しています。キーの名前（ここでは `cart`）を揃えれば、同じセッションの中で値を受け渡せます。",
+        },
+        {
           type: "p",
           text: "ここまでの流れは、セッション作成 → Cookie 付与 → ID からの復元、です。タイムアウト、Cookie 削除、ドメイン / Path / Secure の不一致があると、未ログイン扱いになります。",
         },

@@ -81,6 +81,11 @@ export const terms: TermDef[] = [
     body: "サーバ側に置く「この人の状態」。ブラウザは Cookie で ID だけ持ち、サーバがその ID でログインユーザなどを思い出します。",
   },
   {
+    term: "HttpSession",
+    aliases: ["HttpSession"],
+    body: "サーバ側でリクエストをまたいで値を保持する入れ物です。`setAttribute` / `getAttribute` で読み書きします。Servlet API のクラスで、ログインユーザ以外の値も持てます。",
+  },
+  {
     term: "リダイレクト",
     aliases: ["リダイレクト"],
     body: "サーバが「別の URL を開き直して」と返すこと。302 と `Location` ヘッダの組み合わせが典型です。",
