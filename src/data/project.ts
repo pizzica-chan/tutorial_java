@@ -33,7 +33,7 @@ public class RequestService {
     request.setApproverId(approverId);
     request.setStatus("PENDING");
     requestMapper.insert(request);
-    return request;
+    return requestMapper.findById(request.getId(), applicantId);
   }
 
   public void approve(Long requestId, Long approverId) {
@@ -43,6 +43,9 @@ public class RequestService {
     }
     if (!request.getApproverId().equals(approverId)) {
       throw new ForbiddenException("承認権限がありません");
+    }
+    if (!"PENDING".equals(request.getStatus())) {
+      throw new ConflictException("この申請は承認できません");
     }
     request.setStatus("APPROVED");
     requestMapper.update(request);
