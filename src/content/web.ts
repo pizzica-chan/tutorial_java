@@ -399,14 +399,14 @@ Content-Type: application/json
           type: "p",
           text: "HTTP は、前のリクエストを覚えていません。たとえば、ログイン済みかどうかも次のリクエストには引き継がれません。サーバはセッションを作り、その ID を Cookie としてブラウザに渡します。",
         },
-        { type: "diagram", name: "session", caption: "ブラウザが持つのはキーだけ。中身はサーバ側です。" },
+        { type: "diagram", name: "session", caption: "ブラウザが持つのはキーだけです。中身はサーバ側にあります。" },
         {
           type: "h2",
           text: "申請くんの例",
         },
         {
           type: "p",
-          text: "山田太郎でログインしたあとです。Cookie は ID だけです。表示名も権限も、サーバ側のセッションにあります。",
+          text: "以下は、山田太郎でログインしたあとの例です。Cookie は ID だけで、表示名や権限はサーバ側のセッションにあります。",
         },
         {
           type: "code",
@@ -427,6 +427,10 @@ Host: intranet.example.co.jp
 Cookie: JSESSIONID=AB12CD34`,
         },
         {
+          type: "p",
+          text: "サーバは、この `JSESSIONID` からセッションを引きます。",
+        },
+        {
           type: "code",
           title: "サーバ側のセッション（例）",
           code: `ID: AB12CD34
@@ -435,6 +439,10 @@ Cookie: JSESSIONID=AB12CD34`,
   username: yamada
   displayName: 山田太郎
   role: USER`,
+        },
+        {
+          type: "p",
+          text: "中身の持ち方は、アプリとフレームワーク次第です。パスワードは Cookie には出ません。",
         },
         {
           type: "code",
@@ -448,20 +456,11 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "`@AuthenticationPrincipal` が、セッションに結び付いたログインユーザを渡します。`user.getId()` が、上のセッションの `id: 7` にあたります。Cookie の値そのものを自分で読んでいるわけではありません。",
+          text: "`@AuthenticationPrincipal` が、セッションに結び付いたログインユーザを渡します。`user.getId()` が、上のセッションの `id: 7` にあたります。Cookie の値そのものを自分で読んでいるわけではありません。ここで確認できるのは、同じ ID でログインユーザを引けていることです。",
         },
         {
           type: "p",
-          text: "中身の持ち方は、アプリとフレームワーク次第です。パスワードは Cookie には出ません。確認するのは、同じ ID でログインユーザを引けることです。",
-        },
-        {
-          type: "ol",
-          items: [
-            "ログイン成功時、サーバがセッションを作り `JSESSIONID` を `Set-Cookie` する",
-            "以降のリクエストでブラウザが Cookie を付ける",
-            "サーバは ID からログインユーザを復元する",
-            "タイムアウト、Cookie 削除、ドメイン / Path / Secure の不一致で未ログイン扱いになる",
-          ],
+          text: "ここまでの流れは、セッション作成 → Cookie 付与 → ID からの復元、です。タイムアウト、Cookie 削除、ドメイン / Path / Secure の不一致があると、未ログイン扱いになります。",
         },
         { type: "quiz", id: "web-cookie" },
       ],
