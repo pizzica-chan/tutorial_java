@@ -1,6 +1,7 @@
 package jp.co.example.shinsei.service;
 
 import jp.co.example.shinsei.entity.RequestEntity;
+import jp.co.example.shinsei.exception.ConflictException;
 import jp.co.example.shinsei.exception.ForbiddenException;
 import jp.co.example.shinsei.exception.NotFoundException;
 import jp.co.example.shinsei.mapper.RequestMapper;
@@ -35,7 +36,7 @@ public class RequestService {
     request.setApproverId(approverId);
     request.setStatus("PENDING");
     requestMapper.insert(request);
-    return request;
+    return requestMapper.findById(request.getId(), applicantId);
   }
 
   @Transactional
@@ -46,6 +47,9 @@ public class RequestService {
     }
     if (!request.getApproverId().equals(approverId)) {
       throw new ForbiddenException("承認権限がありません");
+    }
+    if (!"PENDING".equals(request.getStatus())) {
+      throw new ConflictException("この申請は承認できません");
     }
     request.setStatus("APPROVED");
     requestMapper.update(request);

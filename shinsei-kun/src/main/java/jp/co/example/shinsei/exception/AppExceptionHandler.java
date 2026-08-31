@@ -34,6 +34,17 @@ public class AppExceptionHandler {
     return mav;
   }
 
+  @ExceptionHandler(ConflictException.class)
+  public Object conflict(ConflictException ex, HttpServletRequest request) {
+    if (isApi(request)) {
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("message", ex.getMessage()));
+    }
+    ModelAndView mav = new ModelAndView("error/conflict");
+    mav.setStatus(HttpStatus.CONFLICT);
+    mav.addObject("message", ex.getMessage());
+    return mav;
+  }
+
   private boolean isApi(HttpServletRequest request) {
     return request.getRequestURI().contains("/api/");
   }

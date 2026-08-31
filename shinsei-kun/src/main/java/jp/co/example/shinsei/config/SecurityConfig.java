@@ -22,6 +22,7 @@ public class SecurityConfig {
             .antMatchers("/admin/**").hasRole("ADMIN")
             .anyRequest().authenticated()
         )
+        .csrf(csrf -> csrf.ignoringAntMatchers("/api/**"))
         .formLogin(login -> login
             .loginPage("/login")
             .defaultSuccessUrl("/requests", true)

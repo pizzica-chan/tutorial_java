@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title='承認できません', content=~{::main})">
+<main>
+  <h1>承認できません</h1>
+  <p class="lead" th:text="${message}">この申請は承認できません。</p>
+  <p><a th:href="@{/requests}">申請一覧へ戻る</a></p>
+</main>
+</html>
