@@ -188,9 +188,11 @@ export const troubleshootTrack: Track = {
             ["Tomcat の logs/、catalina.out", "外部 Tomcat に WAR を載せている"],
             ["日付で分かれた .log ファイル", "logback などでローテートしている"],
             ["コンテナの標準出力", "Docker や Kubernetes。docker logs や同等のコマンド"],
-            ["nginx の access.log / error.log", "手前に nginx がある。静的ファイルやプロキシの切り分け"],
-            ["Apache の access_log / error_log", "手前に Apache（httpd）がある。同上"],
           ],
+        },
+        {
+          type: "p",
+          text: "手前に nginx や Apache があるときの access.log / error.log は、あとのレッスン「HTTP サーバのログを見る」で扱います。",
         },
         {
           type: "h2",
