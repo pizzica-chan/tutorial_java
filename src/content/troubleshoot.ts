@@ -232,7 +232,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
           type: "callout",
           kind: "trap",
           title: "ログが無い",
-          text: "操作時刻にアプリログが無いこと自体が情報です。別インスタンス、別ファイル、リクエストが Java まで届いていないことを疑いましょう。手前に HTTP サーバがあるなら、次の「HTTP サーバのログを見る」で access.log も確認しましょう。",
+          text: "操作時刻にアプリログが無いこと自体が情報です。別インスタンス、別ファイル、リクエストが Java まで届いていないことを疑いましょう。手前に HTTP サーバがあるなら、あとのレッスン「HTTP サーバのログを見る」で access.log も確認しましょう。",
         },
         {
           type: "h2",
@@ -240,7 +240,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
         },
         {
           type: "p",
-          text: "既存ログで到達も例外も分からないとき、一時的に ID と通過点を出しましょう。調査が終わったら戻しましょう。値を今の行で見たいだけなら、ログを足すよりデバッガが有効です。共有環境など、処理を止めるのが難しいときは、ログで対応しましょう。",
+          text: "ログ自体はあるのに、到達したかも原因も分からないときは、一時的に ID と通過点を出しましょう。調査が終わったら戻しましょう。値を今の行で見たいだけなら、ログを足すよりデバッガが有効です。共有環境など、処理を止めるのが難しいときは、ログで対応しましょう。",
         },
         {
           type: "callout",
@@ -262,6 +262,10 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
       title: "HTTP サーバのログを見る",
       minutes: 6,
       blocks: [
+        {
+          type: "p",
+          text: "アプリ自身のログは前のレッスンで見ました。ここでは、リクエストが Java まで届いていない、または静的ファイルだけがおかしいときに確認する、手前の HTTP サーバのログを見ます。",
+        },
         {
           type: "p",
           text: "手前に Apache や nginx がある構成では、ブラウザが最初に当たるのは HTTP サーバです。logback のアプリログに載るのは、後ろの Java まで転送されたリクエストだけです。CSS や JS を HTTP サーバが直接返しているとき、Controller のログには出ません。",
@@ -582,7 +586,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
           items: [
             "アプリが userId をログに出していないこともある。そのときは申請 ID、画面の固有メッセージ、URL",
             "セッション ID は、MDC やメッセージに出ているときだけ使える。Cookie の値そのものがログに無いことも多い",
-            "アクセスログ（URL と時刻）とアプリログの時刻を合わせると、処理の入口の特定に使える",
+            "申請くんなら `AccessLogInterceptor` の URL 行とアプリログの時刻を合わせると、処理の入口の特定に使える",
           ],
         },
         {
