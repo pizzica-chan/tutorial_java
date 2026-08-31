@@ -7,7 +7,7 @@ export function Diagram({ name, caption }: { name: DiagramName; caption?: string
   return (
     <figure className="diagram">
       <figcaption className="kicker">FIGURE</figcaption>
-      {diagrams[name]()}
+      <div className="diagram-scroll">{diagrams[name]()}</div>
       {caption ? (
         <p className="diagram-cap">
           <TextWithTerms text={caption} />

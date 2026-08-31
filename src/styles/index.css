@@ -1236,6 +1236,10 @@ th {
   margin: 0 0 14px;
 }
 
+.diagram-scroll {
+  overflow-x: auto;
+}
+
 .diagram-cap,
 .diagram-note {
   margin: 12px 0 0;

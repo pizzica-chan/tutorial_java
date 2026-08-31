@@ -43,9 +43,15 @@ export function Layout() {
     setExpandedTrackIds(new Set(currentTrackId ? [currentTrackId] : []));
   }, [currentTrackId]);
 
+  const hasNavigatedRef = useRef(false);
   useEffect(() => {
     if (location.hash) return;
     window.scrollTo(0, 0);
+    // 初回表示ではフォーカスを奪わない。ページャーなどでの遷移時だけ本文へ移す
+    if (hasNavigatedRef.current) {
+      document.getElementById("main")?.focus();
+    }
+    hasNavigatedRef.current = true;
   }, [location.pathname]);
 
   // 目次を開いたまま広い画面になると、常時表示のサイドバーと本文の inert が食い違う
