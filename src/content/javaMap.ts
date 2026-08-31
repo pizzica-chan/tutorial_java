@@ -180,6 +180,10 @@ logging:
           ],
         },
         {
+          type: "p",
+          text: "特に見落としやすいのは次の点です。",
+        },
+        {
           type: "ul",
           items: [
             "active プロファイルは起動引数で上書きされることがある",
@@ -211,7 +215,7 @@ logging:
         },
         {
           type: "p",
-          text: "DB アクセスのクラスは、JPA では Repository、MyBatis では Mapper と呼ぶことが多いです。どちらか一方だけ置くことも、Repository が Mapper を呼ぶこともあります。",
+          text: "DB アクセスのクラスは、JPA では Repository、MyBatis では Mapper と呼ぶことが多いです。",
         },
         {
           type: "ul",
@@ -239,25 +243,6 @@ logging:
           text: "ここまでは、Controller → Service → Mapper と分かれている想定です。実際には Service を飛ばして Controller から Mapper を呼ぶなど、並びがずれることがあります。ずれていても、上の順番（受付 → ビジネスロジック → DB）で、今の Java メソッドから呼ばれている先を開いていけば十分です。",
         },
         {
-          type: "code",
-          title: "たどる例（RequestController 抜粋）",
-          lang: "java",
-          highlightLines: [4, 5, 6],
-          code: `@Controller
-@RequestMapping("/requests")
-public class RequestController {
-  @GetMapping
-  public String list(Model model, @AuthenticationPrincipal LoginUser user) {
-    model.addAttribute("applications", requestService.findMine(user.getId()));
-    return "request/list";
-  }
-}`,
-        },
-        {
-          type: "p",
-          text: "URL を受ける Java メソッドは `list` です。その中で呼んでいる `requestService.findMine` が、次に開く Java メソッドです。return は、すぐ下の「Controller の返し方」で見ます。",
-        },
-        {
           type: "h2",
           text: "Controller の返し方（出口の 2 パターン）",
         },
@@ -269,7 +254,7 @@ public class RequestController {
           type: "code",
           title: "パターン1: テンプレート名を返す（画面）",
           lang: "java",
-          highlightLines: [7],
+          highlightLines: [6, 7],
           code: `@Controller
 @RequestMapping("/requests")
 public class RequestController {
@@ -281,9 +266,12 @@ public class RequestController {
 }`,
         },
         {
+          type: "p",
+          text: "URL を受ける Java メソッドは `list` です。その中で呼んでいる `requestService.findMine` が、次に開く Java メソッドです。`return \"request/list\"` は、HTML テンプレートの場所を指します。",
+        },
+        {
           type: "ul",
           items: [
-            "`return \"request/list\"` は HTML テンプレートの場所を指す",
             "サーバが `templates/request/list.html` を組み立て、ブラウザに HTML が届く",
             "表示がおかしいときは templates も見ましょう",
           ],
@@ -362,14 +350,14 @@ public class RequestApiController {
         },
         {
           type: "code",
-          title: "templates から static を読み込む（抜粋）",
+          title: "fragments/layout.html（抜粋）",
           lang: "html",
           highlightLines: [2],
           code: shinseiLayoutStaticSnippet,
         },
         {
           type: "p",
-          text: "`th:href=\"@{/css/app.css}\"` は、`context-path` を含めた URL に変換されます。申請くんでは `/shinsei/css/app.css` のように見えます。この head は `templates/fragments/layout.html` にあります。",
+          text: "`th:href=\"@{/css/app.css}\"` は、`context-path` を含めた URL に変換されます。申請くんでは `/shinsei/css/app.css` のように見えます。",
         },
         {
           type: "code",
@@ -659,7 +647,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
       blocks: [
         {
           type: "p",
-          text: "Controller から Service を追うとき、ソースに書いてある Java メソッド呼び出しだけを見るのでは足りないことがあります。リクエストの前後や、`requestService.approve()` の実体の手前に、別クラスが挟まります。呼び出し元の Java メソッドには、その名前が出ません。",
+          text: "Controller から Service を追うとき、ソースに書いてある Java メソッド呼び出しだけを見るのでは足りないことがあります。リクエストの前後や、メソッド呼び出しの手前に、別クラスが挟まることがあるためです。ソースを読んでも、挟まっている別クラスの名前は出てきません。",
         },
         { type: "diagram", name: "cross-cut", caption: "Controller や Service のソースに、これらの呼び出しは書かれていません。" },
         {
@@ -673,12 +661,22 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           ],
         },
         {
+          type: "callout",
+          kind: "tip",
+          title: "見逃さないために",
+          text: "実際の動きと、ソースから読める処理が食い違うときは、もっと深く探すのではなく、この4種類（Filter / Interceptor / AOP / `@ControllerAdvice`）のどれかを疑いましょう。症状からどれを疑うかは、この項目の最後にまとめます。",
+        },
+        {
           type: "h2",
           text: "Filter と Spring Security",
         },
         {
           type: "p",
           text: "リクエストは Controller の前にフィルタを通ります。ここに原因があると、Controller のブレークポイントは止まりません。Spring Security も、実体は Filter の連鎖です。",
+        },
+        {
+          type: "p",
+          text: "代表的な処理には次のようなものがあります。",
         },
         {
           type: "ul",
