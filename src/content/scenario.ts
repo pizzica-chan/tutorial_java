@@ -92,12 +92,12 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "開いた `list.js` を、承認ボタンを押したときの流れに沿って読むと以下の通りとなります。",
+          text: "開いた `list.js` を、承認ボタンを押したときの流れに沿って読むと次のとおりです。",
         },
         {
           type: "ul",
           items: [
-            "`event.preventDefault();` のあと、`const tokenEl = document.getElementById(\"csrfToken\");` で要素を取り、tokenEl に入れる",
+            "`event.preventDefault();` のあと、`const tokenEl = document.getElementById(\"csrfToken\");` で id が `csrfToken` の要素を探し、結果を tokenEl に入れる",
             "その次の行 `const token = tokenEl.value;` で `tokenEl.value` を読もうとしてエラーになる",
             "エラー内容は「null の value を読んだ」となっているので、読もうとした tokenEl が null だとわかる",
             "tokenEl は 1 行上の `document.getElementById(\"csrfToken\")` の戻り値なので、HTML に `id=\"csrfToken\"` の要素が無かった、と考えられる",
@@ -187,14 +187,18 @@ export const scenarioTrack: Track = {
           type: "p",
           text: "リクエストはサーバに届いています。操作時刻のサーバ側のエラーログを確認しましょう。",
         },
-        { type: "diagram", name: "stack-own" },
+        {
+          type: "diagram",
+          name: "stack-own",
+          caption: "操作時刻のサーバログに出ていたスタックトレースです。",
+        },
         {
           type: "h2",
           text: "原因の追跡",
         },
         {
           type: "p",
-          text: "操作時刻のサーバログには、先のとおり `NullPointerException` がありました。",
+          text: "上のログには `NullPointerException` がありました。",
         },
         {
           type: "p",
@@ -408,7 +412,7 @@ requestService.approve(id, user.getId());`,
         {
           type: "callout",
           kind: "scenario",
-          text: "申請一覧画面が、検証用環境だけ 0 件になる。ローカル環境の起動では、同じログインユーザで 4 件出る。",
+          text: "申請一覧画面が、検証用環境だけ 0 件になる。ローカル環境では、同じログインユーザで 4 件出る。",
         },
         {
           type: "figure",
@@ -444,7 +448,7 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "操作時刻のログで `findMine` を見ると、Parameters は 7, 7 でした。Total は 0 です。",
+          text: "操作時刻のログで `findMine` を見ましょう。",
         },
         {
           type: "code",
@@ -463,7 +467,7 @@ ORDER BY r.created_at DESC
         },
         {
           type: "p",
-          text: "検証用環境の DB で同じ条件を実行すると、レコードは 0 件でした。",
+          text: "`Parameters` は 7, 7、`Total` は 0 です。検証用環境の DB で同じ条件を実行すると、レコードは 0 件でした。",
         },
         {
           type: "code",
@@ -583,7 +587,7 @@ WHERE (applicant_id = 7 OR approver_id = 7)
         },
         {
           type: "p",
-          text: "画面に表示している検索結果は、テンプレートが `${results}` から出しています。Controller で `results` に載せている値を開きましょう。",
+          text: "画面に表示している検索結果は、テンプレートが `${results}` から出しています。Controller で `results` に何を載せているかを見ましょう。",
         },
         {
           type: "code",
@@ -1106,7 +1110,7 @@ Content-Type: text/html;charset=UTF-8`,
           items: [
             "ログが無いときは、アプリ未到達か、見ているログが違うことが多いです",
             "ローカル環境で動くことと、検証用環境のホストへ届くことは別",
-            "DNS の向き先、ポート、HTTPS の終端、プロキシの有無を表にする",
+            "ポートの疎通とプロキシ・ファイアウォールの有無は、クライアント側とサーバ側の両方で確認する",
           ],
         },
         {
@@ -1195,7 +1199,7 @@ Content-Type: text/html;charset=UTF-8`,
         },
         {
           type: "p",
-          text: "ファイルはあります。Java まで届いていれば 200 になるはずです。手前の nginx を見ます。",
+          text: "ファイルはあります。Java まで届いていれば 200 になるはずなので、Java より手前に何か挟まっていないか疑いましょう。この検証用環境では、手前に nginx が動いています。nginx の設定を見ます。",
         },
         {
           type: "code",
@@ -1492,7 +1496,7 @@ requestMapper.update(request);`,
             ["`RequestController.approve`", "PENDING 以外は承認できない", "不要"],
             ["`findMine`", "`status = 'PENDING'`", "不要"],
             ["`history.html` の select", "すべて / PENDING / APPROVED", "依頼者へ確認"],
-            ["履歴・詳細の見た目", "PENDING でなければ `is-approved`", "依頼者へ確認。一覧の見た目は不要"],
+            ["一覧・履歴・詳細の見た目", "PENDING でなければ `is-approved`", "依頼者へ確認"],
             ["`RequestService` の create / approve", "新規は PENDING、承認は APPROVED", "不要"],
             ["`CANCELLED` にする処理", "メソッドが無い", "依頼者へ確認"],
             ["`schema.sql`", "`VARCHAR(32) NOT NULL`", "長さは不要。制約の追加は依頼者へ確認"],
@@ -1802,7 +1806,7 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "p",
-          text: "DB の定義の修正が必要です。修正案は複数あり、案によって修正規模が変わります。",
+          text: "DB の定義の修正が必要です。修正案は複数あり、案によって修正規模が変わります。例えば、部署マスタ（`t_department`）を新設して `t_user.department_id` に外部キーを足す案、`t_user` に部署名だけを持たせる案、集計のため `t_request` にも部署を複製する案などがあります。マスタを増やすほど正規化はできますが、既存データの移行や結合が増えます。",
         },
         {
           type: "callout",

@@ -37,7 +37,7 @@ export const traceTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "Spring では、クラスとメソッドのアノテーションを足して URL になります。",
+          text: "Spring では、クラスの `@RequestMapping` に書いたパス（プレフィックス）と、メソッドの `@GetMapping` などに書いたパスをつなげると、URL のパス部分になります。",
         },
         {
           type: "code",
@@ -97,6 +97,10 @@ public class RequestApiController {
   @PostMapping("/{id}/approve")
   public void approve(...) { ... }                   // POST /api/requests/12/approve
 }`,
+        },
+        {
+          type: "p",
+          text: "ここまでは Spring の例でした。最後に、URL マッピングの注意点をまとめます。",
         },
         {
           type: "ul",
@@ -339,7 +343,7 @@ public class Request {
         },
         {
           type: "p",
-          text: "ソースが分かったら、件数・カラム・条件を突き合わせましょう。MyBatis でも JPA でも、見る観点は同じです。SQL の条件が期待どおりでも、DB に入っているレコードが無かったり、値そのものがおかしかったりすることがあります。",
+          text: "ソースが分かったら、SQL の件数・カラム・条件が、実際の DB のレコードと合っているかを突き合わせましょう。MyBatis でも JPA でも、見る観点は同じです。SQL の条件が期待どおりでも、DB に入っているレコードが無かったり、値そのものがおかしかったりすることがあります。",
         },
         {
           type: "table",
@@ -369,7 +373,7 @@ public class Request {
       blocks: [
         {
           type: "p",
-          text: "申請一覧を開く処理を、区間ごとに追いましょう。障害調査は、この線のどこで期待と違うかを特定する作業です。JSON を返す API なら、テンプレートの区間は無く、`Content-Type` が `application/json` で終わります。Service より手前の探し方は同じです。",
+          text: "申請一覧を開く処理を、下のタブの区間（Browser → Filter → Controller → Service → MyBatis → MySQL → Thymeleaf → HTTP応答）ごとに追いましょう。障害調査は、この一本の線のどこで期待と違うかを特定する作業です。JSON を返す API なら Thymeleaf の区間が無く、`Content-Type` が `application/json` の応答で終わります。Service より手前（Browser・Filter・Controller）の探し方は、ここまでの章と同じです。",
         },
         { type: "widget", name: "flow" },
       ],
