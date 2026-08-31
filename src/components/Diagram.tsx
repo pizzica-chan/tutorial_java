@@ -157,11 +157,11 @@ function UrlParts() {
           <em>コンテキストパス</em>
         </span>
         <span className="url-part res">
-          /requests/12
+          /requests/history
           <em>アプリ内のパス</em>
         </span>
         <span className="url-part query">
-          ?page=2
+          ?status=PENDING
           <em>クエリ</em>
         </span>
       </div>
@@ -205,7 +205,7 @@ function RequestParams() {
         <span className="request-param-label">クエリ</span>
         <div className="request-param-body">
           <RequestParamUrl>
-            GET /shinsei/requests<mark className="url-hit">?departmentId=5</mark>
+            GET /shinsei/requests/history<mark className="url-hit">?status=PENDING</mark>
           </RequestParamUrl>
         </div>
       </div>
@@ -214,7 +214,7 @@ function RequestParams() {
         <div className="request-param-body">
           <RequestParamUrl>POST /shinsei/requests</RequestParamUrl>
           <RequestParamPayload>
-            {"title="}<mark className="url-hit">休暇申請</mark>{"&approverId="}<mark className="url-hit">3</mark>{"&applicantId="}<mark className="url-hit">7</mark>{"&_csrf=8f3a2b1c"}
+            {"title="}<mark className="url-hit">休暇申請</mark>{"&approverId="}<mark className="url-hit">3</mark>{"&_csrf=8f3a2b1c"}
           </RequestParamPayload>
         </div>
       </div>

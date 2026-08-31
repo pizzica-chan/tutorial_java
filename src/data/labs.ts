@@ -53,11 +53,13 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     layer: "MyBatis",
     title: "RequestMapper#findMine",
     detail: "SQL の ? に、その userId が入ります。申請者または承認者である、未承認のレコードだけが対象です。件数がおかしい、遅い、エラーになるといった症状は、この SQL の実体を見ます。",
-    code: `SELECT ... FROM t_request
- WHERE (applicant_id = ?
-    OR approver_id = ?)
-   AND status = 'PENDING'
- ORDER BY created_at DESC`,
+    code: `SELECT ... FROM t_request r
+  JOIN t_user a ON a.id = r.applicant_id
+  LEFT JOIN t_user v ON v.id = r.approver_id
+ WHERE (r.applicant_id = ?
+    OR r.approver_id = ?)
+   AND r.status = 'PENDING'
+ ORDER BY r.created_at DESC`,
   },
   {
     id: "db",

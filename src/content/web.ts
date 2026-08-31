@@ -146,7 +146,7 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "`https://intranet.example.co.jp/shinsei/requests/12?page=2` は次のように読めます。",
+          text: "`https://intranet.example.co.jp/shinsei/requests/history?status=PENDING` は次のように読めます。",
         },
         { type: "diagram", name: "url-parts" },
         {
@@ -155,8 +155,8 @@ Content-Type: application/json
           rows: [
             ["ホスト", "どのサーバか"],
             ["`/shinsei`", "コンテキストパス。アプリの根っこ"],
-            ["`/requests/12`", "アプリ内の資源。12番の申請"],
-            ["`?page=2`", "クエリ。絞り込みやページ番号などの条件"],
+            ["`/requests/history`", "アプリ内のパス。申請履歴の検索画面"],
+            ["`?status=PENDING`", "クエリ。絞り込みなどの条件"],
           ],
         },
         {
@@ -234,7 +234,7 @@ Content-Type: application/json
           headers: ["種類", "載る場所", "例"],
           rows: [
             ["パス", "URL の /12 の部分", "`/shinsei/requests/12`"],
-            ["クエリ", "URL の ? 以降", "`?status=PENDING&page=2`"],
+            ["クエリ", "URL の ? 以降", "`?status=PENDING`"],
             ["フォーム", "POST の本文（form）", "`title=休暇申請&approverId=3`"],
             ["JSON", "POST / PUT の本文", '`{"title":"休暇申請","approverId":3}`'],
           ],

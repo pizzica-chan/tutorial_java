@@ -372,19 +372,27 @@ CREATE TABLE IF NOT EXISTS t_request (
     note: "実際の SQL",
     why: "一覧が遅い、件数が合わない、更新されないといった症状は、SQL を見ないと終わりません。Java のメソッド名と XML の id が対になっています。`findById` は詳細表示と承認で 1 件取り、`applicant_email` は通知先です。",
     code: `<select id="findMine" resultType="RequestEntity">
-  SELECT id, title, status, applicant_id, approver_id, applicant_email, created_at
-  FROM t_request
-  WHERE (applicant_id = #{userId}
-     OR approver_id = #{userId})
-    AND status = 'PENDING'
-  ORDER BY created_at DESC
+  SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+         a.display_name AS applicant_name,
+         v.display_name AS approver_name
+  FROM t_request r
+  JOIN t_user a ON a.id = r.applicant_id
+  LEFT JOIN t_user v ON v.id = r.approver_id
+  WHERE (r.applicant_id = #{userId}
+     OR r.approver_id = #{userId})
+    AND r.status = 'PENDING'
+  ORDER BY r.created_at DESC
 </select>
 
 <select id="findById" resultType="RequestEntity">
-  SELECT id, title, status, applicant_id, approver_id, applicant_email, created_at
-  FROM t_request
-  WHERE id = #{id}
-    AND (applicant_id = #{userId} OR approver_id = #{userId})
+  SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+         a.display_name AS applicant_name,
+         v.display_name AS approver_name
+  FROM t_request r
+  JOIN t_user a ON a.id = r.applicant_id
+  LEFT JOIN t_user v ON v.id = r.approver_id
+  WHERE r.id = #{id}
+    AND (r.applicant_id = #{userId} OR r.approver_id = #{userId})
 </select>
 
 <insert id="insert" useGeneratedKeys="true" keyProperty="id">

@@ -220,8 +220,8 @@ mailService.notifyApplicant(request);`,
           code: `# Time: 2026-04-10T09:15:23.456789Z
 # User@Host: app[app] @ localhost []
 # Query_time: 2.103421  Lock_time: 0.000120  Rows_sent: 4  Rows_examined: 4
-SELECT id, title, status, applicant_id, approver_id, created_at
-FROM t_request WHERE (applicant_id = 7 OR approver_id = 7) AND status = 'PENDING' ORDER BY created_at DESC;`,
+SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at, a.display_name AS applicant_name, v.display_name AS approver_name
+FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.id = r.approver_id WHERE (r.applicant_id = 7 OR r.approver_id = 7) AND r.status = 'PENDING' ORDER BY r.created_at DESC;`,
         },
         {
           type: "p",
@@ -243,14 +243,18 @@ FROM t_request WHERE (applicant_id = 7 OR approver_id = 7) AND status = 'PENDING
           type: "code",
           title: "RequestMapper.xml（抜粋）",
           lang: "xml",
-          highlightLines: [1, 4, 5, 6],
+          highlightLines: [1, 8, 9, 10],
           code: `<select id="findMine" resultType="RequestEntity">
-  SELECT id, title, status, applicant_id, approver_id, created_at
-  FROM t_request
-  WHERE (applicant_id = #{userId}
-     OR approver_id = #{userId})
-    AND status = 'PENDING'
-  ORDER BY created_at DESC
+  SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+         a.display_name AS applicant_name,
+         v.display_name AS approver_name
+  FROM t_request r
+  JOIN t_user a ON a.id = r.applicant_id
+  LEFT JOIN t_user v ON v.id = r.approver_id
+  WHERE (r.applicant_id = #{userId}
+     OR r.approver_id = #{userId})
+    AND r.status = 'PENDING'
+  ORDER BY r.created_at DESC
 </select>`,
         },
         {

@@ -377,7 +377,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "ブラウザは HTML のあと、CSS と JS を別リクエストで取りに行きます。これらの静的ファイルは、Java の処理を通りません。",
+          text: "ブラウザは HTML のあと、CSS と JS を別リクエストで取りに行きます。これらの静的ファイルは、Controller や Service は通りません。ただし Filter や、内蔵のサーブレットコンテナ自体は通ることがあります。",
         },
         {
           type: "p",
