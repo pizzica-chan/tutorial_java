@@ -437,6 +437,20 @@ Cookie: JSESSIONID=AB12CD34`,
   role: USER`,
         },
         {
+          type: "code",
+          title: "セッションから取り出す（申請くん・Controller）",
+          lang: "java",
+          highlightLines: [1],
+          code: `public String list(Model model, @AuthenticationPrincipal LoginUser user) {
+  model.addAttribute("applications", requestService.findMine(user.getId()));
+  return "request/list";
+}`,
+        },
+        {
+          type: "p",
+          text: "`@AuthenticationPrincipal` が、セッションに結び付いたログインユーザを渡します。`user.getId()` が、上のセッションの `id: 7` にあたります。Cookie の値そのものを自分で読んでいるわけではありません。",
+        },
+        {
           type: "p",
           text: "中身の持ち方は、アプリとフレームワーク次第です。パスワードは Cookie には出ません。確認するのは、同じ ID でログインユーザを引けることです。",
         },
