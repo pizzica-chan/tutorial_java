@@ -876,11 +876,11 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "次の表は、`r` の行を列ごとに示したものです。",
+          text: "次の表は、`r` の行をカラムごとに示したものです。",
         },
         {
           type: "table",
-          headers: ["列", "今回の例", "意味"],
+          headers: ["カラム", "今回の例", "意味"],
           rows: [
             ["`type`", "`ALL`", "そのテーブルを先頭から全部読む。フルスキャン"],
             ["`possible_keys`", "`NULL`", "この SQL で使えるインデックスの候補。`NULL` は候補が無い"],

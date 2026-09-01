@@ -119,7 +119,7 @@ public class RequestApiController {
       blocks: [
         {
           type: "p",
-          text: "Controller の次に、ビジネスロジックを扱う Java メソッドを見ましょう。ここでは、枝分かれ（if / throw / 他クラス呼び出し）が分かりやすい例として、`list` ではなく承認（`approve`）の処理を見ます。Service のメソッドでよく見る処理は、次の4種類です。",
+          text: "Controller の次に、ビジネスロジックを扱う Java メソッドを見ましょう。ここでは、枝分かれ（if / throw / 他クラス呼び出し）が分かりやすい例として、`list` ではなく承認（`approve`）の処理を見ます。Service のメソッドでよく出てくる処理は、次の4種類です。",
         },
         {
           type: "ul",
