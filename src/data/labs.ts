@@ -11,7 +11,7 @@ export const requestFlow: FlowStep[] = [
     id: "browser",
     layer: "Browser",
     title: "一覧を開く",
-    detail: "利用者が `/shinsei/requests` にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを引くキーになります。",
+    detail: "利用者が `/shinsei/requests` にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを取り出すキーになります。",
     code: `GET /shinsei/requests HTTP/1.1
 Host: intranet.example.co.jp
 Cookie: JSESSIONID=AB12CD34
@@ -21,9 +21,9 @@ Accept: text/html`,
     id: "filter",
     layer: "Filter",
     title: "セキュリティフィルタ",
-    detail: "Spring Security が、Cookie のセッション ID でサーバ側のセッションを引きます。そこにログインユーザがいれば「ログイン済み」です。この URL へのアクセスが許可されているかも、ここで判定します。弾かれると Controller まで届きません。ステータスコードや遷移先は実装次第です。",
+    detail: "Spring Security が、Cookie のセッション ID でサーバ側のセッションを取り出します。そこにログインユーザがいれば「ログイン済み」です。この URL へのアクセスが許可されているかも、ここで判定します。弾かれると Controller まで届きません。ステータスコードや遷移先は実装次第です。",
     code: `Cookie: JSESSIONID=AB12CD34
-  -> セッションを引く
+  -> セッションを取り出す
   -> ログインユーザあり?  このURLはアクセス許可?
 no  -> 例: 302 /login（401 や HTML のことも）
 yes -> ログインユーザを次へ渡す`,
