@@ -195,6 +195,18 @@ export const quizzes = {
     answer: 1,
     explanation: "呼び出し先の中身は定義へジャンプです。参照検索は、今のメソッドを誰が呼んでいるかの一覧です。文字列検索だと同名が混ざります。",
   },
+  "read-history": {
+    id: "read-history",
+    question: "ある if 文がなぜ書かれたか知りたい。blame で、最後にその行を変更した人が分かった。次にすべきことは？",
+    choices: [
+      "その変更者に直接聞く以外に方法はない",
+      "コミットメッセージを読み、リファクタだけの変更ならさらに履歴を遡る",
+      "diff は見ずに、blame の行だけで判断する",
+      "変更者の名前が分かれば、それ以上は調べない",
+    ],
+    answer: 1,
+    explanation: "blame が示すのは「誰が・いつ」までです。「なぜ」はコミットメッセージやチケット番号にあることが多く、整形やリファクタだけの変更なら git log -p などでさらに遡りましょう。",
+  },
   "read-debug": {
     id: "read-debug",
     question: "JSON から画面を組むアプリで、画面に「承認済み」と出る。Network タブの JSON は `status: PENDING`。次は？",

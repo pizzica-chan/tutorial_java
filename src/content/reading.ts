@@ -614,6 +614,114 @@ requestService.approve(id, user.getId());`,
       ],
     },
     {
+      id: "history",
+      title: "変更履歴を追う",
+      minutes: 7,
+      blocks: [
+        {
+          type: "p",
+          text: "ここまでの読み方は、今のソースが何をしているかを追う方法でした。なぜ今の形になっているかは、ソースの中には書かれていないことがあります。変更履歴を見ると、いつ・誰が・何のために変えたかが分かることがあります。",
+        },
+        {
+          type: "h2",
+          text: "Git で調べる",
+        },
+        {
+          type: "p",
+          text: "git blame は、ファイルの各行を、最後に変更した人・日時とともに示すコマンドです。IDE にも同等の機能があります（IntelliJ の Annotate、VS Code の拡張機能など）。",
+        },
+        {
+          type: "code",
+          title: "git blame（例。申請くんの実履歴ではありません）",
+          lang: "text",
+          code: `$ git blame -L 51,52 RequestService.java
+a1b2c3d4 (Sato Taro 2026-03-12 10:14:22 +0900 51) if (!"PENDING".equals(request.getStatus())) {
+a1b2c3d4 (Sato Taro 2026-03-12 10:14:22 +0900 52)   throw new ConflictException("この申請は承認できません");`,
+        },
+        {
+          type: "p",
+          text: "行の左にある `a1b2c3d4` は、その変更を指すハッシュ値です。git log -1 や git show に渡すと、コミットメッセージ（なぜ変えたかの説明）を読めます。",
+        },
+        {
+          type: "code",
+          title: "git log -1（例）",
+          lang: "text",
+          highlightLines: [6, 8],
+          code: `$ git log -1 a1b2c3d4
+commit a1b2c3d4f9e2b6c1...
+Author: Sato Taro
+Date:   2026-03-12 10:14:22 +0900
+
+    承認済みの申請を二重承認できてしまう不具合を修正 (#482)
+
+    ステータスが PENDING 以外なら ConflictException を投げるようにした。`,
+        },
+        {
+          type: "p",
+          text: "`#482` のようなチケット番号があれば、課題管理システム側にもっと詳しい経緯が残っていることがあります。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "blame の行は最新の変更者とは限らない",
+          text: "行の整形やリファクタだけの変更でも、blame の表示は書き換わります。表示された変更が意図と関係なさそうなら、git log -p でそのファイルの履歴をさらに遡りましょう。",
+        },
+        {
+          type: "p",
+          text: "特定の文字列がいつ入ったかを探したいときは、git log -S が使えます。",
+        },
+        {
+          type: "code",
+          title: "文字列がいつ入ったかを探す（例）",
+          lang: "text",
+          code: `$ git log -S"ConflictException" --oneline -- RequestService.java
+a1b2c3d 承認済みの申請を二重承認できてしまう不具合を修正 (#482)`,
+        },
+        {
+          type: "h2",
+          text: "SVN で調べる",
+        },
+        {
+          type: "p",
+          text: "Git より古くからある SVN（Subversion）を使っている現場もあります。考え方は同じで、Git の commit にあたる単位を「リビジョン」と呼びます。",
+        },
+        {
+          type: "code",
+          title: "svn blame（例）",
+          lang: "text",
+          code: `$ svn blame -r 1200 RequestService.java
+1187   sato-t   if (!"PENDING".equals(request.getStatus())) {
+1187   sato-t     throw new ConflictException("この申請は承認できません");`,
+        },
+        {
+          type: "code",
+          title: "svn log -r（例）",
+          lang: "text",
+          highlightLines: [5],
+          code: `$ svn log -r 1187 RequestService.java
+------------------------------------------------------------------
+r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
+
+承認済みの申請を二重承認できてしまう不具合を修正 (#482)
+------------------------------------------------------------------`,
+        },
+        {
+          type: "table",
+          headers: ["調べたいこと", "Git", "SVN"],
+          rows: [
+            ["行ごとの変更者と日時", "`git blame ファイル名`", "`svn blame ファイル名`（`svn annotate` も同じ）"],
+            ["その変更の説明を読む", "`git log -1 <hash>` / `git show <hash>`", "`svn log -r <リビジョン番号> ファイル名`"],
+            ["特定の文字列がいつ入ったかを探す", "`git log -S\"文字列\" -- ファイル名`", "専用の機能は無く、ログを遡るか外部ツールを使うことが多い"],
+          ],
+        },
+        {
+          type: "p",
+          text: "使っているのが Git か SVN か、メッセージにどこまで書かれているかは、プロジェクトによって違います。まずは自分のプロジェクトがどちらで、履歴にどれくらいの情報が残っているかを確認しましょう。",
+        },
+        { type: "quiz", id: "read-history" },
+      ],
+    },
+    {
       id: "where-from",
       title: "値の源流",
       minutes: 8,
