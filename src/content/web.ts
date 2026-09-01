@@ -46,7 +46,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "申請一覧を開いた瞬間です。ブラウザは `/shinsei/requests` へ GET リクエストを送り、レスポンスとして返ってきた HTML が画面になります。",
+          text: "これは、申請一覧を開いた瞬間です。ブラウザは `/shinsei/requests` へ GET リクエストを送り、レスポンスとして返ってきた HTML が画面になります。",
         },
         {
           type: "figure",
@@ -62,7 +62,7 @@ export const webTrack: Track = {
         { type: "widget", name: "http" },
         {
           type: "h2",
-          text: "画面を開くと、リクエストは複数",
+          text: "1画面で複数のリクエスト",
         },
         {
           type: "p",
@@ -80,7 +80,7 @@ export const webTrack: Track = {
           type: "h2",
           text: "HTML と JSON",
         },
-        { type: "diagram", name: "html-json", caption: "同じ HTTP の往復。違うのは本文の形です。" },
+        { type: "diagram", name: "html-json", caption: "同じ HTTP の往復です。違うのは本文の形です。" },
         {
           type: "p",
           text: "HTML は、ブラウザが画面として表示するためのデータ形式です。JSON は、画面の JavaScript や他のシステムが読み取るためのデータ形式です。JSON を返す URL は、Web API と呼ばれることが多いです。",
