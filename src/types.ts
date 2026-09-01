@@ -2,7 +2,7 @@ export type TrackId = "intro" | "web" | "java-map" | "reading" | "trace" | "trou
 
 export type CalloutKind = "tip" | "note" | "warn" | "trap" | "scenario";
 
-export type WidgetName = "explorer" | "flow" | "stack" | "http";
+export type WidgetName = "explorer" | "flow" | "stack" | "http" | "troubleshoot-map";
 
 export type DiagramName =
   | "http-roundtrip"

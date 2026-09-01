@@ -9,6 +9,22 @@ export const troubleshootTrack: Track = {
   accent: "#f5cf4d",
   lessons: [
     {
+      id: "map",
+      title: "症状から探す",
+      minutes: 3,
+      blocks: [
+        {
+          type: "p",
+          text: "この章の入口です。今の症状に近いものを選ぶと、最初に確認することと、詳しく見るレッスンに辿り着けます。じっくり読みたいときは、次の「調査手順」から順に読んでも構いません。",
+        },
+        { type: "widget", name: "troubleshoot-map" },
+        {
+          type: "p",
+          text: "ここでの分類は、次の「調査手順」の「当たりのつけ方」（クライアント・ネットワーク・サーバ）と同じです。症状と最初に確認することの一覧は、「調査手順」の表でもまとめて見られます。",
+        },
+      ],
+    },
+    {
       id: "loop",
       title: "調査手順",
       minutes: 14,

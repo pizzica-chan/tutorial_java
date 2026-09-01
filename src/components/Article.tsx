@@ -6,6 +6,7 @@ import { ProjectExplorer } from "./ProjectExplorer";
 import { RequestFlow } from "./RequestFlow";
 import { StackLab } from "./StackLab";
 import { HttpInspector } from "./HttpInspector";
+import { TroubleshootMap } from "./TroubleshootMap";
 import { TermHighlightScope, TextWithTerms } from "./TextWithTerms";
 import { CodeBlock } from "./CodeBlock";
 import { Diagram } from "./Diagram";
@@ -17,6 +18,7 @@ const widgets: Record<WidgetName, ComponentType> = {
   flow: RequestFlow,
   stack: StackLab,
   http: HttpInspector,
+  "troubleshoot-map": TroubleshootMap,
 };
 
 export function Article({ blocks }: { blocks: Block[] }) {
