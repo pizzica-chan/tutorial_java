@@ -408,7 +408,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "p",
-          text: "分離レベルを上げても、この隙は埋まりません。2つのリクエストは、それぞれ自分の SELECT の時点で正しく `PENDING` を読んでいるからです。実際にこれが起きた例は、「実務のシナリオ」の「承認すると、申請者に確認メールが2通届く」で見ました。",
+          text: "分離レベルを上げても、この隙は埋まりません。2つのリクエストは、それぞれ自分の SELECT の時点で正しく `PENDING` を読んでいるからです。実際にこれが起きた例は、「実務のシナリオ」の「承認すると、申請者に確認メールが2通届く」で扱います。",
           link: {
             label: "承認すると、申請者に確認メールが2通届く",
             to: "/tracks/scenario/duplicate-mail",
@@ -428,7 +428,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "code",
-          title: "例（RequestMapper.xml と Service）",
+          title: "対処例（RequestMapper.xml）",
           lang: "text",
           code: `<update id="update">
   UPDATE t_request
@@ -439,7 +439,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "code",
-          title: "例（Service 側の判定）",
+          title: "対処例（Service 側の判定）",
           lang: "java",
           code: `int updated = requestMapper.update(request);
 if (updated == 0) {

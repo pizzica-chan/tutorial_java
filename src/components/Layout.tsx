@@ -210,6 +210,19 @@ export function Layout() {
           </span>
           <span>申請くんのソース</span>
         </a>
+        <div className="nav-label">LINKS</div>
+        <a
+          className="nav-link"
+          href="https://monooki.kitchen1217.workers.dev/"
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setOpen(false)}
+        >
+          <span className="no">
+            <Icon name="link" size={14} />
+          </span>
+          <span>物置</span>
+        </a>
       </aside>
 
       <main className="main" id="main" tabIndex={-1} inert={mobileDialogOpen}>
