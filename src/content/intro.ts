@@ -98,6 +98,12 @@ export const introTrack: Track = {
           note: "Docker（`docker compose up --build`）で手元に起動できます。",
         },
         {
+          type: "callout",
+          kind: "tip",
+          title: "PC での閲覧がおすすめです",
+          text: "コード例や Network タブの画像、記事内の目次は、画面の狭いスマートフォンでは読みにくいことがあります。PC やタブレットでの閲覧をおすすめします。",
+        },
+        {
           type: "h2",
           text: "章の進め方",
         },
