@@ -44,7 +44,7 @@ export const troubleshootTrack: Track = {
         },
         {
           type: "h2",
-          text: "当たりをつける",
+          text: "当たりのつけ方",
         },
         {
           type: "p",
