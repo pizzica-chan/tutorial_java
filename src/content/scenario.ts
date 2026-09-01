@@ -433,6 +433,7 @@ requestService.approve(id, user.getId());`,
             "画面にはエラーが出ていない。承認操作自体は成功している",
             "DB の該当レコードは1件だけで、ステータスは APPROVED（重複レコードは無い）",
             "承認したのは佐藤花子1人。二人の承認者が別々に承認したわけではない",
+            "佐藤花子は、申請詳細画面から承認した",
           ],
         },
         {
@@ -463,14 +464,14 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "同じ `requestId=13` への `POST /shinsei/requests/13/approve` が、`nio-8080-exec-3` と `nio-8080-exec-7` という別々のスレッドで、1秒に満たない間隔で2回実行されています。承認ボタンを見ると、二重送信を防ぐ仕組みが見当たりません。",
+          text: "同じ `requestId=13` への `POST /shinsei/requests/13/approve` が、`nio-8080-exec-3` と `nio-8080-exec-7` という別々のスレッドで、1秒に満たない間隔で2回実行されています。申請詳細画面の承認フォームを見ましょう。",
         },
         {
           type: "code",
-          title: "一覧の承認フォーム（申請くん・list.html）",
+          title: "申請詳細の承認フォーム（申請くん・detail.html）",
           lang: "html",
-          code: `<form th:if="\${item.status == 'PENDING'}"
-      th:action="@{/requests/{id}/approve(id=\${item.id})}"
+          code: `<form class="js-approve-confirm"
+      th:action="@{/requests/{id}/approve(id=\${requestItem.id})}"
       method="post">
   <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
   <button type="submit" class="btn-approve">承認</button>
@@ -478,7 +479,33 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "ボタンを無効化する JS も、二重送信を防ぐトークンも無い、ただの `submit` ボタンです。佐藤花子が連打したか、二重に開いたタブの両方で押した可能性があります。ここで、承認の処理自体がその二重送信に耐えられるかを見ます。",
+          text: "`js-approve-confirm` というクラスが付いています。これを使っている JS を探しましょう。",
+        },
+        {
+          type: "code",
+          title: "app.js（申請くん・抜粋）",
+          lang: "javascript",
+          code: `document.querySelectorAll("form.js-approve-confirm").forEach((form) => {
+  form.addEventListener("submit", (event) => {
+    if (!window.confirm("承認してよいですか？")) {
+      event.preventDefault();
+    }
+  });
+});`,
+        },
+        {
+          type: "p",
+          text: "確認ダイアログで「キャンセル」を選んだときだけ、送信を止めています。「OK」を選ぶと、ボタンを無効化することも、二重に送れないようにすることもなく、そのまま通常のフォーム送信が進みます。この確認は、うっかり押したことに気づくためのもので、二重送信を防ぐ仕組みではありません。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "確認ダイアログは二重送信を防がない",
+          text: "`window.confirm` は、送信するかどうかを利用者に一度確認させるだけの仕組みです。ボタンの無効化や送信済みフラグのような、二重送信そのものを防ぐ仕組みではありません。確認ダイアログでOKを押したあと反応が遅いと感じて、同じ画面をもう一度開いて承認した、といったことも起こり得ます。",
+        },
+        {
+          type: "p",
+          text: "承認の処理自体が、この二重送信に耐えられるかを見ます。",
         },
         {
           type: "code",
@@ -530,7 +557,7 @@ mailService.notifyApplicant(request);`,
         {
           type: "ul",
           items: [
-            "ボタンの二重送信を防ぐ仕組みが無いと、同じ処理が2回走ることがあります",
+            "`window.confirm` の確認ダイアログは、うっかり押したことに気づくためのもので、二重送信を防ぐ仕組みではありません",
             "SQL の `WHERE` に、更新前提の状態（この例では `status = 'PENDING'`）を含めないと、読んでから書くまでの間に他の処理が割り込む余地が残ります",
             "`@Transactional` は1リクエスト内の SQL をまとめる仕組みで、複数リクエストの同時実行は防ぎません",
           ],
@@ -544,7 +571,7 @@ mailService.notifyApplicant(request);`,
           items: [
             "メールが2通届いていること、画面にはエラーが無く DB のレコードは1件だけであることを確認",
             "アプリのログで、同じ `requestId` への `approve` 処理が、別スレッドでほぼ同時刻に2回実行されていることを確認",
-            "承認ボタンに二重送信を防ぐ仕組みが無いことを確認",
+            "承認フォームに付いた `js-approve-confirm` から app.js を辿り、確認ダイアログは二重送信を防ぐ仕組みではないことを確認",
             "`RequestService.approve` が `status` を読んでから判定しており、`update` の SQL に `status` の条件が無いことを確認",
             "`@Transactional` は同時実行を防がないことを理解し、原因を特定",
           ],
