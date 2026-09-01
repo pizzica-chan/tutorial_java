@@ -574,6 +574,11 @@ export const terms: TermDef[] = [
     body: "コマンドを別のユーザの権限で実行する仕組みです。`sudo -u ユーザ名 コマンド` で、そのユーザとして実行できます。自分に sudo の権限があることと、アプリの実行ユーザに権限があることは別です。",
   },
   {
+    term: "systemctl",
+    aliases: ["systemctl", "systemd"],
+    body: "Linux でサービス（nginx や Tomcat など）を起動・停止・状態確認する仕組みです。`systemctl status サービス名` で、動いているか（`active (running)`）、止まっているか（`inactive` / `failed`）を確認できます。",
+  },
+  {
     term: "access.log",
     aliases: ["access.log", "access_log", "アクセスログ"],
     body: "HTTP サーバが受けたリクエストの記録。URL、ステータスコード、時刻が並びます。静的ファイルの 404 もここに残ることが多いです。",

@@ -697,7 +697,7 @@ curl -I https://notify.example.internal/api/send`,
     {
       id: "middleware-check",
       title: "ミドルウェアとコンテナの確認",
-      minutes: 10,
+      minutes: 9,
       blocks: [
         {
           type: "p",
@@ -762,10 +762,39 @@ kubectl get pods`,
           text: "コンテナが起動と停止を繰り返していると、アプリのログが急に途切れる、操作したのにログが無い、といった症状に見えることがあります。ログの出力先は「アプリログの場所と読み方」のとおりですが、コンテナ自体が無ければ、そのログもありません。",
         },
         {
+          type: "h2",
+          text: "外部の Tomcat や HTTP サーバが動いているか",
+        },
+        {
+          type: "p",
+          text: "Docker や Kubernetes を使わない構成では、外部の Tomcat や、その手前の nginx / Apache などが、それぞれ別のプロセス・サービスとして動いています。アプリのコードや DB に問題が無くても、これらが止まっていれば同じような症状に見えます。",
+        },
+        {
+          type: "p",
+          text: "Spring Boot を内蔵 Tomcat だけで動かしている構成では、Java プロセス自体がサーブレットコンテナなので、ここは「プロセスとリソースを見る」で確認したものと同じです。",
+        },
+        {
+          type: "code",
+          title: "例（Linux、systemd を使う環境）",
+          lang: "text",
+          code: `$ systemctl status nginx
+$ systemctl status tomcat`,
+        },
+        {
+          type: "p",
+          text: "`Active: active (running)` なら動いています。`inactive (dead)` や `failed` なら止まっています。サービスの管理の仕組みは環境によって違うので、`systemctl` が無ければチームの手順を確認しましょう。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "手前が止まっていると、アプリのログにも何も残らない",
+          text: "手前の HTTP サーバや外部の Tomcat が止まっていると、リクエストはアプリまで届きません。アプリのログを探しても見つからないのは当然です。「アプリログの場所と読み方」で追う前に、ここを確認しましょう。",
+        },
+        {
           type: "callout",
           kind: "trap",
           title: "アプリは正常でもミドルウェアが原因のことがある",
-          text: "コードやデータに問題が見つからないときは、DB やメッセージキューなどのミドルウェア、コンテナの起動状態も疑いましょう。アプリのソースだけを読み続けても見つかりません。",
+          text: "コードやデータに問題が見つからないときは、DB やメッセージキューなどのミドルウェア、コンテナや外部の Tomcat・HTTP サーバの起動状態も疑いましょう。アプリのソースだけを読み続けても見つかりません。",
         },
         { type: "quiz", id: "ts-middleware" },
       ],
