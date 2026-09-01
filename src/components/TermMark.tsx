@@ -2,6 +2,7 @@ import { useEffect, useId, useRef, useState, type FocusEvent, type MouseEvent } 
 import { createPortal } from "react-dom";
 import { Link } from "react-router-dom";
 import { glossaryAnchor, type TermDef } from "../data/terms";
+import { TextWithTerms } from "./TextWithTerms";
 
 type Props = {
   def: TermDef;
@@ -67,7 +68,7 @@ export function TermMark({ def, text, className, toGlossary = true }: Props) {
           }}
         >
           <strong>{def.term}</strong>
-          {def.body}
+          <TextWithTerms highlight={false} text={def.body} />
         </span>,
         document.body,
       )

@@ -23,7 +23,7 @@ export const terms: TermDef[] = [
   {
     term: "GET / POST",
     aliases: ["GET", "POST"],
-    body: "HTTP メソッドの代表例。GET は取得、POST は登録や状態を変える操作に使われることが多いです。PUT / PATCH / DELETE も API でよく使います。約束と実装がずれることもあるので、Network タブで確認します。",
+    body: "HTTP メソッドの代表例。GET は取得、POST は登録や状態を変える操作に使われることが多いです。PUT / PATCH / DELETE も API でよく使います。約束と実装がずれることもあるので、Network タブで確認しましょう。",
   },
   {
     term: "HTTPステータスコード",
@@ -38,7 +38,7 @@ export const terms: TermDef[] = [
   {
     term: "401 / 403",
     aliases: ["401", "403"],
-    body: "ステータスコードの読み方として、401 は未ログイン、403 は権限が無い。画面にそう出ても、実際のステータスコードや遷移はアプリによって違います。Network タブで確認します。",
+    body: "ステータスコードの読み方として、401 は未ログイン、403 は権限が無い。画面にそう出ても、実際のステータスコードや遷移はアプリによって違います。Network タブで確認しましょう。",
   },
   {
     term: "400",
@@ -981,7 +981,7 @@ export const terms: TermDef[] = [
   {
     term: "null",
     aliases: ["null"],
-    body: "値が無いことです。メソッドの呼び出し先が null だと、Java では NullPointerException になります。",
+    body: "値が無いことです。null の参照でメソッドを呼ぶと、Java では NullPointerException になります。",
   },
   {
     term: "Caused by",
@@ -1006,7 +1006,7 @@ export const terms: TermDef[] = [
   {
     term: "$Proxy / CGLIB",
     aliases: ["$Proxy", "CGLIB", "generated"],
-    body: "フレームワークが実行時に作るクラス。自作コードではないので、隣の会社パッケージへ戻ります。Spring ではよく見ます。",
+    body: "フレームワークが実行時に作るクラス。自作コードではないので、隣の自作パッケージへ戻ります。Spring ではよく見ます。",
   },
   {
     term: "org.springframework",
