@@ -14,6 +14,14 @@ export const scenarioTrack: Track = {
       minutes: 9,
       blocks: [
         {
+          type: "p",
+          text: "この章のシナリオはすべて、[障害調査] なら「いま分かっていること → 先に見ること → 原因の追跡 → 要点 → 振り返り」、[影響調査] なら「いま分かっていること → 先にやること → 影響の追跡 → 要点 → 振り返り」という型で進みます。",
+        },
+        {
+          type: "p",
+          text: "検証用環境のデータは、シナリオごとに用意した例です。別のシナリオの検証用環境と、同じ状態とは限りません。",
+        },
+        {
           type: "callout",
           kind: "scenario",
           text: "申請一覧画面で、承認ボタンを押しても何も起きない。画面は切り替わらず、エラーメッセージも出ない。",
@@ -145,7 +153,7 @@ export const scenarioTrack: Track = {
           items: [
             "Network タブで、リクエストが飛んでいないことを確認",
             "コンソールで、JS の null 参照エラーを確認",
-            "HTML と JS で識別子が異なり、値が取れず null になっていることを確認",
+            "HTML に `id=\"csrfToken\"` の要素が無く、`tokenEl` が null になっていることを確認",
           ],
         },
         { type: "quiz", id: "sc-front" },
@@ -153,7 +161,7 @@ export const scenarioTrack: Track = {
     },
     {
       id: "back",
-      title: "[障害調査] 承認すると「エラーが発生しました」",
+      title: "[障害調査] 申請詳細で承認すると「エラーが発生しました」",
       minutes: 8,
       blocks: [
         {
@@ -289,7 +297,7 @@ WHERE id = 16;`,
     },
     {
       id: "message",
-      title: "[障害調査] 「この申請は承認できません」と出るが、ログに例外が無い",
+      title: "[障害調査] 申請詳細で承認すると「この申請は承認できません」、ログに例外が無い",
       minutes: 8,
       blocks: [
         {
@@ -302,7 +310,7 @@ WHERE id = 16;`,
           kind: "screen",
           src: "/images/screen-network-cannot-approve.jpg",
           alt: "POST /shinsei/requests/11/approve が 500 ではない Network タブ",
-          caption: "例：`POST /shinsei/requests/11/approve` は飛んでいます。500 ではありません。画面に「この申請は承認できません」が出ています。",
+          caption: "例：`POST /shinsei/requests/11/approve` は 302 で、詳細へリダイレクトしています。画面に「この申請は承認できません」が出ています。",
         },
         {
           type: "h2",
@@ -312,7 +320,7 @@ WHERE id = 16;`,
           type: "ul",
           items: [
             "山田（yamada）でログイン。申請履歴から ID 11「備品購入」の詳細を開き、承認ボタンを押した。検証用環境。ステータスは APPROVED",
-            "Network タブで `POST /shinsei/requests/11/approve` は飛んでいる。500 ではない",
+            "Network タブで `POST /shinsei/requests/11/approve` は 302。詳細へリダイレクトしている",
             "操作時刻のログに ERROR もスタックトレースも無い",
           ],
         },
@@ -324,7 +332,7 @@ WHERE id = 16;`,
           type: "callout",
           kind: "note",
           title: "前のシナリオとの違い",
-          text: "前のシナリオでは POST が 500 で、ログにスタックがありました。今回は 500 ではなく、ログにも ERROR がありません。画面に出ている「この申請は承認できません」でソースを検索しましょう。",
+          text: "前のシナリオでは POST が 500 で、ログにスタックがありました。今回は 302 で、ログにも ERROR がありません。画面に出ている「この申請は承認できません」でソースを検索しましょう。",
         },
         {
           type: "p",
@@ -346,7 +354,7 @@ WHERE id = 16;`,
         },
         {
           type: "p",
-          text: "「この申請は承認できません」で検索すると、Controller の分岐がヒットしました。",
+          text: "「この申請は承認できません」で全文検索すると、2箇所ヒットします。下の Controller の分岐と、`RequestService.approve` が投げる `throw new ConflictException(\"この申請は承認できません\")` です。`ConflictException` は 409 を返しますが、Network タブで見たのは 302 でした。302 を返しているのは、この Controller の分岐です。",
         },
         {
           type: "code",
@@ -389,9 +397,9 @@ requestService.approve(id, user.getId());`,
         {
           type: "investigation-flow",
           items: [
-            "Network タブで、POST は飛んでいるが 500 ではないことを確認",
+            "Network タブで、POST が 302 であることを確認",
             "操作時刻のログに ERROR もスタックも無いことを確認",
-            "画面の文言でソースを検索し、Controller の分岐がヒットする",
+            "画面の文言でソースを検索すると2箇所ヒットし、409を返す `ConflictException` ではなく、302 と一致する Controller の分岐だと分かる",
             "DB で申請 ID 11 の status が APPROVED であることを確認",
           ],
         },
@@ -533,6 +541,7 @@ WHERE (applicant_id = 7 OR approver_id = 7)
             "Network タブで、GET が 200 であることを確認",
             "実行された SQL とその条件を確認",
             "同じ条件で DB を検索し、レコードが 0 件であることを確認",
+            "ローカルの DB では同じ条件で 4 件あり、検証用環境とローカルで接続している DB が違うと分かる",
           ],
         },
         { type: "quiz", id: "sc-db" },
@@ -1525,7 +1534,7 @@ requestMapper.update(request);`,
             "履歴の検索フォームは「すべて」で `CANCELLED` も表示されるため、扱いを依頼者へ確認する",
             "一覧・履歴・詳細の見た目は、`CANCELLED` も承認済みと同じ表示になり、要修正と分かる",
             "`CANCELLED` にする処理がまだ無いことを確認する",
-            "JSON の応答と `schema.sql` は、`CANCELLED` を追加しても大きな修正が要らないと分かる",
+            "JSON の応答（`RequestResponse`）は修正不要。`schema.sql` は長さの変更は不要だが、CHECK 制約を足すかは依頼者へ確認する",
           ],
         },
         { type: "quiz", id: "sc-impact-status" },
