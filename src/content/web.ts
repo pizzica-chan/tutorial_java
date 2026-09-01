@@ -165,7 +165,7 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "HTTP メソッドは、操作の意味を表す約束です。",
+          text: "HTTP メソッドは、操作の意味を表す約束事です。",
         },
         {
           type: "ul",
@@ -178,7 +178,7 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "ただし、更新を POST だけで送る、削除を GET で呼ぶといった、約束と違う実装も現場では多いです。同じ URL でも HTTP メソッドが違えば、別の処理が呼ばれることがあります。実務では、教科書どおりの意味より、実際に送っている HTTP メソッドと URL を見ましょう。",
+          text: "ただし、更新を POST だけで送る、削除を GET で呼ぶといった、約束事と違う実装も現場では多いです。同じ URL でも HTTP メソッドが違えば、別の処理が呼ばれることがあります。実務では、教科書どおりの意味より、実際に送っている HTTP メソッドと URL を見ましょう。",
         },
         { type: "diagram", name: "get-post" },
         {
