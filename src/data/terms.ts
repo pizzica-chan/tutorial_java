@@ -414,6 +414,16 @@ export const terms: TermDef[] = [
     body: "テーブル定義を変える SQL（CREATE / ALTER など）。コードと DB 定義がずれる原因になります。",
   },
   {
+    term: "トリガー",
+    aliases: ["トリガー", "TRIGGER"],
+    body: "特定の操作（INSERT や UPDATE など）をきっかけに、DB が自動で実行する処理です。Java のソースには現れません。",
+  },
+  {
+    term: "DEFAULT",
+    aliases: ["DEFAULT"],
+    body: "カラムに値が指定されなかったときに使う、DB 側の初期値の定義です。`DEFAULT CURRENT_TIMESTAMP` なら、INSERT した時刻が自動で入ります。",
+  },
+  {
     term: "正規化",
     aliases: ["正規化"],
     body: "同じ情報を複数のテーブルに重複させず、意味のまとまりごとに分けて持つ設計です。更新は楽になりますが、取得時に複数テーブルの結合が必要になることがあります。",
@@ -567,6 +577,11 @@ export const terms: TermDef[] = [
     term: "JSON",
     aliases: ["JSON"],
     body: "名前と値のペアを波括弧で書いたデータ形式です。例: {\"status\":\"APPROVED\"}。Network タブの Response や Request Payload に載ります。HTML のように画面にはなりません。",
+  },
+  {
+    term: "Jackson",
+    aliases: ["Jackson"],
+    body: "Java のオブジェクトと JSON を相互に変換するライブラリです。Spring Boot に標準で組み込まれています。フィールド名と JSON のキー名を対応づけて変換します。",
   },
   {
     term: "Web API",
@@ -979,6 +994,11 @@ export const terms: TermDef[] = [
     body: "画面へ渡すデータの入れ物。ここに載せた名前がテンプレートから参照されます。Spring MVC のものです。",
   },
   {
+    term: "@ModelAttribute",
+    aliases: ["@ModelAttribute"],
+    body: "フォームの入力値を、Java のオブジェクトへ自動で詰め替える印です。Setter をリフレクションで呼んで値を入れるので、ソースには呼び出しの行がありません。Spring のアノテーションです。",
+  },
+  {
     term: "@AuthenticationPrincipal",
     aliases: ["@AuthenticationPrincipal"],
     body: "今ログインしているユーザを、メソッド引数として受け取る印です。Spring Security のアノテーションです。",
@@ -1012,6 +1032,11 @@ export const terms: TermDef[] = [
     term: "戻り値",
     aliases: ["戻り値"],
     body: "メソッドが返す値。画面のテンプレート名や、JSON の中身になります。",
+  },
+  {
+    term: "リフレクション",
+    aliases: ["リフレクション", "reflection"],
+    body: "実行時に、クラスやメソッドの名前を文字列などから調べて操作する仕組みです。Setter の名前を対応づけて呼ぶ、といったことができます。フレームワークが裏側でよく使い、ソースには呼び出しの行が現れません。",
   },
   {
     term: "null",
@@ -1162,6 +1187,16 @@ export const terms: TermDef[] = [
     term: "Kubernetes",
     aliases: ["Kubernetes", "K8s", "k8s"],
     body: "コンテナを複数のサーバで動かす仕組みです。ログは各 Pod の標準出力にあり、kubectl logs などで見ます。",
+  },
+  {
+    term: "ConfigMap",
+    aliases: ["ConfigMap"],
+    body: "Kubernetes で、設定値をコンテナの外に置く仕組みです。環境変数やファイルとしてコンテナへ渡します。",
+  },
+  {
+    term: "Secret",
+    aliases: ["Secret"],
+    body: "Kubernetes で、パスワードなどの機密情報をコンテナの外に置く仕組みです。ConfigMap と似ていますが、機密情報向けです。",
   },
   {
     term: "ローテート",
