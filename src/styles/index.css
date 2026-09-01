@@ -6,11 +6,11 @@
   --line: rgba(57, 92, 163, 0.16);
   --line-strong: rgba(57, 92, 163, 0.32);
   --paper: #22345f;
-  --paper-dim: #8a97c0;
+  --paper-dim: #5a6690;
   --amber: #395ca3;
   --amber-2: #6c86c9;
   --teal: #4fb0a5;
-  --rose: #f5cf4d;
+  --rose: #ef7a6c;
   --text: #2f3b56;
   --muted: #75809f;
   --quiet: #7d89ab;
@@ -388,7 +388,7 @@ h1,
 h2,
 .serif {
   font-family: var(--serif);
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.04em;
 }
 
@@ -718,12 +718,24 @@ h2,
 }
 
 @media (min-width: 1440px) {
+  .lesson-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 220px;
+    column-gap: 24px;
+    align-items: start;
+    max-width: 1224px;
+    margin-inline: auto;
+  }
+
+  .lesson-layout .content {
+    max-width: none;
+    margin-inline: 0;
+  }
+
   .article-toc {
     display: block;
-    position: fixed;
+    position: sticky;
     top: 140px;
-    right: 28px;
-    width: 220px;
     max-height: calc(100vh - 170px);
     overflow: auto;
     padding: 18px 4px 18px 18px;
@@ -808,7 +820,7 @@ h2,
 
 .callout.warn {
   border-color: var(--rose);
-  background: rgba(245, 207, 77, 0.08);
+  background: rgba(239, 122, 108, 0.08);
 }
 
 .callout.trap {
@@ -958,12 +970,12 @@ h2,
 .codeblock .code-line-mark {
   margin: 0 -16px;
   padding: 0 16px;
-  background: rgba(57, 92, 163, 0.14);
-  box-shadow: inset 3px 0 0 var(--amber);
+  background: rgba(108, 134, 201, 0.32);
+  box-shadow: inset 3px 0 0 var(--amber-2);
 }
 
 .codeblock.codeblock-mark-error .code-line-mark {
-  background: rgba(245, 207, 77, 0.12);
+  background: rgba(239, 122, 108, 0.26);
   box-shadow: inset 3px 0 0 var(--rose);
 }
 
@@ -1041,7 +1053,7 @@ th {
 
 .choice.wrong {
   border-color: var(--rose);
-  background: rgba(245, 207, 77, 0.12);
+  background: rgba(239, 122, 108, 0.12);
 }
 
 .widget {
@@ -1740,7 +1752,7 @@ th {
   height: 1.35em;
   border-radius: 999px;
   background: rgba(57, 92, 163, 0.9);
-  color: #102033;
+  color: #ffffff;
   font-family: var(--sans);
   font-size: 11px;
   font-weight: 700;
@@ -1750,6 +1762,7 @@ th {
 
 .d-template-fragment-mark-individual {
   background: rgba(183, 196, 255, 0.95);
+  color: #102033;
 }
 
 .d-template-fragment-inner {
@@ -2289,7 +2302,7 @@ th {
 
 .term {
   color: inherit;
-  border-bottom: 1px dotted rgba(243, 197, 122, 0.9);
+  border-bottom: 1px dotted rgba(108, 134, 201, 0.85);
   cursor: help;
 }
 
