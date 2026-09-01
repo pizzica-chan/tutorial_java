@@ -1224,6 +1224,11 @@ export const terms: TermDef[] = [
     body: "Kubernetes で、パスワードなどの機密情報をコンテナの外に置く仕組みです。ConfigMap と似ていますが、機密情報向けです。",
   },
   {
+    term: "CrashLoopBackOff",
+    aliases: ["CrashLoopBackOff"],
+    body: "Kubernetes の Pod のステータスのひとつです。コンテナの起動に失敗し、再起動を繰り返している状態を示します。アプリのログや起動時の設定を確認しましょう。",
+  },
+  {
     term: "ローテート",
     aliases: ["ローテート"],
     body: "日付やサイズでログファイルを切り替えることです。昨日の障害は、昨日のファイルにあります。",
