@@ -717,7 +717,7 @@ curl -I https://notify.example.internal/api/send`,
       blocks: [
         {
           type: "p",
-          text: "ネットワークが通っていても、DB やコンテナ自体に問題があることがあります。ここでは、その切り分け方を見ます。",
+          text: "ネットワークが通っていても、DB やコンテナ、外部の Tomcat・HTTP サーバ自体に問題があることがあります。ここでは、その切り分け方を見ます。",
         },
         {
           type: "h2",
@@ -798,7 +798,7 @@ $ systemctl status tomcat`,
         },
         {
           type: "p",
-          text: "`Active: active (running)` なら動いています。`inactive (dead)` や `failed` なら止まっています。サービスの管理の仕組みは環境によって違うので、`systemctl` が無ければチームの手順を確認しましょう。",
+          text: "`Active: active (running)` なら動いています。`inactive (dead)` や `failed` なら止まっています。ここでの `nginx` `tomcat` はサービス名の例で、実際の名前は環境によって違います（`tomcat9` など）。`Unit ... could not be found` と出た場合は、止まっているのではなく名前が違うだけのことが多いです。名前が分からないときは、「Linux の基本操作」で見た `ps` に、探したいプロセス名（`tomcat` や `nginx`）を渡して探しましょう。",
         },
         {
           type: "callout",

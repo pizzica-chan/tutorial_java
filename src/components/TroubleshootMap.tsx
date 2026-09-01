@@ -4,94 +4,71 @@ import { troubleshootMap } from "../data/troubleshootMap";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon } from "./Icon";
 
+type FlatLeaf = {
+  bucketLabel: string;
+  bucketHint: string;
+  symptom: string;
+  check: string;
+  links: { label: string; to: string }[];
+};
+
 export function TroubleshootMap() {
-  const [bucketId, setBucketId] = useState<string | null>(null);
-  const [leafIndex, setLeafIndex] = useState<number | null>(null);
-
-  const bucket = troubleshootMap.find((b) => b.id === bucketId) ?? null;
-  const leaf = bucket && leafIndex !== null ? (bucket.leaves[leafIndex] ?? null) : null;
-
-  const selectBucket = (id: string) => {
-    setBucketId(id);
-    setLeafIndex(null);
-  };
+  const [selected, setSelected] = useState<FlatLeaf | null>(null);
 
   return (
     <section className="widget troubleshoot-map">
       <div className="widget-head">
         <div>
           <p className="kicker">症状から探す</p>
-          <strong>{bucket ? "症状に近いものを選びましょう" : "原因はどこに近そうですか？"}</strong>
+          <strong>{selected ? "その症状は、こう当たりをつけます" : "今の症状に近いものを選びましょう"}</strong>
         </div>
       </div>
 
-      <div className="troubleshoot-map-crumb">
-        <button
-          type="button"
-          className={`troubleshoot-map-crumb-item ${bucket ? "" : "current"}`}
-          onClick={() => {
-            setBucketId(null);
-            setLeafIndex(null);
-          }}
-        >
-          原因の当たり
-        </button>
-        {bucket ? (
-          <>
-            <Icon name="arrow-right" size={12} />
-            <button
-              type="button"
-              className={`troubleshoot-map-crumb-item ${leaf ? "" : "current"}`}
-              onClick={() => setLeafIndex(null)}
-            >
-              {bucket.label}
-            </button>
-          </>
-        ) : null}
-        {leaf ? (
-          <>
-            <Icon name="arrow-right" size={12} />
-            <span className="troubleshoot-map-crumb-item current">症状</span>
-          </>
-        ) : null}
-      </div>
-
-      {!bucket ? (
-        <div className="troubleshoot-map-grid">
-          {troubleshootMap.map((b) => (
-            <button key={b.id} type="button" className="troubleshoot-map-node" onClick={() => selectBucket(b.id)}>
-              <strong>{b.label}</strong>
-              <span>{b.hint}</span>
-            </button>
+      {!selected ? (
+        <div className="troubleshoot-map-groups">
+          {troubleshootMap.map((bucket) => (
+            <div className="troubleshoot-map-group" key={bucket.id}>
+              <p className="troubleshoot-map-group-label">{bucket.label}が原因のことが多い症状</p>
+              <div className="troubleshoot-map-grid">
+                {bucket.leaves.map((leaf) => (
+                  <button
+                    key={leaf.symptom}
+                    type="button"
+                    className="troubleshoot-map-node"
+                    onClick={() =>
+                      setSelected({
+                        bucketLabel: bucket.label,
+                        bucketHint: bucket.hint,
+                        symptom: leaf.symptom,
+                        check: leaf.check,
+                        links: leaf.links,
+                      })
+                    }
+                  >
+                    <TextWithTerms text={leaf.symptom} highlight={false} />
+                  </button>
+                ))}
+              </div>
+            </div>
           ))}
         </div>
-      ) : null}
-
-      {bucket && !leaf ? (
-        <div className="troubleshoot-map-grid">
-          {bucket.leaves.map((item, index) => (
-            <button
-              key={item.symptom}
-              type="button"
-              className="troubleshoot-map-node"
-              onClick={() => setLeafIndex(index)}
-            >
-              <TextWithTerms text={item.symptom} highlight={false} />
-            </button>
-          ))}
-        </div>
-      ) : null}
-
-      {leaf ? (
+      ) : (
         <div className="troubleshoot-map-result">
+          <button type="button" className="troubleshoot-map-back" onClick={() => setSelected(null)}>
+            <Icon name="arrow-left" size={14} />
+            症状の一覧に戻る
+          </button>
           <p className="troubleshoot-map-symptom">
-            <TextWithTerms text={leaf.symptom} highlight={false} />
+            <TextWithTerms text={selected.symptom} highlight={false} />
+          </p>
+          <p className="troubleshoot-map-cause">
+            原因の当たり：<strong>{selected.bucketLabel}</strong>（{selected.bucketHint}）
           </p>
           <p className="troubleshoot-map-check">
-            <TextWithTerms text={leaf.check} />
+            <TextWithTerms text={selected.check} />
           </p>
           <div className="troubleshoot-map-links">
-            {leaf.links.map((link) => (
+            {selected.links.map((link) => (
               <Link key={link.to} to={link.to} className="btn btn-primary">
                 {link.label}
                 <Icon name="arrow-right" size={14} />
@@ -99,7 +76,7 @@ export function TroubleshootMap() {
             ))}
           </div>
         </div>
-      ) : null}
+      )}
     </section>
   );
 }

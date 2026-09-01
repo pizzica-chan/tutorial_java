@@ -2592,36 +2592,44 @@ th {
   background: var(--panel);
 }
 
-.troubleshoot-map-crumb {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  padding: 10px 16px;
-  border-bottom: 1px solid var(--line);
-  color: var(--quiet);
-  font-size: 12px;
+.troubleshoot-map-groups {
+  padding: 4px 0 12px;
 }
 
-.troubleshoot-map-crumb-item {
-  padding: 2px 4px;
+.troubleshoot-map-group-label {
+  margin: 16px 16px 6px;
+  color: var(--quiet);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.troubleshoot-map-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 0;
   border: none;
   background: none;
   color: var(--muted);
   font: inherit;
+  font-size: 13px;
   cursor: pointer;
 }
 
-.troubleshoot-map-crumb-item:hover {
+.troubleshoot-map-back:hover {
   color: var(--text);
-  text-decoration: underline;
 }
 
-.troubleshoot-map-crumb-item.current {
+.troubleshoot-map-cause {
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.troubleshoot-map-cause strong {
   color: var(--amber);
-  font-weight: 700;
-  cursor: default;
-  text-decoration: none;
 }
 
 .troubleshoot-map-grid {
@@ -2649,16 +2657,6 @@ th {
 .troubleshoot-map-node:hover {
   border-color: var(--amber);
   transform: translateY(-1px);
-}
-
-.troubleshoot-map-node strong {
-  font-family: var(--serif);
-  font-size: 16px;
-}
-
-.troubleshoot-map-node span {
-  color: var(--muted);
-  font-size: 13px;
 }
 
 .troubleshoot-map-result {

@@ -575,8 +575,8 @@ export const terms: TermDef[] = [
   },
   {
     term: "systemctl",
-    aliases: ["systemctl", "systemd"],
-    body: "Linux でサービス（nginx や Tomcat など）を起動・停止・状態確認する仕組みです。`systemctl status サービス名` で、動いているか（`active (running)`）、止まっているか（`inactive` / `failed`）を確認できます。",
+    aliases: ["systemctl"],
+    body: "Linux でサービス（nginx や Tomcat など）を起動・停止・状態確認するコマンドです。`systemctl status サービス名` で、動いているか（`active (running)`）、止まっているか（`inactive` / `failed`）を確認できます。サービス名は環境によって違い、間違っていると `could not be found` のように出ます。",
   },
   {
     term: "access.log",
