@@ -262,11 +262,12 @@ export const troubleshootTrack: Track = {
           type: "code",
           title: "例（そのプロセスを動かしているユーザを見る）",
           lang: "text",
-          code: `ps -ef -o user,pid,cmd | grep java`,
+          code: `$ ps -ef -o user,pid,cmd | grep java
+appuser   1842  java -jar shinsei-kun.jar`,
         },
         {
           type: "p",
-          text: "`USER` の列に出るのが、そのプロセスを動かしているユーザです。自分がログインしたユーザ名と違うことは珍しくありません。",
+          text: "`USER` の列に出る `appuser` が、そのプロセスを動かしているユーザです。この例では、SSH でログインしたのが `yamada` というユーザだったとしても、Java プロセス自体は別の `appuser` というユーザで動いています。自分がログインしたユーザ名と、プロセスの `USER` 列が違うことは珍しくありません。",
         },
         {
           type: "code",
