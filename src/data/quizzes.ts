@@ -255,6 +255,18 @@ export const quizzes = {
     answer: 1,
     explanation: "Controller の業務ロジックより先に、フィルタやセッションを疑います。ステータスコードと `Location`、Cookie を確認しましょう。",
   },
+  "ts-linux": {
+    id: "ts-linux",
+    question: "サーバ上のログファイルを開こうとすると Permission denied になった。まず疑うのはどれ？",
+    choices: [
+      "アプリのロジックにバグがある",
+      "`ls -l` で、そのファイルの権限と所有者を確認する",
+      "ファイルを削除して作り直す",
+      "`chmod 777` で全員に権限を与える",
+    ],
+    answer: 1,
+    explanation: "Permission denied は権限やユーザが原因であることが多く、コードの不具合ではありません。まず `ls -l` で権限と所有者を確認しましょう。777 のような広い権限をいきなり付けるのは避けます。",
+  },
   "ts-log": {
     id: "ts-log",
     question: "画面がエラーになった。ログ調査で最初にやることは？",
