@@ -6,7 +6,7 @@ export const troubleshootTrack: Track = {
   title: "トラブルシューティング手法",
   kicker: "TROUBLESHOOT",
   description: "いきなりソースを読まず、リクエストがどこまで届いたかと症状から当たりをつけます。",
-  accent: "#d46a5c",
+  accent: "#f5cf4d",
   lessons: [
     {
       id: "loop",

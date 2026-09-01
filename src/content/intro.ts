@@ -6,7 +6,7 @@ export const introTrack: Track = {
   title: "はじめに",
   kicker: "START",
   description: "対象読者と、教材用サンプルアプリ「申請くん」について説明します。",
-  accent: "#6ec8c0",
+  accent: "#4fb0a5",
   lessons: [
     {
       id: "about",

@@ -6,7 +6,7 @@ export const traceTrack: Track = {
   title: "リクエストの追跡",
   kicker: "TRACE",
   description: "処理の入口から SQL と応答まで、一本の線で追います。",
-  accent: "#e8a54b",
+  accent: "#395ca3",
   lessons: [
     {
       id: "from-screen",

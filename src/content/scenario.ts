@@ -6,7 +6,7 @@ export const scenarioTrack: Track = {
   title: "実務のシナリオ",
   kicker: "SCENARIO",
   description: "シナリオを想定し、より実践的な調査の進め方を学びます。",
-  accent: "#6ec8c0",
+  accent: "#4fb0a5",
   lessons: [
     {
       id: "front",

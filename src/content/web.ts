@@ -6,7 +6,7 @@ export const webTrack: Track = {
   title: "Webの基礎",
   kicker: "HTTP",
   description: "URL、ステータスコード、Cookie など、HTTP の読み方を身につけます。",
-  accent: "#6ec8c0",
+  accent: "#4fb0a5",
   lessons: [
     {
       id: "letter",

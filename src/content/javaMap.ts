@@ -16,7 +16,7 @@ export const javaMapTrack: Track = {
   title: "Javaアプリの構成",
   kicker: "STRUCTURE",
   description: "リポジトリを開いたとき、ファイルと層の役割が分かるようにします。",
-  accent: "#d46a5c",
+  accent: "#f5cf4d",
   lessons: [
     {
       id: "tree",
