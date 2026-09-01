@@ -221,7 +221,7 @@ export function Layout() {
           <span className="no">
             <Icon name="link" size={14} />
           </span>
-          <span>物置</span>
+          <span>Monooki</span>
         </a>
       </aside>
 
