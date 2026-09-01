@@ -728,7 +728,7 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
     {
       id: "where-from",
       title: "値の源流",
-      minutes: 8,
+      minutes: 12,
       blocks: [
         {
           type: "p",
@@ -758,6 +758,85 @@ request.getApproverId().equals(userId); // NPE`,
           kind: "trap",
           title: "途中の null チェック",
           text: "Optional や null チェックが途中まであると、その先ではもう null ではないと誤解しやすいです。分岐を書き出しましょう。",
+        },
+        {
+          type: "h2",
+          text: "参照検索だけでは追えないパターン",
+        },
+        {
+          type: "p",
+          text: "変数への代入をソースで検索しても、呼び出し元が見つからないことがあります。よくある3パターンです。",
+        },
+        {
+          type: "h3",
+          text: "フレームワークが値を入れる",
+        },
+        {
+          type: "p",
+          text: "Setter を参照検索しても、呼び出し元が1件も無いことがあります。",
+        },
+        {
+          type: "code",
+          title: "OrderForm（例。申請くんではありません）",
+          lang: "java",
+          code: `public class OrderForm {
+  private String customerName;
+
+  public void setCustomerName(String customerName) {
+    this.customerName = customerName;
+  }
+}`,
+        },
+        {
+          type: "p",
+          text: "`@ModelAttribute OrderForm form` のように受け取る Controller のメソッドでは、Spring がリクエストのパラメータ名（`customerName`）と Setter 名を対応づけて、リフレクションで呼び出します。JSON なら Jackson が同じことをします。ソースには `setCustomerName(...)` という呼び出しの行がありません。",
+        },
+        {
+          type: "p",
+          text: "こういうときは、Setter の呼び出し元ではなく、フォームの `name` 属性や JSON のキー名と、フィールド名が一致しているかを見ましょう。",
+        },
+        {
+          type: "h3",
+          text: "詰め替えで名前が変わる",
+        },
+        {
+          type: "p",
+          text: "Entity から DTO（レスポンス用オブジェクトなど）へ詰め替えるとき、フィールド名が変わっていると、元の変数名で検索しても出てきません。",
+        },
+        {
+          type: "code",
+          title: "OrderResponse（例。申請くんではありません）",
+          lang: "java",
+          highlightLines: [9],
+          code: `public class OrderResponse {
+  private final String buyer;
+
+  private OrderResponse(String buyer) {
+    this.buyer = buyer;
+  }
+
+  public static OrderResponse from(Order order) {
+    return new OrderResponse(order.getCustomerName());
+  }
+}`,
+        },
+        {
+          type: "p",
+          text: "レスポンスの `buyer` が想定と違うとき、`buyer` だけで検索しても、この詰め替えの1行しか見つかりません。元の値は `Order` 側の `customerName` なので、両方の名前で追いましょう。",
+        },
+        {
+          type: "h3",
+          text: "DB側で決まる値",
+        },
+        {
+          type: "p",
+          text: "`created_at` のような値が、Java のソースのどこにも代入されていないことがあります。DB のカラムに `DEFAULT CURRENT_TIMESTAMP` があると、INSERT 時に DB 側が値を入れます。トリガーで別のテーブルから値を補っていることもあります。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "ソースに代入が無いとき",
+          text: "Java のソースをいくら探しても代入が見つからないときは、テーブル定義（`schema.sql` など）の `DEFAULT` や `TRIGGER` を見ましょう。",
         },
         {
           type: "p",
