@@ -473,6 +473,20 @@ export const quizzes = {
     answer: 1,
     explanation: "ログが無いこと自体が情報です。Controller の中を読む段階ではありません。",
   },
+  "sc-process-user": {
+    id: "sc-process-user",
+    question:
+      "デプロイ後、検証用環境でブラウザが 502 になった。`ps -ef` で見ると、申請くんのプロセスが起動していない。`sudo -u appuser` で手動起動すると `Permission denied` が出た。次に見るのは？",
+    choices: [
+      "Thymeleaf の `th:if`",
+      "失敗したファイルの `ls -l` で、所有者・グループがアプリの実行ユーザに合っているか",
+      "MySQL の `EXPLAIN`",
+      "ブラウザのコンソールの `TypeError`",
+    ],
+    answer: 1,
+    explanation:
+      "起動時の書き込み失敗なら、対象ファイルやディレクトリの所有者・グループを `ls -l` で確認します。SSH でログインしたユーザに権限があっても、アプリの実行ユーザに権限が無ければ書き込めません。",
+  },
   "sc-http": {
     id: "sc-http",
     question: "一覧の HTML は 200。表のスタイルだけ当たっていない。次は？",

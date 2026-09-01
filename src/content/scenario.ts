@@ -1127,6 +1127,127 @@ Content-Type: text/html;charset=UTF-8`,
       ],
     },
     {
+      id: "process-user",
+      title: "[障害調査] デプロイ後、検証用環境でアプリが起動しなくなった",
+      minutes: 8,
+      blocks: [
+        {
+          type: "callout",
+          kind: "scenario",
+          text: "検証用環境にデプロイした直後から、申請くんの画面が開けない。ブラウザは 502 を返す。直前に、運用担当者がログの出力先ディレクトリを作り直す作業をしていた。ローカル環境では、同じコード・同じ手順で問題なく起動する。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "デプロイ直後から画面が開けない。ブラウザは 502",
+            "直前に、運用担当者が SSH でログインし、ログの出力先ディレクトリを作り直していた",
+            "ローカル環境では、同じコード・同じ手順で問題なく起動する",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先に見ること",
+        },
+        {
+          type: "p",
+          text: "502 は、手前の HTTP サーバから後ろのアプリに届いていないときに出ることが多いステータスコードです。まず、申請くんのプロセスが起動しているかどうかを見ましょう。ps コマンドの使い方は、トラブルシューティング手法の「Linux の基本操作」です。",
+        },
+        {
+          type: "h2",
+          text: "原因の追跡",
+        },
+        {
+          type: "p",
+          text: "検証用環境のサーバに SSH でログインし、申請くんのプロセスを探しました。",
+        },
+        {
+          type: "code",
+          title: "例（検証用環境のサーバ上）",
+          lang: "text",
+          code: `$ ps -ef -o user,pid,cmd | grep java
+$`,
+        },
+        {
+          type: "p",
+          text: "該当する行がありません。プロセスがそもそも起動していない、ということです。手動で起動を試してみます。",
+        },
+        {
+          type: "code",
+          title: "例（アプリの実行ユーザで起動を試す）",
+          lang: "text",
+          code: `$ sudo -u appuser java -jar shinsei-kun.jar
+Exception in thread "main" java.io.FileNotFoundException: /var/log/shinsei-kun/app.log (Permission denied)
+    at java.base/java.io.FileOutputStream.open0(Native Method)`,
+        },
+        {
+          type: "p",
+          text: "ログファイルへの書き込みで失敗しています。ログの出力先ディレクトリの権限を見ましょう。",
+        },
+        {
+          type: "code",
+          title: "例（ログの出力先ディレクトリ）",
+          lang: "text",
+          code: `$ ls -l /var/log/
+drwxr-xr-x 2 yamada yamada 4096 Aug 20 09:10 shinsei-kun`,
+        },
+        {
+          type: "p",
+          text: "所有者もグループも `yamada`（直前に作業した運用担当者のユーザ）で、それ以外（other）には書き込み権限がありません。申請くんのプロセスは `appuser` というユーザで動く設定なので、所有者にもグループにも属さず、書き込めません。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "SSH でログインできることと、アプリが動くことは別",
+          text: "yamada は SSH でログインでき、sudo で何でもできる強い権限を持っていました。それでも、ディレクトリを作った時点の所有者・グループがアプリの実行ユーザ（appuser）に合っていなければ、アプリはそこへ書き込めません。ディレクトリやファイルを作る作業では、所有者まで合わせる必要があります。",
+        },
+        {
+          type: "p",
+          text: "所有者とグループを、申請くんの実行ユーザに合わせて直しました。",
+        },
+        {
+          type: "code",
+          title: "例（直す）",
+          lang: "text",
+          code: `$ sudo chown appuser:appuser /var/log/shinsei-kun`,
+        },
+        {
+          type: "p",
+          text: "アプリを起動し直すと、ログが出力され、画面も開けるようになりました。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "ブラウザが 502 のときは、後ろのアプリのプロセスが起動しているかをまず確認します",
+            "SSH でログインしたユーザの権限と、アプリを動かしているユーザの権限は別です",
+            "ディレクトリやファイルを作る作業では、所有者やグループがアプリの実行ユーザに合っているかまで確認します",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "ブラウザが 502 になることと、直前にログ出力先ディレクトリを作り直す作業があったことを確認",
+            "`ps -ef -o user,pid,cmd` で、申請くんのプロセスが起動していないことを確認",
+            "`sudo -u appuser` で手動起動し、ログファイルへの書き込みで Permission denied が出ることを確認",
+            "`ls -l` で、ログ出力先ディレクトリの所有者・グループが運用担当者のユーザのままだったことを確認",
+            "`chown` で所有者・グループをアプリの実行ユーザに合わせ、起動と画面表示を確認",
+          ],
+        },
+        { type: "quiz", id: "sc-process-user" },
+      ],
+    },
+    {
       id: "http-server",
       title: "[障害調査] 一覧は出るが、画面だけ崩れている",
       minutes: 8,
