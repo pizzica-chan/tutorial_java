@@ -167,6 +167,25 @@ logging:
           text: "`application-dev.yml` は接続先とログの出力レベルを上書きしています。`application.yml` 側の `shinsei` と `application-dev.yml` 側の `shinsei_dev` を重ねると、後から読み込む方が勝つので、実際に接続する DB 名は `shinsei_dev` です。設定は複数ファイルに分かれることがあるので、1ファイルだけ見て判断しないようにしましょう。",
         },
         {
+          type: "p",
+          text: "Docker で動かすときは、さらに環境変数で上書きされることがあります。申請くんの `docker-compose.yml` も、環境変数で `application-dev.yml` の接続先を上書きしています。",
+        },
+        {
+          type: "code",
+          title: "docker-compose.yml（申請くん・抜粋）",
+          lang: "yaml",
+          highlightLines: [3],
+          code: `app:
+  environment:
+    SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/shinsei_dev?characterEncoding=UTF-8
+    SPRING_DATASOURCE_USERNAME: app
+    SPRING_DATASOURCE_PASSWORD: app`,
+        },
+        {
+          type: "p",
+          text: "Spring Boot は `SPRING_DATASOURCE_URL` のような環境変数名を、`spring.datasource.url` に自動で対応づけます。ホスト名も `localhost` ではなく `db`（docker-compose のサービス名）に変わっています。イメージ自体には接続情報を含めず、起動時に環境変数で渡すのが一般的です。Kubernetes でも、ConfigMap や Secret から環境変数を渡す考え方は同じです。ファイルだけでなく環境変数まで見ないと、実際に接続している先を勘違いします。",
+        },
+        {
           type: "h2",
           text: "設定差を疑うとき",
         },
