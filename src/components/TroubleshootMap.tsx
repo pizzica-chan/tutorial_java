@@ -43,7 +43,7 @@ export function TroubleshootMap() {
   const heading = leaf
     ? "その症状は、こう当たりをつけます"
     : group
-      ? `${group.label} — 近い症状を選びましょう`
+      ? `「${group.label}」の症状から選びましょう`
       : "画面の様子に近いものを選びましょう";
 
   return (
