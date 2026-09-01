@@ -2592,6 +2592,11 @@ th {
   background: var(--panel);
 }
 
+.troubleshoot-map-view:focus,
+.troubleshoot-map-view:focus-visible {
+  outline: none;
+}
+
 .troubleshoot-map-back {
   display: inline-flex;
   align-items: center;
@@ -2622,11 +2627,11 @@ th {
 
 .troubleshoot-map-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 10px;
 }
 
-.troubleshoot-map > .troubleshoot-map-grid {
+.troubleshoot-map-view > .troubleshoot-map-grid {
   padding: 16px;
 }
 
@@ -2662,12 +2667,37 @@ th {
 }
 
 .troubleshoot-map-check {
-  margin: 0 0 16px;
+  margin: 0 0 10px;
   color: var(--text);
+}
+
+.troubleshoot-map-tells {
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--line-strong);
+  background: var(--panel-2);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.troubleshoot-map-check strong,
+.troubleshoot-map-tells strong {
+  color: var(--paper);
 }
 
 .troubleshoot-map-links {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+}
+
+.troubleshoot-map-links .btn {
+  white-space: normal;
+  text-align: left;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .troubleshoot-map-node:hover {
+    transform: none;
+  }
 }

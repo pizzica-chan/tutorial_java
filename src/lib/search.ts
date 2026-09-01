@@ -4,6 +4,7 @@ import { getQuiz } from "../data/quizzes";
 import { glossaryAnchor, terms } from "../data/terms";
 import { projectFiles } from "../data/project";
 import { httpSample, requestFlow, stackCases } from "../data/labs";
+import { troubleshootMap } from "../data/troubleshootMap";
 
 export type SearchHit = {
   href: string;
@@ -96,6 +97,13 @@ function widgetText(name: WidgetName): string {
       return stackCases.map((item) => `${item.title}\n${item.symptom}`).join("\n");
     case "http":
       return `${httpSample.request}\n${httpSample.response}`;
+    case "troubleshoot-map":
+      return troubleshootMap
+        .flatMap((group) => [
+          group.label,
+          ...group.leaves.map((leaf) => `${leaf.symptom}\n${leaf.check}\n${leaf.tells}`),
+        ])
+        .join("\n");
     default:
       return "";
   }
