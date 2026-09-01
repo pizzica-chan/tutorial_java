@@ -829,6 +829,11 @@ td {
   vertical-align: top;
 }
 
+.table-wrap th,
+.table-wrap td {
+  min-width: 140px;
+}
+
 th {
   color: var(--amber-2);
   font-weight: 500;
