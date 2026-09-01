@@ -109,7 +109,7 @@ export const readingTrack: Track = {
           type: "code",
           title: "RequestController.java（抜粋）",
           lang: "java",
-          highlightLines: [3, 9, 10, 12],
+          highlightLines: [3, 9, 10],
           code: requestListEntryPointReadingSnippet,
         },
         {
