@@ -425,6 +425,20 @@ export const quizzes = {
     answer: 1,
     explanation: "例外がログに無いなら at 行は使えません。画面の固有の文言が、ソース検索の手がかりです。ソースに無ければ DB や外部 API を疑います。",
   },
+  "sc-duplicate-mail": {
+    id: "sc-duplicate-mail",
+    question:
+      "承認すると、申請者に同じ内容のメールが2通届いた。画面にエラーは無く、DB のレコードは1件だけ APPROVED になっている。アプリのログを見ると、同じ requestId への approve 処理が、別スレッドでほぼ同時刻に2回実行されていた。疑うのは？",
+    choices: [
+      "@Transactional の設定漏れ",
+      "承認ボタンの二重送信と、update の SQL に status の条件が無いこと",
+      "MailService の設定ミス",
+      "DB のレプリケーション遅延",
+    ],
+    answer: 1,
+    explanation:
+      "@Transactional は1つのリクエスト内の SQL をまとめる仕組みで、複数リクエストの同時実行は防ぎません。二重送信を防ぐ仕組みが無いボタンと、status = 'PENDING' を条件にしていない UPDATE が重なると、ほぼ同時に来た2つのリクエストが両方とも承認処理を通してしまいます。",
+  },
   "sc-db": {
     id: "sc-db",
     question: "検証用環境だけ一覧が 0 件。GET は 200。コードは同じと言われている。先に疑うのは？",

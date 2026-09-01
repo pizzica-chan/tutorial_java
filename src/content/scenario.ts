@@ -413,6 +413,146 @@ requestService.approve(id, user.getId());`,
       ],
     },
     {
+      id: "duplicate-mail",
+      title: "[障害調査] 承認すると、申請者に確認メールが2通届く",
+      minutes: 9,
+      blocks: [
+        {
+          type: "callout",
+          kind: "scenario",
+          text: "承認者の佐藤花子から、「申請者にメールを2通送ってしまったかもしれない」と報告があった。実際に、申請者の山田には同じ内容の承認完了メールが2通届いている。画面にはエラーが出ておらず、DB の申請レコードは1件だけ APPROVED になっている。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "申請者（山田）に、同じ内容の承認完了メールが2通届いている",
+            "画面にはエラーが出ていない。承認操作自体は成功している",
+            "DB の該当レコードは1件だけで、ステータスは APPROVED（重複レコードは無い）",
+            "承認したのは佐藤花子1人。二人の承認者が別々に承認したわけではない",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先に見ること",
+        },
+        {
+          type: "p",
+          text: "画面の更新とメール送信は別処理です。メールが2通なら、メール送信の処理そのものが2回走った可能性を疑いましょう。アプリのログで、承認処理が何回実行されたかを確認しましょう。",
+        },
+        {
+          type: "h2",
+          text: "原因の追跡",
+        },
+        {
+          type: "p",
+          text: "アプリのログで、該当の申請 ID（13）を検索しました。",
+        },
+        {
+          type: "code",
+          title: "操作時刻のサーバログ（申請くん）",
+          code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : POST /shinsei/requests/13/approve
+04:12:03.101 INFO  [nio-8080-exec-7] j.c.e.s.i.AccessLogInterceptor : POST /shinsei/requests/13/approve
+04:12:03.106 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findById : <==      Total: 1
+04:12:03.107 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findById : <==      Total: 1
+04:12:03.112 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.update : ==>  Preparing: UPDATE t_request SET status = ?, updated_at = NOW() WHERE id = ?
+04:12:03.114 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.update : ==>  Preparing: UPDATE t_request SET status = ?, updated_at = NOW() WHERE id = ?`,
+        },
+        {
+          type: "p",
+          text: "同じ `requestId=13` への `POST /shinsei/requests/13/approve` が、`nio-8080-exec-3` と `nio-8080-exec-7` という別々のスレッドで、1秒に満たない間隔で2回実行されています。承認ボタンを見ると、二重送信を防ぐ仕組みが見当たりません。",
+        },
+        {
+          type: "code",
+          title: "一覧の承認フォーム（申請くん・list.html）",
+          lang: "html",
+          code: `<form th:if="\${item.status == 'PENDING'}"
+      th:action="@{/requests/{id}/approve(id=\${item.id})}"
+      method="post">
+  <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
+  <button type="submit" class="btn-approve">承認</button>
+</form>`,
+        },
+        {
+          type: "p",
+          text: "ボタンを無効化する JS も、二重送信を防ぐトークンも無い、ただの `submit` ボタンです。佐藤花子が連打したか、二重に開いたタブの両方で押した可能性があります。ここで、承認の処理自体がその二重送信に耐えられるかを見ます。",
+        },
+        {
+          type: "code",
+          title: "RequestService.approve（申請くん）",
+          lang: "java",
+          code: `RequestEntity request = requestMapper.findById(requestId, approverId);
+if (request == null) {
+  throw new NotFoundException("指定した申請は無い、または見る権限がありません。");
+}
+if (!request.getApproverId().equals(approverId)) {
+  throw new ForbiddenException("承認権限がありません");
+}
+if (!"PENDING".equals(request.getStatus())) {
+  throw new ConflictException("この申請は承認できません");
+}
+request.setStatus("APPROVED");
+requestMapper.update(request);
+mailService.notifyApplicant(request);`,
+        },
+        {
+          type: "p",
+          text: "`status` を読んで `PENDING` かどうかを判定したあと、別の SQL で更新しています。この更新の SQL を見ましょう。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の update（申請くん）",
+          lang: "xml",
+          code: `<update id="update">
+  UPDATE t_request
+     SET status = #{status},
+         updated_at = NOW()
+   WHERE id = #{id}
+</update>`,
+        },
+        {
+          type: "p",
+          text: "`WHERE` に `status = 'PENDING'` のような条件がありません。ほぼ同時刻に届いた2つのリクエストは、どちらも `findById` で `status='PENDING'` を読み、どちらも判定を通過します。先に読んだ側の更新がまだ終わっていなくても、あとから読んだ側は同じ `PENDING` を見ているので、両方とも `update` と `mailService.notifyApplicant` まで進んでしまいます。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "`@Transactional` は同時実行を防がない",
+          text: "`@Transactional` は、1つのリクエストの中の複数の SQL を1つの単位にまとめる仕組みで、複数のリクエストが同時に来ることを防ぐものではありません。二重に送信された2つのリクエストは、それぞれ別のトランザクションとして、ほぼ同時に処理されます。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "ボタンの二重送信を防ぐ仕組みが無いと、同じ処理が2回走ることがあります",
+            "SQL の `WHERE` に、更新前提の状態（この例では `status = 'PENDING'`）を含めないと、読んでから書くまでの間に他の処理が割り込む余地が残ります",
+            "`@Transactional` は1リクエスト内の SQL をまとめる仕組みで、複数リクエストの同時実行は防ぎません",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "メールが2通届いていること、画面にはエラーが無く DB のレコードは1件だけであることを確認",
+            "アプリのログで、同じ `requestId` への `approve` 処理が、別スレッドでほぼ同時刻に2回実行されていることを確認",
+            "承認ボタンに二重送信を防ぐ仕組みが無いことを確認",
+            "`RequestService.approve` が `status` を読んでから判定しており、`update` の SQL に `status` の条件が無いことを確認",
+            "`@Transactional` は同時実行を防がないことを理解し、原因を特定",
+          ],
+        },
+        { type: "quiz", id: "sc-duplicate-mail" },
+      ],
+    },
+    {
       id: "db",
       title: "[障害調査] 検証用環境だけ、申請一覧が 0 件",
       minutes: 8,
