@@ -23,7 +23,7 @@ export const terms: TermDef[] = [
   {
     term: "GET / POST",
     aliases: ["GET", "POST"],
-    body: "HTTP メソッドの代表例。GET は取得、POST は登録や状態を変える操作に使われることが多いです。PUT / PATCH / DELETE も API でよく使います。約束と実装がずれることもあるので、Network タブで確認しましょう。",
+    body: "HTTP メソッドの代表例。GET は取得、POST は登録や状態を変える操作に使われることが多いです。PUT / PATCH / DELETE も API でよく使います。約束事と実装がずれることもあるので、Network タブで確認しましょう。",
   },
   {
     term: "HTTPステータスコード",
