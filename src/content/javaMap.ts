@@ -534,7 +534,7 @@ public class RequestApiController {
         },
         {
           type: "code",
-          title: "パターン1: Model に載せて、テンプレート名を return（申請くん）",
+          title: "書き方A: Model に載せて、テンプレート名を return（申請くん）",
           lang: "java",
           highlightLines: [6],
           code: `@Controller
@@ -549,7 +549,7 @@ public class RequestController {
         },
         {
           type: "code",
-          title: "パターン2: テンプレート名も値も ModelAndView に載せて return",
+          title: "書き方B: テンプレート名も値も ModelAndView に載せて return",
           lang: "java",
           highlightLines: [4],
           code: `@GetMapping("/requests")
