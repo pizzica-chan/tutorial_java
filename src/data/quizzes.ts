@@ -25,6 +25,18 @@ export const quizzes = {
     answer: 1,
     explanation: "一覧の件数は、SQL が読んだ DB のレコードです。先に実行された SQL を見て、同じ条件でレコードを数えます。見た目の CSS とは切り分けが違います。",
   },
+  "web-front-roles": {
+    id: "web-front-roles",
+    question: "申請一覧の承認ボタンが画面に見えない。まず確認するのはどれ？",
+    choices: [
+      "CSS の色をいろいろ変えてみる",
+      "開発者ツールの Elements タブで、ボタンの要素があるかを確認する",
+      "JavaScript のファイルを削除してみる",
+      "サーバを再起動する",
+    ],
+    answer: 1,
+    explanation: "要素が無ければ HTML の表示条件や JavaScript を疑い、要素があれば CSS で隠れていないかを疑います。見えない原因がどちらかで、確認する場所が変わります。",
+  },
   "web-ajax": {
     id: "web-ajax",
     question: "画面内の検索でアドレスバーが変わらない。HTTP 通信について妥当なのはどれ？",

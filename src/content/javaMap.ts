@@ -594,7 +594,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "サーバが組み立てたあとは、th: 属性は消え、値だけが残ります。申請くんの一覧は、Mapper の SQL で未承認（PENDING）だけに絞り込まれています。テンプレートの `th:if` は、その一覧の各行について、PENDING のときだけボタンを出す条件です。",
+          text: "サーバが組み立てたあとは、th: 属性は消え、値だけが残ります。申請くんの一覧は、Mapper の SQL で未承認（`PENDING`）だけに絞り込まれています。テンプレートの `th:if` は、その一覧の各行について、`PENDING` のときだけボタンを出す条件です。",
         },
         {
           type: "code",

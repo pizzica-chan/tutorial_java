@@ -24,6 +24,7 @@
 - **教材のソースツリーに無いファイルがある。** `WebMvcConfig`、`LoggingJavaMailSender`、`AccessLogInterceptor`、`ServiceLoggingAspect`、エラー画面などです。Interceptor / AOP / メールログを動かすために足しています。
 - **`static/demo/` は教材キャプチャ用のモック HTML です。** 0 件や CSS 無しなど、起動中のアプリでは出しにくい見え方を撮るためのものです。業務の画面ではありません。Network タブは偽 HTML ではなく、headed Chrome の実物を撮ります。手順は `.cursor/rules/textbook-screenshots.mdc` です。
 - **CSS 404 の Network キャプチャは、Puppeteer が `app.css` を intercept して 404 にしている。** シナリオ「一覧は出るが、画面だけ崩れている」の原因は、手前の nginx が `/shinsei/css/` を先に受け、ディスクの別ディレクトリを見ている例です。起動中の申請くん（Docker）に nginx は無く、静的ファイルはアプリが返します。画面・Network の URL は検証用ホスト `intranet.example.co.jp` です。
+- **同じシナリオの「WAR を Tomcat へ展開」は、この検証用環境だけの想定です。** 申請くん自体は `pom.xml` に war パッケージング指定が無く、常に `spring-boot-maven-plugin` の実行可能 jar（`java -jar`）で動きます。static も実際は jar 内の `classpath:/static/` で、`WEB-INF/classes/static` を外部 Tomcat に展開する構成ではありません。WAR/Tomcat 配置のトラブルシューティングを教えるためのシナリオ用の設定です。
 - **画面にエラーが出ているが POST が無い見え方は、ページ単体のモックでは撮りません。** サーバの flash に見えるためです。一覧で submit を止めて画面にエラーを出し、headed Chrome のウィンドウ全体を撮ります。
 - **承認 500 と業務メッセージの画面は実アプリ経路で撮る。** ID 16 の実 POST で 500 画面と Network タブを、ID 11 の実 POST で flash 画面を撮ります。500 テンプレートの見出しは教材と同じ「エラーが発生しました」です。本文は利用者向けの定型文です。
 - **ページ画像のアドレスバーは合成です。** 三点は macOS 風です。Network タブは Windows の実 Chrome なので、枠の見た目は揃いません。

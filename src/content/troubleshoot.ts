@@ -137,7 +137,7 @@ export const troubleshootTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "Java の分岐を読む前に、リクエストがどの箱まで届いたかを確認しましょう。Network タブとログの見方は、このあとの項目です。ping や curl の打ち方は「ネットワークの疎通確認」です。",
+          text: "Java の分岐を読む前に、リクエストがどの箱まで届いたかを確認しましょう。Network タブの見方は「Webの基礎」の章で見たとおりです。ログの見方は、このあとの項目で見ていきます。ping や curl の打ち方は「ネットワークの疎通確認」です。",
         },
         { type: "diagram", name: "divide", caption: "先に「どの箱まで届いたか」を切る。" },
         {
@@ -160,7 +160,7 @@ export const troubleshootTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "先に、ログの出力先を確認しましょう。そのあと、操作した時刻の行を読みます。",
+          text: "先に、ログの出力先を確認しましょう。そのあと、操作した時刻の行を読みましょう。",
         },
         {
           type: "h2",
@@ -270,7 +270,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
         },
         {
           type: "p",
-          text: "手前に Apache や nginx がある構成では、ブラウザのリクエストが最初に届くのは HTTP サーバです。CSS や JS は Controller を通らないので、アプリのログには出ません。",
+          text: "手前に Apache や nginx がある構成では、ブラウザのリクエストが最初に届くのは HTTP サーバです。CSS や JS は、この手前の HTTP サーバがそのまま返すことが多く、Java まで届かないためアプリのログには出ません。",
         },
         {
           type: "ul",
@@ -284,7 +284,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
           headers: ["症状", "アプリログ", "HTTP サーバのログを見る理由"],
           rows: [
             ["HTML は 200、CSS / JS だけ 404", "一覧の INFO は出る", "静的ファイルは手前で返している。パスや alias / location のずれ"],
-            ["ブラウザは 502", "無い、または少ない", "後ろのアプリに届いていない。upstream 接続失敗"],
+            ["ブラウザは 502", "無い、または少ない", "後ろのアプリに届いていない。後ろへの接続失敗（nginx でいう upstream 接続失敗）"],
             ["ブラウザは 503", "無いこともあれば、出ていることも", "手前で弾かれたか、アプリ自身の過負荷・メンテナンス。アプリのログも確認する"],
             ["操作したのにアプリログが無い", "無い", "手前で止まった、別ホストに振られた、静的だけ返した、など"],
             ["HTTPS の証明書エラー", "関係ないことが多い", "TLS の終端はアプリより手前（HTTP サーバ、LB など）"],
@@ -295,7 +295,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
           type: "callout",
           kind: "note",
           title: "SSL 終端の位置",
-          text: "SSL 終端は、必ずしも Apache / nginx で行われるとは限りません。ロードバランサや CDN など、HTTP サーバより前のレイヤで TLS を復号する構成もあります。WAF で遮断されたリクエストもアプリまで届かないことが多いです。証明書エラーはその手前で起きていることが多く、アプリの logback には出ません。",
+          text: "SSL 終端は、必ずしも Apache / nginx で行われるとは限りません。ロードバランサや CDN など、HTTP サーバより前のレイヤで TLS を復号する構成もあります。WAF で遮断されたリクエストもアプリまで届かないことが多いです。証明書エラーはその手前で起きていることが多く、アプリのログには出ません。",
         },
         {
           type: "code",
@@ -501,7 +501,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
         {
           type: "callout",
           kind: "trap",
-          title: "1つ成功ですべて OK ではない",
+          title: "1 つ成功ですべて OK ではない",
           text: "ping が通ったから HTTP も通る、TCP が通ったから業務的に正しい応答、とは限りません。層ごとに確認し、最後に Network タブやアプリログと突き合わせましょう。",
         },
         { type: "quiz", id: "ts-net-check" },
@@ -656,7 +656,7 @@ ORDER BY r.created_at DESC
         },
         {
           type: "h2",
-          text: "1行の読み方",
+          text: "1 行の読み方",
         },
         { type: "diagram", name: "stack-line", caption: "右端の括弧が、ソースのファイルと行です。" },
         {
@@ -953,7 +953,7 @@ ORDER BY r.created_at DESC
         },
         {
           type: "p",
-          text: "連続した2行の時刻差が、その間にかかった時間です。差が大きい区間が、遅い箇所です。処理の入口のメソッドを読む前に、この差で範囲を狭めましょう。",
+          text: "連続した 2 行の時刻差が、その間にかかった時間です。差が大きい区間が、遅い箇所です。処理の入口のメソッドを読む前に、この差で範囲を狭めましょう。",
         },
         {
           type: "code",
@@ -993,7 +993,7 @@ ORDER BY r.created_at DESC
           headers: ["兆候", "疑う場所"],
           rows: [
             ["一覧だけ遅い", "件数、ORDER BY、インデックス、N+1"],
-            ["1件の詳細が遅い", "関連の逐次取得、外部 API"],
+            ["1 件の詳細が遅い", "関連の逐次取得、外部 API"],
             ["更新が待たされる", "レコードロック、別トランザクション"],
             ["時間帯で遅い", "バッチ、同時実行、コネクションプール枯渇"],
           ],
@@ -1029,7 +1029,7 @@ ORDER BY r.created_at DESC
           type: "table",
           headers: ["症状", "外部を疑う手がかり"],
           rows: [
-            ["画面がずっと待つ、タイムアウト", "ログの2行のあいだだけ数秒〜数十秒空く。DB の SQL はすぐ終わっている"],
+            ["画面がずっと待つ、タイムアウト", "ログの 2 行のあいだだけ数秒〜数十秒空く。DB の SQL はすぐ終わっている"],
             ["業務エラー文だけ出て、スタックが短い", "メッセージに外部サービス名や連携失敗の文言がある"],
             ["検証用環境だけ成功、本番だけ失敗", "接続先 URL、認証情報、FW、モックの有無が環境で違う"],
             ["データの一部だけ古い・空", "DB は更新されたが、表示用に別 API から取った値が失敗している"],

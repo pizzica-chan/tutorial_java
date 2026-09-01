@@ -195,10 +195,10 @@ Content-Type: application/json
           headers: ["ステータスコード", "読み方"],
           rows: [
             ["200", "サーバは応答を返せた。業務的に正しいかは別"],
-            ["302/303", "別URLへ誘導。ログインへ飛ばされた、POST 後のリダイレクトなど"],
+            ["302/303", "別 URL へ誘導。ログインへ飛ばされた、POST 後のリダイレクトなど"],
             ["400", "送り方が不正。パラメータ不足、バリデーション"],
             ["401/403", "読み方は未ログイン / 権限不足。画面や実際のステータスコードはアプリによる"],
-            ["404", "URLに対応する処理が無い、または資源が無い"],
+            ["404", "URL に対応する処理が無い、または資源が無い"],
             ["500", "サーバ側の失敗。エラーログを確認する"],
           ],
         },
@@ -249,7 +249,7 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "申請くんの申請詳細画面では、URLのパスの `/12` で、表示する申請を指定しています。",
+          text: "申請くんの申請詳細画面では、URL のパスの `/12` で、表示する申請を指定しています。",
         },
         {
           type: "figure",
@@ -264,7 +264,7 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "申請履歴の検索では、検索条件がURLのクエリに載ります。アドレスバーの `?` 以降と、フォームの入力が対応しています。",
+          text: "申請履歴の検索では、検索条件が URL のクエリに載ります。アドレスバーの `?` 以降と、フォームの入力が対応しています。",
         },
         {
           type: "figure",
@@ -383,8 +383,8 @@ Content-Type: application/json
             "`Content-Type`（レスポンス）… HTML か JSON か",
             "`Location`（レスポンス）… リダイレクト先",
             "`Set-Cookie`（レスポンス）… サーバがブラウザへ渡す Cookie",
-            "Cookie（リクエスト）… ブラウザが送る Cookie。ログイン状態の識別子",
-            "Referer（リクエスト）… どの画面から POST されたか",
+            "`Cookie`（リクエスト）… ブラウザが送る Cookie。ログイン状態の識別子",
+            "`Referer`（リクエスト）… どの画面から POST されたか",
           ],
         },
         { type: "quiz", id: "web-api" },
@@ -623,12 +623,13 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "ボタンが見えないときは、開発者ツールの Elements タブでボタンの要素があるかを確認します。要素が無ければ、HTML テンプレートの表示条件や JavaScript を調べます。要素があれば、CSS で隠れていないか、画面の外に出ていないか、ほかの要素に覆われていないかを確認します。",
+          text: "ボタンが見えないときは、開発者ツールの Elements タブでボタンの要素があるかを確認しましょう。要素が無ければ、HTML テンプレートの表示条件や JavaScript を調べましょう。要素があれば、CSS で隠れていないか、画面の外に出ていないか、ほかの要素に覆われていないかを確認しましょう。",
         },
         {
           type: "p",
           text: "HTML は要素と送る内容、JavaScript は画面の更新と通信、CSS は見え方を担当します。症状に関係する役割から確認すると、画面側のすべてを一度に読む必要はありません。",
         },
+        { type: "quiz", id: "web-front-roles" },
       ],
     },
     {
@@ -654,7 +655,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "アドレスバーが変わらなくても、HTTP 通信が無いとは限りません。画面内の検索、候補表示、一覧の追加読込などで Ajax が使われることがあります。",
+          text: "アドレスバーが変わらなくても、HTTP 通信が無いとは限りません。画面内の検索、候補表示、一覧の追加の読み込みなどで Ajax が使われることがあります。",
         },
         {
           type: "h2",
@@ -678,7 +679,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "Ajax かどうかは、画面やアドレスバーだけでは分かりにくいことがあります。開発者ツールの Network タブを開き、Fetch/XHR を選びましょう。ここに並ぶのは、JavaScript から始めた通信です。検索や一覧の追加読込などを試したあと、行が増えていれば Ajax で通信しています。",
+          text: "Ajax かどうかは、画面やアドレスバーだけでは分かりにくいことがあります。開発者ツールの Network タブを開き、Fetch/XHR を選びましょう。ここに並ぶのは、JavaScript から始めた通信です。検索や一覧の追加の読み込みなどを試したあと、行が増えていれば Ajax で通信しています。",
         },
         {
           type: "p",
@@ -877,7 +878,7 @@ function RequestList() {
         },
         {
           type: "p",
-          text: "JSON の件数もおかしいなら、API の SQL と DB を確認します。JSON は正しいのに画面だけ違うなら、プロパティ名、filter や並べ替え、React の state、JavaScript の例外を確認しましょう。",
+          text: "JSON の件数もおかしいなら、API の SQL と DB を確認しましょう。JSON は正しいのに画面だけ違うなら、プロパティ名、filter や並べ替え、React の state、JavaScript の例外を確認しましょう。",
         },
         {
           type: "callout",

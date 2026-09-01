@@ -1182,7 +1182,7 @@ Content-Type: text/html;charset=UTF-8`,
         },
         {
           type: "p",
-          text: "Network タブの 404 は `/shinsei/css/app.css` でした。一覧の HTML は Java まで届いています。検証用環境のサーバ上で、WAR を展開した先に `app.css` があるかを見ます。申請くんの Spring Boot WAR では、static は `WEB-INF/classes/static` に入ります。",
+          text: "Network タブの 404 は `/shinsei/css/app.css` でした。一覧の HTML は Java まで届いています。この検証用環境は、申請くんを WAR にして Tomcat へ載せる構成です（配布している Docker 版は jar 起動で、構成が異なります）。WAR を展開した先に `app.css` があるかを、サーバ上で見ます。WAR では static が `WEB-INF/classes/static` に入ります。",
         },
         {
           type: "ul",
