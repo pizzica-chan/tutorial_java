@@ -2592,18 +2592,6 @@ th {
   background: var(--panel);
 }
 
-.troubleshoot-map-groups {
-  padding: 4px 0 12px;
-}
-
-.troubleshoot-map-group-label {
-  margin: 16px 16px 6px;
-  color: var(--quiet);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-
 .troubleshoot-map-back {
   display: inline-flex;
   align-items: center;
@@ -2636,6 +2624,9 @@ th {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 10px;
+}
+
+.troubleshoot-map > .troubleshoot-map-grid {
   padding: 16px;
 }
 
