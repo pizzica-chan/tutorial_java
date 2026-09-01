@@ -143,12 +143,12 @@ export const terms: TermDef[] = [
   {
     term: "DataSource",
     aliases: ["DataSource"],
-    body: "DB への接続をまとめて管理する部品です。実体はコネクションプールで、そこから接続を借りて使います。application.yml の設定から作られることも、コンテナ側の設定（JNDI）から受け取ることもあります。",
+    body: "DB への接続をまとめて管理する部品です。実体はコネクションプールで、そこから接続を借りて使います。application.yml の設定から作られることも、サーブレットコンテナ側の設定（JNDI）から受け取ることもあります。",
   },
   {
     term: "JNDI",
     aliases: ["JNDI"],
-    body: "Java Naming and Directory Interface。名前を指定して、コンテナが用意した DataSource などのリソースを取得する仕組みです。接続情報をアプリではなくコンテナ側に持たせる構成で使われます。",
+    body: "Java Naming and Directory Interface。名前を指定して、サーブレットコンテナが用意した DataSource などのリソースを取得する仕組みです。接続情報をアプリではなくサーブレットコンテナ側に持たせる構成で使われます。",
   },
   {
     term: "Entity",
