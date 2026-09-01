@@ -257,7 +257,7 @@ export const quizzes = {
   },
   "ts-linux": {
     id: "ts-linux",
-    question: "サーバ上のログファイルを開こうとすると Permission denied になった。まず疑うのはどれ？",
+    question: "サーバ上のログファイルを開こうとすると Permission denied になった。まず確認することは？",
     choices: [
       "アプリのロジックにバグがある",
       "`ls -l` で、そのファイルの権限と所有者を確認する",
