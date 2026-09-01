@@ -455,7 +455,8 @@ h2,
   margin: 48px 0 18px;
 }
 
-.content > .section-head:first-child {
+.content > .section-head:first-child,
+.home-hero > .section-head:first-child {
   margin-top: 8px;
 }
 
@@ -1591,15 +1592,18 @@ th {
 }
 
 .photo-figure.screen-figure {
+  padding: 16px;
   background: #dfe4ec;
 }
 
 .photo-figure.screen-figure img {
+  display: block;
   width: auto;
   max-width: 100%;
   height: auto;
   max-height: 520px;
   margin: 0 auto;
+  border-radius: 6px;
   object-fit: contain;
   filter: none;
   background: #dfe4ec;
