@@ -66,7 +66,11 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "ブラウザは、まず画面の HTML を取ります。HTML の中には、CSS や JS、画像などの URL が書いてあります。ブラウザはそれを見て、それぞれ別のリクエストを送ります。開発者ツール（Chrome や Edge では F12、または右クリック→「検証」）を開き、Network タブを見ると、HTML のあとにそれらの行が並びます。",
+          text: "ブラウザは、まず画面の HTML を取ります。HTML の中には、CSS や JS、画像などの URL が書いてあります。ブラウザはそれを見て、それぞれ別のリクエストを送ります。",
+        },
+        {
+          type: "p",
+          text: "開発者ツール（Chrome や Edge では F12、または右クリック→「検証」）を開き、Network タブを見ると、HTML のあとにそれらの行が並びます。",
         },
         {
           type: "figure",
@@ -428,7 +432,7 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "サーバは、この `JSESSIONID` からセッションを引きます。",
+          text: "サーバは、この `JSESSIONID` をキーにセッションを取り出します。",
         },
         {
           type: "code",
@@ -456,7 +460,7 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "`@AuthenticationPrincipal` が、セッションに結び付いたログインユーザを渡します。`user.getId()` が、上のセッションの `id: 7` にあたります。Cookie の値そのものを自分で読んでいるわけではありません。ここで確認できるのは、同じ ID でログインユーザを引けていることです。",
+          text: "`@AuthenticationPrincipal` が、セッションに結び付いたログインユーザを渡します。`user.getId()` が、上のセッションの `id: 7` にあたります。Cookie の値そのものを自分で読んでいるわけではありません。ここで確認できるのは、同じ ID でログインユーザを取り出せていることです。",
         },
         {
           type: "h2",
@@ -491,7 +495,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "1つ目のメソッドで `session.setAttribute` した値を、別のリクエストで動く2つ目のメソッドが `session.getAttribute` で読み出しています。キーの名前（ここでは `cart`）を揃えれば、同じセッションの中で値を受け渡せます。",
+          text: "`addToCart` で `session.setAttribute` した値を、別のリクエストで動く `showCart` が `session.getAttribute` で読み出しています。キーの名前（ここでは `cart`）を揃えれば、同じセッションの中で値を受け渡せます。",
         },
         {
           type: "p",
