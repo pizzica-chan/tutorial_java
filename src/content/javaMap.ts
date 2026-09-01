@@ -347,6 +347,141 @@ public class RequestApiController {
       ],
     },
     {
+      id: "transaction",
+      title: "トランザクションと同時実行",
+      minutes: 10,
+      blocks: [
+        {
+          type: "p",
+          text: "Service のメソッドに付いている `@Transactional` や、DB の分離レベルが、具体的に何を保証していて、何を保証していないかを見ます。",
+        },
+        {
+          type: "h2",
+          text: "@Transactional が保証すること",
+        },
+        {
+          type: "p",
+          text: "`@Transactional` は、そのメソッドの中の複数の SQL を1つの単位にまとめる印です。途中で例外が起きれば、それまでの変更もすべて取り消されます（ロールバック）。",
+        },
+        {
+          type: "code",
+          title: "例（承認処理）",
+          lang: "java",
+          code: `@Transactional
+public void approve(Long requestId, Long approverId) {
+  RequestEntity request = requestMapper.findById(requestId, approverId);
+  // 権限・状態のチェック（省略）
+  request.setStatus("APPROVED");
+  requestMapper.update(request);
+  mailService.notifyApplicant(request);
+}`,
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "DB 以外は取り消せない",
+          text: "`update` のあとで例外が起きれば、その `update` も取り消されます。ただし、メール送信のような DB 以外への操作は、`@Transactional` の対象外です。取り消しても、送ってしまったメールは戻りません。",
+        },
+        {
+          type: "p",
+          text: "ここで保証されているのは「1つのリクエストの中の一貫性」だけです。別のリクエストが同時に来ることは、`@Transactional` の範囲外です。",
+        },
+        {
+          type: "h2",
+          text: "分離レベル（アイソレーションレベル）",
+        },
+        {
+          type: "p",
+          text: "同時に動いている複数のトランザクションが、お互いの変更をどこまで見えるようにするか、という設定です。DB によって既定値は違います。MySQL（InnoDB）の既定は `REPEATABLE READ` です。",
+        },
+        {
+          type: "p",
+          text: "分離レベルを上げるほど、他のトランザクションの影響を受けにくくなりますが、待たされることも増えます。ここでは分離レベルの細かい違いより、「読んでから書く」処理がなぜ危ういかを見ます。",
+        },
+        {
+          type: "h2",
+          text: "「読んでから書く」処理は、分離レベルだけでは守れない",
+        },
+        {
+          type: "p",
+          text: "承認処理を例にします。読んで判定し、それから更新する、という順番自体に隙があります。`findById` の SELECT は、`update` より前に終わっており、その後の `update` には状態の条件が付いていません。ほぼ同時刻に来た2つのリクエストは、どちらも同じ `PENDING` を読み、どちらも判定を通過してしまいます。",
+        },
+        {
+          type: "p",
+          text: "分離レベルを上げても、この隙は埋まりません。2つのリクエストは、それぞれ自分の SELECT の時点で正しく `PENDING` を読んでいるからです。実際にこれが起きた例は、「実務のシナリオ」の「承認すると、申請者に確認メールが2通届く」で見ました。",
+          link: {
+            label: "承認すると、申請者に確認メールが2通届く",
+            to: "/tracks/scenario/duplicate-mail",
+          },
+        },
+        {
+          type: "h2",
+          text: "同時実行から守る2つの書き方",
+        },
+        {
+          type: "h3",
+          text: "楽観ロック：更新の条件に前提を含める",
+        },
+        {
+          type: "p",
+          text: "`UPDATE` の `WHERE` に、更新前提の状態を含める方法です。実際に更新できた件数（0件か1件か）で、他の処理が先に進んでいなかったかを判定します。DB 側で実際に行を専有するわけではないので「楽観」と呼びます。",
+        },
+        {
+          type: "code",
+          title: "例（RequestMapper.xml と Service）",
+          lang: "text",
+          code: `<update id="update">
+  UPDATE t_request
+     SET status = 'APPROVED', updated_at = NOW()
+   WHERE id = #{id}
+     AND status = 'PENDING'
+</update>`,
+        },
+        {
+          type: "code",
+          title: "例（Service 側の判定）",
+          lang: "java",
+          code: `int updated = requestMapper.update(request);
+if (updated == 0) {
+  throw new ConflictException("この申請は承認できません");
+}`,
+        },
+        {
+          type: "p",
+          text: "先に `update` した側だけが1件更新でき、あとから来た側は0件になります。0件なら、他の処理がすでに状態を変えていた、と分かります。",
+        },
+        {
+          type: "h3",
+          text: "悲観ロック：先に行をロックする",
+        },
+        {
+          type: "p",
+          text: "`SELECT ... FOR UPDATE` で、読む時点から行をロックする方法です。あとから来たトランザクションは、先のトランザクションが確定するまで待たされます。",
+        },
+        {
+          type: "code",
+          title: "例",
+          lang: "sql",
+          code: `SELECT * FROM t_request WHERE id = ? FOR UPDATE;`,
+        },
+        {
+          type: "p",
+          text: "待たされたトランザクションは、先の変更が確定したあとに読むことになるので、`status` がもう `PENDING` ではないと気づけます。待ちが増える分、ロックする範囲と時間は短くしましょう。",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "デッドロック",
+          text: "複数のレコードを別々の順番でロックすると、お互いが相手の解放を待ち続けるデッドロックが起きることがあります。ロックする順番はそろえましょう。",
+        },
+        {
+          type: "p",
+          text: "どちらを選ぶかは、競合の起きやすさと、待たされてよいかで判断します。競合が稀なら楽観ロック、確実に守りたいなら悲観ロックを使うことが多いです。",
+        },
+        { type: "quiz", id: "java-transaction" },
+      ],
+    },
+    {
       id: "view-static",
       title: "テンプレートと静的ファイル",
       minutes: 8,

@@ -128,6 +128,20 @@ export const quizzes = {
     answer: 1,
     explanation: "URL と HTTP メソッドの受付口は Controller です。JSON を返す RestController も同じ層です。そこから Service、Repository へ降ります。",
   },
+  "java-transaction": {
+    id: "java-transaction",
+    question:
+      "`findById` で status を読んで判定したあと、条件の無い `UPDATE` で更新する承認処理がある。分離レベルを上げれば、2つのリクエストがほぼ同時に来ても安全になる？",
+    choices: [
+      "なる。分離レベルを上げれば同時実行はすべて防げる",
+      "ならない。それぞれのリクエストは自分の SELECT の時点では正しく PENDING を読んでいるため",
+      "ならない。@Transactional を外さないと意味が無いため",
+      "なる。ただしメール送信だけは防げない",
+    ],
+    answer: 1,
+    explanation:
+      "分離レベルは、他のトランザクションの変更がどこまで見えるかを決めるものです。今回の2つのリクエストは、それぞれ自分が読んだ時点では本当に PENDING だったので、分離レベルを上げても隙は埋まりません。UPDATE の WHERE に状態の条件を含める（楽観ロック）か、SELECT ... FOR UPDATE で先に行をロックする（悲観ロック）必要があります。",
+  },
   "java-template": {
     id: "java-template",
     question: "申請くんの一覧は未承認だけ出る。テンプレートの `th:if=\"${item.status == 'PENDING'}\"` は何をする？",
