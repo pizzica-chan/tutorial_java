@@ -495,7 +495,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "ここまでの流れは、セッション作成 → Cookie 付与 → ID からの復元、です。タイムアウト、Cookie 削除、ドメイン / Path / Secure の不一致があると、未ログイン扱いになります。",
+          text: "ここまでの流れは、セッション作成 → Cookie 付与 → ID からの復元、です。タイムアウト、Cookie 削除、ドメイン / Path / Secure の不一致があると、セッションが切れて値が消えます。ログイン情報なら未ログイン扱いになります。",
         },
         { type: "quiz", id: "web-cookie" },
       ],
