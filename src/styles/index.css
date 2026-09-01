@@ -1521,9 +1521,12 @@ th {
 }
 
 .photo-figure.screen-figure img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
   max-height: 520px;
+  margin: 0 auto;
   object-fit: contain;
-  object-position: top;
   filter: none;
   background: #dfe4ec;
 }
