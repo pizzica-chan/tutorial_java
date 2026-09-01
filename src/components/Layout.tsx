@@ -144,22 +144,11 @@ export function Layout() {
           return (
             <div key={track.id} className="nav-group">
               <div className="nav-group-head">
-                <NavLink
-                  to={`/tracks/${track.id}`}
-                  className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
-                  onClick={() => setOpen(false)}
-                >
-                  <span className="no">{track.no}</span>
-                  <span className="label" title={track.title}>
-                    {track.title}
-                  </span>
-                </NavLink>
                 <button
-                  className="nav-group-toggle"
                   type="button"
+                  className={`nav-link nav-group-toggle-link ${currentTrackId === track.id ? "active" : ""}`}
                   aria-expanded={expanded}
                   aria-controls={lessonsId}
-                  aria-label={`${track.title}の項目を${expanded ? "閉じる" : "開く"}`}
                   onClick={() => {
                     setExpandedTrackIds((current) => {
                       const next = new Set(current);
@@ -169,7 +158,13 @@ export function Layout() {
                     });
                   }}
                 >
-                  {expanded ? "−" : "＋"}
+                  <span className="no">{track.no}</span>
+                  <span className="label" title={track.title}>
+                    {track.title}
+                  </span>
+                  <span className="nav-group-caret" aria-hidden="true">
+                    {expanded ? "−" : "＋"}
+                  </span>
                 </button>
               </div>
               {expanded ? (
