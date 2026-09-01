@@ -139,7 +139,7 @@ export const troubleshootTrack: Track = {
           type: "p",
           text: "Java の分岐を読む前に、リクエストがどこまで届いたかを確認しましょう。Network タブの見方は「Webの基礎」の章で見たとおりです。ログの見方は、このあとの項目で見ていきます。ping や curl の打ち方は「ネットワークの疎通確認」です。",
         },
-        { type: "diagram", name: "divide", caption: "先に「どこまで届いたか」を切る。" },
+        { type: "diagram", name: "divide", caption: "先に「どこまで届いたか」で切り分ける。" },
         {
           type: "table",
           headers: ["確認", "疑わしい箇所"],
