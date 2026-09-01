@@ -1184,6 +1184,11 @@ export const terms: TermDef[] = [
     body: "コンテナを動かす仕組みのひとつです。コンテナそのものではありません。ログはコンテナの標準出力に出ることが多く、docker logs で見ることがあります。",
   },
   {
+    term: "docker-compose.yml",
+    aliases: ["docker-compose.yml", "docker-compose", "docker compose"],
+    body: "複数のコンテナ（アプリ、DB など）をまとめて起動するための設定ファイルです。各コンテナのイメージ、ポート、環境変数などを書きます。`docker compose up` で起動します。",
+  },
+  {
     term: "Kubernetes",
     aliases: ["Kubernetes", "K8s", "k8s"],
     body: "コンテナを複数のサーバで動かす仕組みです。ログは各 Pod の標準出力にあり、kubectl logs などで見ます。",
