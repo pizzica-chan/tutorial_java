@@ -351,6 +351,18 @@ export const quizzes = {
     answer: 1,
     explanation: "ping はホスト到達、TCP はポート到達です。層が違います。TCP が失敗すると HTTP も届きません。FW と、HTTP サーバやアプリの待ち受けを見ます。",
   },
+  "ts-middleware": {
+    id: "ts-middleware",
+    question: "DB クライアントで直接つなぐと成功するのに、アプリからは処理が待たされる。まず疑うのは？",
+    choices: [
+      "DB サーバの CPU 使用率",
+      "アプリのコネクションプールの枯渇",
+      "ネットワークの MTU 設定",
+      "ブラウザのキャッシュ",
+    ],
+    answer: 1,
+    explanation: "DB に直接つながるなら DB 自体は動いています。アプリから待たされるときは、アプリ側のコネクションプールが枯渇していないかを疑いましょう。",
+  },
   "java-arch": {
     id: "java-arch",
     question: "Apache と Tomcat の違いは？",

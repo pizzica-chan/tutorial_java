@@ -655,6 +655,81 @@ curl -I https://notify.example.internal/api/send`,
       ],
     },
     {
+      id: "middleware-check",
+      title: "ミドルウェアとコンテナの確認",
+      minutes: 10,
+      blocks: [
+        {
+          type: "p",
+          text: "ネットワークが通っていても、DB やコンテナ自体に問題があることがあります。ここでは、その切り分け方を見ます。",
+        },
+        {
+          type: "h2",
+          text: "DB へ直接つないでみる",
+        },
+        {
+          type: "p",
+          text: "アプリの接続エラーが、DB 自体の問題か、アプリ側の接続設定の問題かを分けます。アプリが動いているサーバから、DB のクライアントで直接つないでみましょう。",
+        },
+        {
+          type: "code",
+          title: "例（MySQL）",
+          lang: "text",
+          code: `mysql -h ホスト名 -u ユーザ名 -p -e "SELECT 1"`,
+        },
+        {
+          type: "ul",
+          items: [
+            "つながって `SELECT 1` の結果が返る … DB 自体は動いている。アプリ側の接続設定（URL、ユーザ、パスワード、コネクションプール）を疑う",
+            "つながらない … DB が落ちている、ポートが閉じている、認証情報が違う。「ネットワークの疎通確認」で TCP から確認する",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "DB は動くがアプリが待つ",
+          text: "DB 自体には直接つながるのに、アプリからは待たされる、というときは、コネクションプールの枯渇が疑われます。設定した最大接続数と、今使われている接続数を確認しましょう。",
+        },
+        {
+          type: "h2",
+          text: "コンテナ自体が動いているか",
+        },
+        {
+          type: "p",
+          text: "Docker や Kubernetes で動かしている構成では、アプリのコンテナ自体が起動していない、または起動と停止を繰り返していることがあります。",
+        },
+        {
+          type: "code",
+          title: "例",
+          lang: "text",
+          code: `# Docker
+docker ps
+
+# Kubernetes
+kubectl get pods`,
+        },
+        {
+          type: "ul",
+          items: [
+            "Docker の `STATUS` が `Up` 以外（`Restarting` など）… 起動直後に落ちている可能性",
+            "Kubernetes の `STATUS` が `CrashLoopBackOff` … 起動に失敗して再起動を繰り返している",
+            "`RESTARTS`（Kubernetes）の回数が多い … 一定間隔で落ちている可能性",
+          ],
+        },
+        {
+          type: "p",
+          text: "コンテナが起動と停止を繰り返していると、アプリのログが急に途切れる、操作したのにログが無い、といった症状に見えることがあります。ログの出力先は「アプリログの場所と読み方」のとおりですが、コンテナ自体が無ければ、そのログもありません。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "アプリは正常でもミドルウェアが原因のことがある",
+          text: "コードやデータに問題が見つからないときは、DB やメッセージキューなどのミドルウェア、コンテナの起動状態も疑いましょう。アプリのソースだけを読み続けても見つかりません。",
+        },
+        { type: "quiz", id: "ts-middleware" },
+      ],
+    },
+    {
       id: "log-follow",
       title: "アプリのログで処理を追う",
       minutes: 12,
