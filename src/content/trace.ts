@@ -10,7 +10,7 @@ export const traceTrack: Track = {
   lessons: [
     {
       id: "from-screen",
-      title: "入口から先を追う",
+      title: "入口から応答まで",
       minutes: 7,
       blocks: [
         {
