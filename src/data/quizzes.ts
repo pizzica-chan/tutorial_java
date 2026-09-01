@@ -479,7 +479,7 @@ export const quizzes = {
       "デプロイ後、検証用環境でブラウザが 502 になった。`ps -ef` で見ると、申請くんのプロセスが起動していない。`sudo -u appuser` で手動起動すると `Permission denied` が出た。次に見るのは？",
     choices: [
       "Thymeleaf の `th:if`",
-      "失敗したファイルの `ls -l` で、所有者・グループがアプリの実行ユーザに合っているか",
+      "書き込み先ディレクトリの `ls -l` で、所有者・グループがアプリの実行ユーザに合っているか",
       "MySQL の `EXPLAIN`",
       "ブラウザのコンソールの `TypeError`",
     ],

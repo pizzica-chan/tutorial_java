@@ -1168,7 +1168,7 @@ Content-Type: text/html;charset=UTF-8`,
           type: "code",
           title: "例（検証用環境のサーバ上）",
           lang: "text",
-          code: `$ ps -ef -o user,pid,cmd | grep java
+          code: `$ ps -ef -o user,pid,cmd | grep java | grep -v grep
 $`,
         },
         {

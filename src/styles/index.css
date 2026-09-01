@@ -456,7 +456,7 @@ h2,
 }
 
 .content > .section-head:first-child,
-.home-hero > .section-head:first-child {
+.home-hero > .section-head {
   margin-top: 8px;
 }
 

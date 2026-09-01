@@ -262,8 +262,12 @@ export const troubleshootTrack: Track = {
           type: "code",
           title: "例（そのプロセスを動かしているユーザを見る）",
           lang: "text",
-          code: `$ ps -ef -o user,pid,cmd | grep java
+          code: `$ ps -ef -o user,pid,cmd | grep java | grep -v grep
 appuser   1842  java -jar shinsei-kun.jar`,
+        },
+        {
+          type: "p",
+          text: "うしろの `grep -v grep` は、`grep java` というコマンド自身の行を除く指定です。`grep java` の行にも文字列 `java` が含まれるため、これを付けないと自分自身の行まで一致してしまいます。",
         },
         {
           type: "p",
