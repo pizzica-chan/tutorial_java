@@ -349,7 +349,7 @@ public class RequestApiController {
     {
       id: "transaction",
       title: "トランザクションと同時実行",
-      minutes: 10,
+      minutes: 12,
       blocks: [
         {
           type: "p",
@@ -385,6 +385,68 @@ public void approve(Long requestId, Long approverId) {
         {
           type: "p",
           text: "ここで保証されているのは「1つのリクエストの中の一貫性」だけです。別のリクエストが同時に来ることは、`@Transactional` の範囲外です。",
+        },
+        {
+          type: "h2",
+          text: "アノテーションが無いこともある",
+        },
+        {
+          type: "p",
+          text: "ここまでは `@Transactional` を前提にしましたが、同じことを別の書き方で行っているアプリもあります。`@Transactional` で検索してもヒットしないときは、次のような書き方を疑いましょう。",
+        },
+        {
+          type: "h3",
+          text: "XML でのトランザクション宣言",
+        },
+        {
+          type: "p",
+          text: "Spring の設定を XML で書いていたころからのアプリでは、Java のクラスにアノテーションを付けず、XML 側でトランザクションの対象メソッドを指定していることがあります。",
+        },
+        {
+          type: "code",
+          title: "例（applicationContext.xml・抜粋）",
+          lang: "xml",
+          code: `<tx:advice id="txAdvice" transaction-manager="transactionManager">
+  <tx:attributes>
+    <tx:method name="approve*" propagation="REQUIRED"/>
+    <tx:method name="find*" read-only="true"/>
+  </tx:attributes>
+</tx:advice>
+<aop:config>
+  <aop:pointcut id="serviceMethods"
+      expression="execution(* jp.co.example.shinsei.service.*.*(..))"/>
+  <aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods"/>
+</aop:config>`,
+        },
+        {
+          type: "p",
+          text: "`<tx:method name=\"approve*\" .../>` のように、メソッド名のパターンで対象を指定します。Java のソースだけを検索しても見つからないので、`applicationContext.xml` のような設定ファイルも確認しましょう。",
+        },
+        {
+          type: "h3",
+          text: "プログラムでのトランザクション管理",
+        },
+        {
+          type: "p",
+          text: "メソッド全体ではなく、一部分だけをトランザクションにしたいときは、`TransactionTemplate` を使って明示的に範囲を書くこともあります。",
+        },
+        {
+          type: "code",
+          title: "例",
+          lang: "java",
+          code: `public void approve(Long requestId, Long approverId) {
+  RequestEntity request = transactionTemplate.execute(status -> {
+    RequestEntity found = requestMapper.findById(requestId, approverId);
+    found.setStatus("APPROVED");
+    requestMapper.update(found);
+    return found;
+  });
+  mailService.notifyApplicant(request);
+}`,
+        },
+        {
+          type: "p",
+          text: "`transactionTemplate.execute(...)` の中だけがトランザクションです。メソッド全体ではなく、必要な範囲だけをトランザクションにできます。この書き方も `@Transactional` と同じで、同時に来た複数のリクエストを防ぐものではありません。",
         },
         {
           type: "h2",

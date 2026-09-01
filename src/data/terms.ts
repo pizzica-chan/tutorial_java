@@ -299,6 +299,11 @@ export const terms: TermDef[] = [
     body: "その Java メソッドをトランザクションで囲む印です。Spring の AOP プロキシが先に動くので、Java メソッド本体の 1 行目より前に処理があります。",
   },
   {
+    term: "TransactionTemplate",
+    aliases: ["TransactionTemplate"],
+    body: "コードの中で、トランザクションにする範囲を明示的に囲むためのクラスです。`@Transactional` がメソッド全体を対象にするのに対し、こちらはメソッドの一部分だけをトランザクションにできます。",
+  },
+  {
     term: "@ControllerAdvice",
     aliases: ["@ControllerAdvice", "ControllerAdvice"],
     body: "複数の Controller の例外や共通処理をまとめる印です。throw したメソッドの return ではなく、こちらが画面や JSON を決めることがあります。",
@@ -382,6 +387,11 @@ export const terms: TermDef[] = [
     term: "コミット",
     aliases: ["コミット"],
     body: "トランザクションの確定。これが無いと更新が DB に残りません。",
+  },
+  {
+    term: "ロールバック",
+    aliases: ["ロールバック"],
+    body: "トランザクションの取り消し。そのトランザクション内で行った更新が、すべて無かったことになります。途中で例外が起きたときなどに起こります。",
   },
   {
     term: "永続化",
@@ -832,6 +842,11 @@ export const terms: TermDef[] = [
     term: "分離レベル",
     aliases: ["分離レベル", "アイソレーションレベル"],
     body: "同時に動いている複数のトランザクションが、お互いの変更をどこまで見えるようにするかという設定です。DB によって既定値は違います。上げるほど他のトランザクションの影響を受けにくくなりますが、待たされることも増えます。",
+  },
+  {
+    term: "REPEATABLE READ",
+    aliases: ["REPEATABLE READ"],
+    body: "分離レベルの1つです。同じトランザクションの中で同じ SELECT を繰り返すと、他のトランザクションが確定した変更を挟んでも、同じ結果が読めます。MySQL（InnoDB）の既定の分離レベルです。",
   },
   {
     term: "楽観ロック",
