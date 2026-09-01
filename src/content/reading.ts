@@ -152,7 +152,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "全体の流れは、現象 → 処理の入口 → 分岐 → 永続化 → 出口 です。",
+          text: "全体の流れは、現象 → 処理の入口 → 分岐 → 永続化・外部呼び出し → 出口 です。",
         },
         {
           type: "steps",
