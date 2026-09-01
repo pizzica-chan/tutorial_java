@@ -49,9 +49,10 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "リンクやブックマークから、その画面が開かない",
-        cause: ["サーバ"],
-        check: "Network タブで、その画面のリクエストの URL とステータスコードを確認しましょう。",
-        tells: "画面が出ない原因を、リクエストが無い・URL のずれ・サーバ側の失敗に分けられます。404 は、その URL に対応するものが無い、という応答です。",
+        cause: ["クライアント", "サーバ"],
+        causeNote: "リクエストがあるかどうかで分かれます",
+        check: "Network タブに、その画面へのリクエストがあるかを確認しましょう。あれば URL とステータスコードも見ましょう。",
+        tells: "画面が出ない原因を、リクエストが無い・URL のずれ・サーバ側の失敗に分けられます。リクエストが無ければ、リンクや JS などブラウザ側の問題です。404 は、その URL に対応するものが無い、という応答です。",
         links: [
           { label: "トラブル例：指定の画面が開かない", to: "/tracks/troubleshoot/p-404" },
           { label: "どこまで届いたか", to: "/tracks/troubleshoot/divide" },
