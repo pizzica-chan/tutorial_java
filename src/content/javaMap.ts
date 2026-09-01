@@ -827,7 +827,7 @@ public void addInterceptors(InterceptorRegistry registry) {
           type: "table",
           headers: ["種類", "例", "すること"],
           rows: [
-            ["HTTP サーバ", "Apache、nginx", "手前で受ける。ブラウザとの HTTPS をここで解き、静的ファイル、後ろへの中継"],
+            ["HTTP サーバ", "Apache、nginx", "手前で受ける。ブラウザとの HTTPS をここで解き、静的ファイルの配信、後ろへの中継"],
             ["サーブレットコンテナ", "Tomcat、Jetty", "Java の画面や API を動かす"],
           ],
         },
@@ -836,7 +836,7 @@ public void addInterceptors(InterceptorRegistry registry) {
           type: "callout",
           kind: "trap",
           title: "Apache と Tomcat",
-          text: "Apache（httpd）は HTTP サーバ、Tomcat はサーブレットコンテナです。名前に Apache が付きますが、別物です。",
+          text: "Apache（httpd）は HTTP サーバ、Tomcat はサーブレットコンテナです。Tomcat の正式名は Apache Tomcat で、同じ Apache という名前が付きますが、別物です。",
         },
         {
           type: "h2",
@@ -876,7 +876,7 @@ public void addInterceptors(InterceptorRegistry registry) {
           type: "ul",
           items: [
             "静的ファイルの 404 は、手前の HTTP サーバのパス設定のことがある（パターン3）",
-            "アプリのエラーログは、サーブレットコンテナ側を見る",
+            "アプリのエラーログは、サーブレットコンテナ側にある",
             "コンテキストパスは、手前と後ろの両方に付いていることがある（パターン3）",
           ],
         },
