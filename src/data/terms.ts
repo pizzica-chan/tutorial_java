@@ -579,6 +579,11 @@ export const terms: TermDef[] = [
     body: "Linux でサービス（nginx や Tomcat など）を起動・停止・状態確認するコマンドです。`systemctl status サービス名` で、動いているか（`active (running)`）、止まっているか（`inactive` / `failed`）を確認できます。サービス名は環境によって違い、間違っていると `could not be found` のように出ます。",
   },
   {
+    term: "ミドルウェア",
+    aliases: ["ミドルウェア"],
+    body: "アプリと OS の間で動く、共通の土台になるソフトウェアです。DB、メッセージキュー、外部の Tomcat や HTTP サーバなどが含まれます。アプリのコードに問題が無くても、ミドルウェア自体が落ちていたり詰まっていたりすると、同じような症状になります。",
+  },
+  {
     term: "access.log",
     aliases: ["access.log", "access_log", "アクセスログ"],
     body: "HTTP サーバが受けたリクエストの記録。URL、ステータスコード、時刻が並びます。静的ファイルの 404 もここに残ることが多いです。",
