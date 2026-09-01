@@ -121,6 +121,12 @@ export const javaMapTrack: Track = {
           text: "外の Tomcat に載せるときは、ポートやコンテキストパスは Tomcat 側で決まることが多いです。",
         },
         {
+          type: "callout",
+          kind: "note",
+          title: "接続情報をコンテナが持つこともある",
+          text: "外部の Tomcat に載せる構成では、DB の接続情報が `application.yml` に無く、Tomcat 側の設定（`context.xml` など）にあることがあります。アプリは JNDI（`java:comp/env/jdbc/...`）経由で DataSource を受け取るだけで、接続情報そのものは持ちません。`application.yml` に `spring.datasource` が無いときは、この構成を疑いましょう。",
+        },
+        {
           type: "h2",
           text: "申請くんの例",
         },
