@@ -560,6 +560,10 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
 }`,
         },
         {
+          type: "p",
+          text: "ここでは Service を飛ばして Mapper を直接呼んでいます。前の項目「Controller / Service / Repository / Mapper」で触れた「並びがずれる」例です。",
+        },
+        {
           type: "callout",
           kind: "note",
           title: "@ModelAttribute は向きが2つ",
@@ -594,7 +598,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "サーバが組み立てたあとは、th: 属性は消え、値だけが残ります。申請くんの一覧は、Mapper の SQL で未承認（`PENDING`）だけに絞り込まれています。テンプレートの `th:if` は、その一覧の各行について、`PENDING` のときだけボタンを出す条件です。",
+          text: "サーバが組み立てたあとは、th: 属性は消え、値だけが残ります。申請くんの一覧は、Mapper の SQL で未承認（`PENDING`）だけに絞り込まれています。テンプレートの `th:if` は、その一覧の各行について、`PENDING` のときだけボタンを出す条件です。この一覧では SQL 側ですでに `PENDING` だけに絞っているため、`th:if` は一覧内では常に true になります。",
         },
         {
           type: "code",
