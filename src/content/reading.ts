@@ -836,13 +836,28 @@ request.getApproverId().equals(userId); // NPE`,
         },
         {
           type: "p",
-          text: "`created_at` のような値が、Java のソースのどこにも代入されていないことがあります。DB のカラムに `DEFAULT CURRENT_TIMESTAMP` があると、INSERT 時に DB 側が値を入れます。トリガーで別のテーブルから値を補っていることもあります。",
+          text: "`created_at` のような値が、Java のソースのどこにも代入されていないことがあります。DB のカラムに `DEFAULT CURRENT_TIMESTAMP` があれば INSERT 時に DB 側が値を入れますが、INSERT 文自体に `NOW()` のような関数が直接書かれていることもあります。トリガーで別のテーブルから値を補っていることもあります。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の insert（申請くん・抜粋）",
+          lang: "xml",
+          highlightLines: [4],
+          code: `<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+  INSERT INTO t_request (title, status, applicant_id, approver_id, applicant_email, created_at)
+  VALUES (#{title}, #{status}, #{applicantId}, #{approverId},
+          (SELECT email FROM t_user WHERE id = #{applicantId}), NOW())
+</insert>`,
+        },
+        {
+          type: "p",
+          text: "申請くんの `created_at` は、`schema.sql` に `DEFAULT` が無く、この INSERT 文の `NOW()` で入っています。Java のソースにも `schema.sql` の `DEFAULT` にも当たらないときは、実行される SQL 文自体も見ましょう。",
         },
         {
           type: "callout",
           kind: "note",
           title: "ソースに代入が無いとき",
-          text: "Java のソースをいくら探しても代入が見つからないときは、テーブル定義（`schema.sql` など）の `DEFAULT` や `TRIGGER` を見ましょう。",
+          text: "Java のソースをいくら探しても代入が見つからないときは、テーブル定義（`schema.sql` など）の `DEFAULT` や `TRIGGER` だけでなく、実行される SQL 文自体（`NOW()` などの関数呼び出し）も見ましょう。",
         },
         {
           type: "p",
