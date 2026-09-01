@@ -254,10 +254,13 @@ logging:
           type: "code",
           title: "パターン1: テンプレート名を返す（画面）",
           lang: "java",
-          highlightLines: [6, 7],
+          highlightLines: [9, 10],
           code: `@Controller
 @RequestMapping("/requests")
+@RequiredArgsConstructor
 public class RequestController {
+  private final RequestService requestService;
+
   @GetMapping
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     model.addAttribute("applications", requestService.findMine(user.getId()));
@@ -280,10 +283,13 @@ public class RequestController {
           type: "code",
           title: "パターン2: オブジェクトを返す（Web API）",
           lang: "java",
-          highlightLines: [6, 7, 8],
+          highlightLines: [9, 10, 11],
           code: `@RestController
 @RequestMapping("/api/requests")
+@RequiredArgsConstructor
 public class RequestApiController {
+  private final RequestService requestService;
+
   @GetMapping
   public List<RequestResponse> list(@AuthenticationPrincipal LoginUser user) {
     return requestService.findMine(user.getId()).stream()
@@ -536,10 +542,13 @@ public class RequestApiController {
           type: "code",
           title: "書き方A: Model に載せて、テンプレート名を return（申請くん）",
           lang: "java",
-          highlightLines: [6],
+          highlightLines: [9],
           code: `@Controller
 @RequestMapping("/requests")
+@RequiredArgsConstructor
 public class RequestController {
+  private final RequestService requestService;
+
   @GetMapping
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     model.addAttribute("applications", requestService.findMine(user.getId()));
