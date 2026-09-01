@@ -21,25 +21,31 @@ const widgets: Record<WidgetName, ComponentType> = {
 
 export function Article({ blocks }: { blocks: Block[] }) {
   const occurrences = new Map<string, number>();
+  let headingIndex = 0;
   const keyedBlocks = blocks.map((block) => {
     const content = JSON.stringify(block);
     const occurrence = occurrences.get(content) ?? 0;
     occurrences.set(content, occurrence + 1);
-    return { block, key: `${content}:${occurrence}` };
+    let headingId: string | undefined;
+    if (block.type === "h2" || block.type === "h3") {
+      headingId = `h-${headingIndex}`;
+      headingIndex += 1;
+    }
+    return { block, key: `${content}:${occurrence}`, headingId };
   });
 
   return (
     <TermHighlightScope>
       <div className="article">
-        {keyedBlocks.map(({ block, key }) => (
-          <BlockView key={key} block={block} />
+        {keyedBlocks.map(({ block, key, headingId }) => (
+          <BlockView key={key} block={block} headingId={headingId} />
         ))}
       </div>
     </TermHighlightScope>
   );
 }
 
-function BlockView({ block }: { block: Block }) {
+function BlockView({ block, headingId }: { block: Block; headingId?: string }) {
   switch (block.type) {
     case "p":
       return (
@@ -49,13 +55,13 @@ function BlockView({ block }: { block: Block }) {
       );
     case "h2":
       return (
-        <h2>
+        <h2 id={headingId}>
           <TextWithTerms text={block.text} linkChapters={false} />
         </h2>
       );
     case "h3":
       return (
-        <h3>
+        <h3 id={headingId}>
           <TextWithTerms text={block.text} linkChapters={false} />
         </h3>
       );

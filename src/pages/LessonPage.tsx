@@ -2,7 +2,9 @@ import { Link, useParams } from "react-router-dom";
 import { getLesson } from "../data/curriculum";
 import { NotFoundPage } from "./NotFoundPage";
 import { Article } from "../components/Article";
+import { ArticleToc } from "../components/ArticleToc";
 import { Icon } from "../components/Icon";
+import { extractHeadings } from "../lib/headings";
 
 export function LessonPage() {
   const { trackId, lessonId } = useParams();
@@ -13,9 +15,11 @@ export function LessonPage() {
   }
 
   const { track, lesson, prev, next } = found;
+  const headings = extractHeadings(lesson.blocks);
 
   return (
     <div className="content">
+      <ArticleToc headings={headings} />
       <p className="crumb">
         <Link to="/">トップ</Link> / <Link to={`/tracks/${track.id}`}>{track.title}</Link> / {lesson.title}
       </p>
