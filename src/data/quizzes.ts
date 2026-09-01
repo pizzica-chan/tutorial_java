@@ -267,6 +267,20 @@ export const quizzes = {
     answer: 1,
     explanation: "Permission denied は権限やユーザが原因であることが多く、コードの不具合ではありません。まず `ls -l` で権限と所有者を確認しましょう。777 のような広い権限をいきなり付けるのは避けます。",
   },
+  "ts-linux-user": {
+    id: "ts-linux-user",
+    question:
+      "アプリのログファイルへの書き込みで Permission denied になった。SSH でログインした自分のユーザには、そのファイルへの書き込み権限がある。次に確認するのは？",
+    choices: [
+      "アプリを動かしているプロセスのユーザに、書き込み権限があるか",
+      "自分のログインパスワードが正しいか",
+      "ディスクの空き容量",
+      "ネットワークが疎通しているか",
+    ],
+    answer: 0,
+    explanation:
+      "Permission denied は、操作している自分ではなく、アプリを動かしているプロセスのユーザの権限で起きます。`ps -ef -o user,pid,cmd` でそのユーザを確認し、`sudo -u` で同じユーザとして試すと再現できます。",
+  },
   "ts-log": {
     id: "ts-log",
     question: "画面がエラーになった。ログ調査で最初にやることは？",

@@ -156,7 +156,7 @@ export const troubleshootTrack: Track = {
     {
       id: "linux-basics",
       title: "Linux の基本操作",
-      minutes: 12,
+      minutes: 15,
       blocks: [
         {
           type: "p",
@@ -247,6 +247,40 @@ export const troubleshootTrack: Track = {
           text: "`Permission denied` は、パーミッションかユーザが原因であることが多く、アプリのロジックの不具合ではありません。`ls -l` で対象ファイルの権限と所有者を確認し、今のユーザに読み書きの権限があるかを見ましょう。権限を変える `chmod` / `chown` は、理由を確認してから使いましょう。",
         },
         {
+          type: "h3",
+          text: "SSH のユーザと、アプリを動かしているユーザは別のことが多い",
+        },
+        {
+          type: "p",
+          text: "SSH でログインした直後は、そのログインに使ったユーザ（自分の名前のアカウントや、チームで決まった共通ユーザなど）で操作しています。ただし、Java のプロセス自体は、別のユーザで動いていることが多いです。サービスとして自動起動する設定や、コンテナの実行ユーザで決まります。",
+        },
+        {
+          type: "p",
+          text: "ログへの書き込みで `Permission denied` が起きたとき、見るべきなのは「SSH でログインした自分の権限」ではなく「アプリを動かしているユーザの権限」です。ここを混同すると、自分には権限があるのにアプリだけが失敗する理由が分からなくなります。",
+        },
+        {
+          type: "code",
+          title: "例（そのプロセスを動かしているユーザを見る）",
+          lang: "text",
+          code: `ps -ef -o user,pid,cmd | grep java`,
+        },
+        {
+          type: "p",
+          text: "`USER` の列に出るのが、そのプロセスを動かしているユーザです。自分がログインしたユーザ名と違うことは珍しくありません。",
+        },
+        {
+          type: "code",
+          title: "例（アプリと同じユーザで書き込めるか試す）",
+          lang: "text",
+          code: `sudo -u アプリのユーザ名 touch app.log`,
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "自分の sudo とアプリの権限は別物",
+          text: "sudo で何でもできる自分のアカウントでも、アプリ自身はアプリの実行ユーザの権限でしか動けません。自分が sudo で直接ファイルを作れたとしても、アプリの実行ユーザに権限が無ければアプリは失敗したままです。直すときは、アプリの実行ユーザ側の権限を変えましょう。",
+        },
+        {
           type: "h2",
           text: "プロセスとリソースを見る",
         },
@@ -274,6 +308,7 @@ export const troubleshootTrack: Track = {
           text: "ここで見たコマンドは、「アプリログの場所と読み方」や「ネットワークの疎通確認」でログや接続を確認するときにも使います。",
         },
         { type: "quiz", id: "ts-linux" },
+        { type: "quiz", id: "ts-linux-user" },
       ],
     },
     {
