@@ -745,12 +745,18 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
           ],
         },
         {
+          type: "p",
+          text: "たとえば、申請の登録時は承認者が未選択で `null` のまま保存され、後日の承認処理でその値を使おうとして NPE になる、という例です。登録と承認は別々のタイミングで動く、別のコードです。",
+        },
+        {
           type: "code",
-          title: "未設定のまま保存される例",
+          title: "登録時は未設定、承認時に NPE になる例",
           lang: "java",
-          highlightLines: [1, 3],
-          code: `request.setApproverId(form.getApproverId()); // null のまま保存
-// 後日の承認処理で
+          highlightLines: [2, 5],
+          code: `// 申請の登録時
+request.setApproverId(form.getApproverId()); // 承認者が未選択なら null のまま保存
+
+// 後日、承認処理で
 request.getApproverId().equals(userId); // NPE`,
         },
         {
