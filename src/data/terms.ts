@@ -719,6 +719,16 @@ export const terms: TermDef[] = [
     body: "IDE の機能。インタフェースの宣言から、実体のクラスを開きます。日本語化した IntelliJ では「実装に移動」、Eclipse では「実装を開く」という名前です。MyBatis の Mapper は Java の実装クラスが無いことが多いです。",
   },
   {
+    term: "リポジトリ",
+    aliases: ["リポジトリ"],
+    body: "ソースコードと、その変更履歴を保存する場所です。Git や SVN で管理します。Spring の Repository（DB アクセス層）とは別物です。",
+  },
+  {
+    term: "Git",
+    aliases: ["Git"],
+    body: "分散型のバージョン管理システムです。ファイルの変更履歴を、ひとまとまりの単位（commit）ごとに記録します。GitHub や GitLab などでリポジトリを共有することが多いです。",
+  },
+  {
     term: "git blame",
     aliases: ["git blame"],
     body: "指定したファイルの各行を、最後に変更した人・日時とともに示すコマンドです。IDE にも同等の機能があります。行の意図を知る手がかりになりますが、整形やリファクタだけの変更が表示されることもあります。",
