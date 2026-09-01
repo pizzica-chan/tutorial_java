@@ -324,7 +324,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
     {
       id: "net-check",
       title: "ネットワークの疎通確認",
-      minutes: 14,
+      minutes: 16,
       blocks: [
         {
           type: "p",
@@ -482,6 +482,30 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
             "接続できない / タイムアウト … TCP 以前、または TLS・プロキシの手前",
             "ブラウザだけ失敗 … Cookie、プロキシ設定、別ネットワークからのアクセス制限も疑う",
           ],
+        },
+        {
+          type: "h2",
+          text: "アプリから外部への疎通",
+        },
+        {
+          type: "p",
+          text: "ここまでは、ブラウザや開発 PC から申請くんへ向けての疎通でした。同じコマンドを、申請くんが動いているサーバから外部のシステムへ向けて打つこともあります。「外部 API への接続エラーがログに出る」というときは、この向きで確認しましょう。打つ場所は申請くんのサーバ、向き先は外部システムのホスト・ポートです。ping → TCP → curl の順は同じです。",
+        },
+        {
+          type: "code",
+          title: "例（申請くんのサーバから、外部の通知 API へ）",
+          code: `# 申請くんのサーバにログインしてから実行
+
+ping notify.example.internal
+
+Test-NetConnection -ComputerName notify.example.internal -Port 443
+# Linux: nc -zv notify.example.internal 443
+
+curl -I https://notify.example.internal/api/send`,
+        },
+        {
+          type: "p",
+          text: "開発 PC からは通っても、サーバからは FW で閉じていることがあります。逆に、サーバからは通るのに開発 PC からは通らないこともあります。向き先だけでなく、打つ場所もアプリサーバに合わせましょう。外部への接続がどんな症状やログに出るかは、「トラブル例：外部システム / 外部 API」で詳しく見ます。",
         },
         {
           type: "h2",
