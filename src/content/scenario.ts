@@ -946,16 +946,8 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
           text: "MySQL では、外部キー制約があると参照側のカラムに自動でインデックスが付くことがあります。この教材の `EXPLAIN` は、説明のために `possible_keys` を `NULL` にした簡略な例です。実際の環境では、外部キーの自動インデックスが `possible_keys` の候補に挙がることもあります。それでも `OR` と `ORDER BY` が重なると、`type` が `ALL` のままフルスキャンになることがあります。",
         },
         {
-          type: "h2",
-          text: "このシナリオの原因",
-        },
-        {
           type: "p",
           text: "検証用 DB では、`t_request` がフルスキャンです。約 85 万件読んで、返しているのは 1204 件でした。履歴が多いユーザで、応答が遅くなっていました。",
-        },
-        {
-          type: "p",
-          text: "絞り込みが `applicant_id` と `approver_id` の `OR` で、並べ替えは `created_at` です。`INDEX` を 1 本足すだけでは足りないことが多いです。",
         },
         {
           type: "callout",
@@ -970,13 +962,9 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         {
           type: "ul",
           items: [
-            "遅さはエラーログに出ないことが多い。Network の待ち時間と、ログの時刻差を見る",
-            "`Preparing` と `Total` のあいだが空いていれば、遅いのはその SQL",
-            "`EXPLAIN` の `type` が `ALL` なら、フルスキャンであることが多い",
-            "`rows` は読む件数の見積もり、`Total` は返した件数。`ALL` なら見積もりに近い件数を実際に読む",
-            "`possible_keys` が `NULL` は、この検証用の簡略な例での結果。インデックスが一つも無い、という意味ではない",
-            "`OR` の左右が別カラムで `ORDER BY` があると、`INDEX` を 1 本足すだけでは足りないことが多い",
-            "今回はインデックス設計を見直す。SQL の作りが悪いだけのときは、アプリの SQL を直す",
+            "遅さはエラーログに出ないことが多い。Network の待ち時間と、ログの時刻差（`Preparing` 〜 `Total`）で疑わしい SQL を絞り込む",
+            "`EXPLAIN` の `type` が `ALL`（フルスキャン）なら、`rows`（見積もり件数）に近い件数を実際に読んでいる",
+            "`OR` の左右が別カラムで `ORDER BY` があると、`INDEX` を 1 本足すだけでは足りないことが多い。SQL の作りが悪いだけのこともある",
           ],
         },
         {
