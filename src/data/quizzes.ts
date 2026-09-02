@@ -128,6 +128,20 @@ export const quizzes = {
     answer: 1,
     explanation: "URL と HTTP メソッドの受付口は Controller です。JSON を返す RestController も同じ層です。そこから Service、Repository へ降ります。",
   },
+  "java-mapper-xml": {
+    id: "java-mapper-xml",
+    question:
+      "RequestMapper.xml の `WHERE r.status = #{status}` を `WHERE r.status = ${status}` に書き換えた。何が変わる？",
+    choices: [
+      "動きは変わらない。書き方の好みの違いだけ",
+      "PreparedStatement へのバインドではなく、値がそのまま SQL の文字列に埋め込まれるようになる。利用者からの入力を渡すと SQL インジェクションの危険がある",
+      "`resultType` の自動変換が効かなくなる",
+      "Java のメソッド名と XML の `id` の対応が外れる",
+    ],
+    answer: 1,
+    explanation:
+      "`#{}` は `PreparedStatement` の `?` にバインドされる安全な書き方です。`${}` は文字列としてそのまま SQL に埋め込まれるため、利用者からの入力をそのまま渡すと SQL インジェクションの原因になります。",
+  },
   "java-transaction": {
     id: "java-transaction",
     question:

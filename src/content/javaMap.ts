@@ -347,6 +347,138 @@ public class RequestApiController {
       ],
     },
     {
+      id: "mapper-xml",
+      title: "mapper.xml の読み方",
+      minutes: 10,
+      blocks: [
+        {
+          type: "p",
+          text: "MyBatis の Mapper は、メソッド宣言だけの Java インタフェースと、SQL を書いた XML ファイルの組で1つです。置き場所や細かい動きは、`application.yml` の `mybatis:` に書いてあります。",
+        },
+        {
+          type: "code",
+          title: "application.yml の mybatis 設定（申請くん・抜粋）",
+          lang: "yaml",
+          code: `mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: jp.co.example.shinsei.entity
+  configuration:
+    map-underscore-to-camel-case: true`,
+        },
+        {
+          type: "h2",
+          text: "インタフェースと XML の対応",
+        },
+        {
+          type: "p",
+          text: "Java 側は、メソッド宣言だけのインタフェースです。実装クラスはソースに無く、MyBatis が実行時に作ります。XML の `id` と Java のメソッド名が対応しています。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.java（申請くん・抜粋）",
+          lang: "java",
+          highlightLines: [2],
+          code: `public interface RequestMapper {
+  List<RequestEntity> findMine(@Param("userId") Long userId);
+}`,
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml（申請くん・抜粋）",
+          lang: "xml",
+          highlightLines: [1],
+          code: `<select id="findMine" resultType="RequestEntity">
+  SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+         a.display_name AS applicant_name,
+         v.display_name AS approver_name
+  FROM t_request r
+  JOIN t_user a ON a.id = r.applicant_id
+  LEFT JOIN t_user v ON v.id = r.approver_id
+  WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
+    AND r.status = 'PENDING'
+  ORDER BY r.created_at DESC
+</select>`,
+        },
+        {
+          type: "p",
+          text: "`@Param(\"userId\")` が付いた引数の値が、SQL 側の `#{userId}` に渡ります。呼び出し元は、この Java のメソッド名（`findMine`）で参照検索すれば見つかります。",
+        },
+        {
+          type: "h2",
+          text: "resultType とカラムの対応",
+        },
+        {
+          type: "p",
+          text: "`resultType=\"RequestEntity\"` と書くだけで、SELECT の各カラムが `RequestEntity` のフィールドへ自動で入ります。2つ疑問が出るはずです。なぜ完全なパッケージ名を書かなくてよいのか、なぜ `applicant_id` が `applicantId` というフィールドに入るのか。答えは、さきほどの `application.yml` の2行にあります。",
+        },
+        {
+          type: "ul",
+          items: [
+            "`type-aliases-package` … このパッケージ配下のクラスは、クラス名だけで参照できる。`RequestEntity` は `jp.co.example.shinsei.entity.RequestEntity` の型エイリアス",
+            "`map-underscore-to-camel-case` … カラム名のスネークケースを、フィールド名のキャメルケースへ自動変換する。`applicant_id` → `applicantId`",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "自動変換されないとき",
+          text: "この設定が無いプロジェクトでは、SQL 側に `applicant_id AS applicantId` のように別名を付けるか、`resultMap` で対応を書きます。件数は合っているのに一部のフィールドだけ null なら、カラム名とフィールド名の対応がずれていないか疑いましょう。",
+        },
+        {
+          type: "h2",
+          text: "#{} でパラメータを渡す",
+        },
+        {
+          type: "p",
+          text: "`#{userId}` は、実行時に安全な仕組みでバインドされるプレースホルダです。渡す値をそのまま文字列として組み込むわけではなく、`PreparedStatement` の `?` に変換されてから実行されます。",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "${} との違い",
+          text: "`${}` という書き方もありますが、こちらは値をそのまま SQL の文字列に埋め込みます。渡す値によっては SQL インジェクションの原因になるため、利用者からの入力をそのまま `${}` に渡すのは避けます。`ORDER BY` のカラム名を可変にしたいときなど、値を限られた候補からしか選べない場面で使うことはあります。",
+        },
+        {
+          type: "h2",
+          text: "条件によって SQL を変える（動的 SQL）",
+        },
+        {
+          type: "p",
+          text: "検索条件が空なら絞り込まない、といった作りは `<if test=\"...\">` で書きます。申請履歴検索の例です。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の searchHistory（申請くん・抜粋）",
+          lang: "xml",
+          highlightLines: [2, 3, 4, 5, 6],
+          code: `WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
+<if test="title != null and title != ''">
+  AND r.title LIKE CONCAT('%', #{title}, '%')
+</if>
+<if test="requestStatus != null and requestStatus != ''">
+  AND r.status = #{requestStatus}
+</if>`,
+        },
+        {
+          type: "p",
+          text: "`test` に書いた条件が true のときだけ、そのタグの中の SQL が組み込まれます。件名が空なら、件名の絞り込み自体が無い SQL になります。この実例は、シナリオの「申請履歴検索の結果が不正」でも使っています。",
+          link: {
+            label: "申請履歴検索の結果が不正",
+            to: "/tracks/scenario/history",
+          },
+        },
+        {
+          type: "p",
+          text: "ログに出た SQL からこの XML を逆に探す手順は、「SQL からソースを探す」の「MyBatis で探す」です。",
+          link: {
+            label: "MyBatis で探す",
+            to: "/tracks/trace/mybatis",
+          },
+        },
+        { type: "quiz", id: "java-mapper-xml" },
+      ],
+    },
+    {
       id: "transaction",
       title: "トランザクションと同時実行",
       minutes: 12,

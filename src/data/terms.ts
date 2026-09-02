@@ -206,6 +206,11 @@ export const terms: TermDef[] = [
     body: "SQL を XML やアノテーションで書き、Java から実行するライブラリです。ログに出た文に近い SQL が、プロジェクト内のファイルにあることが多いです。",
   },
   {
+    term: "型エイリアス",
+    aliases: ["型エイリアス", "type alias"],
+    body: "MyBatis の設定で、パッケージ配下のクラスをクラス名だけで参照できるようにする仕組みです。`type-aliases-package` で指定したパッケージのクラスは、`resultType=\"RequestEntity\"` のように完全なパッケージ名を省略できます。",
+  },
+  {
     term: "JPA",
     aliases: ["JPA", "JPQL"],
     body: "Java Persistence API。オブジェクトとテーブルを対応づけて DB アクセスします。実行される SQL はライブラリが組み立てることが多く、ソースに書いてないことがあります。",
@@ -412,6 +417,11 @@ export const terms: TermDef[] = [
     term: "プレースホルダ",
     aliases: ["プレースホルダ"],
     body: "SQL の値の穴です。ログでは `?` 、MyBatis の XML では `#{userId}` のように書きます。実行時に実際の値が入ります。",
+  },
+  {
+    term: "SQL インジェクション",
+    aliases: ["SQLインジェクション", "SQL インジェクション"],
+    body: "利用者からの入力を SQL の文字列にそのまま組み込んでしまい、意図しない SQL が実行されてしまう脆弱性です。MyBatis の `#{}` は値を安全にバインドしますが、`${}` は文字列としてそのまま埋め込むため、入力をそのまま渡すと危険です。",
   },
   {
     term: "スロークエリ",
