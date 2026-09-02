@@ -361,8 +361,7 @@ java    1842 appuser   45u  IPv6 123456      0t0  TCP *:8080 (LISTEN)`,
           type: "code",
           title: "例（同じことを ss で見る）",
           lang: "text",
-          code: `$ ss -ltnp
-State   Recv-Q  Send-Q     Local Address:Port     Peer Address:Port
+          code: `$ ss -ltnp | grep 8080
 LISTEN  0       128              0.0.0.0:8080          0.0.0.0:*      users:(("java",pid=1842,fd=45))`,
         },
         {
@@ -1481,6 +1480,17 @@ public void approve(Long requestId, Long approverId) {
           title: "例（検証用環境の MySQL）",
           lang: "sql",
           code: `EXPLAIN SELECT * FROM t_request WHERE applicant_id = 7;`,
+        },
+        {
+          type: "code",
+          title: "EXPLAIN の結果（検証用環境）",
+          lang: "text",
+          code: `table      type  possible_keys          key                    rows  Extra
+t_request  ref   fk_request_applicant   fk_request_applicant   3`,
+        },
+        {
+          type: "p",
+          text: "`t_request` は `applicant_id` に外部キー制約があり、MySQL が自動でインデックスを付けていることが多いです。`type` が `ref`（インデックスを使った絞り込み）、`key` にそのインデックス名が入り、`rows` の見積もりも小さく済んでいます。インデックスが使えていないと、この `key` が `NULL` になり、`type` は `ALL`（フルスキャン）に近づきます。",
         },
         {
           type: "p",
