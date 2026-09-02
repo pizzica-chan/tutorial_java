@@ -1327,6 +1327,251 @@ ORDER BY r.created_at DESC
           type: "p",
           text: "SQL ログの回数を見ましょう。一覧のレコード数だけ SELECT が増えるなら N+1 です。",
         },
+        {
+          type: "h2",
+          text: "`EXPLAIN` で SQL の実行計画を見る",
+        },
+        {
+          type: "p",
+          text: "ログの時刻差で、遅い SQL まで絞れたら、その SQL を検証用 DB で `EXPLAIN` してみましょう。実行計画とは、DB がその SQL をどう読むかの手順です。MySQL では次の書き方です。",
+        },
+        {
+          type: "code",
+          title: "例（検証用環境の MySQL）",
+          lang: "sql",
+          code: `EXPLAIN SELECT * FROM t_request WHERE applicant_id = 7;`,
+        },
+        {
+          type: "p",
+          text: "結果のカラムのうち、遅さを疑うときによく見るのは次の 5 つです。",
+        },
+        {
+          type: "table",
+          headers: ["カラム", "見ること"],
+          rows: [
+            ["`type`", "そのテーブルをどう読むか。`ALL` は先頭から全部読むフルスキャン"],
+            ["`possible_keys`", "この SQL の条件で使えるインデックスの候補。`NULL` なら候補が無い"],
+            ["`key`", "実際に使うと決めたインデックス。`possible_keys` があっても `key` が `NULL` のことがある"],
+            ["`rows`", "そのテーブルを何件読むかの見積もり。実測ではなくオプティマイザの推定"],
+            ["`Extra`", "補足。`Using filesort` は `ORDER BY` を追加のソートで行っている、`Using temporary` は一時テーブルを使っている、など"],
+          ],
+        },
+        {
+          type: "p",
+          text: "`type` が `ALL` で `rows` の見積もりが大きいなら、条件に合わないレコードも大量に読んでからフィルタしています。それがそのままログの `Preparing` から `Total` までの時間に表れます。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "possible_keys が NULL でもインデックスが無いとは限らない",
+          text: "`possible_keys` が `NULL` なのは、その SQL の条件で使える候補が無いという意味です。テーブルに他のインデックスがあっても、`WHERE` や `ORDER BY` のカラムと合わなければ候補になりません。",
+        },
+        {
+          type: "p",
+          text: "`EXPLAIN` の結果だけで、インデックスを足せば直るとは限りません。`OR` の左右が別カラムだったり、絞り込みと並べ替えのカラムが違ったりすると、`INDEX` を 1 本足すだけでは `type` が `ALL` のまま変わらないこともあります。SQL の書き方自体を見直す必要があることもあります。この読み方を使った具体例は、シナリオの「申請履歴の検索が遅い」で見られます。",
+          link: {
+            label: "[障害調査] 申請履歴の検索が遅い",
+            to: "/tracks/scenario/history-slow",
+          },
+        },
+        { type: "quiz", id: "ts-slow-explain" },
+      ],
+    },
+    {
+      id: "p-memory",
+      title: "トラブル例：メモリ不足・GC の当たりをつける",
+      minutes: 9,
+      blocks: [
+        {
+          type: "p",
+          text: "アプリが急に落ちる、動きが重くなる、といった症状のときは、メモリと GC（ガベージコレクション）も当たりの一つです。エラーログに `OutOfMemoryError` が出ていれば、メモリ不足の可能性が高いです。出ていなくても、`Full GC` が短い間隔で繰り返されていると、そのあいだ処理が止まり、遅く感じられることがあります。",
+        },
+        {
+          type: "h2",
+          text: "`OutOfMemoryError` のメッセージ",
+        },
+        {
+          type: "p",
+          text: "`OutOfMemoryError` は、メッセージによって疑う場所が変わります。まずメッセージを読みましょう。",
+        },
+        {
+          type: "code",
+          title: "例（申請くんの実ログではない）",
+          lang: "text",
+          highlightLines: [1],
+          highlightKind: "error",
+          code: `java.lang.OutOfMemoryError: Java heap space
+    at jp.co.example.shinsei.service.RequestService.searchHistory(RequestService.java:62)`,
+        },
+        {
+          type: "table",
+          headers: ["メッセージ", "疑うこと"],
+          rows: [
+            ["`Java heap space`", "ヒープが足りない。一度に大量のレコードをメモリに載せていないか、参照を持ち続けて解放されていないか（メモリリーク）"],
+            ["`GC overhead limit exceeded`", "GC を繰り返しても十分に回収できていない。ヒープ不足かメモリリークの兆候"],
+            ["`Metaspace`", "クラス情報を置く領域の不足。動的にクラスを生成するライブラリや、クラスローダーが解放されない構成で起きることがある"],
+            ["`unable to create new native thread`", "OS が許すスレッド数の上限に達している。スレッドが増え続けていないか"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "ヒープの上限は設定次第",
+          text: "ヒープの上限は `-Xmx` などの JVM 起動オプションで決まります。アプリのコードに問題が無くても、割り当てが小さすぎれば `OutOfMemoryError` になります。まずは起動コマンドやコンテナの設定で、どの値になっているかを確認しましょう。",
+        },
+        {
+          type: "h2",
+          text: "GC の頻度を見る",
+        },
+        {
+          type: "p",
+          text: "落ちるところまでいかなくても、`Full GC` が短い間隔で繰り返されていると、その間アプリの処理が止まります。GC の記録を出す設定があれば見ましょう。",
+        },
+        {
+          type: "code",
+          title: "GC ログの例（設定と JDK のバージョンで書式は変わる）",
+          lang: "text",
+          code: `[12.345s][info][gc] GC(42) Pause Full (Ergonomics) 1900M->1850M(2048M) 3210.123ms`,
+        },
+        {
+          type: "p",
+          text: "括弧の前後がヒープの使用量（回収前 → 回収後）と上限です。回収してもほとんど減っていなければ、解放できるはずのオブジェクトが残っている、つまりメモリリークの兆候です。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "書式は JDK のバージョンとオプション次第",
+          text: "GC ログの出し方と書式は、JDK のバージョンや起動オプションによって違います。ここで見る要点は書式そのものではなく、回収の頻度と、回収前後のヒープ使用量です。",
+        },
+        {
+          type: "h2",
+          text: "簡単に確認できるコマンド",
+        },
+        {
+          type: "p",
+          text: "サーバに入れるなら、次のコマンドで今の状態を確認できます。対象は Java プロセスの PID（プロセス ID）です。PID は「Linux の基本操作」で見た `ps` で調べられます。",
+        },
+        {
+          type: "table",
+          headers: ["コマンド", "すること"],
+          rows: [
+            ["`jstat -gcutil PID 1000`", "1 秒おきに GC の状況を表示する。`FGC` は `Full GC` の回数、`FGCT` はその合計時間"],
+            ["`jcmd PID GC.heap_info`", "今のヒープの使用状況を表示する"],
+            ["`jmap -dump:file=heap.hprof PID`", "ヒープの中身をファイルに書き出す（ヒープダンプ）"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "ヒープダンプは重い",
+          text: "ヒープダンプの取得中は、アプリの処理が止まることがあります。本番環境で取るときは、影響とタイミングを確認してから実行しましょう。",
+        },
+        {
+          type: "p",
+          text: "ここで見たのは、当たりをつけるまでの最低限です。GC アルゴリズムの選び方や、ヒープサイズの細かい調整は、この教材の範囲外です。メモリ不足やリークの疑いが強まったら、詳しい人に相談するか、専門の資料を見ましょう。",
+        },
+        { type: "quiz", id: "ts-memory" },
+      ],
+    },
+    {
+      id: "p-hang",
+      title: "トラブル例：処理が返ってこない（スレッドダンプ）",
+      minutes: 10,
+      blocks: [
+        {
+          type: "p",
+          text: "「トラブル例：遅い」は、ログが進みながら時間がかかっているケースでした。ここで扱うのは、ログの続きが一切出ないまま、処理が止まっているように見えるケースです。",
+        },
+        {
+          type: "h2",
+          text: "止まっている範囲をログで絞る",
+        },
+        {
+          type: "p",
+          text: "「トラブル例：遅い」と同じく、まず操作した時刻のログを確認しましょう。最後に出た行から先が進んでいなければ、その行のあとで止まっています。",
+          link: {
+            label: "トラブル例：遅い",
+            to: "/tracks/troubleshoot/p-slow",
+          },
+        },
+        {
+          type: "h2",
+          text: "スレッドダンプを取る",
+        },
+        {
+          type: "p",
+          text: "スレッドダンプとは、ある瞬間に、動いている各スレッドが何をしているかを書き出した記録です。止まっている最中に取ると、どこで止まっているかの手がかりになります。",
+        },
+        {
+          type: "table",
+          headers: ["環境", "コマンド"],
+          rows: [
+            ["Java プロセスに直接", "`jstack PID`"],
+            ["Docker コンテナの中", "`docker exec -it コンテナ名 jstack PID`"],
+            ["Kubernetes の Pod の中", "`kubectl exec -it Pod名 -- jstack PID`"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "1 回だけでなく数回取る",
+          text: "同じスレッドが何度取っても同じ場所で止まっていれば、そこが疑わしいです。数秒おきに 2〜3 回取って比べましょう。",
+        },
+        {
+          type: "h2",
+          text: "スレッドの状態を読む",
+        },
+        {
+          type: "p",
+          text: "スレッドダンプの各スレッドには、そのときの状態が書かれています。",
+        },
+        {
+          type: "table",
+          headers: ["状態", "意味"],
+          rows: [
+            ["`RUNNABLE`", "実行中、または OS レベルの入出力待ちを含む実行可能な状態"],
+            ["`BLOCKED`", "他のスレッドが持つロック（`synchronized` など）の解放を待っている"],
+            ["`WAITING` / `TIMED_WAITING`", "`wait()` や `join()`、外部からの応答など、何かの完了を待っている"],
+          ],
+        },
+        {
+          type: "h2",
+          text: "デッドロックを見分ける",
+        },
+        {
+          type: "p",
+          text: "`jstack` の出力の最後に「Found one Java-level deadlock」という行が出ることがあります。出ていれば、どのスレッドがどのロックを待っているかが明示されます。",
+        },
+        {
+          type: "code",
+          title: "デッドロックの出力例（申請くんの実ログではない）",
+          lang: "text",
+          code: `Found one Java-level deadlock:
+=============================
+"pool-1-thread-1":
+  waiting to lock monitor 0x00007f... (a jp.co.example.shinsei.service.RequestService),
+  which is held by "pool-1-thread-2"
+"pool-1-thread-2":
+  waiting to lock monitor 0x00007f... (a jp.co.example.shinsei.service.UserService),
+  which is held by "pool-1-thread-1"`,
+        },
+        {
+          type: "p",
+          text: "2 つのスレッドが、お互いの持つロックを待ち合っています。この出力が無くても、複数のスレッドが `BLOCKED` のまま同じロックを待っていれば、デッドロックに近い状態を疑いましょう。",
+        },
+        {
+          type: "h2",
+          text: "スタックだけでは分からないこと",
+        },
+        {
+          type: "p",
+          text: "外部 API への応答待ちで止まっているときは、スレッドの状態が `RUNNABLE` のまま長時間動かないこともあります。デッドロックの表示が無いからといって、正常とは限りません。at 行の一番上に、どのクラスのどのメソッドで止まっているかが出ます。それが自分たちのコードか、外部呼び出し用のライブラリかを確認しましょう。外部呼び出しで止まっているなら、次に進むのは疎通確認です。",
+          link: {
+            label: "トラブル例：外部システム / 外部 API",
+            to: "/tracks/troubleshoot/p-external",
+          },
+        },
+        { type: "quiz", id: "ts-hang" },
       ],
     },
     {

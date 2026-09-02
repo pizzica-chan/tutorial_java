@@ -355,6 +355,42 @@ export const quizzes = {
     answer: 2,
     explanation: "環境差は設定・データ・権限・ネットワークが定番です。",
   },
+  "ts-slow-explain": {
+    id: "ts-slow-explain",
+    question: "遅い SQL を検証用 DB で `EXPLAIN` すると、`type` が `ALL`、`possible_keys` が `NULL`、`rows` が数十万だった。ここから言えるのは？",
+    choices: [
+      "その SQL の文法が間違っている",
+      "条件に合うカラムに使えるインデックスの候補が無く、テーブルをほぼ全件読んでいる",
+      "DB 自体が落ちている",
+      "アプリのログ出力レベルが間違っている",
+    ],
+    answer: 1,
+    explanation: "`type` が `ALL` は先頭から全部読むフルスキャン、`possible_keys` が `NULL` はこの SQL の条件で使える候補が無いという意味です。`rows` は読む見積もり件数で、ここが大きいほどフルスキャンの負荷も大きくなります。",
+  },
+  "ts-memory": {
+    id: "ts-memory",
+    question: "エラーログに `java.lang.OutOfMemoryError: Java heap space` が出ている。まず疑うのは？",
+    choices: [
+      "テンプレートの `th:if` の書き方",
+      "大量のレコードを一度にメモリへ載せている、または参照を持ち続けて解放されていない",
+      "Cookie の `SameSite` 属性",
+      "HTTP サーバの `access.log` の書式",
+    ],
+    answer: 1,
+    explanation: "`Java heap space` はヒープ不足を示すメッセージです。一度に大量のデータを読み込んでいないか、不要になったオブジェクトの参照を持ち続けていないか（メモリリーク）を疑います。ヒープの上限自体が小さすぎることもあります。",
+  },
+  "ts-hang": {
+    id: "ts-hang",
+    question: "特定の操作だけ、いつまでも応答が返らない。ログの続きも出ない。次にすることは？",
+    choices: [
+      "ソースのインデントを直す",
+      "止まっている最中にスレッドダンプを取り、各スレッドの状態と待っているロックを確認する",
+      "CSS のキャッシュを削除する",
+      "DB のテーブルを DROP する",
+    ],
+    answer: 1,
+    explanation: "ログが途中から出ないのは、遅いのではなく止まっている状態です。止まっている最中にスレッドダンプを取り、`BLOCKED` のスレッドがどのロックを待っているか、デッドロックの表示が無いかを確認します。",
+  },
   "ts-external": {
     id: "ts-external",
     question: "承認は成功したが通知メールだけ来ない。Mapper の更新ログはある。次に疑うのは？",
