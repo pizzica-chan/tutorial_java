@@ -1747,7 +1747,7 @@ th {
 .d-template-fragment {
   display: grid;
   gap: 10px;
-  max-width: 480px;
+  max-width: 640px;
   margin: 0 auto;
 }
 
@@ -1768,7 +1768,7 @@ th {
   border: 1px solid rgba(57, 92, 163, 0.55);
   background: rgba(57, 92, 163, 0.1);
   color: var(--paper);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .d-template-fragment-header span:not(.d-template-fragment-mark):first-of-type {
@@ -1785,7 +1785,7 @@ th {
   background: rgba(57, 92, 163, 0.08);
   color: var(--muted);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .d-template-fragment-slot {
@@ -1796,7 +1796,7 @@ th {
   border: 1px dashed rgba(57, 92, 163, 0.45);
   color: var(--quiet);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .d-template-fragment-mark {
@@ -1809,7 +1809,7 @@ th {
   background: rgba(57, 92, 163, 0.9);
   color: #ffffff;
   font-family: var(--sans);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1;
   flex-shrink: 0;
@@ -1832,7 +1832,7 @@ th {
 .d-template-fragment-label {
   margin: 0;
   color: var(--quiet);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.06em;
 }
 
@@ -1845,14 +1845,14 @@ th {
 
 .d-template-fragment-page-title {
   margin: 0;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .d-template-fragment-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .d-template-fragment-table th,
