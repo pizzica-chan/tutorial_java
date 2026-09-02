@@ -114,7 +114,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "ここでは入口の特定までです。次の項目「入口のあとの順番」で、入口からどこを見るかを押さえます。そのあと、次章「リクエストの追跡」で、この `list` から Service、SQL、応答へ進みます。",
+          text: "ここでは入口の特定までです。次の項目「入口のあとの順番」で、入口からどこを見るかを押さえたあと、「URL マッピング」と「Service から Mapper へ」で、この `list` から Service まで辿ります。SQL と応答は、次章「SQL からソースを探す」で扱います。",
         },
         {
           type: "h2",
@@ -166,7 +166,164 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "次の章「リクエストの追跡」では、この入口から、URL マッピング → Service の分岐 → SQL（永続化） → 応答という具体的な流れを、申請一覧で辿ります。",
+          text: "次の項目「URL マッピング」と「Service から Mapper へ」では、この入口から、URL マッピング → Service の分岐という具体的な流れを、申請一覧で辿ります。SQL と応答は、次章「SQL からソースを探す」で扱います。",
+        },
+      ],
+    },
+    {
+      id: "mapping",
+      title: "URL マッピング",
+      minutes: 8,
+      blocks: [
+        {
+          type: "p",
+          text: "Spring では、クラスの `@RequestMapping` に書いたパス（プレフィックス）と、メソッドの `@GetMapping` などに書いたパスをつなげると、URL のパス部分になります。",
+        },
+        {
+          type: "code",
+          title: "合成される URL",
+          lang: "java",
+          code: `@Controller
+@RequestMapping("/requests")
+public class RequestController {
+  @GetMapping
+  public String list(...) { ... }              // GET /requests
+
+  @GetMapping("/{id:[0-9]+}")
+  public String detail(...) { ... }            // GET /requests/12
+
+  @PostMapping("/{id}/approve")
+  public String approve(...) { ... }           // POST /requests/12/approve
+
+  @GetMapping("/history")
+  public String history(...) { ... }           // GET /requests/history
+}`,
+        },
+        { type: "diagram", name: "mapping" },
+        {
+          type: "callout",
+          kind: "tip",
+          title: "コンテキストパス",
+          text: "画面の URL は `/shinsei/requests` でした。先頭の `/shinsei` はコンテキストパスなので、Controller のマッピングは Spring の `@RequestMapping(\"/requests\")` だけの場合があります。入口を見直すときは、`requests` のように特徴的な部分で検索しましょう。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "`{id}` と固定のパスが重なるとき",
+          text: "`GET /requests/history` はパスの形だけ見ると `{id}` に当てはまりそうですが、`history` という固定のパスのマッピングが別にあるので、そちらに一致します。申請くんはさらに `{id:[0-9]+}` のように、`id` を数字だけに制限しています。こう書いておくと、`/requests/abc` のような URL では `detail` に一致しなくなります。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-detail.jpg",
+          alt: "申請くんの申請詳細画面（交通費申請）",
+          caption: "申請詳細。アドレスバーは `/shinsei/requests/12` です。`list` ではなく、パスに ID が付く `detail` です。",
+        },
+        {
+          type: "p",
+          text: "Java のメソッド名が `list` でも、今見ている画面の入口だとは限りません。HTTP メソッド（GET など）とパスの両方を確認しましょう。",
+        },
+        {
+          type: "p",
+          text: "JSON を返す Web API も、クラスのプレフィックスとメソッドのパスを足す点は同じです。出口がテンプレートではなく JSON なだけです。",
+        },
+        {
+          type: "code",
+          title: "RestController",
+          lang: "java",
+          code: `@RestController
+@RequestMapping("/api/requests")
+public class RequestApiController {
+  @GetMapping
+  public List<RequestResponse> list(...) { ... }     // GET /api/requests → JSON の配列
+
+  @GetMapping("/{id}")
+  public RequestResponse detail(...) { ... }         // GET /api/requests/12 → JSON 1件
+
+  @PostMapping("/{id}/approve")
+  public void approve(...) { ... }                   // POST /api/requests/12/approve
+}`,
+        },
+        {
+          type: "p",
+          text: "ここまでは Spring の例でした。最後に、URL マッピングの注意点をまとめます。",
+        },
+        {
+          type: "ul",
+          items: [
+            "RestController は JSON を返すことが多い。画面 HTML ではなく、templates は参照しない",
+            "複数の Controller が同じパスを持つと起動時に衝突する",
+            "Struts なら設定 XML や action 属性を見る",
+          ],
+        },
+      ],
+    },
+    {
+      id: "down",
+      title: "Service から Mapper へ",
+      minutes: 9,
+      blocks: [
+        {
+          type: "p",
+          text: "Controller の次に、ビジネスロジックを扱う Java メソッドを見ましょう。ここでは、枝分かれ（if / throw / 他クラス呼び出し）が分かりやすい例として、`list` ではなく承認（`approve`）の処理を見ます。Service のメソッドでよく出てくる処理は、次の4種類です。",
+        },
+        {
+          type: "ul",
+          items: [
+            "if / switch … ステータスや権限で早期 return",
+            "throw … 業務例外。画面メッセージと対応することが多い",
+            "save / update / insert … 永続化",
+            "他クラスの呼び出し … メール、ワークフロー、履歴",
+          ],
+        },
+        {
+          type: "p",
+          text: "申請くんの例には無いですが、ファイルの入出力やデータの加工が中心の Service もあります。",
+        },
+        {
+          type: "code",
+          title: "ファイル入出力とデータの加工（例）",
+          lang: "java",
+          code: `public void exportCsv(List<Order> orders) throws IOException {
+  List<String> lines = orders.stream()
+      .map(o -> o.getId() + "," + o.getAmount())
+      .collect(Collectors.toList());
+  Files.write(Paths.get("orders.csv"), lines);
+}`,
+        },
+        {
+          type: "p",
+          text: "次のコード例では、強調した行に注目します。",
+        },
+        {
+          type: "code",
+          title: "承認処理（申請くん）",
+          lang: "java",
+          highlightLines: [7],
+          code: `if (request == null) throw new NotFoundException(...);
+if (!request.getApproverId().equals(approverId))
+  throw new ForbiddenException(...);
+if (!"PENDING".equals(request.getStatus()))
+  throw new ConflictException(...);
+request.setStatus("APPROVED");
+requestMapper.update(request);
+mailService.notifyApplicant(request);`,
+        },
+        {
+          type: "p",
+          text: "永続化を担っているのは `requestMapper.update` です。呼び出し先のインターフェースを見ると、SQL の実行そのものは Mapper に任せていると分かります。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.java（update の宣言）",
+          lang: "java",
+          code: `public interface RequestMapper {
+  int update(RequestEntity request);
+}`,
+        },
+        {
+          type: "p",
+          text: "この宣言だけでは、実際に発行される SQL は分かりません。次章「SQL からソースを探す」で確認します。",
         },
       ],
     },

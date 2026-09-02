@@ -166,18 +166,6 @@ export const quizzes = {
     answer: 1,
     explanation: "Filter と Interceptor と Security は、Controller のソースに呼び出しがありません。だから、ソースを追うだけでは見つかりません。ここで処理が遮断されると、レスポンスは返っても、Controller は動いていません。",
   },
-  "trace-start": {
-    id: "trace-start",
-    question: "申請一覧の処理の入口が `RequestController.list` だと分かった。この章で次に追うのは？",
-    choices: [
-      "Controller に届く前の Filter や Interceptor の一覧だけ",
-      "`list` から Service、SQL、返すテンプレートまでの一本の線",
-      "使われているテーブルの DDL だけ",
-      "リポジトリを先頭から通読する",
-    ],
-    answer: 1,
-    explanation: "入口が分かったら、その Java メソッドから下へ降り、応答までを一本で追います。Controller に届く前の Filter や Interceptor、テーブルの DDL は、また別に見ていきます。リポジトリの全体通読は、この線の外です。",
-  },
   "read-name": {
     id: "read-name",
     question: "画面に「承認待ち」と出る処理を探したい。有効な手がかりは？",
