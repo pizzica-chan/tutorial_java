@@ -270,6 +270,12 @@ export const troubleshootTrack: Track = {
           text: "`Permission denied` は、パーミッションかユーザが原因であることが多く、アプリのロジックの不具合ではありません。`ls -l` で対象ファイルの権限と所有者を確認し、今のユーザに読み書きの権限があるかを見ましょう。権限を変える `chmod` / `chown` は、理由を確認してから使いましょう。",
         },
         {
+          type: "callout",
+          kind: "note",
+          title: "SELinux が原因のこともある",
+          text: "`ls -l` の権限も所有者も正しいのに `Permission denied` になるときは、SELinux が原因のこともあります。RHEL 系でよく有効です。`getenforce` で `Enforcing` なら疑い、`ls -Z` でファイルのセキュリティコンテキストも確認しましょう。",
+        },
+        {
           type: "h3",
           text: "SSH のユーザと、アプリを動かしているユーザは別のことが多い",
         },
