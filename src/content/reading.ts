@@ -835,6 +835,33 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
           text: "`#{title}` は、渡されたオブジェクト（ここでは `request`）の `getTitle()` を呼び、その値を SQL のプレースホルダに埋め込む書き方です。宣言・引数・代入・SQL のバインドをひとつずつ辿れば、値の流れは追えます。",
         },
         {
+          type: "callout",
+          kind: "tip",
+          title: "詰め替えで名前が変わることがある",
+          text: "Entity から DTO（レスポンス用オブジェクトなど）へ詰め替えるとき、フィールド名が変わっていることがあります。詰め替えの行までは検索で見つかっても、そこから先は元のフィールド名で追いましょう。",
+        },
+        {
+          type: "code",
+          title: "OrderResponse（例。申請くんではありません）",
+          lang: "java",
+          highlightLines: [9],
+          code: `public class OrderResponse {
+  private final String buyer;
+
+  private OrderResponse(String buyer) {
+    this.buyer = buyer;
+  }
+
+  public static OrderResponse from(Order order) {
+    return new OrderResponse(order.getCustomerName());
+  }
+}`,
+        },
+        {
+          type: "p",
+          text: "レスポンスの `buyer` が想定と違うとき、`buyer` で検索すると、この詰め替えの1行が見つかります。元の値は `Order` 側の `customerName` なので、そちらの名前でも追いましょう。",
+        },
+        {
           type: "p",
           text: "ここまでは、代入も、それを使う処理も、同じリクエストの中で完結していました。代入した箇所と、それが原因で例外になる箇所が、別のタイミングで動く別のコードにあることもあります。たとえば、申請の登録時に承認者を未選択のまま登録すると、承認者の ID は `null` のまま保存されます。この値を後日の承認処理で使おうとすると、NPE になります。",
         },
@@ -861,7 +888,7 @@ request.getApproverId().equals(userId); // NPE`,
         },
         {
           type: "p",
-          text: "変数への代入をソースで検索しても、呼び出し元が見つからないことも、見つかった行だけでは元の値に気づきにくいこともあります。よくある3パターンです。",
+          text: "変数への代入をソースで検索しても、呼び出し元が見つからないことがあります。よくある2パターンです。",
         },
         {
           type: "h3",
@@ -890,35 +917,6 @@ request.getApproverId().equals(userId); // NPE`,
         {
           type: "p",
           text: "こういうときは、Setter の呼び出し元ではなく、フォームの `name` 属性や JSON のキー名と、フィールド名が一致しているかを見ましょう。",
-        },
-        {
-          type: "h3",
-          text: "詰め替えで名前が変わる",
-        },
-        {
-          type: "p",
-          text: "Entity から DTO（レスポンス用オブジェクトなど）へ詰め替えるとき、フィールド名が変わっていることがあります。詰め替えあとの名前で検索しても、詰め替えの1行から先（元のフィールド名）へはそのままでは辿れません。",
-        },
-        {
-          type: "code",
-          title: "OrderResponse（例。申請くんではありません）",
-          lang: "java",
-          highlightLines: [9],
-          code: `public class OrderResponse {
-  private final String buyer;
-
-  private OrderResponse(String buyer) {
-    this.buyer = buyer;
-  }
-
-  public static OrderResponse from(Order order) {
-    return new OrderResponse(order.getCustomerName());
-  }
-}`,
-        },
-        {
-          type: "p",
-          text: "レスポンスの `buyer` が想定と違うとき、`buyer` だけで検索しても、この詰め替えの1行しか見つかりません。元の値は `Order` 側の `customerName` なので、両方の名前で追いましょう。",
         },
         {
           type: "h3",
