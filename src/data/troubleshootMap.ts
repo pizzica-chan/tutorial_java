@@ -219,6 +219,7 @@ export const troubleshootMap: ObservableGroup[] = [
         tells: "画面の更新とメール・通知は別の処理です。後者の成否は画面には出ません。行が無ければ呼ばれておらず、ERROR があればそこが失敗した箇所です。",
         links: [
           { label: "トラブル例：外部システム / 外部 API", to: "/tracks/troubleshoot/p-external" },
+          { label: "[障害調査] 承認は成功するのに、申請者への通知メールが届かない", to: "/tracks/scenario/mail-silent" },
           { label: "アプリのログで処理を追う", to: "/tracks/troubleshoot/log-follow" },
         ],
       },

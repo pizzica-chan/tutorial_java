@@ -1723,7 +1723,11 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
         },
         {
           type: "p",
-          text: "承認処理は DB を更新したあと、MailService で申請者へメールを送る想定です。画面は承認済みなのにメールが来ないときは、Mapper の更新ログのあとに MailService の行があるかを見ましょう。SMTP サーバや通知 API の向き先は `application.yml` にあることが多いです。",
+          text: "承認処理は DB を更新したあと、MailService で申請者へメールを送る想定です。画面は承認済みなのにメールが来ないときは、Mapper の更新ログのあとに MailService の行があるかを見ましょう。SMTP サーバや通知 API の向き先は `application.yml` にあることが多いです。ただし、MailService の行が `WARN` などで残っていても、そこで例外が握りつぶされていると、それだけでは原因まで辿れません。実際にこれが起きた例は、「実務のシナリオ」の「承認は成功するのに、申請者への通知メールが届かない」で扱います。",
+          link: {
+            label: "承認は成功するのに、申請者への通知メールが届かない",
+            to: "/tracks/scenario/mail-silent",
+          },
         },
         {
           type: "callout",

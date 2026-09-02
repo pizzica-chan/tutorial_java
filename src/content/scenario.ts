@@ -588,6 +588,131 @@ mailService.notifyApplicant(request);`,
       ],
     },
     {
+      id: "mail-silent",
+      title: "[障害調査] 承認は成功するのに、申請者への通知メールが届かない",
+      minutes: 10,
+      blocks: [
+        {
+          type: "callout",
+          kind: "scenario",
+          text: "佐藤花子が ID 13「休暇申請」を承認すると、画面は承認済みに変わり、エラーは出ない。しかし、申請者の山田太郎に確認したところ、通知メールが届いていない。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "佐藤花子（承認者）でログイン。検証用環境。ID 13「休暇申請」を承認した",
+            "画面は承認済みに変わり、エラーメッセージは出ていない",
+            "申請者の山田太郎に確認したが、通知メールは届いていない",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先に見ること",
+        },
+        {
+          type: "p",
+          text: "Network タブを見ましょう。`POST /shinsei/requests/13/approve` は成功しており、ステータスコードもエラーを示していません。画面にも何も出ていないので、次はサーバ側のログです。",
+        },
+        {
+          type: "h2",
+          text: "原因の追跡",
+        },
+        {
+          type: "p",
+          text: "操作時刻のアプリログを見ます。",
+        },
+        {
+          type: "code",
+          title: "操作時刻のサーバログ（申請くん・検証用環境）",
+          lang: "text",
+          highlightLines: [4],
+          code: `10:15:03.100 DEBUG [nio-8080-exec-4] ...ServiceLoggingAspect : start RequestService.approve(..)
+10:15:03.105 DEBUG [nio-8080-exec-4] ...RequestMapper.update : ==>  Preparing: UPDATE t_request SET status = ?, updated_at = NOW() WHERE id = ?
+10:15:03.107 DEBUG [nio-8080-exec-4] ...RequestMapper.update : <==    Updates: 1
+10:15:03.110 WARN  [nio-8080-exec-4] ...service.MailService : 通知メールの送信に失敗しました requestId=13
+10:15:03.111 DEBUG [nio-8080-exec-4] ...ServiceLoggingAspect : end RequestService.approve(..)`,
+        },
+        {
+          type: "p",
+          text: "DB の更新（`Updates: 1`）は成功しています。その直後に `MailService` の `WARN` があり、通知メールの送信に失敗したと分かります。ただし、この行には例外のクラス名もスタックトレースもありません。`WARN` の文言をソースで検索しましょう。",
+        },
+        {
+          type: "code",
+          title: "MailService.java（申請くん）",
+          lang: "java",
+          highlightLines: [7, 12],
+          highlightKind: "error",
+          code: `public void notifyApplicant(RequestEntity request) {
+  try {
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setTo(request.getApplicantEmail());
+    message.setSubject(request.getTitle().substring(0, 10) + " が承認されました");
+    message.setText(request.getTitle() + " が承認されました。");
+    mailSender.send(message);
+  } catch (Exception e) {
+    log.warn("通知メールの送信に失敗しました requestId={}", request.getId());
+  }
+}`,
+        },
+        {
+          type: "p",
+          text: "`catch (Exception e)` で例外を捕まえていますが、ログには `e` を渡していません。これでは、例外の種類もスタックトレースも残らず、`WARN` の1行だけが手がかりになります。原因を確かめるには、いったん `log.warn(\"...\", e)` のようにログへ `e` を渡すよう直し、もう一度承認を再現させましょう。デバッガでこの `catch` にブレークポイントを張っても、同じ変数を確認できます。",
+        },
+        {
+          type: "code",
+          title: "e を渡して再現させたログ（申請くん）",
+          lang: "text",
+          highlightLines: [2],
+          code: `10:15:03.110 WARN  [nio-8080-exec-4] ...service.MailService : 通知メールの送信に失敗しました requestId=13
+java.lang.StringIndexOutOfBoundsException: begin 0, end 10, length 4
+    at java.base/java.lang.String.checkBoundsBeginEnd(String.java:4602)
+    at java.base/java.lang.String.substring(String.java:2707)
+    at jp.co.example.shinsei.service.MailService.notifyApplicant(MailService.java:5)`,
+        },
+        {
+          type: "p",
+          text: "`StringIndexOutOfBoundsException` です。原因は `request.getTitle().substring(0, 10)` でした。「休暇申請」は4文字しかなく、先頭10文字を切り出そうとして例外になっています。長い件名を短くするための処理ですが、10文字に満たない件名を考慮していません。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "catch は握りつぶさない",
+          text: "`catch (Exception e)` は、SMTP の一時的な失敗のような「想定内の失敗」だけでなく、`substring` の範囲外アクセスのような「バグによる例外」まで一緒に捕まえてしまいます。ログに `e` を渡さずにメッセージだけ出すと、どちらが起きたのか区別できません。想定内の失敗と、バグによる例外は、分けて扱いましょう。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "画面にエラーが出ない不具合は、`catch` で例外が握りつぶされていないかを疑う",
+            "`catch (Exception e)` は、想定していない種類の例外まで一緒に捕まえてしまう。ログに `e` を渡さないと、原因の手がかりが消える",
+            "件数やテストデータが偏っていると、境界値のバグ（今回は10文字未満の件名）に気づかないまま本番へ出ることがある",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "Network タブで `POST /requests/13/approve` が成功しており、画面にもエラーが無いことを確認",
+            "アプリログで、DB 更新の直後に `MailService` の `WARN` があるが、例外の詳細が無いことを確認",
+            "`catch (Exception e)` がログに `e` を渡していないと分かる",
+            "ログに `e` を渡して再現させ、`StringIndexOutOfBoundsException` と分かる",
+            "`request.getTitle().substring(0, 10)` が原因で、10文字未満の件名で例外になることを特定",
+          ],
+        },
+        { type: "quiz", id: "sc-mail-silent" },
+      ],
+    },
+    {
       id: "db",
       title: "[障害調査] 検証用環境だけ、申請一覧が 0 件",
       minutes: 8,
