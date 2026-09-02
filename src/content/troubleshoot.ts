@@ -546,11 +546,33 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
         {
           type: "code",
           title: "nginx の access.log の例（combined 形式）",
-          code: `192.0.2.10 - - [16/Aug/2026:04:12:03 +0900] "GET /shinsei/css/app.css HTTP/1.1" 404 153 "-" "Mozilla/5.0 ..."`,
+          highlightLines: [2],
+          highlightKind: "error",
+          code: `192.0.2.10 - - [16/Aug/2026:04:12:03 +0900] "GET /shinsei/requests HTTP/1.1" 200 5423 "-" "Mozilla/5.0 ..."
+192.0.2.10 - - [16/Aug/2026:04:12:03 +0900] "GET /shinsei/css/app.css HTTP/1.1" 404 153 "-" "Mozilla/5.0 ..."
+192.0.2.10 - - [16/Aug/2026:04:12:03 +0900] "GET /shinsei/js/app.js HTTP/1.1" 200 812 "-" "Mozilla/5.0 ..."`,
         },
         {
           type: "p",
-          text: "上の例なら、`/shinsei/css/app.css` への GET が 404 です。同じ時刻に `/shinsei/requests` は 200 なら、動的処理は Java に届き、CSS だけ手前の設定がずれている、と切り分けできます。出力先と書式は環境次第です。",
+          text: "3行とも同じ接続元 IP・同じ時刻です。`/shinsei/css/app.css` への GET だけ 404 で、`/shinsei/requests` と `/shinsei/js/app.js` は 200 です。動的処理は Java に届いており、CSS だけ手前の設定がずれている、と切り分けできます。出力先と書式は環境次第です。",
+        },
+        {
+          type: "table",
+          headers: ["部分", "意味"],
+          rows: [
+            ["`192.0.2.10`", "接続元 IP（先頭のフィールド）"],
+            ["`[16/Aug/2026:04:12:03 +0900]`", "リクエストを受けた日時"],
+            ["`\"GET /shinsei/css/app.css HTTP/1.1\"`", "HTTP メソッド・URL のパス・バージョン"],
+            ["`404`", "ステータスコード"],
+            ["`153`", "レスポンスのサイズ（バイト）"],
+            ["`\"Mozilla/5.0 ...\"`", "User-Agent（ブラウザやツールの情報）"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "接続元 IP は NAT されていることがある",
+          text: "先頭の IP は、あくまで HTTP サーバに直接つないできた相手のアドレスです。手前にロードバランサやリバースプロキシ、社内 NAT があると、ここに残るのはその機器の IP で、利用者本人の IP ではないことがあります。本来の送信元は `X-Forwarded-For` ヘッダに入っていることがありますが、詰め方は構成次第で、途中の機器が正しく引き継いでいるとは限りません。",
         },
         {
           type: "callout",
