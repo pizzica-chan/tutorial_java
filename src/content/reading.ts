@@ -261,6 +261,11 @@ export const readingTrack: Track = {
               "検索欄に正規表現を入力して Enter。ファイル内なら次の一致へは F3",
               "検索欄に正規表現を入力して「検索」。次の一致へは Ctrl+. など（キー割り当ては環境次第）",
             ],
+            [
+              "大文字・小文字を区別",
+              "検索バーの「Aa」アイコンで切り替える",
+              "「検索/置換...」ダイアログの「大文字と小文字を区別」チェックボックスで切り替える",
+            ],
           ],
         },
         {
@@ -301,7 +306,16 @@ export const readingTrack: Track = {
               "`^import .+Request`",
               "「`import jp.co.example.shinsei.entity.RequestEntity;`」— 行頭の import でヒットする",
             ],
+            [
+              "`NotFoundException` か `ForbiddenException` を投げている行",
+              "`throw new (NotFoundException|ForbiddenException)`",
+              "「`throw new ForbiddenException(\"承認権限がありません\")`」— ヒットする。「`throw new NotFoundException(...)`」— ヒットする",
+            ],
           ],
+        },
+        {
+          type: "p",
+          text: "ここまでは、そのまま貼って使える組み合わせ済みのパターンでした。ここからは、その中の記号を1つずつ見ていきます。自分の探したいものに合わせてパターンを書き換えたいときに使います。",
         },
         {
           type: "h2",
@@ -399,6 +413,26 @@ export const readingTrack: Track = {
               "`\\d+`",
               "数字が1つ以上",
               "「`/requests/12/approve`」— 12 の部分にヒットする",
+            ],
+          ],
+        },
+        {
+          type: "p",
+          text: "候補を挙げる — `NotFoundException` でも `ForbiddenException` でもヒットさせたい、大文字小文字のゆれを両方拾いたい、といった書き方です。",
+        },
+        {
+          type: "table",
+          headers: ["書き方", "意味", "ヒットする例"],
+          rows: [
+            [
+              "`(NotFoundException|ForbiddenException)`",
+              "`|` は「または」。まとめる `( )` も必要",
+              "「`ForbiddenException`」— ヒットする。「`NotFoundException`」— ヒットする",
+            ],
+            [
+              "`[Ee]xception`",
+              "`[ ]` は、その中のどれか1文字",
+              "「`Exception`」— ヒットする。「`exception`」— ヒットする",
             ],
           ],
         },
