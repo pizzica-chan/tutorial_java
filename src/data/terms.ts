@@ -8,7 +8,7 @@ export const terms: TermDef[] = [
   {
     term: "申請くん",
     aliases: ["申請くん"],
-    body: "この教材の架空の社内申請アプリ。社員が申請を出し、承認者が承認する、という想定です。Spring Boot、Thymeleaf、MyBatis、MySQL、Spring Security。実在しません。",
+    body: "この教材の架空の社内申請アプリ。社員が申請を出し、承認者が承認する、という想定です。Spring Boot、Thymeleaf、MyBatis、MySQL、Spring Security を使う設定ですが、このアプリ自体は実在しません。",
   },
   {
     term: "HTTP",
@@ -53,7 +53,7 @@ export const terms: TermDef[] = [
   {
     term: "502 / 503",
     aliases: ["502", "503"],
-    body: "502 は Bad Gateway、503 は Service Unavailable。502 は、手前の HTTP サーバやロードバランサから、後ろのアプリにリクエストが届かないときに多いステータスコードです。503 はそれに加え、アプリ自身が過負荷やメンテナンスで返すこともあるので、手前だけでなくアプリのログも確認しましょう。",
+    body: "502 は Bad Gateway、503 は Service Unavailable。502 は、手前の HTTP サーバやロードバランサから、後ろのアプリにリクエストが届かないときに多いステータスコードです。503 は、502 と同じ原因に加えて、アプリ自身が過負荷やメンテナンスで返すこともあります。手前だけでなくアプリのログも確認しましょう。",
   },
   {
     term: "302 / 303",
@@ -188,7 +188,7 @@ export const terms: TermDef[] = [
   {
     term: "フラグメント",
     aliases: ["フラグメント", "th:fragment", "th:replace"],
-    body: "Thymeleaf で、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。複数画面で共通する HTML を1か所にまとめて共有できます。申請くんでは `fragments/layout.html` が全画面共通のヘッダと CSS を持ち、各画面の個別ファイルが `th:replace` で使います。",
+    body: "Thymeleaf で、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。複数画面で共通する HTML を1か所にまとめて共有できます。申請くんでは `fragments/layout.html` が全画面共通のヘッダと CSS を持ち、各画面の個別ファイルが、そのフラグメントを `th:replace` で使います。",
   },
   {
     term: "JSP",
@@ -256,7 +256,7 @@ export const terms: TermDef[] = [
   {
     term: "自作クラス",
     aliases: ["自作クラス", "自作パッケージ"],
-    body: "このプロジェクトで書いたコード。at 行のパッケージが、自分たちが書いたコードのもの（申請くんなら `jp.co.example.shinsei`）で始まる行です。",
+    body: "このプロジェクトで書いたコードです。スタックトレースでは、at 行のパッケージが、自分たちが書いたコードのもの（申請くんなら `jp.co.example.shinsei`）で始まる行がこれにあたります。",
   },
   {
     term: "NullPointerException",
@@ -1026,7 +1026,7 @@ export const terms: TermDef[] = [
   {
     term: "Referer",
     aliases: ["Referer"],
-    body: "どの画面から来たかを示すリクエストヘッダです。綴りは Referer が正しい名前です。",
+    body: "どの画面から来たかを示すリクエストヘッダです。正しい綴りは Referer です。",
   },
   {
     term: "Secure",
@@ -1186,12 +1186,12 @@ export const terms: TermDef[] = [
   {
     term: "認可",
     aliases: ["認可"],
-    body: "「権限を確かめること」という言い方です。認証（誰であるか）のあとで、その操作をしてよいかを見ます。",
+    body: "権限を確かめることです。認証（誰であるか）のあとで、その操作をしてよいかを見ます。",
   },
   {
     term: "権限",
     aliases: ["権限"],
-    body: "その人に、その操作やデータを扱ってよいか。承認者かどうかのチェックもこれです。足りないときの画面やステータスコードは、アプリによって違います。",
+    body: "その人が、その操作やデータを扱ってよいかということです。承認者かどうかのチェックもこれです。足りないときの画面やステータスコードは、アプリによって違います。",
   },
   {
     term: "ロール",
@@ -1331,7 +1331,7 @@ export const terms: TermDef[] = [
   {
     term: "プロキシ",
     aliases: ["プロキシ"],
-    body: "間に入って中継するもの。Spring が作る $Proxy も、通信のプロキシも、この言葉を使います。",
+    body: "間に入って中継するものです。Spring が作る $Proxy も、通信のプロキシも、この言葉で呼びます。",
   },
   {
     term: "インスタンス",

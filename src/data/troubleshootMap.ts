@@ -153,7 +153,7 @@ export const troubleshootMap: ObservableGroup[] = [
         symptom: "操作しても反応が無い、または読み込みが終わらない",
         cause: ["ネットワーク"],
         check: "アプリのログに、操作した時刻の行があるかを確認しましょう。",
-        tells: "行が無ければ、まだアプリに届いていません。見ているログが違う、別インスタンス、手前の HTTP サーバで止まっている、なども疑わしいです。Controller の中はまだ関係ありません。",
+        tells: "行が無ければ、まだアプリに届いていません。見ているログが違う、別インスタンスで動いている、手前の HTTP サーバで止まっている、なども疑わしいです。Controller の中はまだ関係ありません。",
         links: [
           { label: "アプリログの場所と読み方", to: "/tracks/troubleshoot/logs" },
           { label: "ネットワークの疎通確認", to: "/tracks/troubleshoot/net-check" },
@@ -241,7 +241,7 @@ export const troubleshootMap: ObservableGroup[] = [
         symptom: "ある環境（検証用環境など）だけで再現する",
         cause: ["サーバ"],
         check: "設定・データ・権限の差を確認しましょう。まず、起動プロファイルと `application.yml` の接続先を見ましょう。",
-        tells: "同じコードでも、接続先やマスタ、ログインユーザが違えば結果は変わります。コードの差分より先に、環境の差を表にしましょう。",
+        tells: "同じコードでも、接続先やマスタ、ログインユーザが違えば結果は変わります。原因はコードよりも、こうした環境の差にあることが多いです。",
         links: [
           { label: "トラブル例：環境差", to: "/tracks/troubleshoot/p-env" },
           { label: "[障害調査] 検証用環境だけ、申請一覧が 0 件", to: "/tracks/scenario/db" },

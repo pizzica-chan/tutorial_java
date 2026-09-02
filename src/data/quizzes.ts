@@ -23,7 +23,7 @@ export const quizzes = {
       "一覧の 1 ページあたりの表示件数（ページングの設定）",
     ],
     answer: 1,
-    explanation: "一覧の件数は、SQL が読んだ DB のレコードです。先に実行された SQL を見て、同じ条件でレコードを数えます。ページングの表示件数は、SQL で読んだあとの見せ方の設定なので、まずは SQL 側を確認します。見た目の CSS とは切り分けが違います。",
+    explanation: "一覧の件数は、SQL が読んだ DB のレコードの数です。先に実行された SQL を見て、同じ条件でレコードを数えます。ページングの表示件数は、SQL で読んだあとの見せ方の設定なので、まずは SQL 側を確認します。見た目の CSS とは切り分けが違います。",
   },
   "web-front-roles": {
     id: "web-front-roles",
@@ -71,7 +71,7 @@ export const quizzes = {
       "React の state が更新されたかだけ",
     ],
     answer: 1,
-    explanation: "上の例では一覧の行を JSON から組みます。Network タブの Fetch/XHR で応答を確認しましょう。JSON の件数も違うなら API の SQL と DB、JSON が正しいなら画面側の filter、React の state、プロパティ名を調べます。",
+    explanation: "上の例では一覧の行を JSON から組みます。Network タブの Fetch/XHR で応答を確認しましょう。JSON の件数も違うなら API の SQL と DB、JSON が正しいなら画面側の filter、React の state、React のプロパティ名を調べます。",
   },
   "web-status": {
     id: "web-status",
@@ -164,7 +164,7 @@ export const quizzes = {
       "entity の toString が呼ばれて例外になっている",
     ],
     answer: 1,
-    explanation: "Filter と Interceptor と Security は、Controller のソースに呼び出しがありません。だから、ソースを追うだけでは見つかりません。ここで止まると、レスポンスは返っても、Controller は動いていません。",
+    explanation: "Filter と Interceptor と Security は、Controller のソースに呼び出しがありません。だから、ソースを追うだけでは見つかりません。ここで処理が遮断されると、レスポンスは返っても、Controller は動いていません。",
   },
   "trace-start": {
     id: "trace-start",
@@ -323,7 +323,7 @@ export const quizzes = {
     id: "ts-log-pick",
     question: "本番の同じ秒に INFO が大量。`userId=7` の一覧処理を追う。次は？",
     choices: [
-      "ERROR だけを日付無視で全部読む",
+      "ERROR だけを日付を問わず全部読む",
       "`userId=7` で絞り、その行のスレッド名と前後の時刻で同じリクエストを揃える",
       "スレッド名 `exec-3` だけで、日付を問わず全部見る",
       "同じ時刻の行を、全リクエスト分ひとつずつ目視で確認する",
@@ -437,7 +437,7 @@ export const quizzes = {
       "Apache は静的ファイルの配信専用で、動的処理は一切できない",
     ],
     answer: 1,
-    explanation: "Apache（httpd）と nginx が HTTP サーバ、Tomcat と Jetty がサーブレットコンテナです。名前に Apache が付いても、Tomcat とは別物です。",
+    explanation: "Apache（httpd）と nginx が HTTP サーバ、Tomcat と Jetty がサーブレットコンテナです。名前に Apache が付いても、Apache（httpd）とは別物です。",
   },
   "sc-front": {
     id: "sc-front",
@@ -480,10 +480,10 @@ export const quizzes = {
     question:
       "承認すると、申請者に同じ内容のメールが2通届いた。画面にエラーは無く、DB のレコードは1件だけ APPROVED になっている。アプリのログを見ると、同じ requestId への approve 処理が、別スレッドでほぼ同時刻に2回実行されていた。疑うのは？",
     choices: [
-      "@Transactional の設定漏れ",
+      "@Transactional の設定漏れで、SQL がロールバックされていないこと",
       "承認ボタンの二重送信と、update の SQL に status の条件が無いこと",
-      "MailService の設定ミス",
-      "DB のレプリケーション遅延",
+      "MailService の設定ミスで、送信先アドレスが重複していること",
+      "DB のレプリケーション遅延で、古いレコードを読んでいること",
     ],
     answer: 1,
     explanation:
@@ -499,7 +499,7 @@ export const quizzes = {
       "Controller の権限チェックで弾かれて 0 件に見えている",
     ],
     answer: 1,
-    explanation: "200 で件数が違うなら、原因は多くは DB のレコードや接続先です。コード通読より先に、実行された SQL と、その条件での件数を確認しましょう。キャッシュでずれることもあります。",
+    explanation: "200 で件数が違うなら、原因の多くは DB のレコードや接続先です。コード通読より先に、実行された SQL と、その条件での件数を確認しましょう。キャッシュでずれることもあります。",
   },
   "sc-history": {
     id: "sc-history",

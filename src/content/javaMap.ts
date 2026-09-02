@@ -146,7 +146,7 @@ server:
         },
         {
           type: "p",
-          text: "`active: dev` があるので、`application-dev.yml` の設定がこれに重なります。",
+          text: "`active: dev` があるので、`application-dev.yml` の設定が `application.yml` の設定に重なります。",
         },
         {
           type: "code",
@@ -212,7 +212,7 @@ logging:
           type: "ul",
           items: [
             "active プロファイルは起動引数で上書きされることがある",
-            "`application-dev.yml`（または .properties）と `prod`（本番環境）用の設定でログ量が違う。出力先は `logging.file` や、Spring Boot 用の `logback-spring.xml` に書いてあることが多い",
+            "`application-dev.yml`（または .properties）用と、本番環境用（`prod`）の設定でログ量が違う。出力先は `logging.file` や、Spring Boot 用の `logback-spring.xml` に書いてあることが多い",
             "`context-path` が違うと CSS が 404 になり、画面だけ崩れる",
             "パスワードは環境変数や別ファイルのことがある",
           ],
@@ -252,7 +252,7 @@ logging:
         },
         {
           type: "p",
-          text: "申請くんの一覧を例にすると、Service の `findMine` は Mapper を呼ぶだけで、ログインユーザに関係する未承認の申請だけへの絞り込みは Mapper の SQL にあります。",
+          text: "申請くんの一覧を例にすると、Service の `findMine` は Mapper を呼ぶだけで、ログインユーザに関係し、かつ未承認の申請だけに絞り込む処理は Mapper の SQL にあります。",
         },
         { type: "diagram", name: "layers", caption: "探す順番。クラス名が違っても、受付 → ビジネスロジック → DB の流れは同じです。" },
         {
@@ -907,7 +907,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "リクエストは Controller の前にフィルタを通ります。ここに原因があると、Controller のブレークポイントは止まりません。Spring Security も、実体は Filter の連鎖です。",
+          text: "リクエストは Controller の前にフィルタを通ります。ここに原因があると、Controller のブレークポイントで止まりません。Spring Security も、実体は Filter の連鎖です。",
         },
         {
           type: "p",
@@ -993,7 +993,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "Service のメソッドを直接呼んでいるように見えても、実行時はプロキシが先に動きます。スタックトレースの $Proxy や CGLIB は、この経由です。",
+          text: "Service のメソッドを直接呼んでいるように見えても、実行時はプロキシが先に動きます。スタックトレースに出る $Proxy や CGLIB は、この経由を通った跡です。",
         },
         {
           type: "ul",

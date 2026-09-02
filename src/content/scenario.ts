@@ -126,7 +126,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "`id=\"csrfToken\"` はありません。そのため `document.getElementById(\"csrfToken\")` は null を返し、`tokenEl.value` でエラーになります。その下の `form.submit();` まで進まないので、承認のリクエストは飛びません。",
+          text: "`id=\"csrfToken\"` はありません。そのため `document.getElementById(\"csrfToken\")` は null を返し、`tokenEl.value` でエラーになります。`list.js` の `form.submit();` まで進まないので、承認のリクエストは飛びません。",
         },
         {
           type: "p",
@@ -1448,7 +1448,7 @@ traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packet
           type: "ul",
           items: [
             "デプロイ直後から画面が開けない。ブラウザは 502",
-            "直前に、運用担当者が SSH でログインし、ログの出力先ディレクトリを作り直していた",
+            "直前に、運用担当者（`yamada`。他のシナリオに出てくる申請者の山田とは別の設定です）が SSH でログインし、ログの出力先ディレクトリを作り直していた",
             "ローカル環境では、同じコード・同じ手順で問題なく起動する",
           ],
         },
@@ -1980,7 +1980,7 @@ requestMapper.update(request);`,
         },
         {
           type: "p",
-          text: "処理の入口は各画面の URL です。一覧は `/shinsei/requests`、履歴は `/shinsei/requests/history` で検索し、Controller から Service、Mapper へと呼び出しを辿りましょう。同じ処理を別の画面や API からも呼んでいないかも見ます。",
+          text: "処理の入口は各画面の URL です。一覧は `/shinsei/requests`、履歴は `/shinsei/requests/history` で検索し、Controller から Service、Mapper へと呼び出しを辿りましょう。同じ処理を別の画面や API からも呼んでいないかも見ましょう。",
         },
         {
           type: "h2",

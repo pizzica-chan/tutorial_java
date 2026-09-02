@@ -468,7 +468,7 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "`@AuthenticationPrincipal` が、セッションに結び付いたログインユーザを渡します。`user.getId()` が、上のセッションの `id: 7` にあたります。Cookie の値そのものを自分で読んでいるわけではありません。ここで確認できるのは、同じ ID でログインユーザを取り出せていることです。",
+          text: "`@AuthenticationPrincipal` が、セッションに結び付いたログインユーザを渡します。`user.getId()` が、上のセッションの `id: 7` にあたります。Cookie の値そのものを読み取っているわけではありません。ここで確認できるのは、同じ ID でログインユーザを取り出せていることです。",
         },
         {
           type: "h2",
@@ -667,7 +667,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "アドレスバーが変わらなくても、HTTP 通信が無いとは限りません。画面内の検索、候補表示、一覧の追加の読み込みなどで Ajax が使われることがあります。",
+          text: "アドレスバーが変わらなくても、HTTP 通信が無いとは限りません。画面内の検索、候補表示、一覧を追加で読み込む動きなどで Ajax が使われることがあります。",
         },
         {
           type: "h2",
@@ -691,7 +691,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "Ajax かどうかは、画面やアドレスバーだけでは分かりにくいことがあります。開発者ツールの Network タブを開き、Fetch/XHR を選びましょう。ここに並ぶのは、JavaScript から始めた通信です。検索や一覧の追加の読み込みなどを試したあと、行が増えていれば Ajax で通信しています。",
+          text: "Ajax かどうかは、画面やアドレスバーだけでは分かりにくいことがあります。開発者ツールの Network タブを開き、Fetch/XHR を選びましょう。ここに並ぶのは、JavaScript から始めた通信です。検索や、一覧を追加で読み込む動きなどを試したあと、行が増えていれば Ajax で通信しています。",
         },
         {
           type: "p",

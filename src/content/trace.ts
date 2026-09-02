@@ -25,7 +25,7 @@ export const traceTrack: Track = {
           type: "callout",
           kind: "tip",
           title: "コンテキストパス",
-          text: "前章で見た画面の URL は `/shinsei/requests` です。先頭の `/shinsei` はコンテキストパスなので、Controller のマッピングは Spring の `@RequestMapping(\"/requests\")` だけのことがあります。入口を見直すときは、`requests` のように特徴的な部分で検索しましょう。",
+          text: "前章で見た画面の URL は `/shinsei/requests` です。先頭の `/shinsei` はコンテキストパスなので、Controller のマッピングは Spring の `@RequestMapping(\"/requests\")` だけの場合があります。入口を見直すときは、`requests` のように特徴的な部分で検索しましょう。",
         },
         { type: "quiz", id: "trace-start" },
       ],
@@ -105,7 +105,7 @@ public class RequestApiController {
         {
           type: "ul",
           items: [
-            "RestController は JSON を返すことが多い。画面 HTML ではない。templates は見ない",
+            "RestController は JSON を返すことが多い。画面 HTML ではなく、templates は参照しない",
             "複数の Controller が同じパスを持つと起動時に衝突する",
             "Struts なら設定 XML や action 属性を見る",
           ],
@@ -277,7 +277,7 @@ FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.
         },
         {
           type: "p",
-          text: "JPA（Hibernate）のプロジェクトでは、実行された SQL がソースに無いことが多いです。同じ `t_request` を読む場合の例です。",
+          text: "JPA（Hibernate）のプロジェクトでは、実行された SQL がソースに無いことが多いです。MyBatis の例と同じ `t_request` を、JPA（Hibernate）で読む例です。",
         },
         {
           type: "code",
@@ -355,7 +355,7 @@ public class Request {
           type: "table",
           headers: ["症状", "疑うこと"],
           rows: [
-            ["件数が少ない", "WHERE が厳しい、論理削除フラグ。その条件のレコードが無い"],
+            ["件数が少ない", "WHERE が厳しい、論理削除フラグ、その条件のレコードが無い"],
             ["他人のデータが見える", "WHERE のログインユーザ条件漏れ"],
             ["遅い", "全件スキャン、N+1、ソート、件数"],
             ["更新されない", "WHERE id の誤り、別テーブル"],
@@ -367,7 +367,7 @@ public class Request {
           type: "callout",
           kind: "warn",
           title: "検証用 DB で SQL を流すとき",
-          text: "同じ SQL を検証用環境の DB で実行できるなら、コードを読むより早いことがあります。SELECT はそのまま試せます。UPDATE や DELETE を実行すると、共有している検証用環境のデータが本当に書き換わります。その環境を更新してよいか確認しましょう。試すならトランザクションを始めて結果を見て ROLLBACK しましょう。COMMIT はしません。",
+          text: "同じ SQL を検証用環境の DB で実行できるなら、コードを読むより早いことがあります。SELECT はそのまま試せます。UPDATE や DELETE を実行すると、共有している検証用環境のデータが本当に書き換わります。その環境を更新してよいか確認しましょう。試すならトランザクションを始めて結果を見たら、ROLLBACK しましょう。COMMIT はしません。",
         },
         { type: "quiz", id: "trace-sql-source" },
       ],
