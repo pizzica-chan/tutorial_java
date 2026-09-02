@@ -77,8 +77,8 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "画面のエラーに、外部のサービス名や連携失敗の文言が出る",
-        cause: ["ネットワーク"],
-        causeNote: "自社アプリと外部システムのあいだ。向き先を決めてから経路を見ます",
+        cause: ["ネットワーク", "サーバ"],
+        causeNote: "経路の問題か、外部システム自体の応答かで分かれます。向き先を決めてから見ます",
         check: "アプリのログで、その外部呼び出しの例外クラスとメッセージを確認しましょう。そのあと `application.yml` の接続先も見ましょう。",
         tells: "接続タイムアウトや `Connection refused` なら経路や向き先、HTTP の 4xx / 5xx なら外部側の応答です。向き先が決まってから、疎通確認のコマンドを打ちます。",
         links: [
@@ -96,7 +96,7 @@ export const troubleshootMap: ObservableGroup[] = [
         symptom: "見た目だけおかしい（色やレイアウトが当たっていない）",
         cause: ["クライアント"],
         check: "HTML とは別の CSS / JS のリクエストが 404 になっていないか、Network タブで確認しましょう。",
-        tells: "色やレイアウトは CSS / JS が担当します。HTML が 200 でも、別のリクエストだけ失敗していることがあります。手前に HTTP サーバがある構成では、静的ファイルはそこが返すので、アプリのログには出ません。",
+        tells: "色やレイアウトは CSS / JS が担当します。HTML が 200 でも、別のリクエストだけ失敗していることがあります。手前に HTTP サーバがある構成では、静的ファイルはそこが返すことが多く、アプリのログには出ません。",
         links: [
           { label: "HTTP サーバのログを見る", to: "/tracks/troubleshoot/http-server-log" },
           { label: "[障害調査] 一覧は出るが、画面だけ崩れている", to: "/tracks/scenario/http-server" },

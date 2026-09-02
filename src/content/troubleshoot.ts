@@ -1401,7 +1401,7 @@ ORDER BY r.created_at DESC
           highlightLines: [1],
           highlightKind: "error",
           code: `java.lang.OutOfMemoryError: Java heap space
-    at jp.co.example.shinsei.service.RequestService.searchHistory(RequestService.java:62)`,
+    at jp.co.example.shinsei.service.RequestService.searchHistory(RequestService.java:66)`,
         },
         {
           type: "table",
@@ -1431,7 +1431,7 @@ ORDER BY r.created_at DESC
           type: "code",
           title: "GC ログの例（設定と JDK のバージョンで書式は変わる）",
           lang: "text",
-          code: `[12.345s][info][gc] GC(42) Pause Full (Ergonomics) 1900M->1850M(2048M) 3210.123ms`,
+          code: `[12.345s][info][gc] GC(42) Pause Full (Allocation Failure) 1900M->1850M(2048M) 3210.123ms`,
         },
         {
           type: "p",
@@ -1457,7 +1457,7 @@ ORDER BY r.created_at DESC
           rows: [
             ["`jstat -gcutil PID 1000`", "1 秒おきに GC の状況を表示する。`FGC` は `Full GC` の回数、`FGCT` はその合計時間"],
             ["`jcmd PID GC.heap_info`", "今のヒープの使用状況を表示する"],
-            ["`jmap -dump:file=heap.hprof PID`", "ヒープの中身をファイルに書き出す（ヒープダンプ）"],
+            ["`jmap -dump:format=b,file=heap.hprof PID`", "ヒープの中身をファイルに書き出す（ヒープダンプ）"],
           ],
         },
         {
@@ -1549,10 +1549,10 @@ ORDER BY r.created_at DESC
           code: `Found one Java-level deadlock:
 =============================
 "pool-1-thread-1":
-  waiting to lock monitor 0x00007f... (a jp.co.example.shinsei.service.RequestService),
+  waiting to lock monitor 0x00007f... (object 0x000000076ab12345, a jp.co.example.shinsei.service.RequestService),
   which is held by "pool-1-thread-2"
 "pool-1-thread-2":
-  waiting to lock monitor 0x00007f... (a jp.co.example.shinsei.service.UserService),
+  waiting to lock monitor 0x00007f... (object 0x000000076ab67890, a jp.co.example.shinsei.service.UserService),
   which is held by "pool-1-thread-1"`,
         },
         {

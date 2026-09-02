@@ -556,7 +556,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "画面がおかしく見えても、原因はフロントとは限りません。症状で、先に見る場所を決めましょう。",
+          text: "画面がおかしく見えても、原因はフロントとは限りません。先に確認する場所を、症状で決めましょう。",
         },
         {
           type: "ul",

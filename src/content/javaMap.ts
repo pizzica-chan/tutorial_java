@@ -361,7 +361,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "`@Transactional` は、そのメソッドの中の複数の SQL を1つの単位にまとめる印です。途中で例外が起きれば、それまでの変更もすべて取り消されます（ロールバック）。",
+          text: "`@Transactional` は、そのメソッドの中の複数の SQL を1つの単位にまとめる印です。途中で例外が起きれば、それまでの変更もすべて取り消されます（ロールバック）。ただし既定でロールバックされるのは `RuntimeException` や `Error` のような非チェック例外だけです。チェック例外は、`rollbackFor` を指定しない限りロールバックされません。",
         },
         {
           type: "code",
@@ -486,7 +486,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "p",
-          text: "`UPDATE` の `WHERE` に、更新前提の状態を含める方法です。実際に更新できた件数（0件か1件か）で、他の処理が先に進んでいなかったかを判定します。DB 側で実際に行を専有するわけではないので「楽観」と呼びます。",
+          text: "`UPDATE` の `WHERE` に、更新前提の状態を含める方法です。実際に更新できた件数（0件か1件か）で、他の処理が先に進んでいなかったかを判定します。DB 側で実際にレコードを専有するわけではないので「楽観」と呼びます。",
         },
         {
           type: "code",
@@ -514,11 +514,11 @@ if (updated == 0) {
         },
         {
           type: "h3",
-          text: "悲観ロック：先に行をロックする",
+          text: "悲観ロック：先にレコードをロックする",
         },
         {
           type: "p",
-          text: "`SELECT ... FOR UPDATE` で、読む時点から行をロックする方法です。あとから来たトランザクションは、先のトランザクションが確定するまで待たされます。",
+          text: "`SELECT ... FOR UPDATE` で、読む時点からレコードをロックする方法です。あとから来たトランザクションは、先のトランザクションが確定するまで待たされます。",
         },
         {
           type: "code",
@@ -639,7 +639,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "`@RestController` は templates を使いません。JSON を返す Web API は、前の項目のとおり出口が JSON です。",
+          text: "`@RestController` は templates を使いません。JSON を返す Web API では、前の項目のとおり出口が JSON になることが多いです。",
         },
       ],
     },
@@ -945,13 +945,13 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "code",
-          title: "静的ファイルの許可漏れ",
+          title: "静的ファイルの許可漏れの例（申請くんではありません）",
           lang: "java",
           highlightLines: [1],
           code: `.antMatchers("/login", "/css/**").permitAll()
 .anyRequest().authenticated();
-// /images を許可し忘れ -> 画像だけ 302 でログインへ
-// 申請くんは Spring Boot 2.7。3.x では requestMatchers`,
+// /images を許可し忘れると、画像だけ 302 でログインへ
+// Spring Boot 3.x では antMatchers ではなく requestMatchers を使う`,
         },
         {
           type: "h2",

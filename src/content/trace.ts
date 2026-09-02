@@ -105,7 +105,7 @@ public class RequestApiController {
         {
           type: "ul",
           items: [
-            "RestController なら JSON。画面 HTML ではない。templates は見ない",
+            "RestController は JSON を返すことが多い。画面 HTML ではない。templates は見ない",
             "複数の Controller が同じパスを持つと起動時に衝突する",
             "Struts なら設定 XML や action 属性を見る",
           ],
