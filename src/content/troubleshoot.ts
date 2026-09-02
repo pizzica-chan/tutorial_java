@@ -338,6 +338,60 @@ appuser   1842  java -jar shinsei-kun.jar`,
           text: "ログが溜まり続けてディスクが埋まると、アプリがファイルへ書き込めなくなり、起動や処理そのものが失敗することがあります。原因が分からない障害では、`df -h` も見ておきましょう。",
         },
         {
+          type: "h3",
+          text: "ポートを使っているプロセスを探す",
+        },
+        {
+          type: "p",
+          text: "アプリを起動しようとして `Address already in use`（`BindException`）のようなエラーが出るときは、そのポートを別のプロセスがすでに使っています。どのプロセスかを探しましょう。",
+        },
+        {
+          type: "code",
+          title: "例（ポート 8080 を使っているプロセスを見る）",
+          lang: "text",
+          code: `$ lsof -i :8080
+COMMAND  PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+java    1842 appuser   45u  IPv6 123456      0t0  TCP *:8080 (LISTEN)`,
+        },
+        {
+          type: "p",
+          text: "`lsof` が入っていない環境では、`ss` で代わりに調べられます。多くの Linux に標準で入っています。",
+        },
+        {
+          type: "code",
+          title: "例（同じことを ss で見る）",
+          lang: "text",
+          code: `$ ss -ltnp
+State   Recv-Q  Send-Q     Local Address:Port     Peer Address:Port
+LISTEN  0       128              0.0.0.0:8080          0.0.0.0:*      users:(("java",pid=1842,fd=45))`,
+        },
+        {
+          type: "p",
+          text: "どちらも `PID`（プロセス ID）と `COMMAND`（コマンド名）が分かります。同じポートに、想定していない別プロセスが乗っていないかを確認しましょう。",
+        },
+        {
+          type: "h3",
+          text: "特定のファイルを使っているプロセスを探す",
+        },
+        {
+          type: "p",
+          text: "ファイルが削除できない、書き込めない、というときは、どのプロセスがそのファイルを開いたままかを確認しましょう。ポートを調べたのと同じ `lsof` で、対象をファイル名に変えるだけです。",
+        },
+        {
+          type: "code",
+          title: "例（app.log を開いているプロセスを見る）",
+          lang: "text",
+          code: `$ lsof app.log
+COMMAND  PID    USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME
+java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "削除したのに、ディスクの空きが増えない",
+          text: "ログファイルを `rm` で消しても、そのファイルを開いたままのプロセスがあると、ディスクの空き容量はすぐには増えません。プロセスがファイルを閉じる（多くは再起動）まで、OS 内部では領域を確保したままになります。`lsof | grep deleted` で、削除済みなのに開いたままのファイルを探せます。`df -h` でディスクが埋まっているときは、これも疑いましょう。",
+        },
+        {
           type: "p",
           text: "ここで見たコマンドは、「アプリログの場所と読み方」や「ネットワークの疎通確認」でログや接続を確認するときにも使います。",
         },
