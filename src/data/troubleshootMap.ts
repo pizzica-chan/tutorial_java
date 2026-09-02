@@ -190,7 +190,7 @@ export const troubleshootMap: ObservableGroup[] = [
         symptom: "さっきまで動いていたのに、急に全部の操作がダメになった、または直ったり悪くなったりを繰り返す",
         cause: ["サーバ"],
         check: "アプリのプロセスやコンテナが起動しているかを確認しましょう。起動していれば、DB へ直接つないでみましょう。",
-        tells: "アプリのプロセスやコンテナが無ければ、ソースを読んでも見つかりません。起動と停止を繰り返していると、操作したのにログが無い、という症状にも見えます。",
+        tells: "アプリのプロセスやコンテナが無ければ、原因はソースを読んでも見つかりません。起動と停止を繰り返していると、操作したのにログが無い、という症状にも見えます。",
         links: [
           { label: "ミドルウェアとコンテナの確認", to: "/tracks/troubleshoot/middleware-check" },
           { label: "Linux の基本操作", to: "/tracks/troubleshoot/linux-basics" },
