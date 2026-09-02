@@ -819,7 +819,32 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "下の例では React を使います。React の文法を覚えるのではなく、JSON が画面になるまでの流れを見ましょう。",
+          text: "下の例では React を使います。React の文法を覚えるのではなく、JSON が画面になるまでの流れを見ましょう。React の `fetch` が受け取るのは、次のような JSON の配列です。前の項目で見た 1 件の抜粋が、複数並んだものと考えましょう。",
+        },
+        {
+          type: "code",
+          title: "GET /shinsei/api/requests の応答（React が受け取る JSON）",
+          lang: "json",
+          code: `[
+  {
+    "id": 16,
+    "title": "研修参加",
+    "status": "PENDING",
+    "applicantId": 7,
+    "approverId": null,
+    "applicantEmail": "yamada@example.co.jp",
+    "createdAt": "2026-04-13T10:00:00"
+  },
+  {
+    "id": 13,
+    "title": "休暇申請",
+    "status": "PENDING",
+    "applicantId": 7,
+    "approverId": 3,
+    "applicantEmail": "yamada@example.co.jp",
+    "createdAt": "2026-04-10T09:15:00"
+  }
+]`,
         },
         {
           type: "code",
@@ -862,6 +887,19 @@ function RequestList() {
             { title: "React の state に入れる", text: "`setItems` で、React が管理する値を更新します。" },
             { title: "一覧を作る", text: "`items.map` が JSON の各要素を一覧の行にします。" },
           ],
+        },
+        {
+          type: "p",
+          text: "先ほどの JSON（2件）を `items.map` に渡すと、ブラウザには次の HTML が組み立てられます。`key` は React が内部で使う目印なので、実際の HTML には出ません。",
+        },
+        {
+          type: "code",
+          title: "組み立てられたあとの HTML",
+          lang: "html",
+          code: `<ul>
+  <li>研修参加（PENDING）</li>
+  <li>休暇申請（PENDING）</li>
+</ul>`,
         },
         {
           type: "p",
