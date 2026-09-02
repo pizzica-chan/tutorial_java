@@ -361,7 +361,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "`@Transactional` は、そのメソッドの中の複数の SQL を1つの単位にまとめる印です。途中で例外が起きれば、それまでの変更もすべて取り消されます（ロールバック）。ただし既定でロールバックされるのは `RuntimeException` や `Error` のような非チェック例外だけです。チェック例外は、`rollbackFor` を指定しない限りロールバックされません。",
+          text: "`@Transactional` は、そのメソッドの中の複数の SQL を1つの単位にまとめる印です。途中で例外が起きれば、それまでの変更もすべて取り消されます（ロールバック）。ただし既定でロールバックされるのは `RuntimeException` や `Error` のような非検査例外だけです。検査例外は、`rollbackFor` を指定しない限りロールバックされません。",
         },
         {
           type: "code",
