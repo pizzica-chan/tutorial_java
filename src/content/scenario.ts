@@ -644,7 +644,7 @@ mailService.notifyApplicant(request);`,
           type: "code",
           title: "MailService.java（申請くん）",
           lang: "java",
-          highlightLines: [7, 12],
+          highlightLines: [5, 9],
           highlightKind: "error",
           code: `public void notifyApplicant(RequestEntity request) {
   try {
@@ -671,7 +671,7 @@ mailService.notifyApplicant(request);`,
 java.lang.StringIndexOutOfBoundsException: begin 0, end 10, length 4
     at java.base/java.lang.String.checkBoundsBeginEnd(String.java:4602)
     at java.base/java.lang.String.substring(String.java:2707)
-    at jp.co.example.shinsei.service.MailService.notifyApplicant(MailService.java:5)`,
+    at jp.co.example.shinsei.service.MailService.notifyApplicant(MailService.java:20)`,
         },
         {
           type: "p",

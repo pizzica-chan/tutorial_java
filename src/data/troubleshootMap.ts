@@ -52,7 +52,7 @@ export const troubleshootMap: ObservableGroup[] = [
         cause: ["クライアント", "サーバ"],
         causeNote: "リクエストがあるかどうかで分かれます",
         check: "Network タブに、その画面へのリクエストがあるかを確認しましょう。あれば URL とステータスコードも見ましょう。",
-        tells: "画面が出ない原因を、リクエストが無い・URL のずれ・サーバ側の失敗に分けられます。リクエストが無ければ、リンクや JS などブラウザ側の問題です。404 は、その URL に対応するものが無い、という応答です。",
+        tells: "画面が出ない原因は、リクエストが無い・URL のずれ・サーバ側の失敗に分けられます。リクエストが無ければ、リンクや JS などブラウザ側の問題です。404 は、その URL に対応するものが無い、という応答です。",
         links: [
           { label: "トラブル例：指定の画面が開かない", to: "/tracks/troubleshoot/p-404" },
           { label: "どこまで届いたか", to: "/tracks/troubleshoot/divide" },
@@ -80,7 +80,7 @@ export const troubleshootMap: ObservableGroup[] = [
         cause: ["ネットワーク", "サーバ"],
         causeNote: "経路の問題か、外部システム自体の応答かで分かれます。向き先を決めてから見ます",
         check: "アプリのログで、その外部呼び出しの例外クラスとメッセージを確認しましょう。そのあと `application.yml` の接続先も見ましょう。",
-        tells: "接続タイムアウトや `Connection refused` なら経路や向き先、HTTP の 4xx / 5xx なら外部側の応答です。向き先が決まってから、疎通確認のコマンドを打ちます。",
+        tells: "接続タイムアウトや `Connection refused` なら経路や向き先、HTTP の 4xx / 5xx なら外部側の応答です。向き先が決まってから、疎通確認のコマンドを打ちましょう。",
         links: [
           { label: "トラブル例：外部システム / 外部 API", to: "/tracks/troubleshoot/p-external" },
           { label: "ネットワークの疎通確認", to: "/tracks/troubleshoot/net-check" },
@@ -94,7 +94,7 @@ export const troubleshootMap: ObservableGroup[] = [
     leaves: [
       {
         symptom: "見た目だけおかしい（色やレイアウトが当たっていない）",
-        cause: ["クライアント"],
+        cause: ["サーバ"],
         check: "HTML とは別の CSS / JS のリクエストが 404 になっていないか、Network タブで確認しましょう。",
         tells: "色やレイアウトは CSS / JS が担当します。HTML が 200 でも、別のリクエストだけ失敗していることがあります。手前に HTTP サーバがある構成では、静的ファイルはそこが返すことが多く、アプリのログには出ません。",
         links: [
@@ -210,10 +210,10 @@ export const troubleshootMap: ObservableGroup[] = [
   },
   {
     id: "after-success",
-    label: "操作は成功したのに、メールや更新が反映されていない",
+    label: "操作は成功したのに、メールが届かない・更新が反映されていない",
     leaves: [
       {
-        symptom: "承認や登録は画面に反映されたのに、メールや通知だけ来ない",
+        symptom: "承認や登録は画面に反映されたのに、メールや通知だけ届かない",
         cause: ["サーバ"],
         check: "アプリのログで、DB を更新した行のあとに、メール送信や通知 API の行があるかを確認しましょう。",
         tells: "画面の更新とメール・通知は別の処理です。後者の成否は画面には出ません。行が無ければ呼ばれておらず、ERROR があればそこが失敗した箇所です。",
