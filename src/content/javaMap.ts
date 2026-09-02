@@ -935,50 +935,6 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "h2",
-          text: "共通の SQL をまとめる（<sql> と <include>）",
-        },
-        {
-          type: "p",
-          text: "申請くんの `findMine`・`findById`・`searchHistory` は、SELECT する列と FROM・JOIN がほぼ同じです。共通化されておらず、同じ書き方が3か所に散らばっています。1か所だけ直すと、残り2か所とずれることがあります。",
-        },
-        {
-          type: "p",
-          text: "この重複をまとめる書き方もあります。`<sql>` に1つだけ書き、各 `<select>` から `<include>` で差し込む方法です。前の項目で見た、テンプレートの共通部分を `th:fragment` にまとめたのと同じ考え方です。申請くんの実際の XML はこの形ではありませんが、まとめるとしたら次のようになります。",
-        },
-        {
-          type: "code",
-          title: "リファクタリング例（申請くんの実際の XML ではありません）",
-          lang: "xml",
-          highlightLines: [1, 11],
-          code: `<sql id="requestSelect">
-  SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
-         a.display_name AS applicant_name,
-         v.display_name AS approver_name
-  FROM t_request r
-  JOIN t_user a ON a.id = r.applicant_id
-  LEFT JOIN t_user v ON v.id = r.approver_id
-</sql>
-
-<select id="findMine" resultType="RequestEntity">
-  <include refid="requestSelect" />
-  WHERE (r.applicant_id = #{userId}
-     OR r.approver_id = #{userId})
-    AND r.status = 'PENDING'
-  ORDER BY r.created_at DESC
-</select>`,
-        },
-        {
-          type: "p",
-          text: "`<sql id=\"requestSelect\">` が断片の名前で、`<include refid=\"requestSelect\" />` はその中身をそのまま差し込む、という意味です。`findById` と `searchHistory` も同じ断片を `<include>` すれば、3か所の重複が無くなります。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "<sql> を使っているプロジェクトでは",
-          text: "`<sql>` と `<include>` を使っているプロジェクトでは、`applicant_id` のようなカラム名で検索すると、断片の `<sql>` にもヒットします。断片自体は `<select>` でも `<insert>` でもないので、実行されるカラムや条件を追うときは、それを `<include>` している `<select id=\"...\">` の方を見ましょう。",
-        },
-        {
-          type: "h2",
           text: "resultType とカラムの対応",
         },
         {
@@ -1040,6 +996,50 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
             label: "申請履歴検索の結果が不正",
             to: "/tracks/scenario/history",
           },
+        },
+        {
+          type: "h2",
+          text: "共通の SQL をまとめる（<sql> と <include>）",
+        },
+        {
+          type: "p",
+          text: "申請くんの `findMine`・`findById`・`searchHistory` は、SELECT する列と FROM・JOIN が同じです。共通化されておらず、同じ書き方が3か所に散らばっています。1か所だけ直すと、残り2か所とずれることがあります。",
+        },
+        {
+          type: "p",
+          text: "この重複をまとめる書き方もあります。`<sql>` に1つだけ書き、各 `<select>` から `<include>` で差し込む方法です。テンプレートの共通部分を `th:fragment` にまとめたのと同じ考え方です。前の項目「テンプレートの読み方」で見ました。申請くんの実際の XML はこの形ではありませんが、まとめるとしたら次のようになります。",
+        },
+        {
+          type: "code",
+          title: "リファクタリング例（申請くんの実際の XML ではありません）",
+          lang: "xml",
+          highlightLines: [1, 11],
+          code: `<sql id="requestSelect">
+  SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+         a.display_name AS applicant_name,
+         v.display_name AS approver_name
+  FROM t_request r
+  JOIN t_user a ON a.id = r.applicant_id
+  LEFT JOIN t_user v ON v.id = r.approver_id
+</sql>
+
+<select id="findMine" resultType="RequestEntity">
+  <include refid="requestSelect" />
+  WHERE (r.applicant_id = #{userId}
+     OR r.approver_id = #{userId})
+    AND r.status = 'PENDING'
+  ORDER BY r.created_at DESC
+</select>`,
+        },
+        {
+          type: "p",
+          text: "`<sql id=\"requestSelect\">` が断片の名前で、`<include refid=\"requestSelect\" />` はその中身をそのまま差し込む、という意味です。`findById` と `searchHistory` も同じ断片を `<include>` すれば、3か所の重複が無くなります。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "<sql> を使っているプロジェクトでは",
+          text: "`<sql>` と `<include>` を使っているプロジェクトでは、`applicant_id` のようなカラム名で検索すると、断片の `<sql>` にもヒットします。断片自体は `<select>` でも `<insert>` でもないので、実行されるカラムや条件を追うときは、それを `<include>` している `<select id=\"...\">` の方を見ましょう。",
         },
         {
           type: "p",
