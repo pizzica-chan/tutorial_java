@@ -210,7 +210,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "例外メッセージの次にある最初の自作 at 行は `RequestService.java:48` です。実ファイルの同じ行を開くと、`request.getApproverId().equals(approverId)` があります。",
+          text: "例外メッセージの次にある、自分たちが書いたコードの最初の at 行は `RequestService.java:48` です。実ファイルの同じ行を開くと、`request.getApproverId().equals(approverId)` があります。",
         },
         {
           type: "code",
