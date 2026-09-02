@@ -133,7 +133,7 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "app",
-        text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)",
+        text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:102)",
         note: "その下の自作クラスは呼び出し元。画面のどの操作から来たか（POST /requests/{id}/approve）を特定できます。",
       },
       {
@@ -190,7 +190,7 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "app",
-        text: "    at jp.co.example.shinsei.controller.RequestController.list(RequestController.java:27)",
+        text: "    at jp.co.example.shinsei.controller.RequestController.list(RequestController.java:32)",
         note: "画面の処理の入口。一覧を開いた操作から来ている、と確認できます。",
       },
       {

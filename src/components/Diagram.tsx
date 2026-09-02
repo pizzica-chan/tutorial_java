@@ -440,8 +440,8 @@ const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: stri
   },
   {
     kind: "own",
-    text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)",
-    note: "呼び出し元。このファイルの 70 行目",
+    text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:102)",
+    note: "呼び出し元。このファイルの 102 行目",
   },
   {
     kind: "dim",

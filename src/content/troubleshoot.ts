@@ -403,7 +403,7 @@ appuser   1842  java -jar shinsei-kun.jar`,
           code: `04:12:03.512 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[/shinsei].[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] threw exception
 java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null
     at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:48)
-    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:70)`,
+    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:102)`,
         },
         {
           type: "ol",
