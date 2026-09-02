@@ -7,7 +7,7 @@ export const readingTrack: Track = {
   no: "04",
   title: "ソースの読み方",
   kicker: "READING",
-  description: "画面と URL を手がかりに、サーバ側の処理の入口を特定します。",
+  description: "画面と URL を手がかりに、サーバ側の処理の入口を特定し、Service から Mapper までを辿ります。",
   accent: "#4fb0a5",
   lessons: [
     {

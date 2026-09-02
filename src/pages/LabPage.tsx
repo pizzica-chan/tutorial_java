@@ -41,7 +41,7 @@ export function LabPage() {
       <StackLab />
 
       <h2 className="serif">5. 総合確認</h2>
-      <p>入口の次に追うもの、スタックトレース、ログ、Java アプリの層をまとめて確認します。</p>
+      <p>スタックトレース、ログ、Java アプリの層をまとめて確認します。</p>
       <QuizBlock id="ts-npe" />
       <QuizBlock id="ts-own-class" />
       <QuizBlock id="ts-log" />
