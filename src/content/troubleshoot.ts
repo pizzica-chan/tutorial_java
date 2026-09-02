@@ -742,16 +742,34 @@ curl -I https://notify.example.internal/api/send`,
         },
         {
           type: "code",
-          title: "例（MySQL）",
+          title: "例（MySQL、つながるとき）",
           lang: "text",
-          code: `mysql -h ホスト名 -u ユーザ名 -p -e "SELECT 1"`,
+          code: `$ mysql -h ホスト名 -u ユーザ名 -p -e "SELECT 1"
+Enter password:
++---+
+| 1 |
++---+
+| 1 |
++---+`,
+        },
+        {
+          type: "p",
+          text: "`SELECT 1` の結果が返れば、DB 自体は動いています。つながらないときは、エラーの種類で疑う先が変わります。",
+        },
+        {
+          type: "code",
+          title: "例（MySQL、つながらないとき）",
+          lang: "text",
+          code: `$ mysql -h ホスト名 -u ユーザ名 -p -e "SELECT 1"
+Enter password:
+ERROR 2003 (HY000): Can't connect to MySQL server on 'ホスト名:3306' (110)`,
         },
         {
           type: "ul",
           items: [
-            "つながって `SELECT 1` の結果が返る … DB 自体は動いている。アプリ側の接続設定（URL、ユーザ、パスワード）を疑う",
-            "TCP 自体がつながらない … DB が落ちている、ポートが閉じている。「ネットワークの疎通確認」で TCP から確認する",
-            "つながるが認証で失敗する（Access denied など）… ユーザ名やパスワードが違う。DB 側のアカウント設定を確認する",
+            "`SELECT 1` の結果が返る … DB 自体は動いている。アプリ側の接続設定（URL、ユーザ、パスワード）を疑う",
+            "`ERROR 2003` など、TCP 自体がつながらないエラー … DB が落ちている、ポートが閉じている。「ネットワークの疎通確認」で TCP から確認する",
+            "`ERROR 1045` など、認証で失敗するエラー（Access denied） … ユーザ名やパスワードが違う。DB 側のアカウント設定を確認する",
           ],
         },
         {
@@ -770,13 +788,20 @@ curl -I https://notify.example.internal/api/send`,
         },
         {
           type: "code",
-          title: "例",
+          title: "例（Docker）",
           lang: "text",
-          code: `# Docker
-docker ps
-
-# Kubernetes
-kubectl get pods`,
+          code: `$ docker ps
+CONTAINER ID   IMAGE            STATUS                         PORTS                     NAMES
+1a2b3c4d5e6f   shinsei:latest   Up 2 hours                     0.0.0.0:8080->8080/tcp   shinsei-app
+7f8e9d0c1b2a   mysql:8.0        Restarting (1) 5 seconds ago                             shinsei-db`,
+        },
+        {
+          type: "code",
+          title: "例（Kubernetes）",
+          lang: "text",
+          code: `$ kubectl get pods
+NAME                       READY   STATUS             RESTARTS   AGE
+shinsei-7d8f9c6b5d-abcde   0/1     CrashLoopBackOff   7          12m`,
         },
         {
           type: "ul",
@@ -804,14 +829,32 @@ kubectl get pods`,
         },
         {
           type: "code",
-          title: "例（Linux、systemd を使う環境）",
+          title: "例（Linux、systemd を使う環境。動いているとき）",
           lang: "text",
           code: `$ systemctl status nginx
-$ systemctl status tomcat`,
+● nginx.service - A high performance web server and a reverse proxy server
+   Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled)
+   Active: active (running) since Mon 2026-08-31 09:12:03 JST; 3h ago
+ Main PID: 1234 (nginx)
+    Tasks: 3 (limit: 4915)
+   CGroup: /system.slice/nginx.service
+           ├─1234 nginx: master process /usr/sbin/nginx
+           └─1235 nginx: worker process`,
         },
         {
           type: "p",
-          text: "`Active: active (running)` なら動いています。`inactive (dead)` や `failed` なら止まっています。ここでの `nginx` `tomcat` はサービス名の例で、実際の名前は環境によって違います（`tomcat9` など）。`Unit ... could not be found` と出た場合は、止まっているのではなく名前が違うだけのことが多いです。名前が分からないときは、「Linux の基本操作」で見た `ps` に、探したいプロセス名（`tomcat` や `nginx`）を渡して探しましょう。",
+          text: "`Active: active (running)` なら動いています。`inactive (dead)` や `failed` なら止まっています。",
+        },
+        {
+          type: "code",
+          title: "例（サービス名が違うとき）",
+          lang: "text",
+          code: `$ systemctl status tomcat
+Unit tomcat.service could not be found.`,
+        },
+        {
+          type: "p",
+          text: "ここでの `nginx` `tomcat` はサービス名の例で、実際の名前は環境によって違います（`tomcat9` など）。`Unit ... could not be found` と出た場合は、止まっているのではなく名前が違うだけのことが多いです。名前が分からないときは、「Linux の基本操作」で見た `ps` に、探したいプロセス名（`tomcat` や `nginx`）を渡して探しましょう。",
         },
         {
           type: "callout",
