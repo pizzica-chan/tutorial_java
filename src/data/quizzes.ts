@@ -164,7 +164,7 @@ export const quizzes = {
       "README の作者名",
     ],
     answer: 1,
-    explanation: "Filter と Interceptor と Security は、Controller のソースに呼び出しがありません。だから、ソースを追うだけでは見つかりません。ここで止まるとレスポンスは返っても、Controller は動いていません。",
+    explanation: "Filter と Interceptor と Security は、Controller のソースに呼び出しがありません。だから、ソースを追うだけでは見つかりません。ここで止まると、レスポンスは返っても、Controller は動いていません。",
   },
   "trace-start": {
     id: "trace-start",
@@ -487,7 +487,7 @@ export const quizzes = {
       "CSS の 404",
     ],
     answer: 1,
-    explanation: "`type` が `ALL` なら、そのテーブルを先頭から全部読むことが多いです。`possible_keys` が `NULL` は、この SQL で使える候補が無い、という意味です。`PRIMARY KEY` があっても、この `WHERE` の候補になるとは限りません。",
+    explanation: "`type` が `ALL` なら、そのテーブルを先頭から全部読むことが多いです。`possible_keys` が `NULL` なのは、この SQL で使える候補が無い、という意味です。`PRIMARY KEY` があっても、この `WHERE` の候補になるとは限りません。",
   },
   "sc-net": {
     id: "sc-net",
@@ -520,7 +520,7 @@ export const quizzes = {
     question: "一覧の HTML は 200。表のスタイルだけ当たっていない。次は？",
     choices: [
       "RequestService の null チェック",
-      "Network タブで CSS / JS のステータスコードを確認しましょう。404 ならパスか手前の HTTP サーバ",
+      "Network タブで CSS / JS のステータスコードを確認する。404 ならパスか手前の HTTP サーバを疑う",
       "DB の文字コードだけを疑う",
       "承認者マスタを全削除する",
     ],
@@ -561,7 +561,7 @@ export const quizzes = {
       "`pom.xml` の作者名",
     ],
     answer: 0,
-    explanation: "申請履歴は今回の対象ですが、`searchHistory` で別の SQL です。同じ `findMine` を呼んでいるのは JSON 一覧です。申請くんに CSV エクスポートは無い。",
+    explanation: "申請履歴は今回の対象ですが、`searchHistory` で別の SQL です。同じ `findMine` を呼んでいるのは JSON 一覧です。申請くんに CSV エクスポートはありません。",
   },
 } satisfies Record<string, Quiz>;
 

@@ -19,7 +19,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "検証用環境のデータは、シナリオごとに用意した例です。別のシナリオの検証用環境と、同じ状態とは限りません。",
+          text: "検証用環境のデータは、シナリオごとに用意した例です。同じ検証用環境でも、シナリオが違えばデータの状態も変わります。",
         },
         {
           type: "callout",
@@ -242,7 +242,7 @@ if (!request.getApproverId().equals(approverId)) {
         },
         {
           type: "p",
-          text: "ID 16 を DB で見ると、`approver_id` が NULL でした。詳細画面の承認者「未設定」と一致します。",
+          text: "ID 16 を DB で確認しましょう。",
         },
         {
           type: "code",
@@ -259,7 +259,7 @@ WHERE id = 16;`,
         },
         {
           type: "p",
-          text: "申請を登録するときは承認者が必須です。承認ボタンが押された際の処理の仕様も、承認者 ID が入っている前提となっており、未設定のときの考慮はありません。つまり ID 16 は、何らかの理由で作られた、仕様と食い違うレコードです。",
+          text: "`approver_id` が NULL です。詳細画面の承認者「未設定」と一致します。申請を登録するときは承認者が必須です。承認ボタンが押された際の処理の仕様も、承認者 ID が入っている前提となっており、未設定のときの考慮はありません。つまり ID 16 は、何らかの理由で作られた、仕様と食い違うレコードです。",
         },
         {
           type: "callout",
@@ -650,7 +650,7 @@ ORDER BY r.created_at DESC
         },
         {
           type: "p",
-          text: "`Parameters` は 7, 7、`Total` は 0 です。検証用環境の DB で同じ条件を実行すると、レコードは 0 件でした。",
+          text: "`Parameters` は 7, 7、`Total` は 0 です。検証用環境の DB で、同じ条件を実行してみましょう。",
         },
         {
           type: "code",
@@ -669,7 +669,7 @@ WHERE (applicant_id = 7 OR approver_id = 7)
         },
         {
           type: "p",
-          text: "ローカル環境で同じ SQL を実行すると、4 件ありました。",
+          text: "検証用環境の DB では、レコードが 0 件です。次に、ローカル環境で同じ SQL を実行してみましょう。",
         },
         {
           type: "code",
@@ -692,7 +692,7 @@ WHERE (applicant_id = 7 OR approver_id = 7)
         },
         {
           type: "p",
-          text: "WHERE は検証用環境と同じです。件数が違うのは、各環境のアプリが接続している DB が違うからです。",
+          text: "ローカル環境では 4 件あります。WHERE は検証用環境と同じです。件数が違うのは、各環境のアプリが接続している DB が違うからです。",
         },
         {
           type: "h2",
@@ -1075,7 +1075,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "`possible_keys` が `NULL` は、インデックスが一つも無いという意味ではありません。この検索は `applicant_id` と `approver_id` で探すため、`PRIMARY KEY` の `id` は候補になりません。",
+          text: "`possible_keys` が `NULL` なのは、インデックスが一つも無いという意味ではありません。この検索は `applicant_id` と `approver_id` で探すため、`PRIMARY KEY` の `id` は候補になりません。",
         },
         {
           type: "p",
@@ -1212,7 +1212,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "社内ネットワークから、検証用環境のサーバの 8080 へ届かない経路になっていました。ブラウザはサーバまで届かず、アプリは何も記録しません。",
+          text: "社内ネットワークから、検証用環境のサーバへの経路を確認します。ブラウザがサーバまで届いていなければ、アプリは何も記録しません。",
         },
         {
           type: "p",
