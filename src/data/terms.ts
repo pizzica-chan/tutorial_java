@@ -274,7 +274,7 @@ export const terms: TermDef[] = [
     body: "プログラムが通常どおり進めなくなったときに投げられるオブジェクトです。Java では `Exception` と `Error` に分かれ、まとめて `Throwable` と呼びます。`OutOfMemoryError` のように回復が難しい深刻な問題は `Error` です。",
   },
   {
-    term: "検査例外",
+    term: "検査例外 / 非検査例外",
     aliases: ["検査例外", "非検査例外", "チェック例外", "非チェック例外"],
     body: "`throws` 宣言か `try-catch` を書かないとコンパイルが通らない例外を検査例外（チェック例外）と呼びます。`RuntimeException` と `Error`、およびそのサブクラスは非検査例外（非チェック例外）で、この強制がありません。`@Transactional` が既定でロールバックするのは非検査例外だけです。",
   },
