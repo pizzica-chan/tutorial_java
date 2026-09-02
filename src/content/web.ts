@@ -15,7 +15,7 @@ export const webTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "URL を入力して Enter を押す、リンクをクリックする。ふだん何気なくしているその操作のたびに、裏側では次のようなやり取りが起きています。ブラウザは、インターネットの先にあるサーバというコンピュータへ何かを頼みます。サーバはそれに応え、結果を返します。ブラウザは、返ってきた中身をもとに画面を組み立てて表示します。",
+          text: "URL を入力して Enter を押す、リンクをクリックする。ふだん何気なくしているその操作のたびに、裏側では次のようなやり取りが起きています。ブラウザは、インターネットの先にあるサーバというコンピュータに何かを頼みます。サーバはそれに応え、結果を返します。ブラウザは、返ってきた中身をもとに画面を組み立てて表示します。",
         },
         {
           type: "p",
@@ -54,14 +54,14 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "これは、申請一覧を開いた瞬間です。ブラウザは `/shinsei/requests` へ GET リクエストを送り、レスポンスとして返ってきた HTML が画面になります。",
+          text: "次の画面は、申請一覧を開いた瞬間です。ブラウザは `/shinsei/requests` へ GET リクエストを送ります。サーバから返ってきた HTML が、そのまま画面になります。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-list.jpg",
           alt: "申請くんの申請一覧画面",
-          caption: "申請一覧。ブラウザは `/shinsei/requests` へ GET リクエストを送り、この HTML がレスポンスとして返ります。",
+          caption: "申請一覧。ブラウザは `/shinsei/requests` へ GET リクエストを送り、レスポンスとしてこの HTML を受け取ります。",
         },
         {
           type: "p",
@@ -316,14 +316,14 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "ここでは、山田が承認できる別の申請（ID 15）を例にします。承認は `POST /shinsei/requests/15/approve` です。15 はパスに入っているので、フォーム本文には乗りません。",
+          text: "ここでは、山田が承認できる別の申請（ID 15）を例にします。承認は `POST /shinsei/requests/15/approve` です。15 はパスに入っているので、フォーム本文には載りません。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-approve-payload.jpg",
           alt: "承認 POST の Payload。Form Data に _csrf だけがある",
-          caption: "承認 POST の Payload。Form Data には CSRF トークンだけが乗り、申請 ID はここには出てきません。",
+          caption: "承認 POST の Payload。Form Data には CSRF トークンだけが載り、申請 ID はここには出てきません。",
           size: "small",
         },
         {
@@ -569,7 +569,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "件数や中身は DB にあります。どのレコードが対象かは、実行された SQL の WHERE で決まります。コードが正しくても、その条件のレコードが無い、マスタが違う、別の DB を見ていると、画面は空や古い値になります。",
+          text: "件数や中身は DB にあります。どのレコードが対象かは、実行された SQL の WHERE で決まります。コードが正しくても、その条件のレコードが無い、マスタが違う、別の DB を見ていると、画面には何も出ない、または古い値が残ります。",
         },
         { type: "quiz", id: "web-front-back" },
       ],

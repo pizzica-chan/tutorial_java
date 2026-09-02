@@ -300,7 +300,7 @@ public class RequestController {
         {
           type: "ul",
           items: [
-            "サーバが `templates/request/list.html` を組み立て、ブラウザに HTML が届く",
+            "サーバが `templates/request/list.html` を組み立てて、ブラウザへ HTML を届ける",
             "表示がおかしいときは templates も見ましょう",
           ],
         },
@@ -558,7 +558,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "HTML は `src/main/resources/templates` 配下に置きます。Controller が名前で指定したテンプレートを組み立て、その HTML がブラウザに届きます。例えば `return \"request/list\"` なら `templates/request/list.html` を組み立てます。",
+          text: "HTML は `src/main/resources/templates` 配下に置きます。Controller が名前で指定したテンプレートを組み立てて、その HTML をブラウザへ届けます。例えば `return \"request/list\"` なら `templates/request/list.html` を組み立てます。",
         },
         {
           type: "code",
@@ -605,7 +605,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "ブラウザは HTML のあと、CSS と JS を別リクエストで取りに行きます。これらの静的ファイルは、Controller や Service は通りません。ただし Filter や、内蔵のサーブレットコンテナ自体は通ることがあります。",
+          text: "ブラウザは HTML のあと、CSS と JS を別リクエストで取りに行きます。これらの静的ファイルは、Controller や Service を通りません。ただし Filter や、内蔵のサーブレットコンテナ自体は通ることがあります。",
         },
         {
           type: "p",
@@ -1062,7 +1062,7 @@ public void addInterceptors(InterceptorRegistry registry) {
           type: "table",
           headers: ["種類", "例", "すること"],
           rows: [
-            ["HTTP サーバ", "Apache、nginx", "手前で受ける。ブラウザとの HTTPS をここで解き、静的ファイルの配信、後ろへの中継"],
+            ["HTTP サーバ", "Apache、nginx", "手前で受ける。ブラウザとの HTTPS をここで解き、静的ファイルを配信し、後ろへ中継する"],
             ["サーブレットコンテナ", "Tomcat、Jetty", "Java の画面や API を動かす"],
           ],
         },

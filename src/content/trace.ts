@@ -25,7 +25,7 @@ export const traceTrack: Track = {
           type: "callout",
           kind: "tip",
           title: "コンテキストパス",
-          text: "前章で見た画面の URL は `/shinsei/requests` です。先頭の `/shinsei` はコンテキストパスなので、Controller は Spring の `@RequestMapping(\"/requests\")` だけのことがあります。入口を見直すときは、`requests` のように特徴的な部分で検索しましょう。",
+          text: "前章で見た画面の URL は `/shinsei/requests` です。先頭の `/shinsei` はコンテキストパスなので、Controller のマッピングは Spring の `@RequestMapping(\"/requests\")` だけのことがあります。入口を見直すときは、`requests` のように特徴的な部分で検索しましょう。",
         },
         { type: "quiz", id: "trace-start" },
       ],
@@ -75,7 +75,7 @@ public class RequestController {
         },
         {
           type: "p",
-          text: "Java のメソッド名が `list` でも、今見ている画面とは限りません。HTTP メソッド（GET など）とパスの両方を確認しましょう。",
+          text: "Java のメソッド名が `list` でも、今見ている画面の入口だとは限りません。HTTP メソッド（GET など）とパスの両方を確認しましょう。",
         },
         {
           type: "p",
