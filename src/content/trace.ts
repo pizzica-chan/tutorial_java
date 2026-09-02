@@ -215,7 +215,7 @@ public class Request {
       blocks: [
         {
           type: "p",
-          text: "申請一覧を開く処理を、下のタブの区間（Browser → Filter → Controller → Service → MyBatis → MySQL → Thymeleaf → HTTP応答）ごとに追いましょう。障害調査は、この一本の線のどこで期待と違うかを特定する作業です。JSON を返す API なら Thymeleaf の区間が無く、`Content-Type` が `application/json` の応答で終わります。Service より手前（Browser・Filter・Controller）の探し方は、ここまでの章と同じです。",
+          text: "ここまで「ソースの読み方」と「SQL からソースを探す」で見てきた読み方を、申請一覧を開く1つの操作を通してまとめて確認しましょう。下のタブの区間（Browser → Filter → Controller → Service → MyBatis → MySQL → Thymeleaf → HTTP応答）ごとに追います。障害調査は、この一本の線のどこで期待と違うかを特定する作業です。JSON を返す API なら Thymeleaf の区間が無く、`Content-Type` が `application/json` の応答で終わります。",
         },
         { type: "widget", name: "flow" },
       ],
