@@ -804,7 +804,7 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
           type: "code",
           title: "RequestService.create（申請くん・抜粋）",
           lang: "java",
-          highlightLines: [1, 3],
+          highlightLines: [1, 3, 7],
           code: `public RequestEntity create(Long applicantId, String title, Long approverId) {
   RequestEntity request = new RequestEntity();
   request.setTitle(title);
