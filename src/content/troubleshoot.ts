@@ -1025,7 +1025,29 @@ ORDER BY r.created_at DESC
         { type: "diagram", name: "stack-line", caption: "右端の括弧が、ソースのファイルと行です。" },
         {
           type: "p",
-          text: "`RequestService.java:48` なら、プロジェクト内の `RequestService.java` の 48 行目です。ログの :48 は、エディタ左端の行番号と同じものです。この教材の申請くんのスタック例は、実ファイルの行番号と一致しています。Unknown Source とだけある行は、ソースが無いので飛ばしましょう。",
+          text: "`RequestService.java:48` なら、プロジェクト内の `RequestService.java` の 48 行目です。ログの :48 は、エディタ左端の行番号と同じものです。Unknown Source とだけある行は、ソースが無いので飛ばしましょう。",
+        },
+        {
+          type: "code",
+          title: "RequestService.java（申請くん・抜粋、42〜49行目）",
+          lang: "java",
+          highlightLines: [7],
+          highlightKind: "error",
+          code: `@Transactional
+public void approve(Long requestId, Long approverId) {
+  RequestEntity request = requestMapper.findById(requestId, approverId);
+  if (request == null) {
+    throw new NotFoundException("指定した申請は無い、または見る権限がありません。");
+  }
+  if (!request.getApproverId().equals(approverId)) {
+    throw new ForbiddenException("承認権限がありません");
+  }
+  // ...
+}`,
+        },
+        {
+          type: "p",
+          text: "48 行目を開くと、この `if` です。`request.getApproverId()` が `null` を返すと、続く `.equals(...)` で `NullPointerException` になります。開いたファイルの行番号を、ログの :48 と照らし合わせる。これがスタックトレースを読むということです。",
         },
         {
           type: "h2",
