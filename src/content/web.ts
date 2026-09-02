@@ -507,6 +507,14 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
+          text: "このキーの文字列がずれると、値は静かに取り出せなくなります。実際にこれが起きた例は、「実務のシナリオ」の「申請履歴から詳細を開いて戻ると、検索条件が消える」で扱います。",
+          link: {
+            label: "申請履歴から詳細を開いて戻ると、検索条件が消える",
+            to: "/tracks/scenario/history-back",
+          },
+        },
+        {
+          type: "p",
           text: "ここまでの流れは、セッション作成 → Cookie 付与 → ID からの復元、です。タイムアウト、Cookie 削除、ドメイン / Path / Secure の不一致があると、セッションが切れて値が消えます。ログイン情報なら未ログイン扱いになります。",
         },
         { type: "quiz", id: "web-cookie" },

@@ -120,6 +120,7 @@ export const troubleshootMap: ObservableGroup[] = [
         tells: "クエリに条件が無ければ、画面から送れていません。送れているのに SQL のバインド値に無ければ、受け取りから SQL までのどこかで条件が落ちています。",
         links: [
           { label: "[障害調査] 申請履歴検索の結果が不正", to: "/tracks/scenario/history" },
+          { label: "[障害調査] 申請履歴から詳細を開いて戻ると、検索条件が消える", to: "/tracks/scenario/history-back" },
           { label: "どこまで届いたか", to: "/tracks/troubleshoot/divide" },
         ],
       },
