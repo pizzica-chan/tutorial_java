@@ -1063,7 +1063,7 @@ ORDER BY r.created_at DESC
         },
         {
           type: "p",
-          text: "出す先は `logging.level` です。申請くんなら Mapper のパッケージ（`jp.co.example.shinsei.mapper` など）に DEBUG を付けましょう。XML の id と Java のメソッド名が Logger に出ることがあります。その SQL をソースで探す手順は、「リクエストの追跡」の「SQL からソースを探す」です。",
+          text: "出す先は `logging.level` です。申請くんなら Mapper のパッケージ（`jp.co.example.shinsei.mapper` など）に DEBUG を付けましょう。XML の id と Java のメソッド名が Logger に出ることがあります。その SQL をソースで探す手順は、「SQL からソースを探す」の章で説明しています。",
         },
         {
           type: "callout",
@@ -1375,7 +1375,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "p",
-          text: "ログに SQL とバインド値を出せるなら、検証用環境の DB で再実行しましょう。SELECT ならそのまま試せます。UPDATE や DELETE はデータを書き換えるので、「リクエストの追跡」の「SQL からソースを探す」の注意を見ましょう。結果が画面と同じなら、その SQL 自体は正しく動いています。それでも期待と違うなら、上の表のとおりレコードの値やマスタのずれを疑いましょう。コード上のメソッド名と、実際に飛んでいる SQL が一致しているかも確認しましょう。",
+          text: "ログに SQL とバインド値を出せるなら、検証用環境の DB で再実行しましょう。SELECT ならそのまま試せます。UPDATE や DELETE はデータを書き換えるので、「SQL からソースを探す」の「見つけたあとの確認」の注意を見ましょう。結果が画面と同じなら、その SQL 自体は正しく動いています。それでも期待と違うなら、上の表のとおりレコードの値やマスタのずれを疑いましょう。コード上のメソッド名と、実際に飛んでいる SQL が一致しているかも確認しましょう。",
         },
       ],
     },
