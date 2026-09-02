@@ -12,6 +12,7 @@ import { CodeBlock } from "./CodeBlock";
 import { Diagram } from "./Diagram";
 import { InvestigationFlow } from "./InvestigationFlow";
 import { Icon, calloutIcon } from "./Icon";
+import { ImageFigure } from "./ImageFigure";
 
 const widgets: Record<WidgetName, ComponentType> = {
   explorer: ProjectExplorer,
@@ -126,23 +127,7 @@ function BlockView({ block, headingId }: { block: Block; headingId?: string }) {
     case "diagram":
       return <Diagram name={block.name} caption={block.caption} />;
     case "figure":
-      return (
-        <figure
-          className={[
-            block.kind === "screen" ? "photo-figure screen-figure" : "photo-figure",
-            block.size === "small" ? "screen-figure-small" : "",
-          ]
-            .filter(Boolean)
-            .join(" ")}
-        >
-          <img src={block.src} alt={block.alt} loading="lazy" />
-          {block.caption ? (
-            <figcaption>
-              <TextWithTerms text={block.caption} />
-            </figcaption>
-          ) : null}
-        </figure>
-      );
+      return <ImageFigure src={block.src} alt={block.alt} caption={block.caption} kind={block.kind} size={block.size} />;
     case "table":
       return (
         <div className="table-wrap">
