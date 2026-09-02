@@ -1365,7 +1365,18 @@ The last packet sent successfully to the server was 0 milliseconds ago. The driv
         },
         {
           type: "p",
-          text: "ホスト名、ポート、DB 名に誤りは見当たりません。設定が正しいなら、次はネットワークの疎通です。この設定に書かれているホストとポートへ、アプリが動いているサーバから疎通確認をしましょう。",
+          text: "ホスト名、ポート、DB 名に誤りは見当たりません。設定が正しいなら、次はネットワークの疎通です。この設定に書かれているホストとポートへ、アプリが動いているサーバから、まず TCP のポートが開いているかを確認しましょう。",
+        },
+        {
+          type: "code",
+          title: "例（検証用環境のアプリサーバから）",
+          lang: "text",
+          code: `$ nc -zv stg-db.example.internal 3306
+nc: connect to stg-db.example.internal port 3306 (tcp) failed: Connection timed out`,
+        },
+        {
+          type: "p",
+          text: "3306 番ポートへの TCP 接続がタイムアウトしています。設定は正しいのに TCP が通らないので、次は経路のどこで止まっているかを見ましょう。",
         },
         {
           type: "code",
@@ -1411,7 +1422,8 @@ traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packet
             "検証用環境だけ、しばらく待ってから画面にエラーが出ることを確認",
             "操作時刻のログで、DB との通信失敗を示す `CommunicationsException` を確認",
             "`application-stg.yml` の接続先（ホスト・ポート）に誤りが無いことを確認",
-            "その接続先へ `traceroute -T -p 3306` を実行し、ファイアウォールの手前で止まっていることを確認",
+            "`nc -zv` で、3306 番ポートへの TCP 接続がタイムアウトすることを確認",
+            "`traceroute -T -p 3306` を実行し、ファイアウォールの手前で止まっていることを確認",
             "ネットワーク担当者に確認し、ファイアウォールのルール不足が原因と特定",
           ],
         },
