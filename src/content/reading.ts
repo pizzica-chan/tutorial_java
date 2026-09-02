@@ -750,7 +750,44 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
         },
         {
           type: "p",
-          text: "代入した箇所と、それが原因で例外になる箇所が、別のタイミングで動く別のコードのこともあります。たとえば、申請の登録時に承認者を未選択のまま登録すると、承認者の ID は `null` のまま保存されます。この値を後日の承認処理で使おうとすると、NPE になります。",
+          text: "まずは、1回のリクエストの中で完結する、基本のパターンを見ましょう。値は、呼び出し先へ引数として渡り、Setter で代入されます。",
+        },
+        {
+          type: "code",
+          title: "RequestController.create（申請くん・抜粋）",
+          lang: "java",
+          highlightLines: [2, 6],
+          code: `public String create(
+    @RequestParam String title,
+    @RequestParam Long approverId,
+    @AuthenticationPrincipal LoginUser user
+) {
+  requestService.create(user.getId(), title, approverId);
+  return "redirect:/requests";
+}`,
+        },
+        {
+          type: "code",
+          title: "RequestService.create（申請くん・抜粋）",
+          lang: "java",
+          highlightLines: [1, 3],
+          code: `public RequestEntity create(Long applicantId, String title, Long approverId) {
+  RequestEntity request = new RequestEntity();
+  request.setTitle(title);
+  request.setApplicantId(applicantId);
+  request.setApproverId(approverId);
+  request.setStatus("PENDING");
+  requestMapper.insert(request);
+  return requestMapper.findById(request.getId(), applicantId);
+}`,
+        },
+        {
+          type: "p",
+          text: "`title` は Controller のリクエストパラメータとして始まり、そのまま `RequestService.create` の引数として渡り、`request.setTitle(title)` でエンティティに代入されます。宣言・引数・代入をひとつずつ辿れば、値の流れは追えます。",
+        },
+        {
+          type: "p",
+          text: "ここまでは、代入も、それを使う処理も、同じリクエストの中で完結していました。代入した箇所と、それが原因で例外になる箇所が、別のタイミングで動く別のコードのこともあります。たとえば、申請の登録時に承認者を未選択のまま登録すると、承認者の ID は `null` のまま保存されます。この値を後日の承認処理で使おうとすると、NPE になります。",
         },
         {
           type: "code",
@@ -840,7 +877,7 @@ request.getApproverId().equals(userId); // NPE`,
         },
         {
           type: "p",
-          text: "`created_at` のような値が、Java のソースのどこにも代入されていないことがあります。DB のカラムに `DEFAULT CURRENT_TIMESTAMP` があれば INSERT 時に DB 側が値を入れますが、INSERT 文自体に `NOW()` のような関数が直接書かれていることもあります。トリガーで別のテーブルから値を補っていることもあります。",
+          text: "`created_at` のような値が、Java のソースのどこにも代入されていないことがあります。DB のカラムの `DEFAULT CURRENT_TIMESTAMP` で INSERT 時に DB 側が値を入れることもあれば、INSERT 文自体に `NOW()` のような関数が直接書かれていることもあります。トリガーで別のテーブルから値を補っていることもあります。",
         },
         {
           type: "code",
