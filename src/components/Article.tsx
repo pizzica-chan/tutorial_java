@@ -113,7 +113,12 @@ function BlockView({ block, headingId }: { block: Block; headingId?: string }) {
               </strong>
             ) : null}
             <p style={{ margin: block.title ? "6px 0 0" : 0 }}>
-              <TextWithTerms text={block.text} />
+              {block.text.split("\n").map((line, lineIndex) => (
+                <Fragment key={lineIndex}>
+                  {lineIndex > 0 ? <br /> : null}
+                  <TextWithTerms text={line} />
+                </Fragment>
+              ))}
             </p>
           </div>
         </div>
