@@ -404,7 +404,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "code",
-          title: "例（applicationContext.xml・抜粋）",
+          title: "例（applicationContext.xml。申請くんではありません）",
           lang: "xml",
           code: `<tx:advice id="txAdvice" transaction-manager="transactionManager">
   <tx:attributes>

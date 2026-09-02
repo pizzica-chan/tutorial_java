@@ -1216,7 +1216,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "社内の端末から打った結果です。ping では応答がありますが、ポート 8080 の TCP は開いていません。",
+          text: "社内の端末から、次のコマンドを打ちました。",
         },
         {
           type: "code",
@@ -1238,7 +1238,7 @@ TcpTestSucceeded : False`,
         },
         {
           type: "p",
-          text: "ping は ICMP、HTTP は TCP なので別です。ping が通っても 8080 に届かなければ、アプリには届きません。",
+          text: "ping では応答がありますが、ポート 8080 の TCP は開いていません。ping は ICMP、HTTP は TCP なので別です。ping が通っても 8080 に届かなければ、アプリには届きません。",
         },
         {
           type: "p",

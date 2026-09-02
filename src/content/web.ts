@@ -54,7 +54,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "次の画面は、申請一覧を開いた瞬間です。ブラウザは `/shinsei/requests` へ GET リクエストを送ります。サーバから返ってきた HTML が、そのまま画面になります。",
+          text: "次は、申請一覧を開いた瞬間の画面です。ブラウザは `/shinsei/requests` へ GET リクエストを送ります。サーバから返ってきた HTML が、そのまま画面になります。",
         },
         {
           type: "figure",
