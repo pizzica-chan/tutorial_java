@@ -962,7 +962,7 @@ Unit tomcat.service could not be found.`,
         },
         {
           type: "p",
-          text: "ここからは MyBatis の DEBUG に限った話です。Mapper の DEBUG を出すと、実行された SQL が見えます。本番では普段 DEBUG を出していないことが多いです。検証用環境で、または調査のあいだだけ、レベルを上げましょう。終わったら戻しましょう。",
+          text: "ここからは MyBatis の DEBUG に限った話です。Mapper の DEBUG を出すと、実行された SQL が見えます。本番では普段 DEBUG を出していないことが多いです。必要なときだけレベルを上げ、終わったら戻しましょう。",
         },
         {
           type: "code",
