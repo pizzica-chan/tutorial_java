@@ -798,7 +798,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "callout",
           kind: "note",
           title: "@ModelAttribute は向きが2つ",
-          text: "メソッドの引数に付く `@ModelAttribute` は、フォームから画面へ値を運ぶときにも使われます。Controller 内の `@ModelAttribute` メソッドは、別の共通データを毎回 Model に足す書き方です。名前が紛らわしいので、テンプレートでは `${...}` のキー名だけを見ましょう。",
+          text: "`@ModelAttribute` は、書く場所で意味が変わります。①引数に付けると、送られてきたフォームの値をオブジェクトへ詰め、その同じオブジェクトを画面にも渡します。②メソッド自体に付けると（引数ではなく）、そのメソッドの戻り値を、Controller 内のどのリクエストでも毎回 Model に足します。同じ名前でも別の仕組みなので、混同しないでください。テンプレートを読むときは `${...}` のキー名だけ見れば十分です。",
         },
         {
           type: "h2",
