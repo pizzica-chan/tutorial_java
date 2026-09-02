@@ -513,6 +513,18 @@ export const quizzes = {
     answer: 1,
     explanation: "その SQL の結果としては正しいので、DB を作り直しても原因は残りません。条件に載っていない変数を、Mapper から Controller、フォームの `name` まで辿って確認します。このシナリオでは `requestStatus` と `status` が違っていました。",
   },
+  "sc-history-back": {
+    id: "sc-history-back",
+    question: "申請履歴で検索してから詳細を開き、「← 申請履歴」で戻ると、絞り込みが消えて全件が表示される。エラーは出ない。詳細を開くリクエストと、戻ったあとのリクエストは両方 200。戻ったあとの `GET /requests/history` にクエリパラメータが無い。原因は？",
+    choices: [
+      "`th:href` の書き方が間違っていて、リンクが機能していない",
+      "検索条件をセッションに保存するキーと、取り出すキーの文字列が違い、`getAttribute` が常に `null` を返している",
+      "セッションタイムアウトで、ログイン状態が切れている",
+      "MyBatis のキャッシュが古い検索結果を返している",
+    ],
+    answer: 1,
+    explanation: "`HttpSession` の `setAttribute` / `getAttribute` は、キーの文字列が完全に一致していないと結び付きません。今回は保存側が `historySearchCondition`、取り出す側が `historyCondition` で、1文字も一致していないため、条件は常に見つからず `null` になります。コンパイルも実行も止まらないので、気づくには両方のキーを見比べる必要があります。",
+  },
   "sc-history-slow": {
     id: "sc-history-slow",
     question: "申請履歴の検索が遅い。`GET /shinsei/requests/history` は 200。ログでは `searchHistory` の `Preparing` と `Total` のあいだが数秒。`EXPLAIN` で `t_request` の `type` は `ALL`。原因は？",

@@ -973,6 +973,167 @@ public String history(
       ],
     },
     {
+      id: "history-back",
+      title: "[障害調査] 申請履歴から詳細を開いて戻ると、検索条件が消える",
+      minutes: 10,
+      blocks: [
+        {
+          type: "callout",
+          kind: "scenario",
+          text: "申請履歴で件名「研修」、ステータス「未承認」を検索すると1件だけ出る。その行から詳細を開き、「← 申請履歴」で一覧に戻ると、絞り込みが消えて全件が表示される。エラーメッセージは出ない。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "山田（yamada）でログイン。検証用環境。",
+            "申請履歴で件名「研修」、ステータス「未承認」を検索すると、1件だけ表示される",
+            "その行から詳細を開き、「← 申請履歴」で戻ると、絞り込みの無い全件が表示される",
+            "画面にエラーは出ていない",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先に見ること",
+        },
+        {
+          type: "p",
+          text: "Network タブを見ましょう。詳細を開く `GET /shinsei/requests/16?from=history` は 200 です。「← 申請履歴」を押したあとの `GET /shinsei/requests/history` も 200 ですが、検索したときに付いていたはずのクエリパラメータがありません。",
+        },
+        {
+          type: "code",
+          title: "Network タブ（申請くん）",
+          lang: "text",
+          code: `GET /shinsei/requests/16?from=history          200
+GET /shinsei/requests/history                   200`,
+        },
+        {
+          type: "p",
+          text: "検索したときのクエリ（`title=研修`、`requestStatus=PENDING`）が、戻ったときのリクエストに載っていません。フォームを再送信したわけではないので、次は「← 申請履歴」のリンク先をサーバがどう組み立てているかを追います。",
+        },
+        {
+          type: "h2",
+          text: "原因の追跡",
+        },
+        {
+          type: "p",
+          text: "詳細画面の「戻る」リンクは、テンプレートの `backTo` をそのまま `href` にしています。",
+        },
+        {
+          type: "code",
+          title: "detail.html（申請くん・抜粋）",
+          lang: "html",
+          code: `<p class="back"><a th:href="@{\${backTo}}" th:text="\${backLabel}">← 申請一覧</a></p>`,
+        },
+        {
+          type: "p",
+          text: "`backTo` は Controller の `detail` メソッドがセットしています。履歴から来たとき（`from=history`）は、`buildHistoryBackUrl` の戻り値です。",
+        },
+        {
+          type: "code",
+          title: "RequestController.detail（申請くん）",
+          lang: "java",
+          highlightLines: [10, 11],
+          code: `public String detail(
+    @PathVariable Long id,
+    @RequestParam(value = "from", required = false) String from,
+    Model model,
+    @AuthenticationPrincipal LoginUser user,
+    HttpSession session
+) {
+  model.addAttribute("requestItem", requestService.findById(id, user.getId()));
+  model.addAttribute("currentUserId", user.getId());
+  if ("history".equals(from)) {
+    model.addAttribute("backLabel", "← 申請履歴");
+    model.addAttribute("backTo", buildHistoryBackUrl(session));
+  } else {
+    model.addAttribute("backLabel", "← 申請一覧");
+    model.addAttribute("backTo", "/requests");
+  }
+  return "request/detail";
+}`,
+        },
+        {
+          type: "p",
+          text: "`buildHistoryBackUrl` は、セッションから検索条件を取り出して URL を組み立てています。",
+        },
+        {
+          type: "code",
+          title: "RequestController.buildHistoryBackUrl（申請くん）",
+          lang: "java",
+          highlightLines: [2],
+          code: `private String buildHistoryBackUrl(HttpSession session) {
+  var condition = (HistorySearchCondition) session.getAttribute("historyCondition");
+  if (condition == null) {
+    return "/requests/history";
+  }
+  return UriComponentsBuilder.fromPath("/requests/history")
+      .queryParamIfPresent("title", Optional.ofNullable(condition.getTitle()))
+      .queryParamIfPresent("requestStatus", Optional.ofNullable(condition.getRequestStatus()))
+      .queryParamIfPresent("createdFrom", Optional.ofNullable(condition.getCreatedFrom()))
+      .queryParamIfPresent("createdTo", Optional.ofNullable(condition.getCreatedTo()))
+      .toUriString();
+}`,
+        },
+        {
+          type: "p",
+          text: "ここで読んでいるキーは `historyCondition` です。検索条件をセッションに保存している側も見てみましょう。",
+        },
+        {
+          type: "code",
+          title: "RequestController.history（申請くん）",
+          lang: "java",
+          highlightLines: [2, 3],
+          code: `public String history(/* 省略 */ HttpSession session) {
+  session.setAttribute(
+      "historySearchCondition",
+      new HistorySearchCondition(title, requestStatus, createdFrom, createdTo));
+  // ...
+}`,
+        },
+        {
+          type: "p",
+          text: "保存しているキーは `historySearchCondition`、読んでいるキーは `historyCondition` です。1文字も一致していません。`HttpSession` は、`setAttribute` で使ったキーと同じ文字列で `getAttribute` しないと値を取り出せない仕組みなので、`buildHistoryBackUrl` の `condition` は毎回 `null` になり、クエリの無い `/requests/history` に戻ります。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "セッションのキーは、ただの文字列",
+          text: "`setAttribute` と `getAttribute` のキーは、どちらも普通の `String` です。コンパイラは2つの文字列リテラルが一致しているかまでは検査しないので、`historySearchCondition` と `historyCondition` のような似た名前の食い違いは、実行するまで気づけません。疑うときは、保存している側と取り出している側のキーの文字列を並べて見比べましょう。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "エラーが出ない不具合は、まず届いているリクエストの中身を見る。今回はクエリパラメータの有無から、サーバ側で条件が復元できていないと分かる",
+            "`HttpSession` の `setAttribute` と `getAttribute` は、キーの文字列が完全に一致しないと結び付かない。片方だけ直しても直らない",
+            "同じ値を扱うキーが複数箇所に文字列リテラルで書かれていると、この種の食い違いが起きやすい",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "Network で、戻ったあとの `GET /requests/history` にクエリパラメータが無いと分かる",
+            "戻るリンクの `href` が、モデルの `backTo` から来ていると分かる",
+            "`backTo` が `buildHistoryBackUrl` の戻り値だと分かる",
+            "`buildHistoryBackUrl` がセッションから読むキーが `historyCondition` だと分かる",
+            "検索時にセッションへ保存しているキーは `historySearchCondition` で、読むときのキーと違うと分かる",
+          ],
+        },
+        { type: "quiz", id: "sc-history-back" },
+      ],
+    },
+    {
       id: "history-slow",
       title: "[障害調査] 申請履歴の検索が遅い",
       minutes: 13,

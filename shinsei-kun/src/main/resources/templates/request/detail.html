@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title=${requestItem.title}, content=~{::main})">
 <main>
-  <p class="back"><a th:href="@{/requests}">← 申請一覧</a></p>
+  <p class="back"><a th:href="@{${backTo}}" th:text="${backLabel}">← 申請一覧</a></p>
   <p th:if="${errorMessage}" class="flash error" th:text="${errorMessage}">この申請は承認できません</p>
   <h1 th:text="${requestItem.title}">交通費申請</h1>
   <dl class="detail">

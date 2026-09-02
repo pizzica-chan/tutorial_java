@@ -15,6 +15,7 @@
 - **申請履歴のステータス検索は、条件に乗らない。** フォームの name は `status`、Controller の `@RequestParam` は `requestStatus` です。シナリオ「申請履歴検索の結果が不正」用です。件名と申請日は効きます。教材では件名「申請」とステータス承認済みで検索し、件名だけ効いていることを見せます。識別子を揃えて直してはいけません。
 - **申請履歴の件名の Model キーは `searchTitle`。** layout の `title`（画面名）とぶつからないようにしています。フォームの name は `title` のままです。
 - **詳細のパスは `/{id:[0-9]+}`。** `/requests/history` と数字の ID が共存するためです。教材の抜粋は `/{id}` のままです。
+- **申請履歴から詳細を開いて戻ると、検索条件が消える。** `RequestController#history` はセッションに `historySearchCondition` というキーで検索条件を保存しますが、`buildHistoryBackUrl` が読むキーは `historyCondition` です。キーが一致せず `session.getAttribute` は常に `null` を返すため、「← 申請履歴」で戻ると毎回、絞り込みの無い申請履歴が表示されます。画面にエラーは出ません。シナリオ「セッションに保存したはずの検索条件が戻ってこない」用の意図した不一致です。キーを揃えて直してはいけません。
 
 ## 教材の抜粋との差
 
