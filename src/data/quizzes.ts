@@ -501,6 +501,20 @@ export const quizzes = {
     answer: 1,
     explanation: "ログが無いこと自体が情報です。Controller の中を読む段階ではありません。",
   },
+  "sc-db-network": {
+    id: "sc-db-network",
+    question:
+      "検証用環境だけ、申請一覧を開くとしばらくして 500 になる。ログには DB への `CommunicationsException` が出ている。`application-stg.yml` の接続先は正しそうに見える。次にすることは？",
+    choices: [
+      "SQL の文法を疑う",
+      "設定ファイルに書かれた接続先へ、アプリのサーバから疎通確認をする",
+      "とりあえず `chmod 777` する",
+      "ブラウザのキャッシュを消す",
+    ],
+    answer: 1,
+    explanation:
+      "`CommunicationsException` は SQL ではなく通信の失敗です。設定が正しくても、その先への経路が届くとは限りません。アプリのサーバから接続先への疎通を確認しましょう。",
+  },
   "sc-process-user": {
     id: "sc-process-user",
     question:

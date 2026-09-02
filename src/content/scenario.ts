@@ -1302,6 +1302,123 @@ Content-Type: text/html;charset=UTF-8`,
       ],
     },
     {
+      id: "db-network",
+      title: "[障害調査] 検証用環境で、申請一覧を開くとしばらくしてエラーになる",
+      minutes: 10,
+      blocks: [
+        {
+          type: "callout",
+          kind: "scenario",
+          text: "検証用環境で申請一覧を開くと、しばらく待ってから「エラーが発生しました」と出る。ローカル環境では、同じ操作で問題なく開ける。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "検証用環境で申請一覧を開くと、20秒ほど待ってから画面にエラーが出る",
+            "Network タブでは、リクエストは出ているが、応答までかなり時間がかかったあと 500 になる",
+            "ローカル環境では、同じ操作で問題なく開ける",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先に見ること",
+        },
+        {
+          type: "p",
+          text: "応答はあるので、リクエストはサーバまで届いています。時間がかかったあとの 500 なので、操作時刻のサーバのエラーログを確認しましょう。",
+        },
+        {
+          type: "h2",
+          text: "原因の追跡",
+        },
+        {
+          type: "p",
+          text: "操作時刻のログを見ましょう。",
+        },
+        {
+          type: "code",
+          title: "操作時刻のサーバログ（申請くん・検証用環境）",
+          code: `04:12:03.512 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests
+04:12:23.518 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[/shinsei].[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] threw exception
+org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection
+Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
+
+The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.`,
+        },
+        {
+          type: "p",
+          text: "リクエストを受けてから例外まで20秒あります。`CommunicationsException` は、SQL の文法エラーではなく、DB との通信そのものが失敗したことを示します。まず、接続先の設定を確認しましょう。",
+        },
+        {
+          type: "code",
+          title: "application-stg.yml（申請くん・検証用環境）",
+          lang: "yaml",
+          code: `spring:
+  datasource:
+    url: jdbc:mysql://stg-db.example.internal:3306/shinsei
+    username: app
+    password: \${DB_PASSWORD}`,
+        },
+        {
+          type: "p",
+          text: "ホスト名、ポート、DB 名に誤りは見当たりません。設定が正しいなら、次はネットワークの疎通です。この設定に書かれているホストとポートへ、アプリが動いているサーバから疎通確認をしましょう。",
+        },
+        {
+          type: "code",
+          title: "例（検証用環境のアプリサーバから）",
+          lang: "text",
+          code: `$ traceroute -T -p 3306 stg-db.example.internal
+traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packets
+ 1  gw-app.internal (10.20.30.1)  0.412 ms
+ 2  fw-core.internal (10.20.1.1)  0.891 ms
+ 3  * * *
+ 4  * * *
+ 5  * * *`,
+        },
+        {
+          type: "p",
+          text: "2 ホップ目までは応答がありますが、その先は応答がありません。2 ホップ目の `fw-core.internal` は、アプリのセグメントと DB のセグメントのあいだにあるファイアウォールです。ネットワーク担当者に確認したところ、直近の変更で、このファイアウォールに DB セグメント向けの 3306 番ポートの許可ルールが無いことが分かりました。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "経路の先は、担当チームに確認する",
+          text: "traceroute で止まった場所は分かっても、そこで何が起きているかは、経路上の機器を管理しているチームに確認しないと分かりません。ファイアウォールのルール自体は、アプリのログにも traceroute の結果にも出てきません。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "応答はあるが時間がかかったあとの 5xx は、DB や外部 API など、通信先とのやり取りを疑う",
+            "設定ファイルの接続先が正しくても、そこへの経路が届くとは限らない",
+            "traceroute で止まった場所が分かっても、原因はそこにある機器の担当チームに確認する",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "検証用環境だけ、しばらく待ってから画面にエラーが出ることを確認",
+            "操作時刻のログで、DB との通信失敗を示す `CommunicationsException` を確認",
+            "`application-stg.yml` の接続先（ホスト・ポート）に誤りが無いことを確認",
+            "その接続先へ `traceroute -T -p 3306` を実行し、ファイアウォールの手前で止まっていることを確認",
+            "ネットワーク担当者に確認し、ファイアウォールのルール不足が原因と特定",
+          ],
+        },
+        { type: "quiz", id: "sc-db-network" },
+      ],
+    },
+    {
       id: "process-user",
       title: "[障害調査] デプロイ後、検証用環境でアプリが起動しなくなった",
       minutes: 8,
