@@ -817,7 +817,22 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
         },
         {
           type: "p",
-          text: "`title` は Controller のリクエストパラメータとして始まり、そのまま `RequestService.create` の引数として渡り、`request.setTitle(title)` でエンティティに代入されます。宣言・引数・代入をひとつずつ辿れば、値の流れは追えます。",
+          text: "`title` は Controller のリクエストパラメータとして始まり、そのまま `RequestService.create` の引数として渡り、`request.setTitle(title)` でエンティティに代入されます。この `request` は `requestMapper.insert(request)` へそのまま渡り、Mapper の XML では `#{title}` として SQL に埋め込まれます。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の insert（申請くん・抜粋）",
+          lang: "xml",
+          highlightLines: [3],
+          code: `<insert id="insert" useGeneratedKeys="true" keyProperty="id">
+  INSERT INTO t_request (title, status, applicant_id, approver_id, applicant_email, created_at)
+  VALUES (#{title}, #{status}, #{applicantId}, #{approverId},
+          (SELECT email FROM t_user WHERE id = #{applicantId}), NOW())
+</insert>`,
+        },
+        {
+          type: "p",
+          text: "`#{title}` は、渡されたオブジェクト（ここでは `request`）の `getTitle()` を呼び、その値を SQL のプレースホルダに埋め込む書き方です。宣言・引数・代入・SQL のバインドをひとつずつ辿れば、値の流れは追えます。",
         },
         {
           type: "p",
