@@ -353,7 +353,7 @@ public class RequestApiController {
       blocks: [
         {
           type: "p",
-          text: "MyBatis の Mapper は、メソッド宣言だけの Java インタフェースと、SQL を書いた XML ファイルの組で1つです。置き場所や細かい動きは、`application.yml` の `mybatis:` に書いてあります。",
+          text: "MyBatis の Mapper は、メソッド宣言だけの Java インタフェースと、SQL を書いた XML ファイルの組であることが多いです。アノテーションだけで SQL を書く方法もありますが、申請くんは XML です。置き場所や細かい動きは、`application.yml` の `mybatis:` に書いてあります。",
         },
         {
           type: "code",
@@ -394,7 +394,8 @@ public class RequestApiController {
   FROM t_request r
   JOIN t_user a ON a.id = r.applicant_id
   LEFT JOIN t_user v ON v.id = r.approver_id
-  WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
+  WHERE (r.applicant_id = #{userId}
+     OR r.approver_id = #{userId})
     AND r.status = 'PENDING'
   ORDER BY r.created_at DESC
 </select>`,
@@ -409,7 +410,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "`resultType=\"RequestEntity\"` と書くだけで、SELECT の各カラムが `RequestEntity` のフィールドへ自動で入ります。2つ疑問が出るはずです。なぜ完全なパッケージ名を書かなくてよいのか、なぜ `applicant_id` が `applicantId` というフィールドに入るのか。答えは、さきほどの `application.yml` の2行にあります。",
+          text: "`resultType=\"RequestEntity\"` と書くだけで、SELECT の各カラムが `RequestEntity` のフィールドへ自動で入ります。完全なパッケージ名を書かなくてよいことと、`applicant_id` が `applicantId` というフィールドに対応することには、それぞれ理由があります。さきほどの `application.yml` の2行がその答えです。",
         },
         {
           type: "ul",
@@ -450,7 +451,7 @@ public class RequestApiController {
           type: "code",
           title: "RequestMapper.xml の searchHistory（申請くん・抜粋）",
           lang: "xml",
-          highlightLines: [2, 3, 4, 5, 6],
+          highlightLines: [2, 3, 4, 5, 6, 7],
           code: `WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
 <if test="title != null and title != ''">
   AND r.title LIKE CONCAT('%', #{title}, '%')

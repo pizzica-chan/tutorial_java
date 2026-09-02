@@ -419,6 +419,11 @@ export const terms: TermDef[] = [
     body: "SQL の値の穴です。ログでは `?` 、MyBatis の XML では `#{userId}` のように書きます。実行時に実際の値が入ります。",
   },
   {
+    term: "PreparedStatement",
+    aliases: ["PreparedStatement"],
+    body: "SQL の雛形をあらかじめ用意し、値をあとから安全にバインドする JDBC の仕組みです。値を文字列として直接 SQL に組み込まないため、SQL インジェクションを防げます。MyBatis の `#{}` は、この仕組みを使います。",
+  },
+  {
     term: "SQL インジェクション",
     aliases: ["SQLインジェクション", "SQL インジェクション"],
     body: "利用者からの入力を SQL の文字列にそのまま組み込んでしまい、意図しない SQL が実行されてしまう脆弱性です。MyBatis の `#{}` は値を安全にバインドしますが、`${}` は文字列としてそのまま埋め込むため、入力をそのまま渡すと危険です。",
