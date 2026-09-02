@@ -850,12 +850,6 @@ request.setApproverId(form.getApproverId()); // 承認者が未選択なら null
 request.getApproverId().equals(userId); // NPE`,
         },
         {
-          type: "callout",
-          kind: "trap",
-          title: "途中の null チェック",
-          text: "Optional や null チェックが途中まであると、その先ではもう null ではないと誤解しやすいです。分岐を書き出しましょう。",
-        },
-        {
           type: "h2",
           text: "参照検索だけでは追えないパターン",
         },
