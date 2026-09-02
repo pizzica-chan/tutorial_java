@@ -1032,7 +1032,7 @@ if (!"PENDING".equals(request.getStatus())) {
           type: "callout",
           kind: "note",
           title: "申請くんと JS",
-          text: "申請くんのようにサーバが HTML を組み立てるアプリでは、表示の多くはテンプレートです。JS のデバッガが主役になるのは、画面内で fetch している、ボタンを押しても Network タブに行が無い、JSON は正しいのに画面の数字が違う、のいずれかに当てはまるときです。",
+          text: "申請くんのようにサーバが HTML を組み立てるアプリでは、表示の多くはテンプレートです。JS のデバッガが主役になるのは、その画面が JavaScript で fetch している、ボタンを押しても Network タブに行が無い、JSON は正しいのに画面の数字が違う、のいずれかに当てはまるときです。",
         },
         {
           type: "h2",
