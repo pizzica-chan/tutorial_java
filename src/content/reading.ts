@@ -1,6 +1,6 @@
 import type { Track } from "../types";
 import { requestListEntryPointReadingSnippet } from "../data/entryPoint";
-import { requestServiceSample } from "../data/project";
+import { requestServiceSample, shinseiAppJsSnippet, shinseiFormJsSnippet } from "../data/project";
 
 export const readingTrack: Track = {
   id: "reading",
@@ -38,6 +38,10 @@ export const readingTrack: Track = {
             [
               "入口は分かった。誰が呼び、何に渡すかを追いたい",
               "呼び出し元と呼び出し先",
+            ],
+            [
+              "ボタンを押したときに、どの JavaScript が動くかを知りたい",
+              "ブラウザの JavaScript を辿る",
             ],
           ],
         },
@@ -805,6 +809,14 @@ requestService.approve(id, user.getId());`,
           title: "ソースに呼び出しが無いもの",
           text: "Filter、Interceptor、AOP は、このメソッドのソースに呼び出しが無く、参照検索の一覧にも出ません。`@Transactional` や `@PreAuthorize` のように、アノテーションとして付いていることがあります。読み飛ばさず確認しましょう。探し方は「Javaアプリの構成」の「Filter / Interceptor / AOP / @ControllerAdvice」です。",
         },
+        {
+          type: "p",
+          text: "ブラウザの JavaScript にも、呼び出し元と呼び出し先があります。IDE の参照検索は使えませんが、手順は「ブラウザの JavaScript を辿る」にあります。",
+          link: {
+            label: "ブラウザの JavaScript を辿る",
+            to: "/tracks/reading/js-trace",
+          },
+        },
         { type: "quiz", id: "read-call" },
       ],
     },
@@ -1186,6 +1198,14 @@ if (!"PENDING".equals(request.getStatus())) {
           ],
         },
         {
+          type: "p",
+          text: "どの JavaScript が動いているかを見つけ、そこから別の関数へ辿る手順は、次の項目「ブラウザの JavaScript を辿る」にあります。",
+          link: {
+            label: "ブラウザの JavaScript を辿る",
+            to: "/tracks/reading/js-trace",
+          },
+        },
+        {
           type: "callout",
           kind: "note",
           title: "申請くんと JS",
@@ -1212,6 +1232,182 @@ if (!"PENDING".equals(request.getStatus())) {
           text: "デバッガで止めたスレッドは待ちます。外部 API のタイムアウトや、検証用環境の他の利用者に影響することがあります。",
         },
         { type: "quiz", id: "read-debug" },
+      ],
+    },
+    {
+      id: "js-trace",
+      title: "ブラウザの JavaScript を辿る",
+      minutes: 10,
+      blocks: [
+        {
+          type: "p",
+          text: "ボタンを押したときに動く JavaScript を探します。Java 側で URL から Controller を特定したのと同じで、手がかりから1本だけ辿ります。",
+        },
+        {
+          type: "p",
+          text: "申請くんのように、サーバが HTML を組み立てるアプリでは、JavaScript は画面の補助に使われることが多いです。それでも、押しても何も起きない、押した瞬間に画面だけ変わる、といったときは JavaScript を読むことになります。",
+        },
+        {
+          type: "h2",
+          text: "押したときに動く JavaScript を見つける",
+        },
+        {
+          type: "p",
+          text: "新しいリクエストが飛ばない操作では、URL は手がかりになりません。代わりに、押した要素の HTML を見ましょう。",
+        },
+        {
+          type: "ol",
+          items: [
+            "開発者ツールの Elements タブで、押したボタンと、それを囲む form や div を見る",
+            "`class` や `id` に、見た目と関係の無さそうな名前が付いていないかを確認する",
+            "その名前で、JavaScript の置き場（申請くんなら `static/js`）を検索する",
+            "ヒットしたファイルの `addEventListener` を見る。そこに登録されている関数が、押したときに動く",
+          ],
+        },
+        {
+          type: "h3",
+          text: "申請くんの例",
+        },
+        {
+          type: "p",
+          text: "新規申請の画面で「提出」を押すと、確認ダイアログが出ます。まず、この画面の HTML を見ましょう。",
+        },
+        {
+          type: "code",
+          title: "request/form.html（申請くん・抜粋）",
+          lang: "html",
+          highlightLines: [1, 4],
+          code: `<form class="stack js-submit-confirm" th:action="@{/requests}" method="post">
+  ...
+</form>
+<script th:src="@{/js/form.js}"></script>`,
+        },
+        {
+          type: "p",
+          text: "form には `stack` と `js-submit-confirm` の2つのクラスが付いています。`stack` は見た目のクラスです。`js-submit-confirm` の方は、この画面の JavaScript が目印にしている名前です。この名前で `static/js` を検索しましょう。",
+        },
+        {
+          type: "code",
+          title: "static/js/form.js（申請くん）",
+          lang: "javascript",
+          highlightLines: [1, 2],
+          code: shinseiFormJsSnippet,
+        },
+        {
+          type: "p",
+          text: "1行目で `js-submit-confirm` が付いたフォームを集め、2行目の `addEventListener` で、送信のときに動く関数を登録しています。押したときに動くのは、この関数の中です。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "`js-` が付いたクラス名",
+          text: "見た目の CSS と、JavaScript が探すための目印を、クラス名で分けている書き方があります。`js-` で始まるクラスがそれです。プロジェクトごとの決まりなので、付いていないこともあります。そのときは `id` や、`th:action` の値のような別の字面でも検索しましょう。",
+        },
+        {
+          type: "p",
+          text: "同じやり方で、申請詳細の承認ボタンは `js-approve-confirm` から `app.js` に着きます。シナリオ「承認すると、申請者に確認メールが2通届く」で辿ったのと同じ手順です。",
+          link: {
+            label: "承認すると、申請者に確認メールが2通届く",
+            to: "/tracks/scenario/duplicate-mail",
+          },
+        },
+        {
+          type: "h3",
+          text: "名前で見つからないとき",
+        },
+        {
+          type: "p",
+          text: "手がかりになるクラス名も `id` も無いときや、検索しても当たらないときは、デバッガで止めて確かめましょう。",
+        },
+        {
+          type: "ol",
+          items: [
+            "開発者ツールの Sources タブを開き、その画面が読み込んだ JavaScript のファイルを開く",
+            "`addEventListener` に渡している関数の中の行に、ブレークポイントを置く",
+            "画面に戻って、同じボタンを押す",
+            "止まれば、その関数が動いている。止まらなければ、別の JavaScript が動いているか、そもそも登録されていない",
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "要素に付いたイベントの一覧",
+          text: "ブラウザによっては、Elements タブで要素を選ぶと、その要素と親に登録されているイベントの一覧を見られます。Chrome の Event Listeners がこれにあたります。ファイル名と行が出るので、そこから JavaScript を開けます。表示や名前はブラウザによって違います。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "JavaScript は static だけにあるとは限らない",
+          text: "テンプレートの `<script>` の中や、`onclick` 属性に直接書かれていることもあります。`static/js` で見つからないときは、`templates` 配下も同じ言葉で検索しましょう。置き場所は「テンプレートと静的ファイル」にあります。",
+        },
+        {
+          type: "h2",
+          text: "JavaScript から JavaScript へ辿る",
+        },
+        {
+          type: "p",
+          text: "見つけた関数の中に、別の関数の呼び出しがあることがあります。上の `form.js` では `confirmAction(\"提出\")` です。この関数の定義は、`form.js` の中にはありません。",
+        },
+        {
+          type: "p",
+          text: "Java なら import と参照検索がありますが、JavaScript では、呼んでいる関数がどのファイルにあるかを、ソースに書かない書き方があります。関数名で、JavaScript の置き場をまとめて検索しましょう。",
+        },
+        {
+          type: "p",
+          text: "`confirmAction` だけで検索すると、呼んでいる側も定義も出ます。定義に絞るなら `function confirmAction` で検索しましょう。正規表現なら `function\\s+confirmAction` です。",
+        },
+        {
+          type: "code",
+          title: "static/js/app.js（申請くん）",
+          lang: "javascript",
+          highlightLines: [2, 3, 8],
+          code: shinseiAppJsSnippet,
+        },
+        {
+          type: "p",
+          text: "`app.js` に `confirmAction` の定義がありました。新規申請の「提出」も、申請詳細の「承認」も、同じ関数を呼んでいます。ダイアログの文言は、渡した言葉で変わります。",
+        },
+        {
+          type: "p",
+          text: "`<script>` で読み込んだ JavaScript は、同じページの中で名前を共有します。`function` で定義した名前は、別のファイルからも呼べます。呼ぶ時点でその定義が読み込み済みであればよいので、`form.js` が先に動いていても、送信のときには `app.js` の `confirmAction` が使えます。読み込みの順番は「HTML / CSS / JavaScript の役割」の「ページを開いたときの順番」にあります。",
+          link: {
+            label: "HTML / CSS / JavaScript の役割",
+            to: "/tracks/web/front-roles",
+          },
+        },
+        {
+          type: "h3",
+          text: "デバッガで辿る",
+        },
+        {
+          type: "p",
+          text: "検索の代わりに、デバッガでも辿れます。Java の IDE でやったことと同じです。",
+        },
+        {
+          type: "ol",
+          items: [
+            "Sources タブで `form.js` を開き、`confirmAction` を呼んでいる行にブレークポイントを置く",
+            "画面で「提出」を押す。その行で止まる",
+            "呼び出しの中へ入る操作（ステップイン）を選ぶ。`app.js` の `confirmAction` に着く",
+            "Call Stack を見る。上が今動いている関数、下が呼び出し元。`form.js` の行が呼び出し元として残っている",
+          ],
+        },
+        {
+          type: "table",
+          headers: ["やりたいこと", "Java（IDE）", "ブラウザの JavaScript"],
+          rows: [
+            ["呼ばれている側の中身を開く", "定義へジャンプ", "関数名で検索する。または止めてステップインする"],
+            ["誰が呼んでいるかを知る", "参照検索", "関数名で検索する。または止めて Call Stack を見る"],
+            ["止めて変数を見る", "IDE のデバッガ", "開発者ツールの Sources タブ"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "同じ名前の関数が複数ある",
+          text: "JavaScript では、同じ名前の関数が別のファイルにもあると、あとから読み込んだ方で上書きされることがあります。エラーは出ず、思っていない方が動きます。検索で複数ヒットしたら、その画面がどの JavaScript を読み込んでいるかを Network タブで確認しましょう。",
+        },
+        { type: "quiz", id: "read-js" },
       ],
     },
     {

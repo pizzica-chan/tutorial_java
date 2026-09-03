@@ -580,12 +580,20 @@ if (updated == 0) {
           type: "code",
           title: "fragments/layout.html（抜粋）",
           lang: "html",
-          highlightLines: [2],
+          highlightLines: [2, 3],
           code: shinseiLayoutStaticSnippet,
         },
         {
           type: "p",
           text: "`th:href=\"@{/css/app.css}\"` は、`context-path` を含めた URL に変換されます。申請くんでは `/shinsei/css/app.css` のように見えます。",
+        },
+        {
+          type: "p",
+          text: "同じ head の `<script>` に付いている `defer` は、HTML を最後まで読み終えてから JavaScript を実行する指定です。「HTML / CSS / JavaScript の役割」の「ページを開いたときの順番」で扱いました。",
+          link: {
+            label: "HTML / CSS / JavaScript の役割",
+            to: "/tracks/web/front-roles",
+          },
         },
         {
           type: "code",
@@ -601,7 +609,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "`static/js` には `app.js` のほかに `list.js` もあります。今見た `app.js` の確認ダイアログは申請詳細画面の承認ボタン用で、一覧画面の承認ボタンを押したときに動く JavaScript は `list.js` の方です。1つの画面が複数の JS ファイルを読み込むことは珍しくありません。",
+          text: "`static/js` には `app.js` のほかに `list.js` と `form.js` もあります。今見た `app.js` の確認ダイアログは申請詳細画面の承認ボタン用で、一覧画面の承認ボタンを押したときに動く JavaScript は `list.js` の方です。1つの画面が複数の JS ファイルを読み込むことは珍しくありません。",
         },
         {
           type: "p",

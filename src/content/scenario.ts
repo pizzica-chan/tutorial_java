@@ -483,11 +483,17 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "code",
-          title: "app.js（申請くん・抜粋）",
+          title: "app.js（申請くん）",
           lang: "javascript",
-          code: `document.querySelectorAll("form.js-approve-confirm").forEach((form) => {
+          highlightLines: [2, 3, 4],
+          code: `// 確認ダイアログの文言をそろえる。画面ごとの JS からも呼びます。
+function confirmAction(actionName) {
+  return window.confirm(actionName + "してよいですか？");
+}
+
+document.querySelectorAll("form.js-approve-confirm").forEach((form) => {
   form.addEventListener("submit", (event) => {
-    if (!window.confirm("承認してよいですか？")) {
+    if (!confirmAction("承認")) {
       event.preventDefault();
     }
   });

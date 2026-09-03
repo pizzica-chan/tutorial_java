@@ -1,4 +1,5 @@
 import type { Track } from "../types";
+import { shinseiLayoutStaticSnippet } from "../data/project";
 
 export const webTrack: Track = {
   id: "web",
@@ -585,7 +586,7 @@ public String showCart(HttpSession session, Model model) {
     {
       id: "front-roles",
       title: "HTML / CSS / JavaScript の役割",
-      minutes: 7,
+      minutes: 10,
       blocks: [
         {
           type: "p",
@@ -597,7 +598,7 @@ public String showCart(HttpSession session, Model model) {
           rows: [
             ["HTML", "見出し、入力欄、ボタンなど、画面の要素を表す", "form、input、button"],
             ["CSS", "色、位置、余白、表示・非表示など、見え方を指定する", "ボタンの色、表の幅、レイアウト"],
-            ["JavaScript", "操作に応じて画面を変えたり、HTTP 通信を始めたりする", "確認ダイアログ"],
+            ["JavaScript", "ページを開いたときや操作したときに、画面を変えたり HTTP 通信を始めたりする", "確認ダイアログ"],
           ],
         },
         {
@@ -620,6 +621,95 @@ public String showCart(HttpSession session, Model model) {
             ["input の name / hidden", "サーバへ送る項目、ID、CSRF トークン"],
             ["`th:if`", "サーバがその要素を HTML に出す条件"],
           ],
+        },
+        {
+          type: "h2",
+          text: "ページを開いたときの順番",
+        },
+        {
+          type: "p",
+          text: "ブラウザは、返ってきた HTML を上から順に読んで、画面を組み立てます。",
+        },
+        {
+          type: "p",
+          text: "途中で `<link>` や `<script>` に当たると、その CSS や JavaScript を別のリクエストで取りに行きます。",
+        },
+        {
+          type: "p",
+          text: "`defer` のような指定が付いていなければ、読み込んだ JavaScript は、その `<script>` の位置で実行されます。",
+        },
+        {
+          type: "p",
+          text: "その時点では、`<script>` より下に書かれた要素はまだ読み込まれていません。JavaScript から探しても見つかりません。",
+        },
+        {
+          type: "p",
+          text: "画面の要素を探す JavaScript は、要素が読み込まれたあとに動く必要があります。申請くんには、そのための書き方が2つ出てきます。",
+        },
+        {
+          type: "h3",
+          text: "defer を付ける",
+        },
+        {
+          type: "code",
+          title: "fragments/layout.html（抜粋）",
+          lang: "html",
+          highlightLines: [3],
+          code: shinseiLayoutStaticSnippet,
+        },
+        {
+          type: "p",
+          text: "`app.js` は `<head>` から読み込みますが、`<script>` に `defer` が付いています。`defer` が付いた JavaScript は、HTML を最後まで読み終えてから実行されます。",
+        },
+        {
+          type: "p",
+          text: "もし `defer` が無ければ、`app.js` は `<head>` の位置で実行されます。その時点では申請詳細画面の承認フォームがまだ読み込まれていないので、`document.querySelectorAll(\"form.js-approve-confirm\")` は1件も見つけられません。",
+        },
+        {
+          type: "h3",
+          text: "要素より下に置く",
+        },
+        {
+          type: "p",
+          text: "申請一覧の画面は、`list.js` を表よりあとで読み込みます。",
+        },
+        {
+          type: "code",
+          title: "request/list.html（末尾）",
+          lang: "html",
+          highlightLines: [3],
+          code: `    </tbody>
+  </table>
+  <script th:src="@{/js/list.js}"></script>
+</main>`,
+        },
+        {
+          type: "p",
+          text: "この `<script>` に `defer` はありません。ブラウザがこの行を読む時点では、上の表と承認フォームがすでに読み込まれています。`list.js` は、その要素を探せます。",
+        },
+        {
+          type: "table",
+          headers: ["書き方", "申請くんの例", "JavaScript が動くとき"],
+          rows: [
+            ["`<script>` に `defer` を付ける", "`fragments/layout.html` の `app.js`", "HTML を最後まで読み終えたあと"],
+            ["`<script>` を要素より下に置く", "`request/list.html` の `list.js`", "その `<script>` の行を読んだとき"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "ほかのアプリで見る書き方",
+          text: "申請くんには出てきませんが、`DOMContentLoaded` を待ってから処理を始める書き方もよくあります。HTML を最後まで読み終えたときに動くので、`defer` と同じように、要素がそろってから実行できます。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "エラーが出ないこともある",
+          text: "要素が見つからないとき、`document.querySelectorAll` は0件を返すだけです。例外にならないので、コンソールにも何も出ません。イベントの処理が登録されず、ボタンを押しても何も起きない、という見え方になります。",
+        },
+        {
+          type: "p",
+          text: "JavaScript が画面の要素を見つけられないときは、`<script>` の位置と `defer` の有無を確認しましょう。要素が HTML にそもそも無いのか、実行の時点でまだ読み込まれていないのかで、直す場所が変わります。",
         },
         {
           type: "h2",

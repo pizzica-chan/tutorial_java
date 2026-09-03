@@ -235,6 +235,19 @@ export const quizzes = {
     answer: 1,
     explanation: "サーバは PENDING を返しています。画面の文言はフロント側です。Java のデバッガを止めても、正しい応答を返す処理に届くだけです。",
   },
+  "read-js": {
+    id: "read-js",
+    question: "新規申請で「提出」を押すと確認ダイアログが出る。どの JavaScript が動いているかを知りたい。先にやることは？",
+    choices: [
+      "`static/js` のファイルを上から順にすべて読む",
+      "押したボタンとそれを囲む form を Elements タブで見て、`class` の名前で `static/js` を検索する",
+      "サーバのアプリログで、その時刻の行を探す",
+      "Controller にブレークポイントを置いてデバッグ実行する",
+    ],
+    answer: 1,
+    explanation:
+      "確認ダイアログはブラウザ側の動きで、サーバにはまだ関係ありません。申請くんの新規申請では、form に付いた `js-submit-confirm` で検索すると `form.js` に着きます。手がかりになる名前が無いときは、Sources タブでブレークポイントを置いて確かめましょう。",
+  },
   "ts-npe": {
     id: "ts-npe",
     question: "`NullPointerException` のスタックトレースで、最初に見るべき行は？",

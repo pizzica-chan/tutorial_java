@@ -3,7 +3,7 @@
 <main>
   <p class="back"><a th:href="@{/requests}">← 申請一覧</a></p>
   <h1>新規申請</h1>
-  <form class="stack" th:action="@{/requests}" method="post">
+  <form class="stack js-submit-confirm" th:action="@{/requests}" method="post">
     <label>
       件名
       <input type="text" name="title" required maxlength="255" placeholder="例: 交通費申請" />
@@ -18,5 +18,6 @@
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <button type="submit">提出</button>
   </form>
+  <script th:src="@{/js/form.js}"></script>
 </main>
 </html>

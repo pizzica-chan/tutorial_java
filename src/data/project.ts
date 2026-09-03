@@ -174,9 +174,23 @@ export const shinseiAppCssSnippet = `body {
 }`;
 
 /** 教材用。申請くんの JS 抜粋 */
-export const shinseiAppJsSnippet = `document.querySelectorAll("form.js-approve-confirm").forEach((form) => {
+export const shinseiAppJsSnippet = `// 確認ダイアログの文言をそろえる。画面ごとの JS からも呼びます。
+function confirmAction(actionName) {
+  return window.confirm(actionName + "してよいですか？");
+}
+
+document.querySelectorAll("form.js-approve-confirm").forEach((form) => {
   form.addEventListener("submit", (event) => {
-    if (!window.confirm("承認してよいですか？")) {
+    if (!confirmAction("承認")) {
+      event.preventDefault();
+    }
+  });
+});`;
+
+/** 教材用。申請くんの新規申請 JS */
+export const shinseiFormJsSnippet = `document.querySelectorAll("form.js-submit-confirm").forEach((form) => {
+  form.addEventListener("submit", (event) => {
+    if (!confirmAction("提出")) {
       event.preventDefault();
     }
   });
@@ -436,7 +450,7 @@ CREATE TABLE IF NOT EXISTS t_request (
     path: "src/main/resources/templates/request/form.html",
     note: "新規申請の画面テンプレート",
     why: "承認者のプルダウンは、Controller が Model に載せた `approvers` から `th:each` で作られます。送信先とパラメータ名は `RequestController.create` の `@RequestParam` と対応します。",
-    code: `<form class="stack" th:action="@{/requests}" method="post">
+    code: `<form class="stack js-submit-confirm" th:action="@{/requests}" method="post">
   <label>
     件名
     <input type="text" name="title" required maxlength="255" />
@@ -449,7 +463,8 @@ CREATE TABLE IF NOT EXISTS t_request (
   </label>
   <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
   <button type="submit">提出</button>
-</form>`,
+</form>
+<script th:src="@{/js/form.js}"></script>`,
   },
   {
     path: "src/main/resources/templates/request/history.html",
@@ -499,7 +514,7 @@ CREATE TABLE IF NOT EXISTS t_request (
   {
     path: "src/main/resources/static/js/app.js",
     note: "画面用 JavaScript",
-    why: "ボタンの確認ダイアログなど、ブラウザ側の動きは static/js に置かれることが多いです。HTML から読み込みます。`context-path` があるときは `th:src=\"@{/js/app.js}\"` のように書くことが多いです。",
+    why: "ボタンの確認ダイアログなど、ブラウザ側の動きは static/js に置かれることが多いです。HTML から読み込みます。`context-path` があるときは `th:src=\"@{/js/app.js}\"` のように書くことが多いです。画面ごとの JS から呼ぶ関数も、このファイルに置いています。",
     code: shinseiAppJsSnippet,
   },
   {
@@ -516,6 +531,12 @@ CREATE TABLE IF NOT EXISTS t_request (
     form.submit();
   });
 });`,
+  },
+  {
+    path: "src/main/resources/static/js/form.js",
+    note: "新規申請の JavaScript",
+    why: "画面ごとの JS です。`form.html` が読み込みます。提出前の確認ダイアログを出すために、`app.js` の `confirmAction` を呼びます。呼んでいる関数がどのファイルにあるかは、このファイルには書かれていません。",
+    code: shinseiFormJsSnippet,
   },
   {
     path: "src/main/java/.../config/SecurityConfig.java",
@@ -688,6 +709,7 @@ export const projectTree: ProjectTreeNode = {
                       children: [
                         { name: "app.js", filePath: "src/main/resources/static/js/app.js" },
                         { name: "list.js", filePath: "src/main/resources/static/js/list.js" },
+                        { name: "form.js", filePath: "src/main/resources/static/js/form.js" },
                       ],
                     },
                   ],

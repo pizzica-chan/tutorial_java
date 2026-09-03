@@ -1004,9 +1004,44 @@ export const terms: TermDef[] = [
     body: "id 属性が一致する HTML 要素を返す JavaScript の関数です。見つからないと null です。",
   },
   {
+    term: "querySelectorAll",
+    aliases: ["querySelectorAll"],
+    body: "条件に合う HTML 要素をすべて返す JavaScript の関数です。条件は CSS と同じ書き方で指定します。見つからないときは null ではなく、0 件で返ります。",
+  },
+  {
     term: "preventDefault",
     aliases: ["preventDefault"],
     body: "イベントのあとブラウザが本来する動きを止める関数です。フォームの submit なら、送信を止めます。",
+  },
+  {
+    term: "defer",
+    aliases: ["defer"],
+    body: "`<script>` に付ける属性です。付けると、HTML を最後まで読み終えてから JavaScript を実行します。`src` で外部ファイルを読み込む `<script>` のときだけ効きます。似た属性の `async` は、読み込みが終わり次第に実行されるので、順番が決まりません。",
+  },
+  {
+    term: "DOMContentLoaded",
+    aliases: ["DOMContentLoaded"],
+    body: "ブラウザが HTML を最後まで読み終えたときに出るイベントです。これを待ってから処理を始めると、画面の要素がそろった状態で動かせます。画像などの読み込み完了は待ちません。",
+  },
+  {
+    term: "addEventListener",
+    aliases: ["addEventListener", "イベントリスナー"],
+    body: "クリックや送信などの操作が起きたときに動く関数を、HTML の要素に登録する JavaScript の関数です。登録しただけでは動かず、その操作が起きたときに呼ばれます。",
+  },
+  {
+    term: "Sources タブ",
+    aliases: ["Sources タブ", "Sourcesタブ", "Sources（ソース）", "Sources"],
+    body: "ブラウザ開発者ツールの画面です。そのページが読み込んだ JavaScript を開き、行にブレークポイントを置けます。止まったときは、変数の値と Call Stack を確認できます。",
+  },
+  {
+    term: "Call Stack",
+    aliases: ["Call Stack", "コールスタック"],
+    body: "デバッガで止まったときに出る、今の関数までの呼び出しの並びです。上が今動いている関数、下が呼び出し元です。Java の例外のスタックトレースと同じ読み方をします。",
+  },
+  {
+    term: "ステップイン",
+    aliases: ["ステップイン"],
+    body: "デバッガで止まっているとき、次の行へ進むのではなく、その行が呼んでいる関数の中へ入る操作です。ブラウザでも IDE でも考え方は同じですが、ボタンの名前は環境によって違います。",
   },
   {
     term: "DB",
