@@ -13,6 +13,7 @@ public class RequestEntity {
   private Long approverId;
   private String applicantEmail;
   private LocalDateTime createdAt;
+  private LocalDateTime approvedAt;
   private String applicantName;
   private String approverName;
 }

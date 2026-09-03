@@ -955,6 +955,14 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           text: "この設定が無いプロジェクトでは、SQL 側に `applicant_id AS applicantId` のように別名を付けるか、`resultMap` で対応を書きます。件数は合っているのに一部のフィールドだけ null なら、カラム名とフィールド名の対応がずれていないか疑いましょう。",
         },
         {
+          type: "p",
+          text: "実際にこれが起きた例は、「実務のシナリオ」の「申請履歴の『承認日時』が、承認済みでも空欄になる」で扱います。",
+          link: {
+            label: "申請履歴の「承認日時」が、承認済みでも空欄になる",
+            to: "/tracks/scenario/history-approved-at",
+          },
+        },
+        {
           type: "h2",
           text: "#{} でパラメータを渡す",
         },

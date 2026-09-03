@@ -541,6 +541,20 @@ export const quizzes = {
     answer: 1,
     explanation: "`HttpSession` の `setAttribute` / `getAttribute` は、キーの文字列が完全に一致していないと結び付きません。今回は保存側が `historySearchCondition`、取り出す側が `historyCondition` で、1文字も一致していないため、条件は常に見つからず `null` になります。コンパイルも実行も止まらないので、気づくには両方のキーを見比べる必要があります。",
   },
+  "sc-history-approved-at": {
+    id: "sc-history-approved-at",
+    question:
+      "申請履歴の「承認日時」列が、承認済みのレコードでも常に「-」になる。DB には `updated_at` の値があり、MyBatis のログにも SELECT に `r.updated_at` が含まれている。原因は？",
+    choices: [
+      "SQL の WHERE 条件が間違っている",
+      "カラム名 `updated_at` は自動変換で `updatedAt` になるが、Java 側のフィールド名は `approvedAt` で一致しない",
+      "Thymeleaf の `th:text` の書き方が間違っている",
+      "トランザクションがロールバックされている",
+    ],
+    answer: 1,
+    explanation:
+      "SQL も DB の値も正しいので、疑うのは `resultType` の自動変換です。`map-underscore-to-camel-case` により `updated_at` は `updatedAt` に変換されますが、`RequestEntity` のフィールド名は `approvedAt` です。名前が一致しないカラムは、MyBatis が黙って無視します。",
+  },
   "sc-history-slow": {
     id: "sc-history-slow",
     question: "申請履歴の検索が遅い。`GET /shinsei/requests/history` は 200。ログでは `searchHistory` の `Preparing` と `Total` のあいだが数秒。`EXPLAIN` で `t_request` の `type` は `ALL`。原因は？",

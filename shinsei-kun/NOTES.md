@@ -17,6 +17,7 @@
 - **詳細のパスは `/{id:[0-9]+}`。** `/requests/history` と数字の ID が共存するためです。教材の抜粋は `/{id}` のままです。
 - **申請履歴から詳細を開いて戻ると、検索条件が消える。** `RequestController#history` はセッションに `historySearchCondition` というキーで検索条件を保存しますが、`buildHistoryBackUrl` が読むキーは `historyCondition` です。キーが一致せず `session.getAttribute` は常に `null` を返すため、「← 申請履歴」で戻ると毎回、絞り込みの無い申請履歴が表示されます。画面にエラーは出ません。シナリオ「セッションに保存したはずの検索条件が戻ってこない」用の意図した不一致です。キーを揃えて直してはいけません。
 - **承認しても、通知メールが届かないことがある。** `MailService.notifyApplicant` は件名を `request.getTitle().substring(0, 10)` で切り詰めますが、10文字未満の件名（「休暇申請」など、教材データのほとんど）では `StringIndexOutOfBoundsException` になります。この例外は `catch (Exception e)` で捕まえ、`log.warn(...)` するだけで `e` を渡していないため、ログには例外の種類もスタックトレースも残りません。DB の更新自体は成功し、画面にもエラーは出ません。シナリオ「承認は成功するのに、申請者への通知メールが届かない」用の意図した不具合です。件名の切り詰めやログ出力を直してはいけません。
+- **申請履歴の「承認日時」列が、承認済みでも常に「-」になる。** `RequestMapper.xml` の `searchHistory` は `r.updated_at` を SELECT に足しましたが、エイリアスを付けていません。`map-underscore-to-camel-case: true` により `updated_at` は `updatedAt` に変換されますが、`RequestEntity` 側のフィールド名は `approvedAt` です。名前が一致せず、MyBatis はこの列を黙って無視するため、`approvedAt` は常に `null` のままです。SQL は正しく実行され、DB にも値があり、画面にもエラーは出ません。シナリオ「申請履歴の『承認日時』が、承認済みでも空欄になる」用の意図した不一致です。エイリアスやフィールド名を揃えて直してはいけません。
 
 ## 教材の抜粋との差
 

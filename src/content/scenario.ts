@@ -1259,6 +1259,163 @@ GET /shinsei/requests/history                   200`,
       ],
     },
     {
+      id: "history-approved-at",
+      title: "[障害調査] 申請履歴の「承認日時」が、承認済みでも空欄になる",
+      minutes: 10,
+      blocks: [
+        {
+          type: "callout",
+          kind: "scenario",
+          text: "申請履歴でステータスを「承認済み」にして検索すると、レコードは正しい件数で出る。ただし、新しく追加された「承認日時」の列が、どのレコードも「-」のままになっている。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "山田（yamada）でログイン。検証用環境。申請履歴でステータス「承認済み」を検索した",
+            "該当するレコードは正しい件数で表示される",
+            "「承認日時」の列だけ、どのレコードも「-」になっている",
+            "画面にエラーは出ていない",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先に見ること",
+        },
+        {
+          type: "p",
+          text: "Network タブを見ましょう。`GET /shinsei/requests/history` は 200 で、件数も検索条件どおりです。画面は HTML の応答なので、Network タブだけでは「承認日時」の中身までは分かりません。次はテンプレートとサーバ側です。",
+        },
+        {
+          type: "h2",
+          text: "原因の追跡",
+        },
+        {
+          type: "p",
+          text: "まずテンプレートで、「承認日時」がどの値を出しているかを確認します。",
+        },
+        {
+          type: "code",
+          title: "history.html（申請くん・抜粋）",
+          lang: "html",
+          highlightLines: [1],
+          code: `<td th:text="\${item.approvedAt != null ? #temporals.format(item.approvedAt, 'yyyy-MM-dd HH:mm') : '-'}">-</td>`,
+        },
+        {
+          type: "p",
+          text: "`item.approvedAt` を見ています。`approvedAt` が `null` なら `-` を出す作りなので、常に `-` ということは `approvedAt` が毎回 `null` だと分かります。`RequestEntity` にこのフィールドはあります。",
+        },
+        {
+          type: "code",
+          title: "RequestEntity.java（申請くん・抜粋）",
+          lang: "java",
+          highlightLines: [2],
+          code: `private LocalDateTime createdAt;
+private LocalDateTime approvedAt;`,
+        },
+        {
+          type: "p",
+          text: "フィールドはあるのに値が入らないので、次は SQL 側を疑います。まず DB に、承認済みのレコードの `updated_at` があるかを直接確認しましょう。",
+        },
+        {
+          type: "code",
+          title: "t_request（申請くん・検証用環境）",
+          lang: "sql",
+          code: `SELECT id, title, status, updated_at FROM t_request WHERE status = 'APPROVED';`,
+        },
+        {
+          type: "table",
+          headers: ["id", "title", "status", "`updated_at`"],
+          rows: [["11", "備品購入", "APPROVED", "2026-04-12 10:03:00"]],
+        },
+        {
+          type: "p",
+          text: "DB には `updated_at` の値があります。次は、実行された SQL にこのカラムが含まれているかを、アプリのログで確認します。",
+        },
+        {
+          type: "code",
+          title: "MyBatis の DEBUG（申請くんの searchHistory）",
+          lang: "text",
+          highlightLines: [1],
+          code: `==>  Preparing: SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at, r.updated_at,
+       a.display_name AS applicant_name, v.display_name AS approver_name
+       FROM t_request r ... WHERE ... AND r.status = ?
+==> Parameters: 7(Long), 7(Long), APPROVED(String)
+<==      Total: 1`,
+        },
+        {
+          type: "p",
+          text: "SQL にも `r.updated_at` があり、DB にも値があります。ここまでは正しく動いています。残るのは、SELECT の結果を `RequestEntity` へ渡す部分です。`RequestMapper.xml` の `searchHistory` を見ましょう。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の searchHistory（申請くん・抜粋）",
+          lang: "xml",
+          highlightLines: [1],
+          code: `SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at, r.updated_at,
+       a.display_name AS applicant_name,
+       v.display_name AS approver_name`,
+        },
+        {
+          type: "p",
+          text: "`r.updated_at` にはエイリアスが付いていません。`application.yml` の `map-underscore-to-camel-case: true` により、`updated_at` はカラム名から自動で `updatedAt` というフィールド名に変換されます。しかし `RequestEntity` にあるのは `approvedAt` です。",
+          link: {
+            label: "mapper.xml の読み方",
+            to: "/tracks/java-map/mapper-xml",
+          },
+        },
+        {
+          type: "code",
+          title: "application.yml の mybatis 設定（申請くん・抜粋）",
+          lang: "yaml",
+          code: `mybatis:
+  configuration:
+    map-underscore-to-camel-case: true`,
+        },
+        {
+          type: "p",
+          text: "`updatedAt` という名前のフィールドは `RequestEntity` にありません。MyBatis は、対応するフィールドが無いカラムをエラーにはせず、黙って無視します。そのため `approvedAt` は常に `null` のままです。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "件数が合っていても、対応漏れは分からない",
+          text: "SQL が正しく実行され、件数も条件どおりなら、そのクエリ自体は疑いにくくなります。一部のカラムだけ値が入らないときは、実行結果とエラーの有無だけでなく、カラム名とフィールド名が自動変換のルールどおりに対応しているかを確認しましょう。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "件数が合っているのに一部のカラムだけ空や null なら、SQL の条件ではなく、カラム名とフィールド名の対応を疑う",
+            "DB に値があり、SQL にもそのカラムがあることを確認してから、`resultType` の自動変換ルール（`map-underscore-to-camel-case` など）を確認する",
+            "MyBatis は、対応するフィールドが無いカラムをエラーにせず、黙って無視する",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "Network で `GET /requests/history` が 200 で、件数も条件どおりであることを確認",
+            "テンプレートが `item.approvedAt` を参照していると分かる",
+            "DB に `updated_at` の値があることを確認",
+            "MyBatis の DEBUG ログで、SELECT に `r.updated_at` が含まれていると分かる",
+            "`application.yml` の `map-underscore-to-camel-case` により `updated_at` が `updatedAt` に変換されると分かる",
+            "`RequestEntity` のフィールド名が `approvedAt` で、変換後の `updatedAt` と一致しないと特定",
+          ],
+        },
+        { type: "quiz", id: "sc-history-approved-at" },
+      ],
+    },
+    {
       id: "history-slow",
       title: "[障害調査] 申請履歴の検索が遅い",
       minutes: 13,

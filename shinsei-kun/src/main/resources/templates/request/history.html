@@ -38,6 +38,7 @@
         <th>承認者</th>
         <th>ステータス</th>
         <th>申請日時</th>
+        <th>承認日時</th>
       </tr>
     </thead>
     <tbody>
@@ -52,9 +53,10 @@
           <span class="status" th:classappend="${item.status == 'PENDING'} ? ' is-pending' : ' is-approved'" th:text="${item.status}">PENDING</span>
         </td>
         <td th:text="${#temporals.format(item.createdAt, 'yyyy-MM-dd HH:mm')}">2026-04-10 09:15</td>
+        <td th:text="${item.approvedAt != null ? #temporals.format(item.approvedAt, 'yyyy-MM-dd HH:mm') : '-'}">-</td>
       </tr>
       <tr th:if="${#lists.isEmpty(results)}">
-        <td colspan="6">条件に合う申請はありません。</td>
+        <td colspan="7">条件に合う申請はありません。</td>
       </tr>
     </tbody>
   </table>

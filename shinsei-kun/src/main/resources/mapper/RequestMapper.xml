@@ -17,7 +17,7 @@
   </select>
 
   <select id="searchHistory" resultType="RequestEntity">
-    SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+    SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at, r.updated_at,
            a.display_name AS applicant_name,
            v.display_name AS approver_name
     FROM t_request r
