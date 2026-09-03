@@ -12,6 +12,6 @@ INSERT IGNORE INTO t_request (id, title, status, applicant_id, approver_id, appl
 (16, '研修参加', 'PENDING', 7, NULL, 'yamada@example.co.jp', '2026-04-13 10:00:00');
 
 -- 再起動したら教材の初期状態に戻す（INSERT IGNORE では既存行の status と title は変わらない）
-UPDATE t_request SET status = 'APPROVED', updated_at = NULL WHERE id = 11;
+UPDATE t_request SET status = 'APPROVED', updated_at = '2026-04-12 10:03:00' WHERE id = 11;
 UPDATE t_request SET status = 'PENDING', updated_at = NULL WHERE id IN (12, 13, 15, 16);
 UPDATE t_request SET title = '研修参加', approver_id = NULL WHERE id = 16;
