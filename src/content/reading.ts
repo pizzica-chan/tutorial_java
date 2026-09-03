@@ -1241,11 +1241,11 @@ if (!"PENDING".equals(request.getStatus())) {
       blocks: [
         {
           type: "p",
-          text: "ボタンを押したときに動く JavaScript を探します。Java 側で URL から Controller を特定したのと同じで、手がかりから1本だけ辿ります。",
+          text: "ボタンを押したときに動く JavaScript を探します。Java 側で URL から Controller を特定したのと同じで、手がかりから一本だけ辿ります。",
         },
         {
           type: "p",
-          text: "申請くんのように、サーバが HTML を組み立てるアプリでは、JavaScript は画面の補助に使われることが多いです。それでも、押しても何も起きない、押した瞬間に画面だけ変わる、といったときは JavaScript を読むことになります。",
+          text: "申請くんのように、サーバが HTML を組み立てるアプリでは、JavaScript は画面の補助として使われることが多いです。ボタンを押しても新しいリクエストが飛んでいないときは、JavaScript を読むことになります。「押しても何も起きない」「押した瞬間に画面だけ変わる」は、その典型です。",
         },
         {
           type: "h2",
@@ -1258,7 +1258,7 @@ if (!"PENDING".equals(request.getStatus())) {
         {
           type: "ol",
           items: [
-            "開発者ツールの Elements タブで、押したボタンと、それを囲む form や div を見る",
+            "開発者ツールの Elements タブで、押したボタンと、それを囲む `<form>` や `<div>` を見る",
             "`class` や `id` に、見た目と関係の無さそうな名前が付いていないかを確認する",
             "その名前で、JavaScript の置き場（申請くんなら `static/js`）を検索する",
             "ヒットしたファイルの `addEventListener` を見る。そこに登録されている関数が、押したときに動く",
@@ -1284,7 +1284,7 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "p",
-          text: "form には `stack` と `js-submit-confirm` の2つのクラスが付いています。`stack` は見た目のクラスです。`js-submit-confirm` の方は、この画面の JavaScript が目印にしている名前です。この名前で `static/js` を検索しましょう。",
+          text: "`<form>` には `stack` と `js-submit-confirm` の2つのクラスが付いています。`stack` は見た目のクラスです。`js-submit-confirm` の方は、この画面の JavaScript が目印にしている名前です。この名前で `static/js` を検索しましょう。",
         },
         {
           type: "code",
@@ -1295,7 +1295,7 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "p",
-          text: "1行目で `js-submit-confirm` が付いたフォームを集め、2行目の `addEventListener` で、送信のときに動く関数を登録しています。押したときに動くのは、この関数の中です。",
+          text: "1 行目で `js-submit-confirm` が付いたフォームを集め、2 行目の `addEventListener` で、送信のときに動く関数を登録しています。押したときに動くのは、この関数の中です。",
         },
         {
           type: "callout",
