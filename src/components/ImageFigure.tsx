@@ -38,6 +38,7 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
   const [transitionEnabled, setTransitionEnabled] = useState(false);
 
   const [fittedSize, setFittedSize] = useState<{ width: number; height: number } | null>(null);
+  const [overflowsAtBaseline, setOverflowsAtBaseline] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -58,6 +59,7 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
     setScale(1);
     setPan({ x: 0, y: 0 });
     setFittedSize(null);
+    setOverflowsAtBaseline(false);
     pointersRef.current.clear();
     pinchStateRef.current = null;
     dragStateRef.current = null;
@@ -86,7 +88,13 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
     // 実際の width/height に反映し、拡大を transform:scale ではなく再サンプリングさせる
     function measure() {
       if (!img) return;
-      setFittedSize({ width: img.offsetWidth, height: img.offsetHeight });
+      const width = img.offsetWidth;
+      const height = img.offsetHeight;
+      setFittedSize({ width, height });
+      const containerRect = containerRef.current?.getBoundingClientRect();
+      if (containerRect) {
+        setOverflowsAtBaseline(height > containerRect.height || width > containerRect.width);
+      }
     }
     if (img.complete) {
       measure();
@@ -242,24 +250,26 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
           <button className="lightbox-close" type="button" aria-label="閉じる" onClick={() => close()}>
             <Icon name="close" size={20} />
           </button>
-          <img
-            ref={imgRef}
-            src={src}
-            alt={alt}
-            className="lightbox-img"
-            style={{
-              ...(fittedSize ? { width: fittedSize.width * scale, height: fittedSize.height * scale } : {}),
-              transform: `translate(${pan.x}px, ${pan.y}px)`,
-              transition: transitionEnabled ? "width 0.2s ease, height 0.2s ease, transform 0.2s ease" : "none",
-              cursor: scale > 1 ? "grab" : "zoom-in",
-              touchAction: "none",
-            }}
-            onClick={(event) => event.stopPropagation()}
-            onPointerDown={onPointerDown}
-            onPointerMove={onPointerMove}
-            onPointerUp={endPointer}
-            onPointerCancel={endPointer}
-          />
+          <div className="lightbox-frame">
+            <img
+              ref={imgRef}
+              src={src}
+              alt={alt}
+              className="lightbox-img"
+              style={{
+                ...(fittedSize ? { width: fittedSize.width * scale, height: fittedSize.height * scale } : {}),
+                transform: `translate(${pan.x}px, ${pan.y}px)`,
+                transition: transitionEnabled ? "width 0.2s ease, height 0.2s ease, transform 0.2s ease" : "none",
+                cursor: scale > 1 || overflowsAtBaseline ? "grab" : "zoom-in",
+                touchAction: "none",
+              }}
+              onClick={(event) => event.stopPropagation()}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
+              onPointerUp={endPointer}
+              onPointerCancel={endPointer}
+            />
+          </div>
         </div>,
         document.body,
       )
