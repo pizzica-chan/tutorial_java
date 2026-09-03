@@ -202,13 +202,13 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
       if (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD) {
         dragStateRef.current.moved = true;
       }
-      if (scaleRef.current > 1) {
-        const nextPan: Point = {
-          x: dragStateRef.current.startPanX + dx,
-          y: dragStateRef.current.startPanY + dy,
-        };
-        setPan(clampPan(nextPan, scaleRef.current));
-      }
+      // 幅いっぱいの初期表示でも、縦に画面をはみ出す画像はここでドラッグ移動できる。
+      // はみ出していない軸は clampPan が 0 に固定する
+      const nextPan: Point = {
+        x: dragStateRef.current.startPanX + dx,
+        y: dragStateRef.current.startPanY + dy,
+      };
+      setPan(clampPan(nextPan, scaleRef.current));
     }
   }
 
@@ -248,14 +248,7 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
             alt={alt}
             className="lightbox-img"
             style={{
-              ...(fittedSize
-                ? {
-                    width: fittedSize.width * scale,
-                    height: fittedSize.height * scale,
-                    maxWidth: "none",
-                    maxHeight: "none",
-                  }
-                : {}),
+              ...(fittedSize ? { width: fittedSize.width * scale, height: fittedSize.height * scale } : {}),
               transform: `translate(${pan.x}px, ${pan.y}px)`,
               transition: transitionEnabled ? "width 0.2s ease, height 0.2s ease, transform 0.2s ease" : "none",
               cursor: scale > 1 ? "grab" : "zoom-in",
