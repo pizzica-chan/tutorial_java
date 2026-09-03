@@ -1645,20 +1645,16 @@ th {
   position: fixed;
   inset: 0;
   z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: rgba(20, 28, 48, 0.82);
   cursor: zoom-out;
 }
 
-/* img に直接 width:100% を指定すると、Safari では flex の子要素として
-   % 指定が正しく解決されないことがあるため、絶対配置の枠で幅を確定させる */
-.lightbox-frame {
-  position: absolute;
-  top: 50%;
-  left: 32px;
-  right: 32px;
-  transform: translateY(-50%);
-}
-
+/* width/height は常に JS が px で指定する（% 指定はしない）。
+   Safari は flex の子要素での % 指定の解決に癖があるため、この下の
+   width:100% はスクリプトが実寸を測るまでの一瞬だけ使うフォールバック */
 .lightbox img {
   display: block;
   width: 100%;

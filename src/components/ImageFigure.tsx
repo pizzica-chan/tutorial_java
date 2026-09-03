@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon } from "./Icon";
@@ -80,23 +80,24 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!open) return;
     const img = imgRef.current;
-    if (!img) return;
-    // 実寸表示前の「フィット時サイズ」を一度だけ測る。以降はこの値 × scale を
-    // 実際の width/height に反映し、拡大を transform:scale ではなく再サンプリングさせる
+    const container = containerRef.current;
+    if (!img || !container) return;
+    // フィット時（scale=1）の幅は、常にコンテナの実測幅を基準にする。img 自体の
+    // % 指定を測るとブラウザによって解決結果が違うことがあるため測定には使わない。
+    // 高さは画像の実ピクセル比から計算し、以降は width/height を px で直接指定する
     function measure() {
-      if (!img) return;
-      const width = img.offsetWidth;
-      const height = img.offsetHeight;
+      if (!img || !container) return;
+      const width = container.getBoundingClientRect().width;
+      const ratio = img.naturalHeight / img.naturalWidth;
+      const height = width * ratio;
       setFittedSize({ width, height });
-      const containerRect = containerRef.current?.getBoundingClientRect();
-      if (containerRect) {
-        setOverflowsAtBaseline(height > containerRect.height || width > containerRect.width);
-      }
+      const containerRect = container.getBoundingClientRect();
+      setOverflowsAtBaseline(height > containerRect.height || width > containerRect.width);
     }
-    if (img.complete) {
+    if (img.complete && img.naturalWidth > 0) {
       measure();
     } else {
       img.addEventListener("load", measure, { once: true });
@@ -221,6 +222,15 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
   }
 
   function endPointer(event: React.PointerEvent<HTMLImageElement>) {
+    if (!pointersRef.current.has(event.pointerId)) {
+      // ドラッグの直後は、ブラウザによってはこの押下の pointerdown が来ず
+      // pointerup だけ届くことがある。ほかに動いているポインタが無ければ、
+      // タップとして扱う（そうしないと直後のダブルタップが数えられない）
+      if (pointersRef.current.size === 0 && !dragStateRef.current && !pinchStateRef.current) {
+        handleTap({ x: event.clientX, y: event.clientY });
+      }
+      return;
+    }
     const wasSingle = pointersRef.current.size === 1;
     const dragInfo = dragStateRef.current;
     pointersRef.current.delete(event.pointerId);
@@ -250,26 +260,24 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
           <button className="lightbox-close" type="button" aria-label="閉じる" onClick={() => close()}>
             <Icon name="close" size={20} />
           </button>
-          <div className="lightbox-frame">
-            <img
-              ref={imgRef}
-              src={src}
-              alt={alt}
-              className="lightbox-img"
-              style={{
-                ...(fittedSize ? { width: fittedSize.width * scale, height: fittedSize.height * scale } : {}),
-                transform: `translate(${pan.x}px, ${pan.y}px)`,
-                transition: transitionEnabled ? "width 0.2s ease, height 0.2s ease, transform 0.2s ease" : "none",
-                cursor: scale > 1 || overflowsAtBaseline ? "grab" : "zoom-in",
-                touchAction: "none",
-              }}
-              onClick={(event) => event.stopPropagation()}
-              onPointerDown={onPointerDown}
-              onPointerMove={onPointerMove}
-              onPointerUp={endPointer}
-              onPointerCancel={endPointer}
-            />
-          </div>
+          <img
+            ref={imgRef}
+            src={src}
+            alt={alt}
+            className="lightbox-img"
+            style={{
+              ...(fittedSize ? { width: fittedSize.width * scale, height: fittedSize.height * scale } : {}),
+              transform: `translate(${pan.x}px, ${pan.y}px)`,
+              transition: transitionEnabled ? "width 0.2s ease, height 0.2s ease, transform 0.2s ease" : "none",
+              cursor: scale > 1 || overflowsAtBaseline ? "grab" : "zoom-in",
+              touchAction: "none",
+            }}
+            onClick={(event) => event.stopPropagation()}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endPointer}
+            onPointerCancel={endPointer}
+          />
         </div>,
         document.body,
       )
