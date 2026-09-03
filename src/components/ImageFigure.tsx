@@ -37,12 +37,16 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
   const [pan, setPan] = useState<Point>({ x: 0, y: 0 });
   const [transitionEnabled, setTransitionEnabled] = useState(false);
 
+  const [fittedSize, setFittedSize] = useState<{ width: number; height: number } | null>(null);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const scaleRef = useRef(scale);
   const panRef = useRef(pan);
+  const fittedSizeRef = useRef(fittedSize);
   scaleRef.current = scale;
   panRef.current = pan;
+  fittedSizeRef.current = fittedSize;
 
   const pointersRef = useRef(new Map<number, Point>());
   const pinchStateRef = useRef<{ startDistance: number; startScale: number; q: Point; center: Point } | null>(null);
@@ -53,6 +57,7 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
     setOpen(false);
     setScale(1);
     setPan({ x: 0, y: 0 });
+    setFittedSize(null);
     pointersRef.current.clear();
     pinchStateRef.current = null;
     dragStateRef.current = null;
@@ -73,18 +78,37 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
+  useEffect(() => {
+    if (!open) return;
+    const img = imgRef.current;
+    if (!img) return;
+    // 実寸表示前の「フィット時サイズ」を一度だけ測る。以降はこの値 × scale を
+    // 実際の width/height に反映し、拡大を transform:scale ではなく再サンプリングさせる
+    function measure() {
+      if (!img) return;
+      setFittedSize({ width: img.offsetWidth, height: img.offsetHeight });
+    }
+    if (img.complete) {
+      measure();
+    } else {
+      img.addEventListener("load", measure, { once: true });
+      return () => img.removeEventListener("load", measure);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [open]);
+
   function getCenter(): Point {
     const rect = containerRef.current!.getBoundingClientRect();
     return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
   }
 
   function clampPan(candidate: Point, atScale: number): Point {
-    const img = imgRef.current;
+    const fitted = fittedSizeRef.current;
     const container = containerRef.current;
-    if (!img || !container) return candidate;
+    if (!fitted || !container) return candidate;
     const containerRect = container.getBoundingClientRect();
-    const displayedWidth = img.offsetWidth * atScale;
-    const displayedHeight = img.offsetHeight * atScale;
+    const displayedWidth = fitted.width * atScale;
+    const displayedHeight = fitted.height * atScale;
     const maxX = Math.max(0, (displayedWidth - containerRect.width) / 2);
     const maxY = Math.max(0, (displayedHeight - containerRect.height) / 2);
     return { x: clamp(candidate.x, -maxX, maxX), y: clamp(candidate.y, -maxY, maxY) };
@@ -224,8 +248,16 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
             alt={alt}
             className="lightbox-img"
             style={{
-              transform: `translate(${pan.x}px, ${pan.y}px) scale(${scale})`,
-              transition: transitionEnabled ? "transform 0.2s ease" : "none",
+              ...(fittedSize
+                ? {
+                    width: fittedSize.width * scale,
+                    height: fittedSize.height * scale,
+                    maxWidth: "none",
+                    maxHeight: "none",
+                  }
+                : {}),
+              transform: `translate(${pan.x}px, ${pan.y}px)`,
+              transition: transitionEnabled ? "width 0.2s ease, height 0.2s ease, transform 0.2s ease" : "none",
               cursor: scale > 1 ? "grab" : "zoom-in",
               touchAction: "none",
             }}
