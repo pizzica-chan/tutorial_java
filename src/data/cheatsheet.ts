@@ -162,6 +162,16 @@ export const cheatSheet: CheatSection[] = [
     title: "3. SQL 調査（EXPLAIN・ログ・ロック）",
     groups: [
       {
+        title: "テーブル定義を確認する",
+        note: "ソースだけを見て思い込んだカラム名や型が、実際の DB と違っていることがあります。SQL やコードを疑う前に、まず実物を見ましょう。",
+        rows: [
+          { cmd: "`SHOW TABLES;`", env: "MySQL", desc: "今つないでいる DB にあるテーブルの一覧を見る" },
+          { cmd: "`DESCRIBE t_request;`", env: "MySQL", desc: "カラム名・型・NULL を許すか・キーの種類を一覧する" },
+          { cmd: "`SHOW CREATE TABLE t_request;`", env: "MySQL", desc: "CREATE TABLE 文そのものを見る。外部キー制約やデフォルト値、文字コードまでまとめて分かる" },
+          { cmd: "`SHOW INDEX FROM t_request;`", env: "MySQL", desc: "そのテーブルに張られているインデックスを見る。`EXPLAIN` の `possible_keys` と突き合わせるときに使う" },
+        ],
+      },
+      {
         title: "実行計画とレコードの確認",
         rows: [
           { cmd: "`EXPLAIN SELECT * FROM t_request WHERE applicant_id = 7;`", env: "MySQL", desc: "その SQL の実行計画（DB がどう読むか）を見る" },
@@ -205,6 +215,16 @@ export const cheatSheet: CheatSection[] = [
           { cmd: "`curl -o /dev/null -s -w \"%{http_code} %{time_total}s\\n\" URL`", env: "Linux / Windows", desc: "本文は捨てて、ステータスコードと合計時間だけを簡潔に見る" },
           { cmd: "`curl -s URL | jq .`", env: "Linux", desc: "JSON の応答を整形して見る（`jq` が入っている環境）" },
           { cmd: "`for i in 1 2 3 4 5; do curl -o /dev/null -s -w \"%{http_code} %{time_total}s\\n\" URL; done`", env: "Linux", desc: "同じ URL を複数回叩いて、応答のブレ（毎回同じか、時々遅い・失敗するか）を見る" },
+        ],
+      },
+      {
+        title: "実際に流れているパケットを見る（tcpdump）",
+        note: "curl や nc の結果だけでは分からない、通信そのものの中身やタイミングを見たいときに使います。curl より一段低いレイヤーです。",
+        rows: [
+          { cmd: "`tcpdump -i eth0 port 8080`", env: "Linux", desc: "そのポートに実際にパケットが届いているかを見る。`ss`/`netstat` は待ち受けの有無までで、通信そのものは見えない" },
+          { cmd: "`tcpdump -i any host notify.example.internal`", env: "Linux", desc: "特定の相手先とのやり取りだけに絞る。外部 API への疎通確認と組み合わせる" },
+          { cmd: "`tcpdump -nn -i eth0 -A port 80`", env: "Linux", desc: "HTTP（暗号化されていない通信）の中身を文字として表示する。HTTPS では中身までは読めない" },
+          { cmd: "`tcpdump -i eth0 -w capture.pcap`", env: "Linux", desc: "その場で読まずファイルに書き出す。あとで自分の PC に持ち帰り、Wireshark で開いて詳しく見る" },
         ],
       },
       {
