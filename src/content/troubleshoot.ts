@@ -20,7 +20,7 @@ export const troubleshootTrack: Track = {
         { type: "widget", name: "troubleshoot-map" },
         {
           type: "p",
-          text: "症状を選ぶと、原因の当たり（クライアント・ネットワーク・サーバ）と、最初に確認すること、それで分かることが並びます。この当たりの分け方は、次の「調査手順」の「当たりのつけ方」と同じです。ここに近い症状が無いときや、症状を一覧で見比べたいときは、「調査手順」の表も見ましょう。",
+          text: "この当たりの分け方は、次の「調査手順」の「当たりのつけ方」と同じです。ここに近い症状が無いときや、症状を一覧で見比べたいときは、「調査手順」の表も見ましょう。",
         },
       ],
     },
@@ -139,10 +139,6 @@ export const troubleshootTrack: Track = {
             ],
           ],
         },
-        {
-          type: "p",
-          text: "上の表は、最初に見るものの目安です。ここからの切り分け方は、次の「どこまで届いたか」で詳しく見ます。",
-        },
         { type: "quiz", id: "ts-symptom-start" },
       ],
     },
@@ -224,7 +220,7 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
         },
         {
           type: "p",
-          text: "この例では、Modify が 8/27 の編集時刻のまま、Change だけが配置した 8/30 の時刻になっています。`rsync -a` や `cp -p` のように元の Modify（mtime）を保つデプロイだと、こうなります。ここで主に見るのは Change です。ユーザー側から指定できず、コピーや配置でも必ず更新されるので、このサーバに実際に配置された時刻を反映します。Change が症状の報告時刻の直前にあれば、その配置が原因の候補です。Modify は中身がいつ書かれたか（開発時の編集時刻など）の参考程度に留めましょう。",
+          text: "この例では、Modify が 8/27 の編集時刻のまま、Change だけが配置した 8/30 の時刻になっています。`rsync -a` や `cp -p` のように元の Modify（mtime）を保つデプロイだと、こうなります。ここで主に見るのは Change です。コピーや配置でも必ず更新されるので、このサーバに実際に配置された時刻を反映します。Change が症状の報告時刻の直前にあれば、その配置が原因の候補です。Modify は中身がいつ書かれたか（開発時の編集時刻など）の参考程度に留めましょう。",
         },
         {
           type: "callout",
@@ -286,9 +282,9 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
       blocks: [
         {
           type: "p",
-          text: "Java の分岐を読む前に、リクエストがどこまで届いたかを確認しましょう。Network タブの見方は「Webの基礎」の章で見たとおりです。ログの見方は、このあとの項目で見ていきます。ping や curl の打ち方は「ネットワークの疎通確認」です。",
+          text: "Java の分岐を読む前に、リクエストがどこまで届いたかを確認しましょう。ログの見方は、このあとの項目で見ていきます。ping や curl の打ち方は「ネットワークの疎通確認」です。",
         },
-        { type: "diagram", name: "divide", caption: "先に「どこまで届いたか」で切り分ける。" },
+        { type: "diagram", name: "divide", caption: "ブラウザ、サーバ、DB のどこまで進んだかで、疑う範囲が変わります。" },
         {
           type: "table",
           headers: ["確認", "疑わしい箇所"],
@@ -400,7 +396,7 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
           type: "callout",
           kind: "trap",
           title: "Permission denied はコードの不具合ではない",
-          text: "`Permission denied` は、パーミッションかユーザが原因であることが多く、アプリのロジックの不具合ではありません。`ls -l` で対象ファイルの権限と所有者を確認し、今のユーザに読み書きの権限があるかを見ましょう。権限を変える `chmod` / `chown` は、理由を確認してから使いましょう。",
+          text: "`Permission denied` は、パーミッションかユーザが原因であることが多く、アプリのロジックの不具合ではありません。権限を変える `chmod` / `chown` は、理由を確認してから使いましょう。",
         },
         {
           type: "callout",
@@ -433,7 +429,7 @@ appuser   1842  java -jar shinsei-kun.jar`,
         },
         {
           type: "p",
-          text: "`USER` の列に出る `appuser` が、そのプロセスを動かしているユーザです。この例では、SSH でログインしたのが `yamada` というユーザだったとしても、Java プロセス自体は別の `appuser` というユーザで動いています。自分がログインしたユーザ名と、プロセスの `USER` 列が違うことは珍しくありません。",
+          text: "`USER` の列に出る `appuser` が、そのプロセスを動かしているユーザです。この例では、SSH でログインしたのが `yamada` というユーザだったとしても、Java プロセス自体は別の `appuser` というユーザで動いています。",
         },
         {
           type: "code",
@@ -450,10 +446,6 @@ appuser   1842  java -jar shinsei-kun.jar`,
         {
           type: "h2",
           text: "プロセスとリソースを見る",
-        },
-        {
-          type: "p",
-          text: "アプリが起動しているか、サーバのリソースが足りているかを確認します。",
         },
         {
           type: "table",
@@ -523,10 +515,6 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
           title: "削除したのに、ディスクの空きが増えない",
           text: "ログファイルを `rm` で消しても、そのファイルを開いたままのプロセスがあると、ディスクの空き容量はすぐには増えません。プロセスがファイルを閉じる（多くは再起動）まで、OS 内部では領域を確保したままになります。`lsof | grep deleted` で、削除済みなのに開いたままのファイルを探せます。`df -h` でディスクが埋まっているときは、これも疑いましょう。",
         },
-        {
-          type: "p",
-          text: "ここで見たコマンドは、「アプリログの場所と読み方」や「ネットワークの疎通確認」でログや接続を確認するときにも使います。",
-        },
         { type: "quiz", id: "ts-linux" },
         { type: "quiz", id: "ts-linux-user" },
       ],
@@ -546,7 +534,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
         },
         {
           type: "p",
-          text: "出力先はアプリと環境で違います。決まった一箇所はありません。次の順で探しましょう。",
+          text: "出力先はアプリと環境で違います。次の順で探しましょう。",
         },
         {
           type: "ol",
@@ -567,10 +555,6 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
             ["日付で分かれた .log ファイル", "logback などでローテートしている"],
             ["コンテナの標準出力", "Docker や Kubernetes。docker logs や同等のコマンド"],
           ],
-        },
-        {
-          type: "p",
-          text: "手前に nginx や Apache があるときの access.log / error.log は、あとのレッスン「HTTP サーバのログを見る」で扱います。",
         },
         {
           type: "h2",
@@ -642,10 +626,6 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
       title: "HTTP サーバのログを見る",
       minutes: 6,
       blocks: [
-        {
-          type: "p",
-          text: "アプリ自身のログは前のレッスンで見ました。ここでは、手前の HTTP サーバのログを見ます。",
-        },
         {
           type: "p",
           text: "手前に Apache や nginx がある構成では、ブラウザのリクエストが最初に届くのは HTTP サーバです。CSS や JS は、この手前の HTTP サーバがそのまま返すことが多く、Java まで届かないためアプリのログには出ません。",
@@ -768,7 +748,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
           type: "callout",
           kind: "note",
           title: "打つ場所で結果が変わる",
-          text: "打つ場所で結果が変わります。自分の PC からと、サーバからでは通る道が違います。ブラウザからは届くのに開発 PC からは届かない、サーバ上のアプリだけ外部 API に失敗する、ということもあります。再現に近い場所から打ちましょう。",
+          text: "自分の PC からと、サーバからでは通る道が違います。ブラウザからは届くのに開発 PC からは届かない、サーバ上のアプリだけ外部 API に失敗する、ということもあります。再現に近い場所から打ちましょう。",
         },
         {
           type: "h2",
@@ -793,7 +773,7 @@ ping -c 4 intranet.example.co.jp`,
         },
         {
           type: "p",
-          text: "ping が通らなくても HTTP は通ることもあれば、逆に ping は通るがアプリのポートは閉じていることもあります。ping だけで決め打ちは避けましょう。",
+          text: "ping が通らなくても HTTP は通ることもあれば、逆に ping は通るがアプリのポートは閉じていることもあります。",
         },
         {
           type: "h2",
@@ -905,7 +885,7 @@ curl -I https://notify.example.internal/api/send`,
         },
         {
           type: "p",
-          text: "開発 PC からは通っても、サーバからは FW で閉じていることがあります。逆に、サーバからは通るのに開発 PC からは通らないこともあります。向き先だけでなく、打つ場所もアプリサーバに合わせましょう。外部への接続がどんな症状やログに出るかは、「トラブル例：外部システム / 外部 API」で詳しく見ます。",
+          text: "開発 PC からは通っても、サーバからは FW で閉じていることがあります。向き先だけでなく、打つ場所もアプリサーバに合わせましょう。外部への接続がどんな症状やログに出るかは、「トラブル例：外部システム / 外部 API」で詳しく見ます。",
         },
         {
           type: "h2",
@@ -962,7 +942,7 @@ Enter password:
         },
         {
           type: "p",
-          text: "`SELECT 1` の結果が返れば、DB 自体は動いています。つながらないときは、エラーの種類で疑う先が変わります。",
+          text: "結果が返るか、どのエラーで止まるかで、疑う先が変わります。",
         },
         {
           type: "code",
@@ -1169,7 +1149,7 @@ tomcat9.service                            enabled`,
         },
         {
           type: "p",
-          text: "ここからは MyBatis の DEBUG に限った話です。Mapper の DEBUG を出すと、実行された SQL が見えます。本番では普段 DEBUG を出していないことが多いです。必要なときだけレベルを上げ、終わったら戻しましょう。",
+          text: "ここからは MyBatis の DEBUG に限った話です。Mapper の DEBUG を出すと、実行された SQL が見えます。必要なときだけレベルを上げ、終わったら戻しましょう。",
         },
         {
           type: "code",
@@ -1213,11 +1193,11 @@ ORDER BY r.created_at DESC
         {
           type: "diagram",
           name: "stack-own",
-          caption: "上から見て、自分たちが書いたコードのパッケージ名がある最初の行の、その行番号を調べましょう。",
+          caption: "自分たちが書いたコードの行と、フレームワークや JDK の行が混ざって並びます。",
         },
         {
           type: "p",
-          text: "申請くんなら、自分たちが書いたコードのパッケージは jp.co.example.shinsei です。org.springframework や java. はフレームワークや Java 本体なので、直す場所ではありません。$$Enhancer や $Proxy も生成コードなので飛ばしましょう。",
+          text: "申請くんなら、自分たちが書いたコードのパッケージは jp.co.example.shinsei です。org.springframework や java. はフレームワークや Java 本体なので、直す場所ではありません。",
         },
         {
           type: "h2",
@@ -1336,7 +1316,7 @@ public void approve(Long requestId, Long approverId) {
           kind: "screen",
           src: "/images/screen-error-500.jpg",
           alt: "エラーが発生しましたと出た申請くんの画面",
-          caption: "「エラーが発生しました」だけでは、サーバ側かフロント側かは分かりません。先に Network タブで、操作した瞬間のリクエストを確認しましょう。",
+          caption: "承認を押したあとの画面。出ているのは「エラーが発生しました」だけです。",
         },
         {
           type: "h2",
@@ -1591,7 +1571,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "p",
-          text: "上は計測ログを追加した例で、申請くんの実ログではありません。`findMine` の start と done のあいだが約 5 秒なので、遅いのは Service の中（SQL やその前後の I/O）です。申請くんの既存ログでは `ServiceLoggingAspect` が DEBUG で start / end を出します。",
+          text: "`findMine` の start と done のあいだが約 5 秒なので、遅いのは Service の中（SQL やその前後の I/O）です。申請くんの既存ログでは `ServiceLoggingAspect` が DEBUG で start / end を出します。",
         },
         {
           type: "ul",
@@ -1945,7 +1925,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
             ["`application.yml` の URL・タイムアウト・認証", "プロファイルごとに向き先が違うことがある"],
             ["モックやスタブの有無", "ローカルだけ偽の応答を返し、検証用環境では本物につなぐ構成がある"],
             ["アプリサーバからの疎通", "開発 PC の curl が通っても、サーバからは FW で閉じていることがある → 「ネットワークの疎通確認」"],
-            ["外部の応答本文", "200 でも JSON の形が違うと、パース例外になる。Network タブではアプリ⇔外部 API の通信は確認できない。サーバログや一時的なログ出力で見る"],
+            ["外部の応答本文", "200 でも JSON の形が違うと、パース例外になる"],
             ["リトライや非同期", "画面には成功と出たが、あとから通知だけ失敗している"],
           ],
         },
