@@ -75,7 +75,7 @@ export const introTrack: Track = {
           kind: "screen",
           src: "/images/screen-login.jpg",
           alt: "申請くんのログイン画面",
-          caption: "申請くんのログイン画面。以降の URL やソースは、このアプリの例です。",
+          caption: "申請くんのログイン画面。",
         },
         {
           type: "p",

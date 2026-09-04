@@ -51,7 +51,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "申請くんは、この教材で使う架空の社内申請アプリです。以降の URL やソースの例には、申請くんのものが出てきます。",
+          text: "申請くんは、この教材で使う架空の社内申請アプリです。",
         },
         {
           type: "p",
@@ -62,7 +62,7 @@ export const webTrack: Track = {
           kind: "screen",
           src: "/images/screen-list.jpg",
           alt: "申請くんの申請一覧画面",
-          caption: "申請一覧。ブラウザは `/shinsei/requests` へ GET リクエストを送り、レスポンスとしてこの HTML を受け取ります。",
+          caption: "申請一覧。アドレスバーは `/shinsei/requests` です。",
         },
         {
           type: "p",
@@ -93,7 +93,7 @@ export const webTrack: Track = {
           type: "h2",
           text: "HTML と JSON",
         },
-        { type: "diagram", name: "html-json", caption: "同じ HTTP の往復です。違うのは本文の形です。" },
+        { type: "diagram", name: "html-json", caption: "同じ HTTP の往復です。" },
         {
           type: "p",
           text: "HTML は、ブラウザが画面として表示するためのデータ形式です。JSON は、画面の JavaScript や他のシステムが読み取るためのデータ形式です。JSON を返す URL は、Web API と呼ばれることが多いです。",
@@ -151,7 +151,7 @@ Content-Type: application/json
       blocks: [
         {
           type: "p",
-          text: "ここから、リクエストとレスポンスを具体的に読む方法を見ていきます。まずは URL、HTTP メソッド、ステータスコードの3つです。",
+          text: "リクエストとレスポンスを読むときは、まず URL、HTTP メソッド、ステータスコードの3つを見ます。",
         },
         {
           type: "h2",
@@ -725,7 +725,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "HTML は要素と送る内容、JavaScript は画面の更新と通信、CSS は見え方を担当します。症状に関係する役割から確認すると、画面側のすべてを一度に読む必要はありません。",
+          text: "症状に関係する役割から確認すれば、画面側のすべてを一度に読む必要はありません。",
         },
         { type: "quiz", id: "web-front-roles" },
       ],
@@ -788,14 +788,6 @@ public String showCart(HttpSession session, Model model) {
           kind: "note",
           title: "Ajax、Web API、JSON の違い",
           text: "Ajax は通信の方法です。Web API はデータを提供する HTTP の窓口、JSON は送受信するデータ形式です。Ajax の通信先が Web API で、その応答が JSON、という組み合わせがあります。",
-        },
-        {
-          type: "p",
-          text: "次は、実際に Web API から JSON を受け取る例を見ます。",
-          link: {
-            label: "Web API から JSON を受け取る",
-            to: "/tracks/web/api-json",
-          },
         },
         { type: "quiz", id: "web-ajax" },
       ],
