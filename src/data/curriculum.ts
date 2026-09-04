@@ -77,6 +77,7 @@ export function pageDescription(pathname: string): string {
     "既存の Java Web アプリを、処理の入口から追い、リクエストがどこまで届いたかで切り分ける教材です。ゼロからアプリを作る入門ではありません。";
   if (pathname === "/") return fallback;
   if (pathname === "/lab") return "通読とは独立して、申請くんの HTTP とソース、リクエストの区間を確認できます。";
+  if (pathname === "/cheatsheet") return "本文で使った Linux・Git・SQL・HTTP の調査コマンドの早見表です。";
   if (pathname === "/glossary" || pathname.startsWith("/glossary")) {
     return "HTTP、Java Web アプリ、Spring まわりの用語。本文の点線から飛びます。";
   }
@@ -101,6 +102,7 @@ export function pageTitle(pathname: string): string {
   const site = "参画前に知っておきたい Java Web アプリ";
   if (pathname === "/") return site;
   if (pathname === "/lab") return `ラボ — ${site}`;
+  if (pathname === "/cheatsheet") return `チートシート — ${site}`;
   if (pathname === "/glossary" || pathname.startsWith("/glossary")) return `用語集 — ${site}`;
   const parts = pathname.split("/").filter(Boolean);
   if (parts[0] === "tracks" && parts[1] && parts[2]) {

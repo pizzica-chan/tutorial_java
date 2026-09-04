@@ -1043,6 +1043,12 @@ td {
   min-width: 140px;
 }
 
+.cheat-note {
+  color: var(--muted);
+  font-size: 14px;
+  margin: 4px 0 12px;
+}
+
 th {
   color: var(--amber-2);
   font-weight: 500;

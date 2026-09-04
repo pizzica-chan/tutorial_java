@@ -5,6 +5,7 @@ import { glossaryAnchor, terms } from "../data/terms";
 import { projectFiles } from "../data/project";
 import { httpSample, requestFlow, stackCases } from "../data/labs";
 import { blockAnchorIds, lessonRowAnchor } from "./anchors";
+import { cheatSheet } from "../data/cheatsheet";
 import { troubleshootMap } from "../data/troubleshootMap";
 
 export type SearchHit = {
@@ -186,6 +187,21 @@ const documents: Doc[] = [
       httpSample.request,
       httpSample.response,
       ...httpSample.notes.map((note) => `${note.label} ${note.text}`),
+    ].join("\n"),
+  ),
+  toDoc(
+    "/cheatsheet",
+    "チートシート",
+    "CHEAT SHEET",
+    [
+      "チートシート コマンド 早見表",
+      ...cheatSheet.flatMap((section) => [
+        section.title,
+        ...section.groups.flatMap((group) => [
+          group.title,
+          ...group.rows.map((row) => `${row.cmd} ${row.env} ${row.desc}`),
+        ]),
+      ]),
     ].join("\n"),
   ),
 ];

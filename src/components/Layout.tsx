@@ -192,6 +192,17 @@ export function Layout() {
           </span>
           <span>ラボ</span>
         </NavLink>
+        <div className="nav-label">CHEAT SHEET</div>
+        <NavLink
+          to="/cheatsheet"
+          className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+          onClick={() => setOpen(false)}
+        >
+          <span className="no">
+            <Icon name="terminal" size={14} />
+          </span>
+          <span>チートシート</span>
+        </NavLink>
         <div className="nav-label">GLOSSARY</div>
         <NavLink
           to="/glossary"
