@@ -624,6 +624,11 @@ export const terms: TermDef[] = [
     body: "実行中のプログラムの単位です。Java アプリなら、起動すると1つの Java プロセスとして動きます。`ps` コマンドで、起動しているプロセスの一覧を見られます。",
   },
   {
+    term: "kill",
+    aliases: ["kill", "SIGTERM", "SIGKILL"],
+    body: "プロセスへシグナルを送るコマンドです。`kill -TERM PID`（既定）は正常終了を促し、後始末の猶予があります。`kill -9`（`SIGKILL`）は後始末なしの強制終了です。Java プロセスに `kill -3` を送ると、終了させずにスレッドダンプだけを書き出します。",
+  },
+  {
     term: "systemd",
     aliases: ["systemd"],
     body: "多くの Linux ディストリビューションで使われる、サービスの起動・停止を管理する仕組みです。`nginx` や `tomcat9` のようなサービスをユニットという単位で管理し、`systemctl` コマンドで操作します。",
@@ -659,6 +664,11 @@ export const terms: TermDef[] = [
     body: "Linux でサービス（nginx や Tomcat など）を起動・停止・状態確認するコマンドです。`systemctl status サービス名` で、動いているか（`active (running)`）、止まっているか（`inactive` / `failed`）を確認できます。サービス名は環境によって違い、間違っていると `could not be found` のように出ます。",
   },
   {
+    term: "journalctl",
+    aliases: ["journalctl"],
+    body: "systemd が管理するサービスのログをまとめて見るコマンドです。`journalctl -u tomcat9 --since \"10 min ago\"` のように、ユニット名と期間を指定して絞り込めます。",
+  },
+  {
     term: "lsof",
     aliases: ["lsof"],
     body: "開いているファイルを一覧するコマンドです。`lsof -i :ポート番号` でそのポートを使っているプロセス、`lsof ファイル名` でそのファイルを開いているプロセスが分かります。",
@@ -667,6 +677,36 @@ export const terms: TermDef[] = [
     term: "ss",
     aliases: ["ss"],
     body: "ネットワークの接続やポートの待ち受け状況を見るコマンドです。`ss -ltnp` で、待ち受けているポートと、そのプロセスの一覧が出ます。`lsof` が入っていない環境でも使えることが多いです。",
+  },
+  {
+    term: "netstat",
+    aliases: ["netstat"],
+    body: "接続や待ち受けポートの一覧を見る、`ss` より古いコマンドです。`netstat -tnlp`（Linux）のように使います。多くの環境で今も使えますが、無ければ `ss` を使いましょう。",
+  },
+  {
+    term: "tcpdump",
+    aliases: ["tcpdump"],
+    body: "実際に流れているパケットをキャプチャするコマンドです。`tcpdump -i eth0 port 8080` のように、インタフェースや条件を指定します。`curl` や `nc` は届いたかどうかまでですが、`tcpdump` は通信の中身やタイミングまで見えます。暗号化された HTTPS の本文までは読めません。",
+  },
+  {
+    term: "iptables",
+    aliases: ["iptables", "firewalld", "firewall-cmd"],
+    body: "Linux のファイアウォール機能です。`iptables -L -n -v` でルールを一覧できます。ディストリビューションによっては `firewalld`（`firewall-cmd --list-all`）で管理していることもあります。",
+  },
+  {
+    term: "ip route",
+    aliases: ["ip route", "ルーティングテーブル"],
+    body: "宛先ごとに、どのゲートウェイ・ネットワークインタフェースへ送るかを決める表です。`ip route` や、より古い `route -n` で見られます。意図しない経路になっていると、疎通確認の結果もおかしくなります。",
+  },
+  {
+    term: "nc",
+    aliases: ["nc", "netcat", "telnet"],
+    body: "指定したホスト・ポートへ TCP で接続を試すコマンドです。`nc -zv ホスト名 ポート番号` で、そのポートが開いているかだけを手早く確認できます。`telnet` でも同じ確認ができます。",
+  },
+  {
+    term: "nslookup",
+    aliases: ["nslookup", "dig"],
+    body: "指定したホスト名が、どの IP アドレスに解決されるかを調べるコマンドです。名前解決できない、想定と違う IP が返る、といった DNS まわりの切り分けに使います。",
   },
   {
     term: "ミドルウェア",
@@ -888,6 +928,11 @@ export const terms: TermDef[] = [
     term: "git blame",
     aliases: ["git blame"],
     body: "指定したファイルの各行を、最後に変更した人・日時とともに示すコマンドです。IDE にも同等の機能があります。行の意図を知る手がかりになりますが、整形やリファクタだけの変更が表示されることもあります。",
+  },
+  {
+    term: "git bisect",
+    aliases: ["git bisect"],
+    body: "正常だった時点と異常な時点を指定すると、Git が残りのコミットを自動で二分探索し、原因のコミットを絞り込んでくれる機能です。あいだのコミット数が多くて1件ずつ確認できないときに使います。",
   },
   {
     term: "SVN",
