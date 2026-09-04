@@ -176,10 +176,39 @@ export const troubleshootTrack: Track = {
           text: "症状が出た最初の時刻を、ログや報告から特定しましょう。その前後にデプロイや設定変更が無いかを突き合わせると、疑う範囲がぐっと狭まります。",
         },
         {
-          type: "callout",
-          kind: "trap",
-          title: "変化が見つからないからといって",
-          text: "コードも設定も変わっていないように見えても、アプリのせいではないと決めつけないでください。データやアクセスが、以前から潜んでいた条件に初めて当たっただけ、ということもあります。",
+          type: "h2",
+          text: "コードの変更を確認する",
+        },
+        {
+          type: "p",
+          text: "`git log` で、症状が出た時刻の直前に関係しそうな変更が無いかを確認しましょう。`--oneline` はコミット日時が出ないので、`--pretty` と `--date` で日時も一緒に出すと、時刻を突き合わせやすくなります。",
+        },
+        {
+          type: "code",
+          title: "例（架空のログです）",
+          lang: "text",
+          code: `$ git log --since="2026-08-28" --pretty=format:"%h %ad %s" --date=format:"%Y-%m-%d %H:%M"
+a3f9c21 2026-08-30 10:12 承認時のバリデーションを追加
+7b2e8f4 2026-08-29 15:40 依存ライブラリのバージョンを更新
+1d4a6c0 2026-08-29 09:05 ログ出力の書式を変更`,
+        },
+        {
+          type: "h2",
+          text: "設定やデプロイのタイミングを確認する",
+        },
+        {
+          type: "p",
+          text: "自分でデプロイしていない共有環境でも、設定ファイルの更新時刻や、コンテナが作られた時刻を見れば、いつ変わったかが分かります。",
+        },
+        {
+          type: "code",
+          title: "例（架空のログです）",
+          lang: "text",
+          code: `$ ls -l --time-style=full-iso application.yml
+-rw-r--r-- 1 deploy deploy 842 2026-08-30 09:58:11.000000000 +0900 application.yml
+
+$ docker inspect --format='{{.Created}}' shinsei-app
+2026-08-30T00:58:22.104512Z`,
         },
         { type: "quiz", id: "ts-recent-change" },
       ],
@@ -1225,7 +1254,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "p",
-          text: "実際にこの考え方で原因を特定した例が、シナリオ「申請詳細で承認すると「エラーが発生しました」」にあります。ID 12 は承認できるのに ID 16 だけ 500 になる、というケースで、DB のレコードを見比べると `approver_id` だけ ID 16 が NULL でした。",
+          text: "実際にこの考え方で原因を特定した例が、シナリオ「申請詳細で承認すると「エラーが発生しました」」にあります。山田（yamada）は ID 15「出張旅費」は承認できるのに、ID 16「研修参加」だけ 500 になる、というケースで、DB のレコードを見比べると `approver_id` だけ ID 16 が NULL でした。",
           link: {
             label: "申請詳細で承認すると「エラーが発生しました」",
             to: "/tracks/scenario/back",

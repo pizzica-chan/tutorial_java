@@ -274,10 +274,10 @@ export const quizzes = {
   },
   "ts-compare-working": {
     id: "ts-compare-working",
-    question: "ID 12 の申請は承認できるが、ID 16 だけ承認すると 500 になる。原因を絞り込むのに最も近道なのは？",
+    question: "山田（yamada）は ID 15 の申請は承認できるが、ID 16 だけ承認すると 500 になる。原因を絞り込むのに最も近道なのは？",
     choices: [
       "RequestService のソースをもう一度最初から読む",
-      "ID 12 と ID 16 の DB のレコードを見比べる",
+      "ID 15 と ID 16 の DB のレコードを見比べる",
       "サーバを再起動する",
       "ログのレベルを DEBUG に上げて待つ",
     ],
