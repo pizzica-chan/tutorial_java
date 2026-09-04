@@ -1029,6 +1029,11 @@ export const terms: TermDef[] = [
     body: "クリックや送信などの操作が起きたときに動く関数を、HTML の要素に登録する JavaScript の関数です。登録しただけでは動かず、その操作が起きたときに呼ばれます。",
   },
   {
+    term: "jQuery",
+    aliases: ["jQuery"],
+    body: "DOM 操作やイベント登録を簡単に書けるようにする JavaScript のライブラリです。`addEventListener` の代わりに `.on(...)` のような書き方をします。",
+  },
+  {
     term: "Sources タブ",
     aliases: ["Sources タブ", "Sourcesタブ", "Sources（ソース）", "Sources"],
     body: "ブラウザ開発者ツールの画面です。そのページが読み込んだ JavaScript を開き、行にブレークポイントを置けます。止まったときは、変数の値と Call Stack を確認できます。",
