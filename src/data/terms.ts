@@ -1034,6 +1034,11 @@ export const terms: TermDef[] = [
     body: "DOM 操作やイベント登録を簡単に書けるようにする JavaScript のライブラリです。`addEventListener` の代わりに `.on(...)` のような書き方をします。",
   },
   {
+    term: "Event Listeners",
+    aliases: ["Event Listeners"],
+    body: "開発者ツールの Elements タブにあるパネルです。選んだ要素と、その親に登録されているイベントの一覧を見られます。ファイル名と行が出るので、そこから JavaScript を開けます。表示や名前はブラウザによって違います。",
+  },
+  {
     term: "Sources タブ",
     aliases: ["Sources タブ", "Sourcesタブ", "Sources（ソース）", "Sources"],
     body: "ブラウザ開発者ツールの画面です。そのページが読み込んだ JavaScript を開き、行にブレークポイントを置けます。止まったときは、変数の値と Call Stack を確認できます。",

@@ -634,9 +634,9 @@ if (updated == 0) {
           code: `<style>
   .warn { color: #c00; }
 </style>
-<button type="button" onclick="return confirm('承認してよいですか？')">承認</button>
+<button type="button" onclick="return confirm('本当に削除しますか？')">削除</button>
 <script>
-  function confirmApprove() { /* ... */ }
+  function confirmDelete() { /* ... */ }
 </script>`,
         },
         {
