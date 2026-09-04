@@ -1248,6 +1248,10 @@ if (!"PENDING".equals(request.getStatus())) {
           text: "申請くんのように、サーバが HTML を組み立てるアプリでは、JavaScript は画面の補助として使われることが多いです。ボタンを押しても新しいリクエストが飛んでいないときは、JavaScript を読むことになります。「押しても何も起きない」「押した瞬間に画面だけ変わる」は、その典型です。",
         },
         {
+          type: "p",
+          text: "この項目では、① 押したときに動く JavaScript を見つける方法、② 名前で見つからないときの代わりの方法、③ 見つけた JavaScript が呼んでいる別の JavaScript を辿る方法、の3つを順に見ます。",
+        },
+        {
           type: "h2",
           text: "押したときに動く JavaScript を見つける",
         },
@@ -1375,7 +1379,11 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "p",
-          text: "`<script>` で読み込んだ JavaScript は、同じページの中で名前を共有します。`function` で定義した名前は、別のファイルからも呼べます。呼ぶ時点でその定義が読み込み済みであればよいので、`form.js` が先に動いていても、送信のときには `app.js` の `confirmAction` が使えます。読み込みの順番は「HTML / CSS / JavaScript の役割」の「ページを開いたときの順番」にあります。",
+          text: "`<script>` で読み込んだ JavaScript は、同じページの中で名前を共有します。`function` で定義した名前は、別のファイルからも呼べます。",
+        },
+        {
+          type: "p",
+          text: "必要なのは、呼ぶ時点でその定義が読み込み済みであることです。`form.js` が先に動いていても、送信のときにはもう `app.js` が読み込まれているので、`confirmAction` が使えます。読み込みの順番は「HTML / CSS / JavaScript の役割」の「ページを開いたときの順番」にあります。",
           link: {
             label: "HTML / CSS / JavaScript の役割",
             to: "/tracks/web/front-roles",
