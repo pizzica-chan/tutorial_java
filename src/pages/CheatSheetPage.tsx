@@ -23,7 +23,7 @@ function CheatTable({ rows }: { rows: CheatRow[] }) {
         <thead>
           <tr>
             <th>コマンド</th>
-            <th>環境</th>
+            <th className="cheat-env">環境</th>
             <th>すること</th>
           </tr>
         </thead>
@@ -38,7 +38,7 @@ function CheatTable({ rows }: { rows: CheatRow[] }) {
                   </Fragment>
                 ))}
               </td>
-              <td>{row.env}</td>
+              <td className="cheat-env">{row.env}</td>
               <td>
                 <TextWithTerms text={row.desc} />
               </td>

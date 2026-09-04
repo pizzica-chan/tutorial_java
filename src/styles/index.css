@@ -1062,6 +1062,13 @@ td {
   min-width: 140px;
 }
 
+.table-wrap th.cheat-env,
+.table-wrap td.cheat-env {
+  min-width: 0;
+  width: 1%;
+  white-space: nowrap;
+}
+
 .cheat-note {
   color: var(--muted);
   font-size: 14px;
