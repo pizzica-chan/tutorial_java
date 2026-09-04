@@ -1265,6 +1265,12 @@ if (!"PENDING".equals(request.getStatus())) {
           ],
         },
         {
+          type: "callout",
+          kind: "note",
+          title: "jQuery を使っているとき",
+          text: "`addEventListener` の代わりに `.on(...)` や `.click(...)` のような書き方をしていることがあります。クラス名や `id` で検索する手順は同じで、最後に見る関数名だけが変わります。",
+        },
+        {
           type: "h3",
           text: "申請くんの例",
         },
@@ -1350,7 +1356,7 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "p",
-          text: "Java なら import と参照検索がありますが、JavaScript では、呼んでいる関数がどのファイルにあるかを、ソースに書かない書き方があります。関数名で、JavaScript の置き場をまとめて検索しましょう。",
+          text: "Java なら `import` の行を見れば、そのクラスがどこにあるかが分かります。JavaScript の `<script>` で読み込む書き方には、それにあたるものがありません。呼んでいる関数がどのファイルにあるかは、ソースを読むだけでは分かりません。関数名で、JavaScript の置き場をまとめて検索しましょう。",
         },
         {
           type: "p",

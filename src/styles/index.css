@@ -965,7 +965,8 @@ h2,
 }
 
 .codeblock .code-line {
-  display: block;
+  display: inline-block;
+  min-width: 100%;
 }
 
 .codeblock .code-line-mark {
