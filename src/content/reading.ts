@@ -1259,7 +1259,7 @@ if (!"PENDING".equals(request.getStatus())) {
           type: "ol",
           items: [
             "開発者ツールの Elements タブで、押したボタンと、それを囲む `<form>` や `<div>` を見る",
-            "`class` や `id` に、見た目と関係の無さそうな名前が付いていないかを確認する",
+            "`class` や `id` に、見た目と関係の無さそうな名前が付いていないかを確認する（JavaScript 用の目印のことがある）",
             "その名前で、JavaScript の置き場（申請くんなら `static/js`）を検索する",
             "ヒットしたファイルの `addEventListener` を見る。そこに登録されている関数が、押したときに動く",
           ],
