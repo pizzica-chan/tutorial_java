@@ -882,6 +882,10 @@ h2,
   font-size: 13px;
   line-height: 1.65;
   color: #f0e6d2;
+  /* 横スクロールする要素は、モバイルブラウザが読みやすさのために
+     文字を自動で拡大することがある。指定どおりの大きさで表示する */
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 .codeblock code {
