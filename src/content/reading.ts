@@ -116,7 +116,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "ここでは入口の特定までです。次の項目「入口のあとの順番」で、入口からどこを見るかを押さえたあと、「URL マッピング」と「Service から Mapper へ」で、この `list` から Service まで辿ります。SQL と応答は、次章「SQL からソースを探す」で扱います。",
+          text: "ここでは入口の特定までです。次の項目からは、入口からどこを見るかを順に押さえます。",
         },
         {
           type: "h2",
@@ -148,10 +148,6 @@ export const readingTrack: Track = {
       title: "入口のあとの順番",
       minutes: 6,
       blocks: [
-        {
-          type: "p",
-          text: "読み方の選び方は「手がかりで読み方を選ぶ」、入口の取り方は「処理の入口から読む」のとおりです。",
-        },
         {
           type: "p",
           text: "全体の流れは、現象 → 処理の入口 → 分岐 → 永続化・外部呼び出し → 出口 です。",
@@ -482,10 +478,6 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "上のパターンを組み立てるための部品です。よく使うものから見ていきます。",
-        },
-        {
-          type: "p",
           text: "つなげて書く — request と approve のあいだに何かあってもよい、といった書き方です。",
         },
         {
@@ -594,10 +586,6 @@ mailService.notifyApplicant(request);`,
               "「`Exception`」— ヒットする。「`exception`」— ヒットする",
             ],
           ],
-        },
-        {
-          type: "p",
-          text: "メソッドの呼び出し元や呼び出し先を追うのは、参照検索と定義へジャンプです。次のレッスンです。",
         },
         { type: "quiz", id: "read-regex" },
       ],
@@ -793,7 +781,7 @@ requestService.approve(id, user.getId());`,
           type: "callout",
           kind: "note",
           title: "ソースに呼び出しが無いもの",
-          text: "Filter、Interceptor、AOP は、このメソッドのソースに呼び出しが無く、参照検索の一覧にも出ません。`@Transactional` や `@PreAuthorize` のように、アノテーションとして付いていることがあります。読み飛ばさず確認しましょう。探し方は「Javaアプリの構成」の「Filter / Interceptor / AOP / @ControllerAdvice」です。",
+          text: "Filter、Interceptor、AOP は、このメソッドのソースに呼び出しが無く、参照検索の一覧にも出ません。`@Transactional` や `@PreAuthorize` のように、アノテーションとして付いていることがあります。探し方は「Javaアプリの構成」の「Filter / Interceptor / AOP / @ControllerAdvice」です。",
         },
         {
           type: "p",
@@ -913,7 +901,7 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
         },
         {
           type: "p",
-          text: "使っているのが Git か SVN か、メッセージにどこまで書かれているかは、プロジェクトによって違います。まずは自分のプロジェクトがどちらで、履歴にどれくらいの情報が残っているかを確認しましょう。",
+          text: "自分のプロジェクトが Git か SVN か、履歴にどれくらいの情報が残っているかを、先に確認しておきましょう。",
         },
         { type: "quiz", id: "read-history" },
       ],
@@ -1065,7 +1053,7 @@ request.getApproverId().equals(userId); // NPE`,
         },
         {
           type: "p",
-          text: "ソース上の代入を辿ったあと、今のリクエストで変数に何が入っているかを見たいときは、デバッガです。次の項目です。",
+          text: "ソース上の代入を辿ったあと、今のリクエストで変数に何が入っているかを見たいときは、次の項目のデバッガです。",
         },
       ],
     },
@@ -1161,7 +1149,7 @@ if (!"PENDING".equals(request.getStatus())) {
           items: [
             "止まらないときは、その行に処理が来ていないとは限らない。デバッグ実行になっているか、Filter や別メソッド、別プロセスで処理されているかを疑う",
             "次の行へ進むか、呼び出しの中へ入るか。操作名は IDE によって違う",
-            "検証用環境のサーバへリモートでつなぐことがある。本番では、止めると他の人のリクエストも待つので、通常は使わない",
+            "検証用環境のサーバへリモートでつなぐことがある。本番では通常使わない",
           ],
         },
         {
