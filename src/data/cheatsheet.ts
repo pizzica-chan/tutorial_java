@@ -73,6 +73,7 @@ export const cheatSheet: CheatSection[] = [
           { cmd: "`lsof -i :8080`", env: "Linux", desc: "そのポートを使っているプロセスを見る" },
           { cmd: "`ss -ltnp | grep 8080`", env: "Linux", desc: "同じことを `ss` で見る。`lsof` が無い環境向け" },
           { cmd: "`lsof app.log`", env: "Linux", desc: "そのファイルを開いているプロセスを見る" },
+          { cmd: "`ps -p PID -o pid,ppid,user,cmd`", env: "Linux", desc: "`lsof`/`ss` で見つけた PID が、実際にどのユーザーで何のコマンドとして動いているかを確認する" },
           { cmd: "`df -h`", env: "Linux", desc: "ディスクの空き容量を見る" },
           { cmd: "`free -h`", env: "Linux", desc: "メモリの空き容量を見る" },
           { cmd: "`du -sh * | sort -rh | head`", env: "Linux", desc: "今いるディレクトリの中で、容量を食っている項目を上位から見る" },

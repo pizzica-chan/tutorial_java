@@ -1075,6 +1075,12 @@ td {
   margin: 4px 0 12px;
 }
 
+.cheat-placeholder {
+  font-style: italic;
+  font-weight: 600;
+  color: var(--teal);
+}
+
 th {
   color: var(--amber-2);
   font-weight: 500;

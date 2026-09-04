@@ -16,6 +16,36 @@ function cheatSheetHeadings(anchors: ReturnType<typeof cheatSheetAnchors>): Head
   return result;
 }
 
+/** 実際の値に置き換える必要がある語。コマンド中に出てきたら、そのまま太字＋色で目立たせる（記号は足さない） */
+const PLACEHOLDER_WORDS = ["PID", "URL", "ホスト名", "ユーザ名", "コンテナ名", "Pod名", "コミットハッシュ"];
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+const PLACEHOLDER_PATTERN = new RegExp(`(${PLACEHOLDER_WORDS.map(escapeRegExp).join("|")})`, "g");
+
+/** cmd が単一のコードスパンなら、プレースホルダ語を強調しつつ、それ以外の地の部分では用語ヒントも保つ */
+function CheatCommand({ line }: { line: string }) {
+  const fullSpan = line.match(/^`([^`]*)`$/);
+  if (!fullSpan) return <TextWithTerms text={line} />;
+
+  const segments = fullSpan[1].split(PLACEHOLDER_PATTERN).filter((segment) => segment !== "");
+  return (
+    <code className="code-span">
+      {segments.map((segment, index) =>
+        PLACEHOLDER_WORDS.includes(segment) ? (
+          <span className="cheat-placeholder" key={index}>
+            {segment}
+          </span>
+        ) : (
+          <TextWithTerms key={index} text={segment} linkChapters={false} />
+        ),
+      )}
+    </code>
+  );
+}
+
 function CheatTable({ rows }: { rows: CheatRow[] }) {
   return (
     <div className="table-wrap">
@@ -34,7 +64,7 @@ function CheatTable({ rows }: { rows: CheatRow[] }) {
                 {row.cmd.split("\n").map((line, lineIndex) => (
                   <Fragment key={lineIndex}>
                     {lineIndex > 0 ? <br /> : null}
-                    <TextWithTerms text={line} />
+                    <CheatCommand line={line} />
                   </Fragment>
                 ))}
               </td>
