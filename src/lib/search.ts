@@ -5,7 +5,7 @@ import { glossaryAnchor, terms } from "../data/terms";
 import { projectFiles } from "../data/project";
 import { httpSample, requestFlow, stackCases } from "../data/labs";
 import { blockAnchorIds, lessonRowAnchor } from "./anchors";
-import { cheatSheet } from "../data/cheatsheet";
+import { cheatSheet, cheatSheetAnchors } from "../data/cheatsheet";
 import { troubleshootMap } from "../data/troubleshootMap";
 
 export type SearchHit = {
@@ -129,6 +129,8 @@ function widgetText(name: WidgetName): string {
   }
 }
 
+const cheatSheetSearchAnchors = cheatSheetAnchors();
+
 const documents: Doc[] = [
   toDoc(
     "/",
@@ -203,6 +205,17 @@ const documents: Doc[] = [
         ]),
       ]),
     ].join("\n"),
+    "page",
+    [
+      { text: "チートシート コマンド 早見表" },
+      ...cheatSheet.flatMap((section, sectionIndex) => [
+        { anchor: cheatSheetSearchAnchors[sectionIndex].sectionId, text: section.title },
+        ...section.groups.map((group, groupIndex) => ({
+          anchor: cheatSheetSearchAnchors[sectionIndex].groupIds[groupIndex],
+          text: [group.title, group.note ?? "", ...group.rows.map((row) => `${row.cmd} ${row.env} ${row.desc}`)].join("\n"),
+        })),
+      ]),
+    ],
   ),
 ];
 

@@ -1,22 +1,18 @@
 import { Fragment } from "react";
-import { cheatSheet, type CheatRow } from "../data/cheatsheet";
+import { cheatSheet, cheatSheetAnchors, type CheatRow } from "../data/cheatsheet";
 import { TextWithTerms, TermHighlightScope } from "../components/TextWithTerms";
 import { ArticleToc } from "../components/ArticleToc";
+import { useHashTarget } from "../hooks/useHashTarget";
 import type { HeadingEntry } from "../lib/headings";
 
-function extractCheatHeadings(): HeadingEntry[] {
+function cheatSheetHeadings(anchors: ReturnType<typeof cheatSheetAnchors>): HeadingEntry[] {
   const result: HeadingEntry[] = [];
-  let index = 0;
-  for (const section of cheatSheet) {
-    result.push({ id: `h-${index}`, text: section.title, level: 2 });
-    index += 1;
-    for (const group of section.groups) {
-      if (group.title) {
-        result.push({ id: `h-${index}`, text: group.title, level: 3 });
-        index += 1;
-      }
-    }
-  }
+  cheatSheet.forEach((section, sectionIndex) => {
+    result.push({ id: anchors[sectionIndex].sectionId, text: section.title, level: 2 });
+    section.groups.forEach((group, groupIndex) => {
+      result.push({ id: anchors[sectionIndex].groupIds[groupIndex], text: group.title, level: 3 });
+    });
+  });
   return result;
 }
 
@@ -55,8 +51,9 @@ function CheatTable({ rows }: { rows: CheatRow[] }) {
 }
 
 export function CheatSheetPage() {
-  const headings = extractCheatHeadings();
-  let headingIndex = 0;
+  useHashTarget();
+  const anchors = cheatSheetAnchors();
+  const headings = cheatSheetHeadings(anchors);
 
   return (
     <div className="lesson-layout">
@@ -68,32 +65,24 @@ export function CheatSheetPage() {
             <TextWithTerms text="実務でよく組み合わせる、応用的なコマンドの早見表です。コマンド自体の説明はここではしません。" />
           </p>
 
-          {cheatSheet.map((section) => {
-            const sectionId = `h-${headingIndex}`;
-            headingIndex += 1;
-            return (
-              <Fragment key={section.id}>
-                <h2 className="serif" id={sectionId}>
-                  {section.title}
-                </h2>
-                {section.groups.map((group, index) => {
-                  const groupId = group.title ? `h-${headingIndex}` : undefined;
-                  if (group.title) headingIndex += 1;
-                  return (
-                    <Fragment key={index}>
-                      {group.title ? <h3 id={groupId}>{group.title}</h3> : null}
-                      {group.note ? (
-                        <p className="cheat-note">
-                          <TextWithTerms text={group.note} />
-                        </p>
-                      ) : null}
-                      <CheatTable rows={group.rows} />
-                    </Fragment>
-                  );
-                })}
-              </Fragment>
-            );
-          })}
+          {cheatSheet.map((section, sectionIndex) => (
+            <Fragment key={section.id}>
+              <h2 className="serif" id={anchors[sectionIndex].sectionId}>
+                {section.title}
+              </h2>
+              {section.groups.map((group, groupIndex) => (
+                <Fragment key={groupIndex}>
+                  <h3 id={anchors[sectionIndex].groupIds[groupIndex]}>{group.title}</h3>
+                  {group.note ? (
+                    <p className="cheat-note">
+                      <TextWithTerms text={group.note} />
+                    </p>
+                  ) : null}
+                  <CheatTable rows={group.rows} />
+                </Fragment>
+              ))}
+            </Fragment>
+          ))}
         </TermHighlightScope>
       </div>
       <ArticleToc headings={headings} />
