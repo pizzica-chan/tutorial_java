@@ -25,10 +25,6 @@ export const javaMapTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "例として、架空の社内申請アプリ「申請くん」を使います。",
-        },
-        {
-          type: "p",
           text: "Maven + Spring Boot では、おおむね次の並びです。左のツリーが申請くんの例です。ファイル名をクリックすると、右に役割と抜粋が出ます。",
         },
         { type: "widget", name: "explorer" },
@@ -49,11 +45,11 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "どちらも、使うフレームワークやライブラリの一覧と、ビルドの仕方を書いたファイルです。プロジェクトによって Maven か Gradle かは決まっています。",
+          text: "プロジェクトによって、Maven か Gradle かは決まっています。",
         },
         {
           type: "p",
-          text: "どのフレームワークを使っているか、DB アクセスが MyBatis / JPA / JDBC のどれかを先に確認しましょう。分かれば、この先ソースを探すときに、どこを見ればよいかが分かります。",
+          text: "どのフレームワークを使っているか、DB アクセスが MyBatis / JPA / JDBC のどれかを先に確認しましょう。",
         },
         {
           type: "h2",
@@ -220,7 +216,7 @@ logging:
       blocks: [
         {
           type: "p",
-          text: "画面や API の URL からソースを追うときは、Controller → Service → DB アクセスの層、の順で開きます。この項目では、各層の役割と、開く順を見ます。",
+          text: "画面や API の URL からソースを追うときは、Controller → Service → DB アクセスの層、の順で開きます。",
         },
         {
           type: "h2",
@@ -434,7 +430,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "p",
-          text: "`transactionTemplate.execute(...)` の中だけがトランザクションです。メソッド全体ではなく、必要な範囲だけをトランザクションにできます。この書き方も `@Transactional` と同じで、同時に来た複数のリクエストを防ぐものではありません。",
+          text: "`transactionTemplate.execute(...)` の中だけがトランザクションです。メソッド全体ではなく、必要な範囲だけをトランザクションにできます。",
         },
         {
           type: "h2",
@@ -538,7 +534,7 @@ if (updated == 0) {
       blocks: [
         {
           type: "p",
-          text: "HTML は templates フォルダ、CSS や JS は static フォルダに置きます。申請くんの一覧を例に見ます。",
+          text: "申請くんの一覧を例に、置き場所と読み込み方を見ます。",
         },
         {
           type: "h2",
@@ -658,7 +654,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "Controller の return が返す文字列が、templates 配下のパスになります。`return \"request/list\"` なら `templates/request/list.html` です。前の項目の図のとおりです。",
+          text: "Controller の return が返す文字列が、templates 配下のパスになります。前の項目の図のとおりです。",
         },
         {
           type: "h2",
@@ -1065,7 +1061,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "p",
           text: "Controller から Service を追うとき、ソースに書いてある Java メソッド呼び出しだけを見るのでは足りないことがあります。リクエストの前後や、メソッド呼び出しの手前に、別クラスが挟まることがあるためです。ソースを読んでも、挟まっている別クラスの名前は出てきません。",
         },
-        { type: "diagram", name: "cross-cut", caption: "Controller や Service のソースに、これらの呼び出しは書かれていません。" },
+        { type: "diagram", name: "cross-cut", caption: "リクエストの前後と、メソッド呼び出しの手前に挟まります。" },
         {
           type: "table",
           headers: ["種類", "動く位置", "ソースでの見え方"],
@@ -1080,7 +1076,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "callout",
           kind: "tip",
           title: "見逃さないために",
-          text: "実際の動きと、ソースから読める処理が食い違うときは、もっと深く探すのではなく、この4種類（Filter / Interceptor / AOP / `@ControllerAdvice`）のどれかを疑いましょう。症状からどれを疑うかは、この項目の最後にまとめます。",
+          text: "実際の動きと、ソースから読める処理が食い違うときは、もっと深く探すのではなく、この4種類（Filter / Interceptor / AOP / `@ControllerAdvice`）のどれかを疑いましょう。",
         },
         {
           type: "h2",
@@ -1140,7 +1136,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "Spring MVC の `HandlerInterceptor` は、Controller の Java メソッドの直前（preHandle）と直後（postHandle / afterCompletion）に動きます。ログ、共通の権限、アクセス記録などで使います。Controller のソースを上から読んでも、呼び出しは出てきません。",
+          text: "Spring MVC の `HandlerInterceptor` は、Controller の Java メソッドの直前（preHandle）と直後（postHandle / afterCompletion）に動きます。ログ、共通の権限、アクセス記録などで使います。",
         },
         {
           type: "code",
@@ -1186,7 +1182,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "これらのアノテーションはメソッドに付いていますが、処理の呼び出しはソースに出ません。読み飛ばさず確認しましょう。",
+          text: "これらは、アノテーションが付いているだけで処理が動きます。読み飛ばさず確認しましょう。",
         },
         {
           type: "code",
@@ -1198,7 +1194,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "このうち、よくあるのは `@Transactional` です。ここを例に確認方法を挙げます。",
+          text: "このうち、よく出会うのは `@Transactional` です。",
         },
         {
           type: "callout",
@@ -1283,10 +1279,6 @@ public void addInterceptors(InterceptorRegistry registry) {
         {
           type: "h2",
           text: "重ね方で変わる切り分け",
-        },
-        {
-          type: "p",
-          text: "上の3パターンのどれかによって、ログの見る場所が変わります。",
         },
         {
           type: "ul",
