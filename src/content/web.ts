@@ -345,12 +345,6 @@ Content-Type: application/json
           title: "名前の不一致",
           text: "フォームの `name` と、サーバ側で受け取る名前（Spring なら `@RequestParam`）が違うと、値が null のまま届くことがあります。400 やバリデーションエラーになることもあります。画面、Network タブ、Java の引数を並べて見ましょう。",
         },
-        {
-          type: "callout",
-          kind: "note",
-          title: "本文の読み方はフレームワーク次第",
-          text: "`@RequestBody` や `@RequestParam` など、引数への取り出し方は Spring の書き方です。JSON かフォームかで使う印が変わります。実務では、まず Network タブでキーと値を確認しましょう。",
-        },
         { type: "quiz", id: "web-params" },
       ],
     },
@@ -552,12 +546,6 @@ public String showCart(HttpSession session, Model model) {
             label: "Ajax",
             to: "/tracks/web/ajax",
           },
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "担当と、動く場所",
-          text: "フロントエンド担当者とバックエンド担当者に分かれていることもあります。分かれていても、画面に出る HTML をサーバ側で書いている、ということはあります。",
         },
         {
           type: "h2",
@@ -1027,12 +1015,6 @@ function RequestList() {
         {
           type: "p",
           text: "JSON の件数もおかしいなら、API の SQL と DB を確認しましょう。JSON は正しいのに画面だけ違うなら、プロパティ名、filter や並べ替え、React の state、JavaScript の例外を確認しましょう。",
-        },
-        {
-          type: "callout",
-          kind: "trap",
-          title: "API が 200 でも画面は空になる",
-          text: "一覧 API が 200 でも、JSON のプロパティ名が違うときや JavaScript が例外になったときは、一覧が出ません。Network タブの Fetch/XHR と、ブラウザのコンソールを確認しましょう。",
         },
         { type: "quiz", id: "web-json-ui" },
       ],

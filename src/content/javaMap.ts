@@ -36,12 +36,6 @@ export const javaMapTrack: Track = {
           type: "p",
           text: "java 配下の jp/co/example/shinsei は、IDE でパッケージを折りたたんだ表示と同じです。実体のフォルダは jp、co、example、shinsei に分かれます。",
         },
-        {
-          type: "callout",
-          kind: "tip",
-          title: "pom.xml / build.gradle",
-          text: "Web なのか、画面は Thymeleaf なのか JSP なのか、DB は MyBatis なのか JPA なのか。依存を見ると、このあと何を検索すればよいかが決まります。",
-        },
       ],
     },
     {
@@ -216,12 +210,6 @@ logging:
             "`context-path` が違うと CSS が 404 になり、画面だけ崩れる",
             "パスワードは環境変数や別ファイルのことがある",
           ],
-        },
-        {
-          type: "callout",
-          kind: "warn",
-          title: "接続情報",
-          text: "接続文字列には本番相当の情報があることがあります。共有するときはマスクしましょう。",
         },
       ],
     },
@@ -1307,12 +1295,6 @@ public void addInterceptors(InterceptorRegistry registry) {
             "アプリのエラーログは、サーブレットコンテナ側にある",
             "コンテキストパスは、手前と後ろの両方に付いていることがある（パターン3）",
           ],
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "APサーバ",
-          text: "古い現場では WebLogic など APサーバに載せることもあります。動く先が Tomcat ではない、というだけです。",
         },
         {
           type: "h2",

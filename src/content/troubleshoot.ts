@@ -1197,12 +1197,6 @@ ORDER BY r.created_at DESC
           type: "p",
           text: "出す先は `logging.level` です。申請くんなら Mapper のパッケージ（`jp.co.example.shinsei.mapper` など）に DEBUG を付けましょう。XML の id と Java のメソッド名が Logger に出ることがあります。その SQL をソースで探す手順は、「SQL からソースを探す」の章で説明しています。",
         },
-        {
-          type: "callout",
-          kind: "note",
-          title: "形式は設定次第",
-          text: "Preparing / Parameters は MyBatis の DEBUG で多い形です。JDBC のログや別ライブラリだと書き方が違います。見るのは文、バインド値、件数です。",
-        },
         { type: "quiz", id: "ts-log-pick" },
         { type: "quiz", id: "ts-log-sql" },
       ],
@@ -1282,12 +1276,6 @@ public void approve(Long requestId, Long approverId) {
             ["java. / javax. / jakarta. / jdk. / sun.", "JDK。飛ばす"],
             ["$Proxy / CGLIB / generated", "生成コード。隣の自作クラスへ戻る"],
           ],
-        },
-        {
-          type: "callout",
-          kind: "tip",
-          title: "上から最初の自作コード",
-          text: "Spring の長いクラス名の行で止まらないでください。直すのは RequestService や RequestMapper です。",
         },
         { type: "widget", name: "stack" },
         { type: "quiz", id: "ts-npe" },
@@ -1615,12 +1603,6 @@ public void approve(Long requestId, Long approverId) {
           ],
         },
         {
-          type: "callout",
-          kind: "note",
-          title: "ログが無い区間",
-          text: "start と done のあいだに行が無いこと自体が、範囲です。その中の SQL、外部 API、ロック、ファイル I/O を見ましょう。",
-        },
-        {
           type: "h2",
           text: "区間の中で疑うもの",
         },
@@ -1759,12 +1741,6 @@ t_request  ref   fk_request_applicant   fk_request_applicant   3`,
         {
           type: "p",
           text: "`->` の前後がヒープの使用量（回収前 → 回収後）で、括弧の中が上限です。回収してもほとんど減っていなければ、解放できるはずのオブジェクトが残っている、つまりメモリリークの兆候です。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "書式は JDK のバージョンとオプション次第",
-          text: "GC ログの出し方と書式は、JDK のバージョンや起動オプションによって違います。ここで見る要点は書式そのものではなく、回収の頻度と、回収前後のヒープ使用量です。",
         },
         {
           type: "h2",
@@ -2015,12 +1991,6 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
             ["SSLHandshakeException、証明書エラー", "`curl -vk` で HTTPS まで届くか。TLS はアプリより手前で失敗することもある"],
             ["開発 PC の curl は 200、サーバ上のアプリだけ失敗", "打つ場所をアプリサーバに変える。経路と FW が PC と違う"],
           ],
-        },
-        {
-          type: "callout",
-          kind: "tip",
-          title: "順番",
-          text: "URL とポートが分かってから、コマンドを打ちましょう。`application.yml` の接続先を特定する前に ping しても、当たる先が定まりません。",
         },
         {
           type: "ol",
