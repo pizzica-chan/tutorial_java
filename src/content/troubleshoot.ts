@@ -1062,7 +1062,18 @@ Unit tomcat.service could not be found.`,
         },
         {
           type: "p",
-          text: "ここでの `nginx` `tomcat` はサービス名の例で、実際の名前は環境によって違います（`tomcat9` など）。`Unit ... could not be found` と出た場合は、止まっているのではなく名前が違うだけのことが多いです。名前が分からないときは、「Linux の基本操作」で見た `ps` に、探したいプロセス名（`tomcat` や `nginx`）を渡して探しましょう。",
+          text: "ここでの `nginx` `tomcat` はサービス名の例で、実際の名前は環境によって違います（`tomcat9` など）。`Unit ... could not be found` と出た場合は、止まっているのではなく名前が違うだけのことが多いです。正しいユニット名を探すには、`systemctl list-unit-files --type=service` の出力を `grep` で絞り込みましょう。動いていないサービスの単位も含めて、登録されているユニットが一覧できます。",
+        },
+        {
+          type: "code",
+          title: "例（サービス名の一部で絞り込む）",
+          lang: "text",
+          code: `$ systemctl list-unit-files --type=service | grep -i tomcat
+tomcat9.service                            enabled`,
+        },
+        {
+          type: "p",
+          text: "nginx や tomcat のようなミドルウェアが、systemd のサービスとして登録されていない環境もあります。その場合は `systemctl` 側にユニット自体が無いので、`list-unit-files` で探しても見つかりません。そのときは「Linux の基本操作」で見た `ps` に、探したいプロセス名（`tomcat` や `nginx`）を渡して、プロセスが実際に動いているかを直接確認しましょう。ただし `ps` に出るのは今動いているプロセスだけです。見つからなければ、名前ではなく、そもそも止まっている可能性を疑いましょう。",
         },
         { type: "quiz", id: "ts-middleware" },
       ],
