@@ -170,12 +170,6 @@ export const troubleshootTrack: Track = {
           ],
         },
         {
-          type: "callout",
-          kind: "note",
-          title: "「いつから」を絞り込む",
-          text: "症状が出た最初の時刻を、ログや報告から特定しましょう。その前後にデプロイや設定変更が無いかを突き合わせると、疑う範囲がぐっと狭まります。",
-        },
-        {
           type: "h2",
           text: "コードの変更を確認する",
         },
@@ -1057,7 +1051,7 @@ shinsei-7d8f9c6b5d-abcde   0/1     CrashLoopBackOff   7          12m`,
         },
         {
           type: "p",
-          text: "`Active: active (running)` なら動いています。`inactive (dead)` や `failed` なら止まっています。",
+          text: "`Active: active (running)` なら動いています。`inactive (dead)` や `failed` なら止まっています。止まっていれば、リクエストはアプリまで届かず、アプリのログにも何も残りません。",
         },
         {
           type: "code",
@@ -1069,18 +1063,6 @@ Unit tomcat.service could not be found.`,
         {
           type: "p",
           text: "ここでの `nginx` `tomcat` はサービス名の例で、実際の名前は環境によって違います（`tomcat9` など）。`Unit ... could not be found` と出た場合は、止まっているのではなく名前が違うだけのことが多いです。名前が分からないときは、「Linux の基本操作」で見た `ps` に、探したいプロセス名（`tomcat` や `nginx`）を渡して探しましょう。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "手前が止まっていると、アプリのログにも何も残らない",
-          text: "手前の HTTP サーバや外部の Tomcat が止まっていると、リクエストはアプリまで届きません。アプリのログを探しても見つからないのは当然です。「アプリログの場所と読み方」で追う前に、ここを確認しましょう。",
-        },
-        {
-          type: "callout",
-          kind: "trap",
-          title: "アプリは正常でもミドルウェアが原因のことがある",
-          text: "コードやデータに問題が見つからないときは、DB やメッセージキューなどのミドルウェア、コンテナや外部の Tomcat・HTTP サーバの起動状態も疑いましょう。アプリのソースだけを読み続けても見つかりません。",
         },
         { type: "quiz", id: "ts-middleware" },
       ],
