@@ -609,6 +609,11 @@ export const terms: TermDef[] = [
     body: "実行中のプログラムの単位です。Java アプリなら、起動すると1つの Java プロセスとして動きます。`ps` コマンドで、起動しているプロセスの一覧を見られます。",
   },
   {
+    term: "systemd",
+    aliases: ["systemd"],
+    body: "多くの Linux ディストリビューションで使われる、サービスの起動・停止を管理する仕組みです。`nginx` や `tomcat9` のようなサービスをユニットという単位で管理し、`systemctl` コマンドで操作します。",
+  },
+  {
     term: "ヒープ",
     aliases: ["ヒープ", "Java ヒープ", "heap"],
     body: "Java がオブジェクトを置くメモリ領域です。起動時に `-Xmx` などで上限を設定します。ここが足りなくなると `OutOfMemoryError` になることがあります。",
