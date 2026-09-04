@@ -1,5 +1,7 @@
 export type TermDef = {
   term: string;
+  /** 漢字で始まる見出し語だけに付ける読み（五十音の索引・並び替え用） */
+  kana?: string;
   aliases: string[];
   body: string;
 };
@@ -7,6 +9,7 @@ export type TermDef = {
 export const terms: TermDef[] = [
   {
     term: "申請くん",
+    kana: "しんせいくん",
     aliases: ["申請くん"],
     body: "この教材の架空の社内申請アプリ。社員が申請を出し、承認者が承認する、という想定です。Spring Boot、Thymeleaf、MyBatis、MySQL、Spring Security を使う設定ですが、このアプリ自体は実在しません。",
   },
@@ -112,6 +115,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "処理の入口",
+    kana: "しょりのいりぐち",
     aliases: ["処理の入口"],
     body: "調べたい画面や機能で、サーバ側の処理が始まる場所。多くは URL に対応する Controller の Java メソッドです。申請くんでは `RequestController.java` の `@GetMapping` などが該当します。",
   },
@@ -207,6 +211,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "型エイリアス",
+    kana: "かたエイリアス",
     aliases: ["型エイリアス", "type alias"],
     body: "MyBatis の設定で、パッケージ配下のクラスをクラス名だけで参照できるようにする仕組みです。`type-aliases-package` で指定したパッケージのクラスは、`resultType=\"RequestEntity\"` のように完全なパッケージ名を省略できます。",
   },
@@ -260,6 +265,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "自作クラス",
+    kana: "じさくクラス",
     aliases: ["自作クラス", "自作パッケージ"],
     body: "このプロジェクトで書いたコードです。スタックトレースでは、at 行のパッケージが、自分たちが書いたコードのもの（申請くんなら `jp.co.example.shinsei`）で始まる行がこれにあたります。",
   },
@@ -275,11 +281,13 @@ export const terms: TermDef[] = [
   },
   {
     term: "例外",
+    kana: "れいがい",
     aliases: ["例外", "Exception"],
     body: "プログラムが通常どおり進めなくなったときに投げられるオブジェクトです。Java では `Exception` と `Error` に分かれ、まとめて `Throwable` と呼びます。`OutOfMemoryError` のように回復が難しい深刻な問題は `Error` です。",
   },
   {
     term: "検査例外 / 非検査例外",
+    kana: "けんされいがい",
     aliases: ["検査例外", "非検査例外", "チェック例外", "非チェック例外"],
     body: "`throws` 宣言か `try-catch` を書かないとコンパイルが通らない例外を検査例外（チェック例外）と呼びます。`RuntimeException` と `Error`、およびそのサブクラスは非検査例外（非チェック例外）で、この強制がありません。`@Transactional` が既定でロールバックするのは非検査例外だけです。",
   },
@@ -405,6 +413,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "永続化",
+    kana: "えいぞくか",
     aliases: ["永続化"],
     body: "メモリ上の値を、DB やファイルへ残すことです。画面を閉じても残るデータの書き込みがこれです。",
   },
@@ -435,6 +444,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "論理削除",
+    kana: "ろんりさくじょ",
     aliases: ["論理削除"],
     body: "レコードを物理的に消さず、削除フラグで「無いもの」として扱う方式です。",
   },
@@ -455,11 +465,13 @@ export const terms: TermDef[] = [
   },
   {
     term: "正規化",
+    kana: "せいきか",
     aliases: ["正規化"],
     body: "同じ情報を複数のテーブルに重複させず、意味のまとまりごとに分けて持つ設計です。更新は楽になりますが、取得時に複数テーブルの結合が必要になることがあります。",
   },
   {
     term: "結合",
+    kana: "けつごう",
     aliases: ["結合", "JOIN"],
     body: "複数のテーブルを、共通のカラムで紐付けて1つの結果にまとめる SQL の操作です。SQL では JOIN と書きます。",
   },
@@ -480,6 +492,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "実行計画",
+    kana: "じっこうけいかく",
     aliases: ["実行計画"],
     body: "DB が SQL をどう実行するかの手順です。どのテーブルをどう読むか、インデックスを使うかを含みます。MySQL では EXPLAIN で見ます。",
   },
@@ -505,6 +518,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "証明書",
+    kana: "しょうめいしょ",
     aliases: ["証明書"],
     body: "SSL / TLS で使う、サーバの身元を保証するファイルです。期限切れや設定ミスがあると、SSL 終端の手前でエラーになり、アプリまで届きません。",
   },
@@ -550,6 +564,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "名前解決",
+    kana: "なまえかいけつ",
     aliases: ["名前解決"],
     body: "ホスト名を IP アドレスに変換すること。多くの環境では DNS が担当します。名前解決に失敗すると、ping や curl の前段で止まります。",
   },
@@ -675,6 +690,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "静的ファイル",
+    kana: "せいてきファイル",
     aliases: ["静的ファイル"],
     body: "CSS / JS / 画像など、サーバが組み立てないファイルです。",
   },
@@ -780,6 +796,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "内蔵サーバ",
+    kana: "ないぞうサーバ",
     aliases: ["内蔵サーバ", "内蔵 Tomcat", "embedded"],
     body: "Spring Boot が jar の中で起動する Tomcat や Jetty です。別プロセスの Tomcat は不要です。",
   },
@@ -835,21 +852,25 @@ export const terms: TermDef[] = [
   },
   {
     term: "参照検索",
+    kana: "さんしょうけんさく",
     aliases: ["参照検索", "使用箇所の検索", "ワークスペース内の参照", "Find Usages", "References", "Find References"],
     body: "IDE の機能。その Java メソッドや型がどこから呼ばれているかを一覧します。日本語化した IntelliJ では「使用箇所の検索」、Eclipse では「ワークスペース内の参照」という名前です。",
   },
   {
     term: "定義へジャンプ",
+    kana: "ていぎへジャンプ",
     aliases: ["定義へジャンプ", "宣言または使用箇所に移動", "宣言を開く", "宣言へジャンプ", "Go to Declaration", "Open Declaration"],
     body: "IDE の機能。呼び出している Java メソッドの名前から、その宣言（呼ばれている側）を開きます。日本語化した IntelliJ では「宣言または使用箇所に移動」、Eclipse では「宣言を開く」という名前です。",
   },
   {
     term: "呼び出し階層",
+    kana: "よびだしかいそう",
     aliases: ["呼び出し階層", "呼び出し階層を開く", "Call Hierarchy"],
     body: "IDE の機能。今の Java メソッドを起点に、呼び出し元と呼び出し先を階層（ツリー）で出します。日本語化した IntelliJ では「呼び出し階層」、Eclipse では「呼び出し階層を開く」です。1 段だけなら参照検索と定義へジャンプで足ります。",
   },
   {
     term: "実装へジャンプ",
+    kana: "じっそうへジャンプ",
     aliases: ["実装へジャンプ", "実装に移動", "実装を開く", "Go to Implementation"],
     body: "IDE の機能。インタフェースの宣言から、実体のクラスを開きます。日本語化した IntelliJ では「実装に移動」、Eclipse では「実装を開く」という名前です。MyBatis の Mapper は Java の実装クラスが無いことが多いです。",
   },
@@ -905,6 +926,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "分離レベル",
+    kana: "ぶんりレベル",
     aliases: ["分離レベル", "アイソレーションレベル"],
     body: "同時に動いている複数のトランザクションが、お互いの変更をどこまで見えるようにするかという設定です。DB によって既定値は違います。上げるほど他のトランザクションの影響を受けにくくなりますが、待たされることも増えます。",
   },
@@ -915,11 +937,13 @@ export const terms: TermDef[] = [
   },
   {
     term: "楽観ロック",
+    kana: "らっかんロック",
     aliases: ["楽観ロック", "楽観的ロック"],
     body: "DB 側で実際にレコードを専有せず、更新時に条件（状態やバージョン番号）をチェックして、他の処理が先に進んでいないかを確認する方法です。実際にはロックを取っていません。",
   },
   {
     term: "悲観ロック",
+    kana: "ひかんロック",
     aliases: ["悲観ロック", "悲観的ロック"],
     body: "`SELECT ... FOR UPDATE` などで、読む時点から実際にレコードをロックする方法です。あとから来たトランザクションは、先のトランザクションが確定するまで待たされます。",
   },
@@ -935,6 +959,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "環境変数",
+    kana: "かんきょうへんすう",
     aliases: ["環境変数"],
     body: "OS や起動元が渡す設定値。パスワードをファイルに書かないときに使います。",
   },
@@ -1005,6 +1030,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "要素",
+    kana: "ようそ",
     aliases: ["要素"],
     body: "同じ種類のものが集まっているときの、その1つ1つを指す言葉です。HTML では `<button>` や `<div>` のようなタグのまとまりを、配列やリストでは、その中の1件のデータを指します。",
   },
@@ -1210,11 +1236,13 @@ export const terms: TermDef[] = [
   },
   {
     term: "引数",
+    kana: "ひきすう",
     aliases: ["引数"],
     body: "メソッドに渡す値です。誰が渡しているかを見ると、呼び出し元が分かります。",
   },
   {
     term: "戻り値",
+    kana: "もどりち",
     aliases: ["戻り値"],
     body: "メソッドが返す値。画面のテンプレート名や、JSON の中身になります。",
   },
@@ -1265,21 +1293,25 @@ export const terms: TermDef[] = [
   },
   {
     term: "認証",
+    kana: "にんしょう",
     aliases: ["認証"],
     body: "誰であるかを確認すること。ログインがこれです。失敗したときの応答は、401 やログイン画面など、アプリによって違います。",
   },
   {
     term: "未ログイン",
+    kana: "みログイン",
     aliases: ["未ログイン"],
     body: "ログインしていない状態です。401 やログイン画面へ飛ばす実装が多いですが、決まりではありません。",
   },
   {
     term: "認可",
+    kana: "にんか",
     aliases: ["認可"],
     body: "権限を確かめることです。認証（誰であるか）のあとで、その操作をしてよいかを見ます。",
   },
   {
     term: "権限",
+    kana: "けんげん",
     aliases: ["権限"],
     body: "その人が、その操作やデータを扱ってよいかということです。承認者かどうかのチェックもこれです。足りないときの画面やステータスコードは、アプリによって違います。",
   },
@@ -1320,6 +1352,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "文字コード",
+    kana: "もじコード",
     aliases: ["文字コード"],
     body: "文字の表し方。UTF-8 と Shift_JIS が混ざると文字化けします。",
   },
@@ -1355,6 +1388,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "標準出力",
+    kana: "ひょうじゅんしゅつりょく",
     aliases: ["標準出力"],
     body: "プロセスが画面や起動元へ流す出力です。コンテナでは、これを集めてログにすることが多いです。",
   },
@@ -1440,6 +1474,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "開発者ツール",
+    kana: "かいはつしゃツール",
     aliases: ["開発者ツール"],
     body: "ブラウザに付いている調査画面。Network タブで通信、Console で JS の例外、Sources で JS のブレークポイントを見ます。",
   },
@@ -1455,6 +1490,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "依存関係",
+    kana: "いぞんかんけい",
     aliases: ["依存関係", "starter"],
     body: "使うフレームワークやライブラリの一覧。`pom.xml` や `build.gradle` に書きます。",
   },
@@ -1472,10 +1508,76 @@ export function glossaryAnchor(term: string) {
 
 export type GlossaryItem = {
   term: string;
+  kana?: string;
   body: string;
 };
 
+/** 五十音の行。読みの先頭がここに載っている文字なら、その行に属する（濁音・半濁音は清音の行と同じ扱い） */
+const GOJUON_ROWS: Array<[string, string]> = [
+  ["ア", "あいうえおぁぃぅぇぉアイウエオァィゥェォヴ"],
+  ["カ", "かきくけこがぎぐげごカキクケコガギグゲゴ"],
+  ["サ", "さしすせそざじずぜぞサシスセソザジズゼゾ"],
+  ["タ", "たちつてとだぢづでどっタチツテトダヂヅデドッ"],
+  ["ナ", "なにぬねのナニヌネノ"],
+  ["ハ", "はひふへほばびぶべぼぱぴぷぺぽハヒフヘホバビブベボパピプペポ"],
+  ["マ", "まみむめもマミムメモ"],
+  ["ヤ", "やゆよゃゅょヤユヨャュョ"],
+  ["ラ", "らりるれろラリルレロ"],
+  ["ワ", "わをんゎワヲンヮ"],
+];
+
+const KANA_TO_ROW = new Map<string, string>();
+for (const [row, chars] of GOJUON_ROWS) {
+  for (const ch of chars) KANA_TO_ROW.set(ch, row);
+}
+
+/** 索引の並び順。記号・数字 → A〜Z → 五十音（ア行〜ワ行） */
+export const GLOSSARY_INDEX_ORDER = ["#", ..."ABCDEFGHIJKLMNOPQRSTUVWXYZ".split(""), ...GOJUON_ROWS.map(([row]) => row)];
+
+export function glossaryIndexKey(item: GlossaryItem): { bucket: string; sortKey: string } {
+  const reading = item.kana ?? item.term;
+  const first = reading[0] ?? "";
+  if (/[A-Za-z]/.test(first)) {
+    return { bucket: first.toUpperCase(), sortKey: reading.toLowerCase() };
+  }
+  const row = KANA_TO_ROW.get(first);
+  if (row) {
+    return { bucket: row, sortKey: reading };
+  }
+  return { bucket: "#", sortKey: reading };
+}
+
+export type GlossaryGroup = {
+  key: string;
+  label: string;
+  items: GlossaryItem[];
+};
+
+function groupLabel(key: string): string {
+  if (key === "#") return "記号・数字";
+  if (GOJUON_ROWS.some(([row]) => row === key)) return `${key}行`;
+  return key;
+}
+
+export function groupGlossary(items: GlossaryItem[]): GlossaryGroup[] {
+  const byBucket = new Map<string, GlossaryItem[]>();
+  for (const item of items) {
+    const { bucket } = glossaryIndexKey(item);
+    const list = byBucket.get(bucket) ?? [];
+    list.push(item);
+    byBucket.set(bucket, list);
+  }
+  const groups: GlossaryGroup[] = [];
+  for (const key of GLOSSARY_INDEX_ORDER) {
+    const list = byBucket.get(key);
+    if (!list || list.length === 0) continue;
+    groups.push({ key, label: groupLabel(key), items: list });
+  }
+  return groups;
+}
+
 export const glossary: GlossaryItem[] = uniqueTerms(terms);
+export const glossaryGroups: GlossaryGroup[] = groupGlossary(glossary);
 
 function uniqueTerms(list: TermDef[]): GlossaryItem[] {
   const seen = new Set<string>();
@@ -1483,9 +1585,16 @@ function uniqueTerms(list: TermDef[]): GlossaryItem[] {
   for (const item of list) {
     if (seen.has(item.term)) continue;
     seen.add(item.term);
-    result.push({ term: item.term, body: item.body });
+    result.push({ term: item.term, kana: item.kana, body: item.body });
   }
-  return result.sort((a, b) => a.term.localeCompare(b.term, "ja"));
+  return result.sort((a, b) => {
+    const ka = glossaryIndexKey(a);
+    const kb = glossaryIndexKey(b);
+    const orderA = GLOSSARY_INDEX_ORDER.indexOf(ka.bucket);
+    const orderB = GLOSSARY_INDEX_ORDER.indexOf(kb.bucket);
+    if (orderA !== orderB) return orderA - orderB;
+    return ka.sortKey.localeCompare(kb.sortKey, "ja");
+  });
 }
 
 function escapeRegex(value: string): string {

@@ -815,6 +815,25 @@ h2,
     color: var(--amber);
     font-weight: 700;
   }
+
+  .glossary-index ul {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .glossary-index a {
+    display: block;
+    padding: 3px 8px;
+    border: 1px solid var(--line);
+    border-left-width: 1px;
+    border-radius: 4px;
+    font-size: 12.5px;
+  }
+
+  .glossary-index a:hover {
+    border-color: var(--amber);
+  }
 }
 
 .article p,
