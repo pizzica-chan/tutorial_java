@@ -272,6 +272,18 @@ export const quizzes = {
     answer: 1,
     explanation: "`org.springframework` や `java.` は自分たちが書いたコードではありません。`jp.co.example` で始まる `RequestService` の行を見ます。",
   },
+  "ts-compare-working": {
+    id: "ts-compare-working",
+    question: "ID 12 の申請は承認できるが、ID 16 だけ承認すると 500 になる。原因を絞り込むのに最も近道なのは？",
+    choices: [
+      "RequestService のソースをもう一度最初から読む",
+      "ID 12 と ID 16 の DB のレコードを見比べる",
+      "サーバを再起動する",
+      "ログのレベルを DEBUG に上げて待つ",
+    ],
+    answer: 1,
+    explanation: "一方は成功し一方は失敗するなら、両者を突き合わせるのが近道です。`t_request` を見比べると、`approver_id` だけ ID 16 が NULL になっています。",
+  },
   "ts-symptom-start": {
     id: "ts-symptom-start",
     question: "承認ボタンを押したらログイン画面に戻った。最初に確認するのはどれ？",
@@ -283,6 +295,18 @@ export const quizzes = {
     ],
     answer: 1,
     explanation: "Controller の業務ロジックより先に、フィルタやセッションを疑います。ステータスコードと `Location`、Cookie を確認しましょう。",
+  },
+  "ts-recent-change": {
+    id: "ts-recent-change",
+    question: "先週まで問題なかった画面で、今日から同じ操作をすると失敗するようになった。まず疑うのは？",
+    choices: [
+      "アプリのロジックが最初から間違っていた",
+      "直近のデプロイ、設定変更、データの変化",
+      "利用者の PC のスペック",
+      "教材の内容自体の誤り",
+    ],
+    answer: 1,
+    explanation: "急に症状が出たときは、まず直近で変わったもの（コード、設定、データ、外部要因）を洗い出しましょう。原因を絞り込みやすくなります。",
   },
   "ts-linux": {
     id: "ts-linux",
