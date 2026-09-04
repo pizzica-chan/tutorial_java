@@ -198,17 +198,56 @@ export const troubleshootTrack: Track = {
         },
         {
           type: "p",
-          text: "自分でデプロイしていない共有環境でも、設定ファイルの更新時刻や、コンテナが作られた時刻を見れば、いつ変わったかが分かります。",
+          text: "自分でデプロイしていない共有環境でも、設定ファイルの更新時刻や、コンテナが作られた時刻を見れば、いつ変わったかが分かります。更新時刻は `ls -l` でも出ますが、`stat` の方が詳しく分かります。",
         },
         {
           type: "code",
           title: "例（架空のログです）",
           lang: "text",
-          code: `$ ls -l --time-style=full-iso application.yml
--rw-r--r-- 1 deploy deploy 842 2026-08-30 09:58:11.000000000 +0900 application.yml
-
-$ docker inspect --format='{{.Created}}' shinsei-app
+          code: `$ stat application.yml
+  File: application.yml
+  Size: 842        Blocks: 8          IO Block: 4096   regular file
+Access: (0644/-rw-r--r--)  Uid: ( 1000/deploy)   Gid: ( 1000/deploy)
+Access: 2026-08-30 10:15:03.000000000 +0900
+Modify: 2026-08-30 09:58:11.000000000 +0900
+Change: 2026-08-30 09:58:11.000000000 +0900`,
+        },
+        {
+          type: "table",
+          headers: ["項目", "意味", "分かること"],
+          rows: [
+            ["Modify（mtime）", "ファイルの中身が最後に変更された時刻。`ls -l` が出すのもこの時刻", "設定の中身がいつ書き換わったかが分かる"],
+            ["Change（ctime）", "パーミッションや所有者、中身などのメタデータが変わった時刻。ユーザー側からは直接指定できない", "コピーや配置そのものでも更新されるので、Modify より配置のタイミングに近いことが多い"],
+          ],
+        },
+        {
+          type: "p",
+          text: "Access（atime）は、`cat` や `grep` で開いただけでも更新されます。無効化している環境も多く、そうでなくても参照と実際の読み込みを区別できないので、手がかりにはなりません。",
+        },
+        {
+          type: "p",
+          text: "この技法で主に見るのは Change です。コピーや配置そのものでも必ず更新されるので、`rsync -a` や `cp -p` のように元のタイムスタンプを保つデプロイでも、このサーバに実際に配置された時刻を反映します。Change が症状の報告時刻の直前にあれば、その配置が原因の候補です。Modify は中身がいつ書かれたか（開発環境での編集時刻など）の参考程度に留めましょう。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "WAR や JAR の展開でも同じ",
+          text: "WAR や JAR はアーカイブの中に元のタイムスタンプ（ビルド時刻）を持っていて、展開時にそれを復元します。復元そのものもメタデータの変更なので、Modify はビルド時刻のまま、Change は展開した時刻になります。ただし、展開せずに `java -jar` でそのまま実行する構成では、`application.yml` は単体のファイルとして存在しません。その場合は WAR や JAR ファイルそのものの Change を見ましょう。",
+        },
+        {
+          type: "p",
+          text: "コンテナで動いているアプリでは、`application.yml` に直接アクセスできなかったり、設定がイメージに焼き込まれていたりします。そのときは、コンテナ自体がいつ作られたかを見ましょう。",
+        },
+        {
+          type: "code",
+          title: "例（架空のログです）",
+          lang: "text",
+          code: `$ docker inspect --format='{{.Created}}' shinsei-app
 2026-08-30T00:58:22.104512Z  # UTC。日本時間では 09:58:22`,
+        },
+        {
+          type: "p",
+          text: "これがコンテナの作成時刻です。ファイルの Change と同じように、症状の報告時刻の直前であれば、そのデプロイが原因の候補です。",
         },
         { type: "quiz", id: "ts-recent-change" },
       ],
