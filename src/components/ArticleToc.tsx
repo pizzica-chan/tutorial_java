@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { HeadingEntry } from "../lib/headings";
+import { TextWithTerms } from "./TextWithTerms";
 
 export function ArticleToc({ headings }: { headings: HeadingEntry[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -45,7 +46,7 @@ export function ArticleToc({ headings }: { headings: HeadingEntry[] }) {
                 history.replaceState(null, "", `#${heading.id}`);
               }}
             >
-              {heading.text}
+              <TextWithTerms text={heading.text} highlight={false} />
             </a>
           </li>
         ))}

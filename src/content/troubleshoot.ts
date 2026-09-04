@@ -208,7 +208,7 @@ export const troubleshootTrack: Track = {
 -rw-r--r-- 1 deploy deploy 842 2026-08-30 09:58:11.000000000 +0900 application.yml
 
 $ docker inspect --format='{{.Created}}' shinsei-app
-2026-08-30T00:58:22.104512Z`,
+2026-08-30T00:58:22.104512Z  # UTC。日本時間では 09:58:22`,
         },
         { type: "quiz", id: "ts-recent-change" },
       ],
@@ -1626,7 +1626,7 @@ t_request  ref   fk_request_applicant   fk_request_applicant   3`,
         },
         {
           type: "p",
-          text: "`EXPLAIN` の結果だけで、インデックスを足せば直るとは限りません。`OR` の左右が別カラムだったり、絞り込みと並べ替えのカラムが違ったりすると、`INDEX` を 1 本足すだけでは `type` が `ALL` のまま変わらないこともあります。SQL の書き方自体を見直す必要があることもあります。この読み方を使った具体例は、シナリオの「申請履歴の検索が遅い」で見られます。",
+          text: "`EXPLAIN` の結果だけで、インデックスを足せば直るとは限りません。SQL の書き方自体を見直す必要があることもあります。具体例はシナリオ「申請履歴の検索が遅い」にあります。",
           link: {
             label: "[障害調査] 申請履歴の検索が遅い",
             to: "/tracks/scenario/history-slow",
