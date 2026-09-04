@@ -686,7 +686,7 @@ export const terms: TermDef[] = [
   {
     term: "tcpdump",
     aliases: ["tcpdump"],
-    body: "実際に流れているパケットをキャプチャするコマンドです。`tcpdump -i eth0 port 8080` のように、インタフェースや条件を指定します。`curl` や `nc` は届いたかどうかまでですが、`tcpdump` は通信の中身やタイミングまで見えます。暗号化された HTTPS の本文までは読めません。",
+    body: "実際に流れているパケットをキャプチャするコマンドです。`tcpdump -i any port 8080` のように、インタフェースや条件を指定します（`-i any` は全インタフェース対象）。root 権限が要ることが多いです。`curl` や `nc` は届いたかどうかまでですが、`tcpdump` は通信の中身やタイミングまで見えます。暗号化された HTTPS の本文までは読めません。",
   },
   {
     term: "iptables",

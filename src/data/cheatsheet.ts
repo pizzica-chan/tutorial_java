@@ -218,16 +218,6 @@ export const cheatSheet: CheatSection[] = [
         ],
       },
       {
-        title: "実際に流れているパケットを見る（tcpdump）",
-        note: "curl や nc の結果だけでは分からない、通信そのものの中身やタイミングを見たいときに使います。curl より一段低いレイヤーです。",
-        rows: [
-          { cmd: "`tcpdump -i eth0 port 8080`", env: "Linux", desc: "そのポートに実際にパケットが届いているかを見る。`ss`/`netstat` は待ち受けの有無までで、通信そのものは見えない" },
-          { cmd: "`tcpdump -i any host notify.example.internal`", env: "Linux", desc: "特定の相手先とのやり取りだけに絞る。外部 API への疎通確認と組み合わせる" },
-          { cmd: "`tcpdump -nn -i eth0 -A port 80`", env: "Linux", desc: "HTTP（暗号化されていない通信）の中身を文字として表示する。HTTPS では中身までは読めない" },
-          { cmd: "`tcpdump -i eth0 -w capture.pcap`", env: "Linux", desc: "その場で読まずファイルに書き出す。あとで自分の PC に持ち帰り、Wireshark で開いて詳しく見る" },
-        ],
-      },
-      {
         title: "待ち受けポート・経路・ファイアウォールを見る",
         note: "TCP は通るのにこのホストだけ失敗する、経路の途中で止まっている、といったときに、ホスト側の設定を見る手段です。",
         rows: [
@@ -242,6 +232,16 @@ export const cheatSheet: CheatSection[] = [
           { cmd: "`iptables -L -n -v`", env: "Linux", desc: "現在のファイアウォールルール（許可・拒否）を見る（`iptables` を使っている環境）" },
           { cmd: "`firewall-cmd --list-all`", env: "Linux", desc: "`firewalld` を使っている環境（RHEL 系で多い）でのルール確認" },
           { cmd: "`netsh advfirewall show allprofiles state`", env: "Windows", desc: "ファイアウォールが有効になっているかを見る" },
+        ],
+      },
+      {
+        title: "実際に流れているパケットを見る（tcpdump）",
+        note: "curl や nc の結果だけでは分からない、通信そのものの中身やタイミングを見たいときに使います。curl より一段低いレイヤーです。実行には root 権限が要ることが多く（`sudo` を付けるなど）、`-i any` は全インタフェースを対象にする指定です。特定の NIC に絞りたいときは、上の `ip addr` で名前（`eth0` や `ens5` など、環境によって違います）を確認してから置き換えましょう。",
+        rows: [
+          { cmd: "`tcpdump -i any port 8080`", env: "Linux", desc: "そのポートに実際にパケットが届いているかを見る。`ss`/`netstat` は待ち受けの有無までで、通信そのものは見えない" },
+          { cmd: "`tcpdump -i any host notify.example.internal`", env: "Linux", desc: "特定の相手先とのやり取りだけに絞る。外部 API への疎通確認と組み合わせる" },
+          { cmd: "`tcpdump -nn -i any -A port 80`", env: "Linux", desc: "HTTP（暗号化されていない通信）の中身を文字として表示する。HTTPS では中身までは読めない" },
+          { cmd: "`tcpdump -i any -w capture.pcap`", env: "Linux", desc: "その場で読まずファイルに書き出す。あとで自分の PC に持ち帰り、Wireshark で開いて詳しく見る" },
         ],
       },
     ],
