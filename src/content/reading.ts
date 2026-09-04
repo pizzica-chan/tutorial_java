@@ -1241,7 +1241,7 @@ if (!"PENDING".equals(request.getStatus())) {
       blocks: [
         {
           type: "p",
-          text: "ボタンを押したときに動く JavaScript を探します。Java 側で URL から Controller を特定したのと同じで、手がかりから一本だけ辿ります。",
+          text: "ボタンを押したときに動く JavaScript を探します。Java 側で URL から Controller を特定したのと同じで、ここでも手がかりから、動いている関数まで一本で辿ります。",
         },
         {
           type: "p",

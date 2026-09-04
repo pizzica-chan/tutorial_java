@@ -999,6 +999,11 @@ export const terms: TermDef[] = [
     body: "JavaScript の例外の一種です。型が合わない操作（null のプロパティを読むなど）で出ます。Uncaught は、例外を catch しなかった、という意味です。",
   },
   {
+    term: "要素",
+    aliases: ["要素"],
+    body: "同じ種類のものが集まっているときの、その1つ1つを指す言葉です。HTML では `<button>` や `<div>` のようなタグのまとまりを、配列やリストでは、その中の1件のデータを指します。",
+  },
+  {
     term: "getElementById",
     aliases: ["getElementById"],
     body: "id 属性が一致する HTML 要素を返す JavaScript の関数です。見つからないと null です。",
