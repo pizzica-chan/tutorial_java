@@ -2,6 +2,7 @@ import { highlightCode, highlightCodeLines, inferLang } from "../lib/highlight";
 import { JavaCode } from "./JavaCode";
 
 type Props = {
+  anchorId?: string;
   code: string;
   lang?: string;
   title?: string;
@@ -11,7 +12,7 @@ type Props = {
   highlightKind?: "error";
 };
 
-export function CodeBlock({ code, lang, title, path, codeScope, highlightLines, highlightKind }: Props) {
+export function CodeBlock({ anchorId, code, lang, title, path, codeScope, highlightLines, highlightKind }: Props) {
   const resolved = inferLang(code, lang, path);
   const html =
     resolved === "java"
@@ -23,7 +24,7 @@ export function CodeBlock({ code, lang, title, path, codeScope, highlightLines, 
   const markClass = highlightKind === "error" ? " codeblock-mark-error" : "";
 
   return (
-    <div className={`codeblock${codeScope ? ` codeblock-${codeScope}` : ""}${markClass}`}>
+    <div id={anchorId} className={`codeblock${codeScope ? ` codeblock-${codeScope}` : ""}${markClass}`}>
       <header>
         <span>{title ?? path ?? "code"}</span>
         <span>{resolved ?? ""}</span>

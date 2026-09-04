@@ -3,9 +3,12 @@ import { getTrack, lessonLead } from "../data/curriculum";
 import { NotFoundPage } from "./NotFoundPage";
 import { TextWithTerms } from "../components/TextWithTerms";
 import { Icon } from "../components/Icon";
+import { lessonRowAnchor } from "../lib/anchors";
+import { useHashTarget } from "../hooks/useHashTarget";
 
 export function TrackPage() {
   const { trackId } = useParams();
+  useHashTarget();
   const track = getTrack(trackId);
 
   if (!track) {
@@ -28,7 +31,12 @@ export function TrackPage() {
       ) : null}
       <div className="lesson-list" style={{ marginTop: 28 }}>
         {track.lessons.map((lesson, index) => (
-          <Link key={lesson.id} className="lesson-row" to={`/tracks/${track.id}/${lesson.id}`}>
+          <Link
+            key={lesson.id}
+            id={lessonRowAnchor(lesson.id)}
+            className="lesson-row"
+            to={`/tracks/${track.id}/${lesson.id}`}
+          >
             <div>
               <strong>
                 {String(index + 1).padStart(2, "0")} {lesson.title}

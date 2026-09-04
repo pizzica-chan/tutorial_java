@@ -3,7 +3,7 @@ import { getQuiz } from "../data/quizzes";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon } from "./Icon";
 
-export function QuizBlock({ id }: { id: string }) {
+export function QuizBlock({ id, anchorId }: { id: string; anchorId?: string }) {
   const quiz = getQuiz(id);
   const [picked, setPicked] = useState<number | null>(null);
   const [focusIndex, setFocusIndex] = useState(0);
@@ -55,7 +55,7 @@ export function QuizBlock({ id }: { id: string }) {
   }
 
   return (
-    <div className="quiz">
+    <div id={anchorId} className="quiz">
       <p className="kicker">
         <Icon name="quiz" size={14} />
         CHECK

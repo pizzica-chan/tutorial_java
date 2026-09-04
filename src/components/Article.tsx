@@ -13,6 +13,7 @@ import { Diagram } from "./Diagram";
 import { InvestigationFlow } from "./InvestigationFlow";
 import { Icon, calloutIcon } from "./Icon";
 import { ImageFigure } from "./ImageFigure";
+import { blockAnchorIds } from "../lib/anchors";
 
 const widgets: Record<WidgetName, ComponentType> = {
   explorer: ProjectExplorer,
@@ -24,53 +25,49 @@ const widgets: Record<WidgetName, ComponentType> = {
 
 export function Article({ blocks }: { blocks: Block[] }) {
   const occurrences = new Map<string, number>();
-  let headingIndex = 0;
-  const keyedBlocks = blocks.map((block) => {
+  // 見出しは記事内目次と、それ以外はサイト内検索からのリンク先として使う id
+  const anchorIds = blockAnchorIds(blocks);
+  const keyedBlocks = blocks.map((block, index) => {
     const content = JSON.stringify(block);
     const occurrence = occurrences.get(content) ?? 0;
     occurrences.set(content, occurrence + 1);
-    let headingId: string | undefined;
-    if (block.type === "h2" || block.type === "h3") {
-      headingId = `h-${headingIndex}`;
-      headingIndex += 1;
-    }
-    return { block, key: `${content}:${occurrence}`, headingId };
+    return { block, key: `${content}:${occurrence}`, anchorId: anchorIds[index] };
   });
 
   return (
     <TermHighlightScope>
       <div className="article">
-        {keyedBlocks.map(({ block, key, headingId }) => (
-          <BlockView key={key} block={block} headingId={headingId} />
+        {keyedBlocks.map(({ block, key, anchorId }) => (
+          <BlockView key={key} block={block} anchorId={anchorId} />
         ))}
       </div>
     </TermHighlightScope>
   );
 }
 
-function BlockView({ block, headingId }: { block: Block; headingId?: string }) {
+function BlockView({ block, anchorId }: { block: Block; anchorId: string }) {
   switch (block.type) {
     case "p":
       return (
-        <p>
+        <p id={anchorId}>
           {block.link ? <LinkedText text={block.text} link={block.link} /> : <TextWithTerms text={block.text} />}
         </p>
       );
     case "h2":
       return (
-        <h2 id={headingId}>
+        <h2 id={anchorId}>
           <TextWithTerms text={block.text} linkChapters={false} />
         </h2>
       );
     case "h3":
       return (
-        <h3 id={headingId}>
+        <h3 id={anchorId}>
           <TextWithTerms text={block.text} linkChapters={false} />
         </h3>
       );
     case "ul":
       return (
-        <ul>
+        <ul id={anchorId}>
           {block.items.map((item, itemIndex) => (
             <li key={`${itemIndex}-${item}`}>
               <TextWithTerms text={item} />
@@ -80,7 +77,7 @@ function BlockView({ block, headingId }: { block: Block; headingId?: string }) {
       );
     case "ol":
       return (
-        <ol>
+        <ol id={anchorId}>
           {block.items.map((item, itemIndex) => (
             <li key={`${itemIndex}-${item}`}>
               <TextWithTerms text={item} />
@@ -91,6 +88,7 @@ function BlockView({ block, headingId }: { block: Block; headingId?: string }) {
     case "code":
       return (
         <CodeBlock
+          anchorId={anchorId}
           code={block.code}
           lang={block.lang}
           title={block.title}
@@ -101,7 +99,7 @@ function BlockView({ block, headingId }: { block: Block; headingId?: string }) {
       );
     case "callout":
       return (
-        <div className={`callout ${block.kind}`}>
+        <div id={anchorId} className={`callout ${block.kind}`}>
           <b className="callout-kind">
             <Icon name={calloutIcon(block.kind)} size={18} />
             {label(block.kind)}
@@ -124,18 +122,31 @@ function BlockView({ block, headingId }: { block: Block; headingId?: string }) {
         </div>
       );
     case "quiz":
-      return <QuizBlock id={block.id} />;
+      return <QuizBlock anchorId={anchorId} id={block.id} />;
     case "widget": {
       const Widget = widgets[block.name];
-      return <Widget />;
+      return (
+        <div id={anchorId}>
+          <Widget />
+        </div>
+      );
     }
     case "diagram":
-      return <Diagram name={block.name} caption={block.caption} />;
+      return <Diagram anchorId={anchorId} name={block.name} caption={block.caption} />;
     case "figure":
-      return <ImageFigure src={block.src} alt={block.alt} caption={block.caption} kind={block.kind} size={block.size} />;
+      return (
+        <ImageFigure
+          anchorId={anchorId}
+          src={block.src}
+          alt={block.alt}
+          caption={block.caption}
+          kind={block.kind}
+          size={block.size}
+        />
+      );
     case "table":
       return (
-        <div className="table-wrap">
+        <div id={anchorId} className="table-wrap">
           <table>
             <thead>
               <tr>
@@ -175,7 +186,7 @@ function BlockView({ block, headingId }: { block: Block; headingId?: string }) {
       );
     case "steps":
       return (
-        <div className="step-list">
+        <div id={anchorId} className="step-list">
           {block.items.map((item, index) => (
             <div className="step-row" key={item.title}>
               <span className="tag">{String(index + 1).padStart(2, "0")}</span>
@@ -192,10 +203,10 @@ function BlockView({ block, headingId }: { block: Block; headingId?: string }) {
         </div>
       );
     case "investigation-flow":
-      return <InvestigationFlow items={block.items} />;
+      return <InvestigationFlow anchorId={anchorId} items={block.items} />;
     case "download":
       return (
-        <p className="download-block">
+        <p id={anchorId} className="download-block">
           <a className="btn btn-primary" href={block.href} download>
             <Icon name="package" size={16} />
             {block.label}

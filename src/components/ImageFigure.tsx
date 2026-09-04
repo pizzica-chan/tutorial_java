@@ -4,6 +4,7 @@ import { TextWithTerms } from "./TextWithTerms";
 import { Icon } from "./Icon";
 
 type Props = {
+  anchorId?: string;
   src: string;
   alt: string;
   caption?: string;
@@ -31,7 +32,7 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
-export function ImageFigure({ src, alt, caption, kind, size }: Props) {
+export function ImageFigure({ src, alt, caption, kind, size, anchorId }: Props) {
   const [open, setOpen] = useState(false);
   const [scale, setScale] = useState(1);
   const [pan, setPan] = useState<Point>({ x: 0, y: 0 });
@@ -285,6 +286,7 @@ export function ImageFigure({ src, alt, caption, kind, size }: Props) {
 
   return (
     <figure
+      id={anchorId}
       className={[
         kind === "screen" ? "photo-figure screen-figure" : "photo-figure",
         size === "small" ? "screen-figure-small" : "",

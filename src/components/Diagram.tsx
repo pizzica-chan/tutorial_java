@@ -3,9 +3,9 @@ import type { DiagramName } from "../types";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon, type IconName } from "./Icon";
 
-export function Diagram({ name, caption }: { name: DiagramName; caption?: string }) {
+export function Diagram({ name, caption, anchorId }: { name: DiagramName; caption?: string; anchorId?: string }) {
   return (
-    <figure className="diagram">
+    <figure id={anchorId} className="diagram">
       <figcaption className="kicker">FIGURE</figcaption>
       <div className="diagram-scroll">{diagrams[name]()}</div>
       {caption ? (

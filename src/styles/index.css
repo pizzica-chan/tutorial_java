@@ -368,6 +368,37 @@ pre {
   scroll-margin-top: 5.5rem;
 }
 
+/* サイト内検索から一致した箇所へ飛んだとき。ヘッダに隠れない位置で止め、少しのあいだ目印を出す */
+.article > [id],
+.lesson-list > [id] {
+  scroll-margin-top: 90px;
+}
+
+.is-hash-target {
+  border-radius: 3px;
+  animation: hash-target 2.4s ease-out forwards;
+}
+
+@keyframes hash-target {
+  0%,
+  55% {
+    background-color: rgba(57, 92, 163, 0.14);
+    box-shadow: 0 0 0 7px rgba(57, 92, 163, 0.14);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 7px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .is-hash-target {
+    animation: none;
+    background-color: rgba(57, 92, 163, 0.14);
+    box-shadow: 0 0 0 7px rgba(57, 92, 163, 0.14);
+  }
+}
+
 .content {
   max-width: 980px;
   margin-inline: auto;

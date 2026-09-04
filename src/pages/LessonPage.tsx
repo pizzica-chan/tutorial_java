@@ -5,9 +5,11 @@ import { Article } from "../components/Article";
 import { ArticleToc } from "../components/ArticleToc";
 import { Icon } from "../components/Icon";
 import { extractHeadings } from "../lib/headings";
+import { useHashTarget } from "../hooks/useHashTarget";
 
 export function LessonPage() {
   const { trackId, lessonId } = useParams();
+  useHashTarget();
   const found = getLesson(trackId, lessonId);
 
   if (!found) {

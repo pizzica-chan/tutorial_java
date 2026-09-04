@@ -4,6 +4,7 @@ import { getQuiz } from "../data/quizzes";
 import { glossaryAnchor, terms } from "../data/terms";
 import { projectFiles } from "../data/project";
 import { httpSample, requestFlow, stackCases } from "../data/labs";
+import { blockAnchorIds, lessonRowAnchor } from "./anchors";
 import { troubleshootMap } from "../data/troubleshootMap";
 
 export type SearchHit = {
@@ -21,6 +22,10 @@ function normalizeForSearch(value: string): string {
   return stripCodeMarks(value).normalize("NFKC").toLowerCase();
 }
 
+/** 一致した箇所へ飛ぶための本文の一区切り。anchor が無いものはページの先頭を指す */
+type Part = { anchor?: string; text: string };
+type Segment = Part & { textN: string };
+
 type Doc = {
   href: string;
   title: string;
@@ -29,9 +34,22 @@ type Doc = {
   titleN: string;
   textN: string;
   kind: "page" | "glossary";
+  segments: Segment[];
 };
 
-function toDoc(href: string, title: string, crumb: string, text: string, kind: Doc["kind"] = "page"): Doc {
+function toDoc(
+  href: string,
+  title: string,
+  crumb: string,
+  text: string,
+  kind: Doc["kind"] = "page",
+  parts?: Part[],
+): Doc {
+  const segments: Segment[] = parts
+    ? parts
+        .filter((part) => part.text.trim() !== "")
+        .map((part) => ({ ...part, textN: normalizeForSearch(part.text) }))
+    : [{ text, textN: normalizeForSearch(text) }];
   return {
     href,
     title,
@@ -40,6 +58,7 @@ function toDoc(href: string, title: string, crumb: string, text: string, kind: D
     titleN: normalizeForSearch(title),
     textN: normalizeForSearch(text),
     kind,
+    segments,
   };
 }
 
@@ -122,17 +141,28 @@ const documents: Doc[] = [
       track.title,
       `${track.no} 章`,
       [track.title, track.kicker, track.description, ...track.lessons.map((lesson) => lesson.title)].join("\n"),
+      "page",
+      [
+        { text: [track.title, track.kicker, track.description].join("\n") },
+        ...track.lessons.map((lesson) => ({ anchor: lessonRowAnchor(lesson.id), text: lesson.title })),
+      ],
     ),
   ),
   ...tracks.flatMap((track) =>
-    track.lessons.map((lesson) =>
-      toDoc(
+    track.lessons.map((lesson) => {
+      const anchors = blockAnchorIds(lesson.blocks);
+      return toDoc(
         `/tracks/${track.id}/${lesson.id}`,
         lesson.title,
         `${track.no} ${track.title}`,
         [track.title, lesson.title, ...lesson.blocks.map(blockText)].join("\n"),
-      ),
-    ),
+        "page",
+        [
+          { text: [track.title, lesson.title].join("\n") },
+          ...lesson.blocks.map((block, index) => ({ anchor: anchors[index], text: blockText(block) })),
+        ],
+      );
+    }),
   ),
   toDoc("/glossary", "用語集", "GLOSSARY", ["用語集", "用語ヒント", ...terms.map((item) => item.term)].join("\n")),
   ...terms.map((item) =>
@@ -195,11 +225,13 @@ export function searchSite(query: string): SearchHit[] {
       else if (!glossary && bodyHit) rank = 2;
       else if (glossary && titleHit) rank = 3;
       else rank = 4;
+      // タイトルに当たったときはページの先頭へ。本文に当たったときは、その箇所のアンカーを付ける
+      const segment = titleHit ? undefined : doc.segments.find((item) => item.textN.includes(needle));
       return {
-        href: doc.href,
+        href: segment?.anchor ? `${doc.href}#${segment.anchor}` : doc.href,
         title: doc.title,
         crumb: doc.crumb,
-        snippet: snippetAround(titleHit ? doc.title : doc.text, needle),
+        snippet: snippetAround(titleHit ? doc.title : (segment?.text ?? doc.text), needle),
         rank,
       };
     })

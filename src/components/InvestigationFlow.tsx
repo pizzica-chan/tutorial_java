@@ -58,11 +58,11 @@ function FlowColumn({
   );
 }
 
-export function InvestigationFlow({ items }: { items: InvestigationFlowItem[] }) {
+export function InvestigationFlow({ items, anchorId }: { items: InvestigationFlowItem[]; anchorId?: string }) {
   let iconIndex = 0;
 
   return (
-    <figure className="diagram">
+    <figure id={anchorId} className="diagram">
       <figcaption className="kicker">FIGURE</figcaption>
       <div className="diagram-scroll">
         <div className="d-stack investigation-flow">
