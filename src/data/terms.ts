@@ -691,7 +691,7 @@ export const terms: TermDef[] = [
   {
     term: "iptables",
     aliases: ["iptables", "firewalld", "firewall-cmd"],
-    body: "Linux のファイアウォール機能です。`iptables -L -n -v` でルールを一覧できます。ディストリビューションによっては `firewalld`（`firewall-cmd --list-all`）で管理していることもあります。",
+    body: "Linux のファイアウォール機能です。`iptables`（`iptables -L -n -v`）や、RHEL 系で多い `firewalld`（`firewall-cmd --list-all`）で、現在のルールを確認できます。",
   },
   {
     term: "ip route",
