@@ -309,14 +309,63 @@ export function highlightCode(code: string, lang?: string): string {
   return escapeHtml(code);
 }
 
+/**
+ * ハイライト済み HTML を行ごとに割ります。hljs の言語（http など）は前後の行を見て
+ * 判定するため、1行ずつ highlightCode を呼ぶと本文（HTML/JSON の中身）の色分けが消えます。
+ * 全体を1回でハイライトしてから割り、行をまたいだ <span> は閉じて次行で開き直します。
+ */
+function splitHighlightedIntoLines(html: string): string[] {
+  const lines: string[] = [];
+  const openTags: string[] = [];
+  let current = "";
+  let i = 0;
+  while (i < html.length) {
+    if (html[i] === "\n") {
+      lines.push(current + "</span>".repeat(openTags.length));
+      current = openTags.join("");
+      i += 1;
+      continue;
+    }
+    if (html.startsWith("</span>", i)) {
+      openTags.pop();
+      current += "</span>";
+      i += 7;
+      continue;
+    }
+    const tagMatch = /^<span[^>]*>/.exec(html.slice(i));
+    if (tagMatch) {
+      openTags.push(tagMatch[0]);
+      current += tagMatch[0];
+      i += tagMatch[0].length;
+      continue;
+    }
+    current += html[i];
+    i += 1;
+  }
+  lines.push(current);
+  return lines;
+}
+
 export function highlightCodeLines(code: string, lang: string | undefined, highlightLines: number[]): string {
-  const lines = code.split("\n");
-  return lines
-    .map((line, index) => {
+  if (lang === "java") {
+    return code
+      .split("\n")
+      .map((line, index) => {
+        const lineNo = index + 1;
+        const highlighted = line ? highlightJava(line) : "&nbsp;";
+        const mark = highlightLines.includes(lineNo);
+        return `<span class="code-line${mark ? " code-line-mark" : ""}">${highlighted}</span>`;
+      })
+      .join("");
+  }
+
+  const full =
+    lang && hljs.getLanguage(lang) ? hljs.highlight(code, { language: lang, ignoreIllegals: true }).value : escapeHtml(code);
+  return splitHighlightedIntoLines(full)
+    .map((lineHtml, index) => {
       const lineNo = index + 1;
-      const highlighted = line ? highlightCode(line, lang) : "&nbsp;";
       const mark = highlightLines.includes(lineNo);
-      return `<span class="code-line${mark ? " code-line-mark" : ""}">${highlighted}</span>`;
+      return `<span class="code-line${mark ? " code-line-mark" : ""}">${lineHtml || "&nbsp;"}</span>`;
     })
     .join("");
 }
