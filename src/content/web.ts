@@ -96,7 +96,7 @@ export const webTrack: Track = {
         { type: "diagram", name: "html-json", caption: "同じ HTTP の往復です。" },
         {
           type: "p",
-          text: "HTML は、ブラウザが画面として表示するためのデータ形式です。JSON は、画面の JavaScript や他のシステムが読み取るためのデータ形式です。JSON を返す URL は、Web API と呼ばれることが多いです。",
+          text: "HTML は、見出しやボタンなど、画面の構成要素を含む形式です。データを含まない、ただの静的なページのこともあります。JSON は、これらの構成要素を含まず、データだけを返す形式です。そのため、JSON から画面を作るには、受け取る側（ブラウザの JavaScript やアプリ）が、表示方法をあらかじめ用意しておく必要があります。JSON を返す URL は、Web API と呼ばれることが多いです。",
         },
         {
           type: "p",
@@ -811,7 +811,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "前に見た HTML の応答には、申請データに加えて、見出し、表、ボタンなど、画面を組み立てる要素が含まれていました。一方、次の JSON の応答には申請データだけが入っています。JSON の場合に画面をどう組み立てるかは、次の「JSON から画面を作る」で確認します。",
+          text: "次の JSON の応答には、画面を組み立てる要素は無く、申請データだけが入っています。この JSON から画面をどう組み立てるかは、次の「JSON から画面を作る」で確認します。",
           link: {
             label: "JSON から画面を作る",
             to: "/tracks/web/json-ui",
