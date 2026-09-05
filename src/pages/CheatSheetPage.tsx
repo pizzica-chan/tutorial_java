@@ -29,6 +29,7 @@ const PLACEHOLDER_WORDS = [
   "サービス名",
   "テーブル名",
   "カラム名",
+  "サービス名の一部",
   "値",
 ];
 
@@ -36,7 +37,11 @@ function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-const PLACEHOLDER_PATTERN = new RegExp(`(${PLACEHOLDER_WORDS.map(escapeRegExp).join("|")})`, "g");
+// 長い語を先に試さないと、「サービス名の一部」が「サービス名」だけにマッチしてしまう
+const PLACEHOLDER_PATTERN = new RegExp(
+  `(${[...PLACEHOLDER_WORDS].sort((a, b) => b.length - a.length).map(escapeRegExp).join("|")})`,
+  "g",
+);
 
 /** cmd が単一のコードスパンなら、プレースホルダ語を強調しつつ、それ以外の地の部分では用語ヒントも保つ */
 function CheatCommand({ line }: { line: string }) {

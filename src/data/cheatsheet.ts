@@ -86,7 +86,7 @@ export const cheatSheet: CheatSection[] = [
         title: "systemd サービスの確認",
         rows: [
           { cmd: "`systemctl status サービス名`", env: "Linux", desc: "サービスの稼働状態を見る" },
-          { cmd: "`systemctl list-unit-files --type=service | grep -i サービス名`", env: "Linux", desc: "正しいユニット名を探す。停止中のサービスも一覧に出る" },
+          { cmd: "`systemctl list-unit-files --type=service | grep -i サービス名の一部`", env: "Linux", desc: "うろ覚えの名前で検索し、正しいユニット名を探す。停止中のサービスも一覧に出る" },
           { cmd: "`journalctl -u サービス名 --since \"10 min ago\"`", env: "Linux", desc: "systemd 管理下のサービスの、直近のログをまとめて見る" },
           { cmd: "`journalctl -u サービス名 -f`", env: "Linux", desc: "同じログをリアルタイムで追う。`tail -f` の systemd 版" },
         ],
