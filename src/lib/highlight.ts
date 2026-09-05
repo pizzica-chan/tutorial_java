@@ -326,18 +326,20 @@ function splitHighlightedIntoLines(html: string): string[] {
       i += 1;
       continue;
     }
-    if (html.startsWith("</span>", i)) {
-      openTags.pop();
-      current += "</span>";
-      i += 7;
-      continue;
-    }
-    const tagMatch = /^<span[^>]*>/.exec(html.slice(i));
-    if (tagMatch) {
-      openTags.push(tagMatch[0]);
-      current += tagMatch[0];
-      i += tagMatch[0].length;
-      continue;
+    if (html[i] === "<") {
+      if (html.startsWith("</span>", i)) {
+        openTags.pop();
+        current += "</span>";
+        i += 7;
+        continue;
+      }
+      const tagMatch = /^<span[^>]*>/.exec(html.slice(i));
+      if (tagMatch) {
+        openTags.push(tagMatch[0]);
+        current += tagMatch[0];
+        i += tagMatch[0].length;
+        continue;
+      }
     }
     current += html[i];
     i += 1;
@@ -361,11 +363,15 @@ export function highlightCodeLines(code: string, lang: string | undefined, highl
 
   const full =
     lang && hljs.getLanguage(lang) ? hljs.highlight(code, { language: lang, ignoreIllegals: true }).value : escapeHtml(code);
+  // 空行かどうかは元のソース行で判定する。複数行にまたがるトークンの中の空行は、
+  // ハイライト後は開き直した <span> だけが入っていて、空文字にならない
+  const sourceLines = code.split("\n");
   return splitHighlightedIntoLines(full)
     .map((lineHtml, index) => {
       const lineNo = index + 1;
       const mark = highlightLines.includes(lineNo);
-      return `<span class="code-line${mark ? " code-line-mark" : ""}">${lineHtml || "&nbsp;"}</span>`;
+      const blank = (sourceLines[index] ?? "") === "";
+      return `<span class="code-line${mark ? " code-line-mark" : ""}">${blank ? "&nbsp;" : lineHtml}</span>`;
     })
     .join("");
 }
