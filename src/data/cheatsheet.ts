@@ -70,8 +70,8 @@ export const cheatSheet: CheatSection[] = [
       {
         title: "ポート・ファイル・ディスク",
         rows: [
-          { cmd: "`lsof -i :8080`", env: "Linux", desc: "そのポートを使っているプロセスを見る" },
-          { cmd: "`ss -ltnp | grep 8080`", env: "Linux", desc: "同じことを `ss` で見る。`lsof` が無い環境向け" },
+          { cmd: "`lsof -i :ポート番号`", env: "Linux", desc: "そのポートを使っているプロセスを見る" },
+          { cmd: "`ss -ltnp | grep ポート番号`", env: "Linux", desc: "同じことを `ss` で見る。`lsof` が無い環境向け" },
           { cmd: "`lsof app.log`", env: "Linux", desc: "そのファイルを開いているプロセスを見る" },
           { cmd: "`ps -p PID -o pid,ppid,user,cmd`", env: "Linux", desc: "`lsof`/`ss` で見つけた PID が、実際にどのユーザーで何のコマンドとして動いているかを確認する" },
           { cmd: "`df -h`", env: "Linux", desc: "ディスクの空き容量を見る" },
@@ -85,10 +85,10 @@ export const cheatSheet: CheatSection[] = [
       {
         title: "systemd サービスの確認",
         rows: [
-          { cmd: "`systemctl status nginx`", env: "Linux", desc: "サービスの稼働状態を見る" },
-          { cmd: "`systemctl list-unit-files --type=service | grep -i tomcat`", env: "Linux", desc: "正しいユニット名を探す。停止中のサービスも一覧に出る" },
-          { cmd: "`journalctl -u tomcat9 --since \"10 min ago\"`", env: "Linux", desc: "systemd 管理下のサービスの、直近のログをまとめて見る" },
-          { cmd: "`journalctl -u tomcat9 -f`", env: "Linux", desc: "同じログをリアルタイムで追う。`tail -f` の systemd 版" },
+          { cmd: "`systemctl status サービス名`", env: "Linux", desc: "サービスの稼働状態を見る" },
+          { cmd: "`systemctl list-unit-files --type=service | grep -i サービス名`", env: "Linux", desc: "正しいユニット名を探す。停止中のサービスも一覧に出る" },
+          { cmd: "`journalctl -u サービス名 --since \"10 min ago\"`", env: "Linux", desc: "systemd 管理下のサービスの、直近のログをまとめて見る" },
+          { cmd: "`journalctl -u サービス名 -f`", env: "Linux", desc: "同じログをリアルタイムで追う。`tail -f` の systemd 版" },
         ],
       },
       {
@@ -97,8 +97,8 @@ export const cheatSheet: CheatSection[] = [
         rows: [
           { cmd: "`kill -TERM PID`", env: "Linux", desc: "正常終了のシグナルを送る。アプリ側の後始末（シャットダウン処理）が動く猶予がある。`kill PID` も既定で同じ" },
           { cmd: "`kill -9 PID`", env: "Linux", desc: "強制終了。後始末は動かない。`TERM` で終わらないときの最終手段" },
-          { cmd: "`systemctl restart tomcat9`", env: "Linux", desc: "サービスを再起動する" },
-          { cmd: "`systemctl stop tomcat9`\n`systemctl start tomcat9`", env: "Linux", desc: "停止と起動を別々に行う。設定を変えたあとに使うことが多い" },
+          { cmd: "`systemctl restart サービス名`", env: "Linux", desc: "サービスを再起動する" },
+          { cmd: "`systemctl stop サービス名`\n`systemctl start サービス名`", env: "Linux", desc: "停止と起動を別々に行う。設定を変えたあとに使うことが多い" },
           { cmd: "`docker restart コンテナ名`", env: "Docker", desc: "コンテナを再起動する" },
           { cmd: "`docker kill コンテナ名`", env: "Docker", desc: "コンテナを強制停止する（SIGKILL 相当）。`docker stop` はまず正常終了を試みてから止める点が違う" },
         ],
@@ -167,18 +167,18 @@ export const cheatSheet: CheatSection[] = [
         note: "ソースだけを見て思い込んだカラム名や型が、実際の DB と違っていることがあります。SQL やコードを疑う前に、まず実物を見ましょう。",
         rows: [
           { cmd: "`SHOW TABLES;`", env: "MySQL", desc: "今つないでいる DB にあるテーブルの一覧を見る" },
-          { cmd: "`DESCRIBE t_request;`", env: "MySQL", desc: "カラム名・型・NULL を許すか・キーの種類を一覧する" },
-          { cmd: "`SHOW CREATE TABLE t_request;`", env: "MySQL", desc: "CREATE TABLE 文そのものを見る。外部キー制約やデフォルト値、文字コードまでまとめて分かる" },
-          { cmd: "`SHOW INDEX FROM t_request;`", env: "MySQL", desc: "そのテーブルに張られているインデックスを見る。`EXPLAIN` の `possible_keys` と突き合わせるときに使う" },
+          { cmd: "`DESCRIBE テーブル名;`", env: "MySQL", desc: "カラム名・型・NULL を許すか・キーの種類を一覧する" },
+          { cmd: "`SHOW CREATE TABLE テーブル名;`", env: "MySQL", desc: "CREATE TABLE 文そのものを見る。外部キー制約やデフォルト値、文字コードまでまとめて分かる" },
+          { cmd: "`SHOW INDEX FROM テーブル名;`", env: "MySQL", desc: "そのテーブルに張られているインデックスを見る。`EXPLAIN` の `possible_keys` と突き合わせるときに使う" },
         ],
       },
       {
         title: "実行計画とレコードの確認",
         rows: [
-          { cmd: "`EXPLAIN SELECT * FROM t_request WHERE applicant_id = 7;`", env: "MySQL", desc: "その SQL の実行計画（DB がどう読むか）を見る" },
-          { cmd: "`EXPLAIN ANALYZE SELECT * FROM t_request WHERE applicant_id = 7;`", env: "MySQL", desc: "実行計画に、実際にかかった時間も添えて見る（MySQL 8.0.18 以降）" },
+          { cmd: "`EXPLAIN SELECT * FROM テーブル名 WHERE カラム名 = 値;`", env: "MySQL", desc: "その SQL の実行計画（DB がどう読むか）を見る" },
+          { cmd: "`EXPLAIN ANALYZE SELECT * FROM テーブル名 WHERE カラム名 = 値;`", env: "MySQL", desc: "実行計画に、実際にかかった時間も添えて見る（MySQL 8.0.18 以降）" },
           { cmd: "MyBatis の DEBUG ログ（`Preparing` / `Parameters` / `Total`）", env: "MyBatis", desc: "発行された SQL 文、バインド値、件数を見る" },
-          { cmd: "`SELECT id, title, status, created_at, updated_at FROM t_request WHERE id = 11;`", env: "MySQL", desc: "レコードの更新日時を直接確認する" },
+          { cmd: "`SELECT created_at, updated_at FROM テーブル名 WHERE id = 値;`", env: "MySQL", desc: "レコードの更新日時を直接確認する" },
         ],
       },
       {
@@ -201,11 +201,11 @@ export const cheatSheet: CheatSection[] = [
         note: "「アプリのログにリクエストが無い」「外部 API への接続でエラーが出る」というときは、届いていない層を上から順に絞り込みます。",
         rows: [
           { cmd: "`ping intranet.example.co.jp`", env: "Linux / Windows", desc: "ホストが応答するか（ICMP。HTTP とは別）" },
-          { cmd: "`Test-NetConnection -ComputerName intranet.example.co.jp -Port 8080`", env: "Windows", desc: "そのポートで TCP 接続できるか" },
-          { cmd: "`nc -zv intranet.example.co.jp 8080`", env: "Linux", desc: "同じ確認を `nc` で行う" },
-          { cmd: "`curl -I http://intranet.example.co.jp:8080/shinsei/requests`", env: "Linux / Windows", desc: "HTTP でパスまで届くか。ヘッダだけを見る" },
+          { cmd: "`Test-NetConnection -ComputerName intranet.example.co.jp -Port ポート番号`", env: "Windows", desc: "そのポートで TCP 接続できるか" },
+          { cmd: "`nc -zv intranet.example.co.jp ポート番号`", env: "Linux", desc: "同じ確認を `nc` で行う" },
+          { cmd: "`curl -I http://intranet.example.co.jp:ポート番号/shinsei/requests`", env: "Linux / Windows", desc: "HTTP でパスまで届くか。ヘッダだけを見る" },
           { cmd: "`curl -vk https://intranet.example.co.jp/shinsei/requests`", env: "Linux / Windows", desc: "TLS のハンドシェイクまで含めて詳しく見る" },
-          { cmd: "`traceroute -T -p 8080 intranet.example.co.jp`", env: "Linux", desc: "HTTP と同じ TCP で、途中どこまで届いているかを見る" },
+          { cmd: "`traceroute -T -p ポート番号 intranet.example.co.jp`", env: "Linux", desc: "HTTP と同じ TCP で、途中どこまで届いているかを見る" },
           { cmd: "`nslookup intranet.example.co.jp`", env: "Linux / Windows", desc: "名前解決できるか、どの IP を引いているかを見る" },
         ],
       },
@@ -239,7 +239,7 @@ export const cheatSheet: CheatSection[] = [
         title: "実際に流れているパケットを見る（tcpdump）",
         note: "curl や nc の結果だけでは分からない、通信そのものの中身やタイミングを見たいときに使います。curl より一段低いレイヤーです。実行には root 権限が要ることが多く（`sudo` を付けるなど）、`-i any` は全インタフェースを対象にする指定です。特定の NIC に絞りたいときは、上の `ip addr` で名前（`eth0` や `ens5` など、環境によって違います）を確認してから置き換えましょう。",
         rows: [
-          { cmd: "`tcpdump -i any port 8080`", env: "Linux", desc: "そのポートに実際にパケットが届いているかを見る。`ss`/`netstat` は待ち受けの有無までで、通信そのものは見えない" },
+          { cmd: "`tcpdump -i any port ポート番号`", env: "Linux", desc: "そのポートに実際にパケットが届いているかを見る。`ss`/`netstat` は待ち受けの有無までで、通信そのものは見えない" },
           { cmd: "`tcpdump -i any host notify.example.internal`", env: "Linux", desc: "特定の相手先とのやり取りだけに絞る。外部 API への疎通確認と組み合わせる" },
           { cmd: "`tcpdump -nn -i any -A port 80`", env: "Linux", desc: "HTTP（暗号化されていない通信）の中身を文字として表示する。HTTPS では中身までは読めない" },
           { cmd: "`tcpdump -i any -w capture.pcap`", env: "Linux", desc: "その場で読まずファイルに書き出す。あとで自分の PC に持ち帰り、Wireshark で開いて詳しく見る" },

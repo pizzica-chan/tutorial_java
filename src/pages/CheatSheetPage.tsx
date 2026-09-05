@@ -17,7 +17,20 @@ function cheatSheetHeadings(anchors: ReturnType<typeof cheatSheetAnchors>): Head
 }
 
 /** 実際の値に置き換える必要がある語。コマンド中に出てきたら、そのまま太字＋色で目立たせる（記号は足さない） */
-const PLACEHOLDER_WORDS = ["PID", "URL", "ホスト名", "ユーザ名", "コンテナ名", "Pod名", "コミットハッシュ"];
+const PLACEHOLDER_WORDS = [
+  "PID",
+  "URL",
+  "ホスト名",
+  "ユーザ名",
+  "コンテナ名",
+  "Pod名",
+  "コミットハッシュ",
+  "ポート番号",
+  "サービス名",
+  "テーブル名",
+  "カラム名",
+  "値",
+];
 
 function escapeRegExp(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
