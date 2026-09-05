@@ -96,7 +96,11 @@ export const webTrack: Track = {
         { type: "diagram", name: "html-json", caption: "同じ HTTP の往復です。" },
         {
           type: "p",
-          text: "HTML は、見出しやボタンなど、画面の構成要素を含む形式です。データを含まない、ただの静的なページのこともあります。JSON は、これらの構成要素を含まず、データだけを返す形式です。そのため、JSON から画面を作るには、受け取る側（ブラウザの JavaScript やアプリ）が、表示方法をあらかじめ用意しておく必要があります。JSON を返す URL は、Web API と呼ばれることが多いです。",
+          text: "HTML は、見出しやボタンなど、画面の構成要素を含む形式です。案内文だけのページのように、データが1件も載っていないこともあります。JSON は、これらの構成要素を含まず、データだけを返す形式です。",
+        },
+        {
+          type: "p",
+          text: "そのため、JSON から画面を作るには、受け取る側（ブラウザの JavaScript やアプリ）が、表示方法をあらかじめ用意しておく必要があります。JSON を返す URL は、Web API と呼ばれることが多いです。",
         },
         {
           type: "p",
@@ -819,7 +823,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "山田でログインして一覧 API を呼んだときの応答から、1 件だけ抜粋します。HTML の画面ではなく、名前と値が並ぶデータです。",
+          text: "山田でログインして一覧 API を呼んだときの応答から、1 件だけ抜粋します。",
         },
         {
           type: "code",
