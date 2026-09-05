@@ -742,7 +742,7 @@ export const terms: TermDef[] = [
   {
     term: "JSON",
     aliases: ["JSON"],
-    body: "名前と値のペアを波括弧で書いたデータ形式です。例: {\"status\":\"APPROVED\"}。Network タブの Response や Request Payload に載ります。HTML のように画面にはなりません。",
+    body: "名前と値のペアを波括弧で書いたデータ形式です。例: {\"status\":\"APPROVED\"}。Network タブの Response や Request Payload に載ります。HTML と違い、そのままでは見た目のある画面にはなりません。",
   },
   {
     term: "Jackson",
