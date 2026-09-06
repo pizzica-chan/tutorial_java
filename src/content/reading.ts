@@ -1315,7 +1315,7 @@ if (!"PENDING".equals(request.getStatus())) {
           items: [
             "開発者ツールの Sources タブを開き、その画面が読み込んだ JavaScript のファイルを開く",
             "`addEventListener` に渡している関数の中の行に、ブレークポイントを置く",
-            "画面に戻って、同じボタンを押す",
+            "申請くんの画面に戻って、調べたいボタンを押す",
             "止まれば、その関数が動いている。止まらなければ、別の JavaScript が動いているか、そもそも登録されていない",
           ],
         },
@@ -1382,7 +1382,7 @@ if (!"PENDING".equals(request.getStatus())) {
           type: "ol",
           items: [
             "Sources タブで `form.js` を開き、`confirmAction` を呼んでいる行にブレークポイントを置く",
-            "画面で「提出」を押す。その行で止まる",
+            "申請くんの画面で「提出」を押す。その行で止まる",
             "呼び出しの中へ入る操作（ステップイン）を選ぶ。`app.js` の `confirmAction` に着く",
             "Call Stack を見る。上が今動いている関数、下が呼び出し元。`form.js` の行が呼び出し元として残っている",
           ],
