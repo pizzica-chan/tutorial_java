@@ -100,7 +100,7 @@ export const javaMapTrack: Track = {
     {
       id: "yml",
       title: "application.yml / application.properties",
-      minutes: 8,
+      minutes: 18,
       blocks: [
         {
           type: "p",
@@ -252,7 +252,7 @@ public class MailProperties {
         },
         {
           type: "p",
-          text: "クラスに付けると、指定したファイルを追加の設定として読み込みます。ファイル名が分かれば、`@PropertySource` の引数に同じファイル名がそのまま書かれているので、それで検索すると読み込んでいる Java クラスが見つかります。",
+          text: "クラスに付けると、指定したファイルを追加の設定として読み込みます。ファイル名が分かれば、`@PropertySource` の引数に同じファイル名がそのまま書かれているので、それで検索すると読み込んでいる Java クラスが見つかります。標準では `.properties` 用で、`.yml` は対応していません（エラーにもならず、値が入らないまま静かに失敗します）。`.yml` を読みたいときは、専用の `PropertySourceFactory` を自作する必要があります。",
         },
         {
           type: "code",
