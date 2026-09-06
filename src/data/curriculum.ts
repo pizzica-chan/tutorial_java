@@ -99,7 +99,7 @@ export function pageDescription(pathname: string): string {
 }
 
 export function pageTitle(pathname: string): string {
-  const site = "参画前に知っておきたい Java Web アプリ";
+  const site = "参画前に知っておきたい Java Web アプリの読み解き方";
   if (pathname === "/") return site;
   if (pathname === "/lab") return `ラボ — ${site}`;
   if (pathname === "/cheatsheet") return `チートシート — ${site}`;

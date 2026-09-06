@@ -134,7 +134,7 @@ const cheatSheetSearchAnchors = cheatSheetAnchors();
 const documents: Doc[] = [
   toDoc(
     "/",
-    "参画前に知っておきたい Java Web アプリ",
+    "参画前に知っておきたい Java Web アプリの読み解き方",
     "トップ",
     "既存のソースを追い、リクエストがどこまで届いたかで切り分ける。申請くん。HTTP。処理の入口。",
   ),
