@@ -1076,7 +1076,7 @@ export const terms: TermDef[] = [
   {
     term: "HTML",
     aliases: ["HTML"],
-    body: "画面の骨組み。ブラウザがこれを描画します。",
+    body: "画面の骨組み。ブラウザがこれを描画します。タグに付けた `class` や `id`、`name` を、CSS や JavaScript、フォーム送信が目印として使います。",
   },
   {
     term: "CSS",
@@ -1086,7 +1086,7 @@ export const terms: TermDef[] = [
   {
     term: "JavaScript",
     aliases: ["JavaScript", "JS"],
-    body: "ブラウザ上で動くプログラム。fetch で Web API を呼ぶのもこれです。",
+    body: "ブラウザ上で動くプログラム。ボタンを押したときの確認ダイアログや画面の書き換え、fetch で Web API を呼ぶ処理などに使われます。",
   },
   {
     term: "Uncaught TypeError",

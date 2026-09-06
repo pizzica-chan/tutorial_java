@@ -1221,7 +1221,16 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "p",
-          text: "この項目では、① 押したときに動く JavaScript を見つける方法、② 名前で見つからないときの代わりの方法、③ 見つけた JavaScript が呼んでいる別の JavaScript を辿る方法、の3つを順に見ます。",
+          text: "この項目では、次の4つを順に見ます。",
+        },
+        {
+          type: "ol",
+          items: [
+            "押したときに動く JavaScript を見つける方法",
+            "名前で見つからないときの代わりの方法",
+            "見つけた JavaScript が呼んでいる別の JavaScript を辿る方法",
+            "バンドル・難読化された JavaScript の読み方",
+          ],
         },
         {
           type: "h2",

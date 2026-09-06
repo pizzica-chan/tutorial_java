@@ -180,7 +180,7 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "まとめると、この URL は「`http` で `8080` 番ポートの `intranet.example.co.jp` というサーバの `/shinsei` というアプリで、申請履歴の検索画面を、ステータスが `PENDING` の条件で絞り込んで開いている」と読めます。",
+          text: "まとめると、「この URL は、`intranet.example.co.jp` というサーバの `8080` 番ポートへ `http` で接続し、`/shinsei` というアプリの申請履歴の検索画面を、ステータスが `PENDING` の条件で絞り込んで開いている」と読めます。",
         },
         {
           type: "h2",
