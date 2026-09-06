@@ -163,18 +163,24 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "`https://intranet.example.co.jp/shinsei/requests/history?status=PENDING` は次のように読めます。",
+          text: "`http://intranet.example.co.jp:8080/shinsei/requests/history?status=PENDING` は次のように読めます。",
         },
         { type: "diagram", name: "url-parts" },
         {
           type: "table",
-          headers: ["部分", "意味"],
+          headers: ["URL の該当部分", "名称", "意味"],
           rows: [
-            ["ホスト", "どのサーバか"],
-            ["`/shinsei`", "コンテキストパス。アプリの根っこ"],
-            ["`/requests/history`", "アプリ内のパス。申請履歴の検索画面"],
-            ["`?status=PENDING`", "クエリ。絞り込みなどの条件"],
+            ["`http://`", "スキーム", "通信方式の種類。Web アプリでは `http` か `https` がほとんど"],
+            ["`intranet.example.co.jp`", "ホスト", "どのサーバか"],
+            ["`:8080`", "ポート", "同じサーバ内でどのサービス・プロセスか。省略すると `http` は80、`https` は443番"],
+            ["`/shinsei`", "コンテキストパス", "アプリの根っこ"],
+            ["`/requests/history`", "アプリ内のパス", "申請履歴の検索画面"],
+            ["`?status=PENDING`", "クエリ", "絞り込みなどの条件"],
           ],
+        },
+        {
+          type: "p",
+          text: "まとめると、この URL は「`intranet.example.co.jp` というサーバの `/shinsei` というアプリで、申請履歴の検索画面を、ステータスが `PENDING` の条件で絞り込んで開いている」と読めます。",
         },
         {
           type: "h2",

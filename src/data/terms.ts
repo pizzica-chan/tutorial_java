@@ -970,6 +970,11 @@ export const terms: TermDef[] = [
     body: "ブラウザ開発者ツールの画面。現在のページにある HTML 要素と、適用されている CSS を確認できます。サーバが返した後に JavaScript が書き換えた内容も反映されます。",
   },
   {
+    term: "スキーム",
+    aliases: ["スキーム", "scheme"],
+    body: "URL の先頭にある、通信方式の種類。`mailto:` や `file:` などもありますが、Web アプリでは `http` か `https` がほとんどです。`https` は通信が暗号化されていることを表します。",
+  },
+  {
     term: "ホスト",
     aliases: ["ホスト名", "ホスト"],
     body: "URL のサーバ名の部分。どのサーバに届くかを表します。",

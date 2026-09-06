@@ -148,9 +148,17 @@ function UrlParts() {
   return (
     <div className="url-anatomy">
       <div className="url-bar">
+        <span className="url-part scheme">
+          http://
+          <em>スキーム</em>
+        </span>
         <span className="url-part host">
-          https://intranet.example.co.jp
+          intranet.example.co.jp
           <em>ホスト</em>
+        </span>
+        <span className="url-part port">
+          :8080
+          <em>ポート</em>
         </span>
         <span className="url-part ctx">
           /shinsei
