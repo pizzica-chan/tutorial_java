@@ -177,6 +177,65 @@ logging:
         },
         {
           type: "h2",
+          text: "設定値を読む Java コード",
+        },
+        {
+          type: "p",
+          text: "ここまでの `spring.datasource` や `server.port` は、Spring Boot 自身が読んで使う設定です。プロジェクト独自の設定キーは、誰かが書いた Java コードが明示的に読み込んで初めて使われます。読み方は主に2つです。",
+        },
+        {
+          type: "code",
+          title: "application.yml（独自設定の例。申請くんではありません）",
+          lang: "yaml",
+          code: `app:
+  mail:
+    from: no-reply@example.com
+    retry-count: 3`,
+        },
+        {
+          type: "code",
+          title: "@Value（1つの値を読む。例）",
+          lang: "java",
+          highlightLines: [3],
+          code: `@Service
+public class MailService {
+  @Value("\${app.mail.from}")
+  private String fromAddress;
+
+  public void sendApprovalMail(String to) {
+    // fromAddress を使ってメールを組み立てる
+  }
+}`,
+        },
+        {
+          type: "code",
+          title: "@ConfigurationProperties（まとまった設定をクラスに読み込む。例）",
+          lang: "java",
+          highlightLines: [1, 2],
+          code: `@Component
+@ConfigurationProperties(prefix = "app.mail")
+public class MailProperties {
+  private String from;
+  private int retryCount;
+
+  public String getFrom() { return from; }
+  public void setFrom(String from) { this.from = from; }
+  public int getRetryCount() { return retryCount; }
+  public void setRetryCount(int retryCount) { this.retryCount = retryCount; }
+}`,
+        },
+        {
+          type: "p",
+          text: "画面やログの文言を辿って設定ファイルに着いたら、次はキー名で Java ソースを検索しましょう。`@Value` はキー全体（`app.mail.from`）がそのまま引数に書かれているので、キー全体で見つかります。`@ConfigurationProperties` は `prefix`（`app.mail`）までしか引数に書かれていません。残りの `retry-count` の部分は、ハイフンを取ってキャメルケースにした `retryCount` という Java 側のフィールド名に対応します。キー全体で見つからないときは、`.` で区切った手前の部分（`app.mail` など）で探し直しましょう。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "見つからないときの壊れ方が違う",
+          text: "`@Value(\"\${app.mail.from}\")` のように既定値を書かないと、対応するキーが1つも無い場合に起動時の例外で落ちます。設定漏れにすぐ気づけます（`\${app.mail.from:no-reply@example.com}` のように既定値を書けば落ちません）。一方 `@ConfigurationProperties` は、キーが無ければそのフィールドが `null` や初期値のままになるだけで、起動は失敗しません。設定を変えたのに反映されないときは、キー名の綴りや `prefix` のずれを疑いましょう。",
+        },
+        {
+          type: "h2",
           text: "設定差を疑うとき",
         },
         {
