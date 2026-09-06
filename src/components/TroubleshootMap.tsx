@@ -23,11 +23,11 @@ const allLeaves: Hit[] = troubleshootMap.flatMap((group) =>
   group.leaves.map((leaf, index) => ({ groupId: group.id, groupLabel: group.label, index, leaf })),
 );
 
-/** 症状そのものだけでなく、確認することや分かることの語でも引けるようにする */
+/** 症状そのものだけでなく、確認することや分かることの語、非表示の keywords でも引けるようにする */
 const searchText = new Map<MapLeaf, string>(
   allLeaves.map(({ groupLabel, leaf }) => [
     leaf,
-    normalize([groupLabel, leaf.symptom, leaf.check, leaf.tells, ...leaf.cause].join("\n")),
+    normalize([groupLabel, leaf.symptom, leaf.check, leaf.tells, ...leaf.cause, ...(leaf.keywords ?? [])].join("\n")),
   ]),
 );
 

@@ -22,6 +22,8 @@ export type MapLeaf = {
   tells: string;
   /** 1レッスンにつき1つまで。多くても3つ */
   links: MapLink[];
+  /** 画面には出さない検索用の同義語・関連語（ステータスコード、略語、言い換えなど） */
+  keywords?: string[];
 };
 
 export type ObservableGroup = {
@@ -37,6 +39,7 @@ export const troubleshootMap: ObservableGroup[] = [
     leaves: [
       {
         symptom: "エラーの文言だけが出る、または画面が真っ白になる",
+        keywords: ["500", "5xx", "白い画面", "ブランク", "例外", "エラー画面", "internal server error"],
         cause: ["クライアント", "サーバ"],
         causeNote: "新しいリクエストがあるかどうかで分かれます",
         check: "Network タブに、操作した瞬間の新しいリクエストがあるかを確認しましょう。無ければ Console を、あればステータスコードを見ましょう。",
@@ -49,6 +52,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "リンクやブックマークから、その画面が開かない",
+        keywords: ["404", "not found", "ページが無い", "リンク切れ", "URL"],
         cause: ["クライアント", "サーバ"],
         causeNote: "リクエストがあるかどうかで分かれます",
         check: "Network タブに、その画面へのリクエストがあるかを確認しましょう。あれば URL とステータスコードも見ましょう。",
@@ -60,6 +64,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "ログイン画面に戻される、または権限エラーのメッセージが出る",
+        keywords: ["401", "403", "forbidden", "unauthorized", "セッション切れ", "ログアウトされる", "権限不足", "アクセス拒否"],
         cause: ["サーバ"],
         check: "Network タブのステータスコードと `Location`、Cookie を確認しましょう。",
         tells: "ステータスコードと `Location` で、飛ばされた先が分かります。Cookie で、セッション ID を送っているかが分かります。権限が足りないときのステータスコードや画面は、アプリによって違います。",
@@ -67,6 +72,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "そのアプリ固有の文言でエラーが出る（「この申請は承認できません」など）",
+        keywords: ["業務エラー", "バリデーションエラー", "独自メッセージ", "アラート"],
         cause: ["サーバ"],
         check: "画面に出ている文言で、ソース全体を全文検索しましょう。Network タブのステータスコードも控えておきましょう。",
         tells: "固有の文言は、いちばん短い検索語です。ヒットした分岐の条件と、Network タブのステータスコードを突き合わせると、どの分岐を通ったかが分かります。ソースにヒットしなければ、DB のメッセージや外部 API の応答が疑わしいです。",
@@ -77,6 +83,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "画面のエラーに、外部のサービス名や連携失敗の文言が出る",
+        keywords: ["外部API", "連携エラー", "connection refused", "タイムアウト", "外部連携"],
         cause: ["ネットワーク", "サーバ"],
         causeNote: "経路の問題か、外部システム自体の応答かで分かれます。向き先を決めてから見ます",
         check: "アプリのログで、その外部呼び出しの例外クラスとメッセージを確認しましょう。そのあと `application.yml` の接続先も見ましょう。",
@@ -94,6 +101,7 @@ export const troubleshootMap: ObservableGroup[] = [
     leaves: [
       {
         symptom: "見た目だけおかしい（色やレイアウトが当たっていない）",
+        keywords: ["CSS崩れ", "レイアウト崩れ", "デザイン崩れ", "スタイルが当たらない", "画像が出ない"],
         cause: ["サーバ"],
         check: "HTML とは別の CSS / JS のリクエストが 404 になっていないか、Network タブで確認しましょう。",
         tells: "色やレイアウトは CSS / JS が担当します。HTML が 200 でも、別のリクエストだけ失敗していることがあります。手前に HTTP サーバがある構成では、静的ファイルはそこが返すことが多く、アプリのログには出ません。",
@@ -104,6 +112,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "エラーは出ないのに、一覧の件数や中身がおかしい",
+        keywords: ["件数がおかしい", "データがおかしい", "表示件数", "検索結果がおかしい"],
         cause: ["サーバ"],
         check: "アプリのログで、実行された SQL とバインドした値を確認しましょう。そのあと、その条件に合うレコードを DB でも確認しましょう。",
         tells: "エラーが無く応答まで終わっているなら、おかしいのは読んだレコードか、SQL の条件のどちらかです。SQL の結果が画面と同じなら、SQL は合っています。",
@@ -115,6 +124,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "検索の条件を指定したのに、条件に合わないレコードが結果に出る",
+        keywords: ["検索条件が効かない", "フィルタが効かない", "絞り込みできない", "クエリパラメータ"],
         cause: ["サーバ"],
         check: "Network タブで、指定した条件がクエリに入っているかを確認しましょう。入っていれば、アプリのログの SQL とバインドした値を見ましょう。",
         tells: "クエリに条件が無ければ、画面から送れていません。送れているのに SQL のバインド値に無ければ、受け取りから SQL までのどこかで条件が落ちています。",
@@ -126,6 +136,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "一覧は出るが、社員名や部署名など一部の項目だけ空になっている",
+        keywords: ["項目が空", "null", "表示されない", "名前が出ない", "一部だけ欠ける"],
         cause: ["サーバ"],
         check: "アプリのログで、その画面の SQL のあとに外部 API を呼んでいる行が無いかを確認しましょう。",
         tells: "件数やステータスは DB で説明できるのに一部の項目だけ空なら、その値を別システムから取っていることがあります。SQL だけを見続けても見つかりません。",
@@ -142,6 +153,7 @@ export const troubleshootMap: ObservableGroup[] = [
     leaves: [
       {
         symptom: "ボタンを押しても画面が変わらない",
+        keywords: ["ボタンが効かない", "クリックしても反応が無い", "二重送信防止", "反応しない"],
         cause: ["クライアント"],
         check: "Network タブに、押した瞬間の新しいリクエストが出ているかを確認しましょう。",
         tells: "画面が変わらなくても、アプリは呼ばれていないことがあります。新しいリクエストが無ければ、原因はボタンの JS や二重送信防止など、ブラウザ側にあります。",
@@ -152,6 +164,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "操作しても反応が無い、または読み込みが終わらない",
+        keywords: ["フリーズ", "読み込み中のまま", "ぐるぐる", "応答が無い", "疎通"],
         cause: ["ネットワーク"],
         check: "アプリのログに、操作した時刻の行があるかを確認しましょう。",
         tells: "行が無ければ、まだアプリに届いていません。見ているログが違う、別インスタンスで動いている、手前の HTTP サーバで止まっている、なども疑わしいです。Controller の中はまだ関係ありません。",
@@ -163,6 +176,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "操作は成功するが、応答が遅い",
+        keywords: ["レスポンスが遅い", "重い", "遅延", "パフォーマンス"],
         cause: ["ネットワーク", "サーバ"],
         causeNote: "待っているのが Network タブ側か、アプリのログ側かで分かれます",
         check: "Network タブの待ち時間と、アプリのログの時刻の空きを見比べましょう。",
@@ -174,6 +188,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "アプリが急に落ちる、または重くなる。エラーログに `OutOfMemoryError` や `Full GC` の記録がある",
+        keywords: ["メモリ不足", "OOM", "クラッシュ", "ダウンする", "GC", "503", "service unavailable"],
         cause: ["サーバ"],
         check: "エラーログに `OutOfMemoryError` が無いかを確認しましょう。あればメッセージの種類を、無ければ GC の記録があるかを見ましょう。",
         tells: "`OutOfMemoryError` はメッセージによって疑う場所が変わります。`Full GC` が繰り返されているだけなら、まだ落ちてはいませんが、その間処理が止まって遅くなります。",
@@ -181,6 +196,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "特定の操作だけ、ずっと応答が返ってこない。ログも途中から出ない",
+        keywords: ["ハングアップ", "デッドロック", "フリーズ", "固まる", "応答なし"],
         cause: ["サーバ"],
         check: "操作した時刻のログで、最後に出た行を確認しましょう。その行から先が進んでいなければ、止まっている最中にスレッドダンプを取りましょう。",
         tells: "ログが進みながら時間がかかる「遅い」とは違い、こちらは処理そのものが止まっています。スレッドダンプで、止まっている行とロックの持ち合いを確認できます。",
@@ -188,6 +204,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "さっきまで動いていたのに、急に全部の操作がダメになった、または直ったり悪くなったりを繰り返す",
+        keywords: ["サービスダウン", "コンテナが落ちる", "全滅", "不安定", "再起動を繰り返す", "502", "503", "bad gateway", "service unavailable"],
         cause: ["サーバ"],
         check: "アプリのプロセスやコンテナが起動しているかを確認しましょう。起動していれば、DB へ直接つないでみましょう。",
         tells: "アプリのプロセスやコンテナが無ければ、原因はソースを読んでも見つかりません。起動と停止を繰り返していると、操作したのにログが無い、という症状にも見えます。",
@@ -198,6 +215,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "デプロイした直後から、その環境の画面が一つも開かない",
+        keywords: ["デプロイ後に起動しない", "リリース後", "起動失敗", "Permission denied", "502", "bad gateway"],
         cause: ["サーバ"],
         check: "アプリのプロセスが起動しているかを `ps` で確認しましょう。起動していなければ、アプリの実行ユーザで手動起動して、出るメッセージを読みましょう。",
         tells: "デプロイ直後だけ起きるなら、変わったのは資材か設定か権限です。起動時のメッセージに `Permission denied` があれば、原因はコードではなく、ファイルの所有者と権限です。",
@@ -214,6 +232,7 @@ export const troubleshootMap: ObservableGroup[] = [
     leaves: [
       {
         symptom: "承認や登録は画面に反映されたのに、メールや通知だけ届かない",
+        keywords: ["メールが届かない", "通知が来ない", "送信失敗", "通知メール"],
         cause: ["サーバ"],
         check: "アプリのログで、DB を更新した行のあとに、メール送信や通知 API の行があるかを確認しましょう。",
         tells: "画面の更新とメール・通知は別の処理です。後者の成否は画面には出ません。行が無ければ呼ばれておらず、ERROR があればそこが失敗した箇所です。",
@@ -225,6 +244,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "更新に成功と出たのに、画面を開き直すと元の値のままになっている",
+        keywords: ["更新されない", "反映されない", "保存されない", "ロールバック", "コミットされていない"],
         cause: ["サーバ"],
         check: "アプリのログで、その操作の UPDATE とバインドした値を確認しましょう。そのあと、その ID のレコードを DB でも確認しましょう。",
         tells: "UPDATE の行が無ければ、更新処理まで届いていません。行はあるのに DB が変わっていなければ、別の ID を更新した、コミットされていない、読み書きで別の DB を見ている、などが疑わしいです。",
@@ -241,6 +261,7 @@ export const troubleshootMap: ObservableGroup[] = [
     leaves: [
       {
         symptom: "ある環境（検証用環境など）だけで再現する",
+        keywords: ["環境差", "ステージングだけ", "本番だけ", "検証環境だけ", "ローカルでは動く"],
         cause: ["サーバ"],
         check: "設定・データ・権限の差を確認しましょう。まず、起動プロファイルと `application.yml` の接続先を見ましょう。",
         tells: "同じコードでも、接続先やマスタ、ログインユーザが違えば結果は変わります。原因はコードよりも、こうした環境の差にあることが多いです。",
@@ -251,6 +272,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "特定の利用者だけ、同じ操作に失敗する",
+        keywords: ["特定ユーザだけ", "その人だけ", "権限差", "ロール", "承認者だけ"],
         cause: ["サーバ"],
         check: "成功する利用者と失敗する利用者で、Network タブのステータスコードを見比べましょう。そのあと、DB のロールや承認者のレコードを確認しましょう。",
         tells: "ステータスコードが利用者で違えば、権限チェックで分かれています。同じなら、コードは通っていて、データで結果が変わっています。",
@@ -261,6 +283,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "特定の申請やレコードのときだけ失敗する",
+        keywords: ["NullPointerException", "NPE", "特定のIDだけ", "そのデータだけ"],
         cause: ["サーバ"],
         check: "失敗する ID と成功する ID で、DB のレコードの差を確認しましょう。エラーログにスタックトレースがあれば、その行が見ている値も確認しましょう。",
         tells: "コードは同じなので、差はデータにあります。null や未設定のカラムが `NullPointerException` の原因になっていることがあります。",
@@ -271,6 +294,7 @@ export const troubleshootMap: ObservableGroup[] = [
       },
       {
         symptom: "同じ操作でも、時間帯によって遅くなる",
+        keywords: ["コネクションプール", "夜間バッチ", "特定時間だけ遅い", "枯渇"],
         cause: ["サーバ"],
         check: "遅い時間帯のログの時刻差と、同じ時間帯に動いているバッチを確認しましょう。DB へ直接つないで、応答するかどうかも見ましょう。",
         tells: "DB へ直接つなげるのにアプリだけ待たされるなら、コネクションプールの枯渇が疑わしいです。時間帯が決まっているなら、同時に動く処理が疑わしいです。",

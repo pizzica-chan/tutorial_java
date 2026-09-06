@@ -121,7 +121,7 @@ function widgetText(name: WidgetName): string {
       return troubleshootMap
         .flatMap((group) => [
           group.label,
-          ...group.leaves.map((leaf) => `${leaf.symptom}\n${leaf.check}\n${leaf.tells}`),
+          ...group.leaves.map((leaf) => `${leaf.symptom}\n${leaf.check}\n${leaf.tells}\n${(leaf.keywords ?? []).join("\n")}`),
         ])
         .join("\n");
     default:
