@@ -114,7 +114,7 @@ export const javaMapTrack: Track = {
           type: "callout",
           kind: "note",
           title: "接続情報をサーブレットコンテナが持つこともある",
-          text: "外部の Tomcat に載せる構成では、DB の接続情報が `application.yml` に無く、Tomcat 側の設定（`context.xml` など）にあることがあります。アプリは JNDI（`java:comp/env/jdbc/...`）経由で DataSource を受け取るだけで、接続情報そのものは持ちません。`application.yml` に `spring.datasource` が無いときは、この構成を疑いましょう。",
+          text: "外部の Tomcat に載せる構成では、DB の接続情報が `application.yml` に無く、Tomcat 側の設定（`context.xml` など）にあることがあります。アプリは JNDI（`java:comp/env/jdbc/...`）経由で DataSource を受け取るだけで、接続情報そのものは持ちません。`application.yml` に `spring.datasource` が無いときは、この構成を疑いましょう。同様に、DB ドライバなどの jar を Tomcat の共有ライブラリ（`$CATALINA_BASE/lib` など）に置く構成もあります。`pom.xml` に無い jar で動いていたら、この構成を疑いましょう。",
         },
         {
           type: "h2",
