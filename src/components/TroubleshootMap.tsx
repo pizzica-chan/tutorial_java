@@ -66,6 +66,8 @@ export function TroubleshootMap() {
   // 戻るを押したとき、焦点を返すボタンの data-node
   const restoreNode = useRef<string | null>(null);
   const firstRender = useRef(true);
+  // 検索結果から開いたか（あとで検索欄を消しても、戻り先の判定をそのときの入力に左右されないようにする）
+  const viaSearch = useRef(false);
 
   // 画面が丸ごと入れ替わるので、切り替えたあとの焦点を明示的に置き直す
   useEffect(() => {
@@ -85,9 +87,9 @@ export function TroubleshootMap() {
     setLeafIndex(null);
   };
   const backFromLeaf = () => {
-    if (trimmed !== "") {
-      // 絞り込みの結果から開いたときは、結果の一覧へ戻す
-      restoreNode.current = `${groupId}-${leafIndex}`;
+    if (viaSearch.current) {
+      // 検索結果から開いたときの戻り先。検索欄を消していたら、結果ではなく画面の様子の一覧まで戻す
+      restoreNode.current = trimmed !== "" ? `${groupId}-${leafIndex}` : groupId;
       setGroupId(null);
       setLeafIndex(null);
       return;
@@ -96,8 +98,14 @@ export function TroubleshootMap() {
     setLeafIndex(null);
   };
 
-  const openLeaf = (nextGroupId: string, index: number) => {
+  const openLeafFromSearch = (nextGroupId: string, index: number) => {
+    viaSearch.current = true;
     setGroupId(nextGroupId);
+    setLeafIndex(index);
+  };
+
+  const openLeafFromGroup = (index: number) => {
+    viaSearch.current = false;
     setLeafIndex(index);
   };
 
@@ -178,7 +186,7 @@ export function TroubleshootMap() {
                   type="button"
                   data-node={`${hit.groupId}-${hit.index}`}
                   className="troubleshoot-map-node"
-                  onClick={() => openLeaf(hit.groupId, hit.index)}
+                  onClick={() => openLeafFromSearch(hit.groupId, hit.index)}
                 >
                   <span className="troubleshoot-map-node-group">{hit.groupLabel}</span>
                   <span className="troubleshoot-map-node-label">
@@ -199,7 +207,7 @@ export function TroubleshootMap() {
                 type="button"
                 data-node={String(index)}
                 className="troubleshoot-map-node"
-                onClick={() => setLeafIndex(index)}
+                onClick={() => openLeafFromGroup(index)}
               >
                 <span className="troubleshoot-map-node-label">
                   <TextWithTerms text={item.symptom} highlight={false} />
@@ -214,7 +222,7 @@ export function TroubleshootMap() {
           <div className="troubleshoot-map-result">
             <button type="button" className="troubleshoot-map-back" onClick={backFromLeaf}>
               <Icon name="arrow-left" size={14} />
-              {trimmed !== "" ? "絞り込みの結果に戻る" : "症状の一覧に戻る"}
+              {viaSearch.current ? "絞り込みの結果に戻る" : "症状の一覧に戻る"}
             </button>
             <p className="troubleshoot-map-symptom">
               <TextWithTerms text={leaf.symptom} highlight={false} />
