@@ -253,17 +253,18 @@ export const cheatSheet: CheatSection[] = [
     groups: [
       {
         title: "スレッドダンプ（処理が返ってこないとき）",
-        note: "1回だけでなく、数秒おきに2〜3回取って比べましょう。同じスレッドが毎回同じ場所で止まっていれば、そこが疑わしい箇所です。",
+        note: "1回だけでなく、数秒おきに2〜3回取って比べましょう。同じスレッドが毎回同じ場所で止まっていれば、そこが疑わしい箇所です。`jstack`/`jcmd` はどちらも JDK 同梱のツールで、JRE だけの軽量コンテナには入っていないことがあります（申請くんの Docker イメージもこの構成）。その場合は `kill -3` を使いましょう。",
         rows: [
           { cmd: "`jstack PID`", env: "JDK", desc: "その瞬間の全スレッドの状態を書き出す" },
           { cmd: "`docker exec -it コンテナ名 jstack PID`", env: "Docker", desc: "Docker コンテナの中の Java プロセスに対して取る" },
           { cmd: "`kubectl exec -it Pod名 -- jstack PID`", env: "Kubernetes", desc: "Kubernetes の Pod の中の Java プロセスに対して取る" },
-          { cmd: "`jcmd PID Thread.print`", env: "JDK", desc: "`jstack` が使えない環境で、同等のスレッドダンプを取る" },
-          { cmd: "`kill -3 PID`", env: "Linux", desc: "Java プロセスに送ると、プロセスは終了せず、`jstack` と同じ内容のスレッドダンプを標準出力（多くはアプリのログ）へ書き出す。`jstack` コマンド自体が使えない環境で使う" },
+          { cmd: "`jcmd PID Thread.print`", env: "JDK", desc: "同じく JDK 同梱のツールで、書式は少し違うがスレッドダンプを取る" },
+          { cmd: "`kill -3 PID`", env: "Linux", desc: "Java プロセスに送ると、プロセスは終了せず、`jstack` と同じ内容のスレッドダンプを標準出力へ書き出す。Docker なら `docker logs` で見えるが、Logback などが書くログファイルには入らない。追加のツールが要らないため、JDK が無い環境でも使える" },
         ],
       },
       {
         title: "GC・メモリ",
+        note: "ここもすべて JDK 同梱のツールです。JRE だけの軽量コンテナには入っていないことがあります。ヒープの大まかな使用量だけなら、上の `kill -3 PID` のスレッドダンプの末尾にも出ますが、GC の頻度の推移やヒープダンプ本体が必要なときの簡単な代替はありません。",
         rows: [
           { cmd: "`jstat -gcutil PID 1000`", env: "JDK", desc: "1 秒おきに GC の状況を表示する。`FGC` は `Full GC` の回数、`FGCT` はその合計時間" },
           { cmd: "`jcmd PID GC.heap_info`", env: "JDK", desc: "今のヒープの使用状況を表示する" },

@@ -1117,6 +1117,7 @@ th {
   color: var(--text);
   text-align: left;
   background: transparent;
+  overflow-wrap: anywhere;
 }
 
 .choice:hover {

@@ -236,7 +236,7 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
           type: "code",
           title: "例（架空のログです）",
           lang: "text",
-          code: `$ docker inspect --format='{{.Created}}' shinsei-app
+          code: `$ docker inspect --format='{{.Created}}' shinsei-kun-app-1
 2026-08-30T00:58:22.104512Z  # UTC。日本時間では 09:58:22`,
         },
         {
@@ -987,9 +987,9 @@ ERROR 2003 (HY000): Can't connect to MySQL server on 'ホスト名:3306' (110)`,
           title: "例（Docker）",
           lang: "text",
           code: `$ docker ps
-CONTAINER ID   IMAGE            COMMAND                CREATED       STATUS                         PORTS                     NAMES
-1a2b3c4d5e6f   shinsei:latest   "java -Duser.time…"    2 hours ago   Up 2 hours                     0.0.0.0:8080->8080/tcp   shinsei-app
-7f8e9d0c1b2a   mysql:8.0        "docker-entrypoint…"   2 hours ago   Restarting (1) 5 seconds ago                             shinsei-db`,
+CONTAINER ID   IMAGE             COMMAND                CREATED       STATUS                         PORTS                     NAMES
+1a2b3c4d5e6f   shinsei-kun-app   "java -Duser.time…"    2 hours ago   Up 2 hours                     0.0.0.0:8080->8080/tcp   shinsei-kun-app-1
+7f8e9d0c1b2a   mysql:8.0         "docker-entrypoint…"   2 hours ago   Restarting (1) 5 seconds ago                             shinsei-kun-db-1`,
         },
         {
           type: "code",
@@ -1761,7 +1761,7 @@ t_request  ref   fk_request_applicant   fk_request_applicant   3`,
           type: "callout",
           kind: "trap",
           title: "これらのコマンドが無いコンテナもある",
-          text: "軽量化のため、コンテナは JRE だけ（JDK 抜き）で作られていることがあります。申請くんの Docker イメージ（`eclipse-temurin:17-jre`）もこの構成で、`jstat` / `jcmd` / `jmap` は入っていません。手元で確認できないときは、詳しい人や運用担当に相談しましょう。",
+          text: "軽量化のため、コンテナは JRE だけ（JDK 抜き）で作られていることがあります。申請くんの Docker イメージ（`eclipse-temurin:17-jre`）もこの構成で、`jstat` / `jcmd` / `jmap` は入っていません。ヒープの大まかな使用量だけなら、「トラブル例：処理が返ってこない（スレッドダンプ）」で見る `kill -3 PID` の出力の末尾にも出ます。GC の頻度の推移や、MAT などで開けるヒープダンプ本体が必要なときは、簡単な代替が無いため、詳しい人や運用担当に相談しましょう。",
         },
         {
           type: "p",
@@ -1816,7 +1816,7 @@ t_request  ref   fk_request_applicant   fk_request_applicant   3`,
           type: "callout",
           kind: "trap",
           title: "`jstack` が入っていないコンテナもある",
-          text: "軽量化のため、コンテナは JRE だけ（JDK 抜き）で作られていることがあります。申請くんの Docker イメージ（`eclipse-temurin:17-jre`）もこの構成で、`jstack` はコンテナの中に入っていません。`command not found` になったら、Java プロセスへ `kill -3 PID` を送りましょう。スレッドダンプと同じ内容が標準出力（多くはアプリのログ）に書き出されます。追加のツールが要らないので、JDK が無いコンテナでも使えます。",
+          text: "軽量化のため、コンテナは JRE だけ（JDK 抜き）で作られていることがあります。申請くんの Docker イメージ（`eclipse-temurin:17-jre`）もこの構成で、`jstack` はコンテナの中に入っていません。`command not found` になったら、Java プロセスへ `kill -3 PID` を送りましょう。スレッドダンプと同じ内容が標準出力に書き出されます。Docker なら `docker logs` で見られますが、これは JVM が直接書く出力なので、Logback などロギングフレームワークが書くログファイルには入りません。追加のツールが要らないので、JDK が無いコンテナでも使えます。",
         },
         {
           type: "callout",

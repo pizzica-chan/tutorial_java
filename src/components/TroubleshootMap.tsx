@@ -86,16 +86,22 @@ export function TroubleshootMap() {
     setGroupId(null);
     setLeafIndex(null);
   };
+  // その症状のグループの、症状一覧まで戻す（パンくずの分類チップ用）。検索欄に文字が残っていると
+  // searching が優先されグループの一覧に留まれないため、検索も一緒に消す
+  const goToGroupSymptoms = () => {
+    restoreNode.current = leafIndex === null ? null : String(leafIndex);
+    setLeafIndex(null);
+    setQuery("");
+  };
   const backFromLeaf = () => {
     if (viaSearch.current) {
-      // 検索結果から開いたときの戻り先。検索欄を消していたら、結果ではなく画面の様子の一覧まで戻す
+      // 「戻る」ボタン用の戻り先。検索欄を消していたら、結果ではなく画面の様子の一覧まで戻す
       restoreNode.current = trimmed !== "" ? `${groupId}-${leafIndex}` : groupId;
       setGroupId(null);
       setLeafIndex(null);
       return;
     }
-    restoreNode.current = leafIndex === null ? null : String(leafIndex);
-    setLeafIndex(null);
+    goToGroupSymptoms();
   };
 
   const openLeafFromSearch = (nextGroupId: string, index: number) => {
@@ -146,7 +152,7 @@ export function TroubleshootMap() {
           </button>
           <Icon name="arrow-right" size={12} />
           {leaf ? (
-            <button type="button" onClick={backFromLeaf}>
+            <button type="button" onClick={goToGroupSymptoms}>
               {group.label}
             </button>
           ) : (
