@@ -716,6 +716,42 @@ export const quizzes = {
     answer: 0,
     explanation: "申請履歴は今回の対象ですが、`searchHistory` で別の SQL です。`detail` や `approve` も、`findMine` とは別の SQL や別の入口です。同じ `findMine` を呼んでいるのは JSON 一覧です。",
   },
+  "sc-impact-role": {
+    id: "sc-impact-role",
+    question: "部長職なら誰でも承認できるようにしたい。「レコードの中身（この申請の承認者は誰か）」に基づく判定を書く場所として適切なのは？",
+    choices: [
+      "`RequestService`（ビジネスロジック）",
+      "`SecurityConfig`（URL ごとの一律な制御）",
+      "`schema.sql`（テーブル定義）",
+      "`LoginUser`（ログインユーザの入れ物）",
+    ],
+    answer: 0,
+    explanation: "`SecurityConfig` の `hasRole` などは URL ごとに一律で許可・拒否を決める仕組みで、1件ごとのレコードを見た判定はできません。業務データに基づく権限判定は、Service 側の役目です。",
+  },
+  "sc-impact-approver-search": {
+    id: "sc-impact-approver-search",
+    question: "申請履歴検索に承認者名の絞り込みを追加した。承認者が未定（`approver_id` が `NULL`）の申請への影響は？",
+    choices: [
+      "承認者名で絞り込むと、検索結果から消える",
+      "承認者名が「未設定」として表示され、検索でもヒットする",
+      "影響は無く、常に一覧に出続ける",
+      "検索条件を指定すると、アプリがエラーで落ちる",
+    ],
+    answer: 0,
+    explanation: "`v` は `LEFT JOIN` なので一覧には出ますが、`v.display_name LIKE ...` の条件を足すと、`display_name` が無い行は比較が真にならず、絞り込んだ瞬間に結果から消えます。",
+  },
+  "sc-impact-slack": {
+    id: "sc-impact-slack",
+    question: "承認処理（`@Transactional`）の中で、遅い Slack Webhook 呼び出しをタイムアウト無しで行うと、何が起きやすい？",
+    choices: [
+      "DB コネクションを長く占有し、他のリクエストがコネクションプールの枯渇で待たされる",
+      "承認そのものがロールバックされ、DB の状態が元に戻る",
+      "Slack への通信だけが独立したスレッドで動くので、DB への影響は無い",
+      "`@Transactional` の対象外なので、いつまでも待っても実害は無い",
+    ],
+    answer: 0,
+    explanation: "`@Transactional` のメソッドは開始時に借りた DB コネクションを処理中ずっと保持します。中で行う外部呼び出しが遅いと、その分コネクションを長く占有し、同時アクセスが増えるとコネクションプールの枯渇につながります。",
+  },
 } satisfies Record<string, Quiz>;
 
 export type QuizId = keyof typeof quizzes;

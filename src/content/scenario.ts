@@ -2718,5 +2718,589 @@ CREATE TABLE IF NOT EXISTS t_request (
         { type: "quiz", id: "sc-impact-search" },
       ],
     },
+    {
+      id: "impact-role",
+      title: "[影響調査] 承認できる役割を、承認者だけでなく部長職にも広げたい",
+      minutes: 13,
+      blocks: [
+        {
+          type: "callout",
+          kind: "scenario",
+          text: "承認者が不在のときに備え、部長職の人なら誰でも承認できるようにしたい。影響範囲を教えてほしい、と依頼された。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "対象は申請くんの承認処理",
+            "「部長職」がどの利用者を指すか、部署との関係はまだ決まっていない",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先にやること",
+        },
+        {
+          type: "p",
+          text: "承認の処理の入口である `RequestController.approve` から Service へ呼び出しを辿り、今の承認権限がどう判定されているかを確認しましょう。あわせて、ログインユーザの役割（ロール）がどこに持たれているかも見ましょう。",
+        },
+        {
+          type: "h2",
+          text: "影響の追跡",
+        },
+        {
+          type: "h3",
+          text: "今の承認権限の判定",
+        },
+        {
+          type: "code",
+          title: "RequestService.approve（申請くん）",
+          lang: "java",
+          highlightLines: [3, 4],
+          code: `public void approve(Long requestId, Long approverId) {
+  RequestEntity request = requestMapper.findById(requestId, approverId);
+  if (!request.getApproverId().equals(approverId)) {
+    throw new ForbiddenException("承認権限がありません");
+  }
+  if (!"PENDING".equals(request.getStatus())) {
+    throw new ConflictException("この申請は承認できません");
+  }
+  request.setStatus("APPROVED");
+  requestMapper.update(request);
+  mailService.notifyApplicant(request);
+}`,
+        },
+        {
+          type: "p",
+          text: "今の権限判定は「ログイン中の利用者 ID が、その申請の `approver_id` と一致するか」だけです。役割（ロール）は見ていません。部長職なら誰でも、という条件を足すには、この if に分岐を追加します。",
+        },
+        {
+          type: "h3",
+          text: "ロールはどこにあるか",
+        },
+        {
+          type: "p",
+          text: "ログインユーザの役割は `LoginUser` にあります。",
+        },
+        {
+          type: "code",
+          title: "LoginUser（申請くん・抜粋）",
+          lang: "java",
+          highlightLines: [2],
+          code: `public Collection<? extends GrantedAuthority> getAuthorities() {
+  return List.of(new SimpleGrantedAuthority("ROLE_" + role));
+}`,
+        },
+        {
+          type: "p",
+          text: "`role` は `t_user.role` から来ています。ただし今の値は `ADMIN` と `USER` の2種類だけで、`data.sql` にも部長職に当たる値はありません。新しいロール（例えば `MANAGER`）を追加する DB の変更が要ります。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "SecurityConfig にロールを足しても解決しない",
+          text: "`SecurityConfig` の `.antMatchers(\"/admin/**\").hasRole(\"ADMIN\")` のような書き方は、URL ごとに一律で許可・拒否を決める仕組みです。「部長職なら、どの申請でも承認できる」という条件には使えますが、「この申請の承認者は誰か」という1件ごとのデータに基づく判定はできません。今回のような、レコードの中身を見て判定する権限チェックは、`SecurityConfig` ではなく `RequestService` 側に書くことになります。Filter / Interceptor / AOP がリクエストの受付を丸ごと制御するのに対し、業務データに基づく判定はビジネスロジックの役目です。",
+        },
+        {
+          type: "h3",
+          text: "Controller から渡す情報",
+        },
+        {
+          type: "p",
+          text: "`RequestController.approve` は、今は利用者 ID しか `RequestService.approve` へ渡していません。",
+        },
+        {
+          type: "code",
+          title: "RequestController.approve（申請くん）",
+          lang: "java",
+          highlightLines: [7],
+          code: `public String approve(
+    @PathVariable Long id,
+    @AuthenticationPrincipal LoginUser user,
+    RedirectAttributes redirectAttributes
+) {
+  ...
+  requestService.approve(id, user.getId());
+  return "redirect:/requests";
+}`,
+        },
+        {
+          type: "p",
+          text: "役割で判定するには、`user.getId()` だけでなく `user.getRole()`（またはユーザそのもの）も渡すよう、`RequestController` と `RequestService.approve` のシグネチャを変える必要があります。",
+        },
+        {
+          type: "h3",
+          text: "承認者の表示",
+        },
+        {
+          type: "p",
+          text: "一覧・履歴・詳細の画面は、`t_request.approver_id` から引いた `approverName` を表示します。",
+        },
+        {
+          type: "code",
+          title: "detail.html（申請くん・抜粋）",
+          lang: "html",
+          code: `<dd th:text="\${requestItem.approverName != null ? requestItem.approverName : '未設定'}">佐藤花子</dd>`,
+        },
+        {
+          type: "p",
+          text: "`RequestService.approve` は `status` を更新するだけで、`approver_id` は書き換えません。部長職の誰かが代わりに承認しても、画面には元々指定されていた承認者の名前が表示されたままになります。承認した本人の記録を残したいなら、`approver_id` を更新するか、別カラムで実際の承認者を持つ必要があります。",
+        },
+        {
+          type: "h3",
+          text: "部署の範囲",
+        },
+        {
+          type: "p",
+          text: "「部長職」が、申請者と同じ部署の部長だけを指すのか、部署を問わず誰でもよいのかは、依頼文だけでは分かりません。「一覧と申請履歴に部署で絞り込みを追加したい」のシナリオで見たとおり、`t_user` にも `t_request` にも部署のカラムは無く、部署で範囲を絞るなら、その調査も合わせて必要になります。ここは依頼者へ確認しましょう。",
+          link: {
+            label: "一覧と申請履歴に部署で絞り込みを追加したい",
+            to: "/tracks/scenario/impact-search",
+          },
+        },
+        {
+          type: "h3",
+          text: "修正の要否",
+        },
+        {
+          type: "table",
+          headers: ["箇所", "いま", "修正の要否"],
+          rows: [
+            ["`RequestService.approve` の権限判定", "`approver_id` と完全一致のみ", "要修正。ロールによる分岐を追加"],
+            ["`t_user.role` / `data.sql`", "`ADMIN` / `USER` のみ", "要修正。部長職に当たるロールの追加が必要"],
+            ["`SecurityConfig`", "URL 単位の一律な制御", "変更不要（この判定には使えない）"],
+            ["`RequestController.approve`", "利用者 ID だけを渡す", "要修正。ロール（またはユーザ）を渡す"],
+            ["承認者の表示（`approverName`）", "`approver_id` の人を表示", "代理承認の記録方法を依頼者へ確認"],
+            ["部署による範囲の限定", "部署カラムが無い", "範囲を絞るか依頼者へ確認。絞るなら DB 変更も必要"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "申請くんに無いもの",
+          text: "部署マスタ、役職と承認範囲の対応表、ロールベースのアクセス制御ライブラリは、申請くんにはありません。現場のアプリでは、こうした仕組みがすでに用意されていることもあります。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "レコードの中身に基づく権限判定は、`SecurityConfig`（URL単位）ではなくビジネスロジック側の役目",
+            "ロールを増やすときは、コードだけでなく DB の値（`data.sql` や既存レコード）も見る",
+            "「誰が実際に承認したか」を記録したいなら、更新対象のカラム設計から見直しが要る",
+            "依頼文にある言葉（部長職）が、既存のデータモデルに無い概念なら、範囲を依頼者へ確認する",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "`RequestService.approve` の判定が `approver_id` の完全一致だけと分かる",
+            "`LoginUser.role` はあるが、`data.sql` に部長職に当たる値が無いと分かる",
+            "`SecurityConfig` はURL単位の制御であり、レコード単位の判定には使えないと分かる",
+            "`RequestController.approve` がロールを渡していないと分かる",
+            "代理承認時に `approver_id` が更新されず、表示上の承認者が実態とずれると分かる",
+            "部署による範囲は依頼文だけでは決まらず、依頼者へ確認する",
+          ],
+        },
+        { type: "quiz", id: "sc-impact-role" },
+      ],
+    },
+    {
+      id: "impact-approver-search",
+      title: "[影響調査] 申請履歴検索に「承認者名」の絞り込みを追加したい",
+      minutes: 12,
+      blocks: [
+        {
+          type: "callout",
+          kind: "scenario",
+          text: "申請履歴検索に、承認者の名前で絞り込む機能を追加したい。影響範囲を教えてほしい、と依頼された。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "対象は申請履歴（`/shinsei/requests/history`）の検索フォーム",
+            "承認者の名前は、一覧の列にはすでに表示されている",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先にやること",
+        },
+        {
+          type: "p",
+          text: "処理の入口は `GET /shinsei/requests/history` です。`RequestController.history` から `RequestService.searchHistory`、`RequestMapper.xml` の `searchHistory` へと呼び出しを辿り、既存の検索条件（件名・ステータス・申請日）がどこを通っているかを確認しましょう。承認者名も同じ経路をたどるはずです。",
+        },
+        {
+          type: "h2",
+          text: "影響の追跡",
+        },
+        {
+          type: "h3",
+          text: "検索フォーム",
+        },
+        {
+          type: "code",
+          title: "history.html（申請くん・抜粋）",
+          lang: "html",
+          code: `<form class="search" th:action="@{/requests/history}" method="get">
+  <label>
+    件名
+    <input type="text" name="title" th:value="\${searchTitle}" placeholder="一部でも可" />
+  </label>
+  <label>
+    ステータス
+    <select name="status">...</select>
+  </label>
+  ...
+</form>`,
+        },
+        {
+          type: "p",
+          text: "既存の項目にならい、`approverName` という `name` の入力欄を追加します。",
+        },
+        {
+          type: "h3",
+          text: "Controller の引数",
+        },
+        {
+          type: "code",
+          title: "RequestController.history（申請くん）",
+          lang: "java",
+          highlightLines: [3, 4, 5, 6],
+          code: `@GetMapping("/history")
+public String history(
+    @RequestParam(value = "title", required = false) String title,
+    @RequestParam(value = "requestStatus", required = false) String requestStatus,
+    @RequestParam(value = "createdFrom", required = false) String createdFrom,
+    @RequestParam(value = "createdTo", required = false) String createdTo,
+    Model model,
+    @AuthenticationPrincipal LoginUser user,
+    HttpSession session
+) {
+  session.setAttribute(
+      "historySearchCondition",
+      new HistorySearchCondition(title, requestStatus, createdFrom, createdTo));
+  ...
+}`,
+        },
+        {
+          type: "p",
+          text: "既存の4つの検索項目と同じ並びで `approverName` を `@RequestParam` に追加し、`requestService.searchHistory(...)` の呼び出しにも渡します。",
+        },
+        {
+          type: "h3",
+          text: "検索条件を覚えている仕組み",
+        },
+        {
+          type: "p",
+          text: "`history` は検索条件を `HistorySearchCondition` としてセッションに保存しています。",
+        },
+        {
+          type: "code",
+          title: "HistorySearchCondition（申請くん）",
+          lang: "java",
+          code: `@Data
+@AllArgsConstructor
+public class HistorySearchCondition {
+  private String title;
+  private String requestStatus;
+  private String createdFrom;
+  private String createdTo;
+}`,
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "ここに足し忘れると、既存の不具合と同じ症状になる",
+          text: "このクラスに `approverName` を足し忘れると、承認者名の条件だけがセッションに保存されません。「申請履歴から詳細を開いて戻ると、検索条件が消える」の不具合と同じ仕組みなので、新しい項目を追加するときは、ここも一緒に直す必要があります。",
+        },
+        {
+          type: "h3",
+          text: "動的 SQL への追加",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の searchHistory（申請くん・抜粋）",
+          lang: "xml",
+          highlightLines: [8, 9, 10],
+          code: `WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
+<if test="title != null and title != ''">
+  AND r.title LIKE CONCAT('%', #{title}, '%')
+</if>
+<if test="requestStatus != null and requestStatus != ''">
+  AND r.status = #{requestStatus}
+</if>
+<if test="approverName != null and approverName != ''">
+  AND v.display_name LIKE CONCAT('%', #{approverName}, '%')
+</if>
+ORDER BY r.created_at DESC`,
+        },
+        {
+          type: "p",
+          text: "承認者名は `v.display_name`（`t_user` を `approver_id` で左外部結合した別名）です。既存の `title` の `<if>` と同じ書き方で追加できます。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "承認者が未定の申請は結果から消える",
+          text: "`v` は `LEFT JOIN` なので、承認者が未定の申請（`approver_id` が `NULL`）でも一覧には出ます。ただし `v.display_name LIKE ...` の条件を足すと、`display_name` が無い（`NULL` の）行は比較が真になりません。承認者名で絞り込んだ瞬間、承認者未定の申請は検索結果から見えなくなります。これが意図した挙動かは、依頼者へ確認しましょう。",
+        },
+        {
+          type: "h3",
+          text: "修正の要否",
+        },
+        {
+          type: "table",
+          headers: ["箇所", "いま", "修正の要否"],
+          rows: [
+            ["`history.html` の検索フォーム", "件名・ステータス・申請日", "要修正。承認者名の入力欄を追加"],
+            ["`RequestController.history`", "4つの `@RequestParam`", "要修正。`approverName` を追加"],
+            ["`HistorySearchCondition`", "4つのフィールド", "要修正。足し忘れると検索条件が消える不具合と同型になる"],
+            ["`RequestService.searchHistory`", "4つの引数を Mapper へ渡す", "要修正。引数を追加して渡す"],
+            ["`RequestMapper.xml` の `searchHistory`", "件名などの `<if>`", "要修正。`v.display_name` への `<if>` を追加"],
+            ["承認者未定の申請の扱い", "一覧には出る", "絞り込むと消える。意図どおりか依頼者へ確認"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "申請くんに無いもの",
+          text: "承認者名の部分一致ではなく、候補から選ぶプルダウン形式や、フリガナでの絞り込みは、申請くんにはありません。名前の一部一致で十分かも、依頼者へ確認する対象です。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "既存の検索項目と同じ経路（フォーム → Controller → セッション → Service → 動的SQL）を、そのまま辿ればよい",
+            "検索条件を保存するクラスへの追加を忘れると、既存の不具合と同じ症状が再現する",
+            "`LEFT JOIN` した列に絞り込み条件を足すと、結合できなかった行が結果から消える",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "既存の検索項目（件名）が辿る経路を確認する",
+            "`history.html` → `RequestController.history` → `HistorySearchCondition` → `RequestService.searchHistory` → `RequestMapper.xml` の順に、同じ経路へ承認者名を追加する必要があると分かる",
+            "`HistorySearchCondition` への追加漏れが、既存の「検索条件が消える」不具合と同型だと気づく",
+            "`LEFT JOIN` した列への絞り込みで、承認者未定の申請が結果から消えると分かる",
+          ],
+        },
+        { type: "quiz", id: "sc-impact-approver-search" },
+      ],
+    },
+    {
+      id: "impact-slack",
+      title: "[影響調査] 承認時に外部の Slack 通知を追加したい",
+      minutes: 13,
+      blocks: [
+        {
+          type: "callout",
+          kind: "scenario",
+          text: "承認が完了したタイミングで、社内 Slack へ通知を送りたい。影響範囲を教えてほしい、と依頼された。",
+        },
+        {
+          type: "h2",
+          text: "いま分かっていること",
+        },
+        {
+          type: "ul",
+          items: [
+            "対象は承認処理。承認が完了した申請くんから、外部の Slack Incoming Webhook を呼び出す想定",
+            "Webhook の URL は、まだ用意されていない",
+          ],
+        },
+        {
+          type: "h2",
+          text: "先にやること",
+        },
+        {
+          type: "p",
+          text: "承認完了時に何が起きているかを、承認の処理の入口から辿りましょう。すでにメール通知があるので、同じ仕組みの続きとして読めます。",
+        },
+        {
+          type: "h2",
+          text: "影響の追跡",
+        },
+        {
+          type: "h3",
+          text: "承認完了時の処理",
+        },
+        {
+          type: "code",
+          title: "RequestService.approve（申請くん）",
+          lang: "java",
+          highlightLines: [6],
+          code: `@Transactional
+public void approve(Long requestId, Long approverId) {
+  ...
+  request.setStatus("APPROVED");
+  requestMapper.update(request);
+  mailService.notifyApplicant(request);
+}`,
+        },
+        {
+          type: "p",
+          text: "`update` のあとに `mailService.notifyApplicant(request)` を呼んでいます。Slack 通知も、同じ位置に追加するのが素直です。",
+        },
+        {
+          type: "h3",
+          text: "呼び出し先の持たせ方",
+        },
+        {
+          type: "p",
+          text: "Webhook の URL は、ソースに直接書かず、設定ファイルから読み込みます。",
+        },
+        {
+          type: "code",
+          title: "application.yml（追加する設定の例）",
+          lang: "yaml",
+          code: `app:
+  slack:
+    webhook-url: https://hooks.slack.com/services/xxxx`,
+        },
+        {
+          type: "code",
+          title: "SlackNotificationService（例）",
+          lang: "java",
+          highlightLines: [4],
+          code: `@Slf4j
+@Service
+public class SlackNotificationService {
+  @Value("\${app.slack.webhook-url}")
+  private String webhookUrl;
+
+  private final RestTemplate restTemplate = new RestTemplate();
+
+  public void notifyApproved(RequestEntity request) {
+    try {
+      restTemplate.postForEntity(webhookUrl, Map.of("text", request.getTitle() + " が承認されました"), String.class);
+    } catch (Exception e) {
+      log.warn("Slack 通知に失敗しました requestId={}", request.getId());
+    }
+  }
+}`,
+        },
+        {
+          type: "p",
+          text: "「設定値を読む Java コード」で見た `@Value` が、ここでも使えます。環境ごとに Webhook の URL を変えたいなら、`application-dev.yml` のように環境別のファイルに分けるか、`spring.config.import` で別ファイルに切り出す構成も選べます。",
+          link: {
+            label: "設定値を読む Java コード",
+            to: "/tracks/java-map/yml",
+          },
+        },
+        {
+          type: "h3",
+          text: "失敗時にどうするか",
+        },
+        {
+          type: "p",
+          text: "`MailService.notifyApplicant` は、送信に失敗しても例外を投げず、ログに警告を出すだけです。承認そのものは成功させ、通知の失敗で承認処理全体を失敗させない、という設計です。",
+        },
+        {
+          type: "code",
+          title: "MailService.notifyApplicant（申請くん）",
+          lang: "java",
+          highlightLines: [5, 6],
+          code: `public void notifyApplicant(RequestEntity request) {
+  try {
+    ...
+    mailSender.send(message);
+  } catch (Exception e) {
+    log.warn("通知メールの送信に失敗しました requestId={}", request.getId());
+  }
+}`,
+        },
+        {
+          type: "p",
+          text: "Slack 通知も同じ方針にするなら、失敗を握りつぶして良いかを依頼者に確認しましょう。「通知が届かないと困る」なら、リトライや、失敗を後から確認できる仕組みが別途必要になり、見積もりの規模が変わります。",
+        },
+        {
+          type: "h3",
+          text: "承認処理がハングするリスク",
+        },
+        {
+          type: "p",
+          text: "`approve` は `@Transactional` です。Slack の Webhook 呼び出しがこのメソッドの中にあると、外部通信が終わるまでトランザクションが終わりません。「トラブル例：外部システム / 外部 API」で見たとおり、外部呼び出しはタイムアウトを明示的に設定しないと、応答が返らないまま長時間待つことがあります。",
+          link: {
+            label: "トラブル例：外部システム / 外部API",
+            to: "/tracks/troubleshoot/p-external",
+          },
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "遅い外部呼び出しは、DB接続も長く占有する",
+          text: "`@Transactional` のメソッドは、開始時に DB のコネクションを1つ借りたまま処理を進めます。その中で外部呼び出しが遅いと、DB との用事がとっくに終わっていても、コネクションを借りたまま待ち続けることになります。同時にアクセスが増えると、他のリクエストがコネクションプールの枯渇で待たされる可能性があります。Webhook の呼び出しには、必ず短いタイムアウトを設定しましょう。",
+        },
+        {
+          type: "h3",
+          text: "修正の要否",
+        },
+        {
+          type: "table",
+          headers: ["箇所", "いま", "修正の要否"],
+          rows: [
+            ["`RequestService.approve`", "メール通知のみ", "要修正。Slack 通知の呼び出しを追加"],
+            ["`application.yml`", "Slack 関連の設定なし", "要追加。Webhook URL などの設定キー"],
+            ["Slack 通知サービス（新規）", "存在しない", "新規作成。`RestTemplate` などで呼び出す"],
+            ["失敗時の扱い", "（メールは）失敗を握りつぶす", "同じ方針でよいか依頼者へ確認"],
+            ["タイムアウトの設定", "（外部呼び出しの前例なし）", "要設定。無いとDBコネクションを長く占有する"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "申請くんに無いもの",
+          text: "外部 API 呼び出し用の共通クライアントや、リトライ・サーキットブレーカーの仕組みは、申請くんにはありません。現場のアプリでは、こうした共通部品がすでに用意されていることもあります。",
+        },
+        {
+          type: "h2",
+          text: "このシナリオの要点",
+        },
+        {
+          type: "ul",
+          items: [
+            "似た処理（メール通知）が既にあれば、その設計方針をそのまま踏襲できるか、変えるべきかを考える",
+            "外部呼び出しの設定は、ソースに埋め込まず `@Value` などで持たせる",
+            "`@Transactional` の中で遅い外部呼び出しをすると、DB コネクションを長く占有する。タイムアウトの設定が要る",
+            "失敗時の扱い（握りつぶす／リトライする）は仕様なので、依頼者へ確認する",
+          ],
+        },
+        {
+          type: "h2",
+          text: "調査の流れの振り返り",
+        },
+        {
+          type: "investigation-flow",
+          items: [
+            "`RequestService.approve` のメール通知の直後が、Slack通知の追加位置になると分かる",
+            "Webhook URL の持たせ方として `@Value` が使えると分かる",
+            "`MailService` の失敗時の扱い（ログのみ）を確認し、Slack も同じでよいか依頼者へ確認する",
+            "`approve` が `@Transactional` であることから、外部呼び出しの遅延が DB コネクションを長く占有するリスクに気づく",
+          ],
+        },
+        { type: "quiz", id: "sc-impact-slack" },
+      ],
+    },
   ],
 };
