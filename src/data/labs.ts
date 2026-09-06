@@ -118,7 +118,7 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "app",
-        text: "    at `jp.co.example.shinsei.service.RequestService.approve(RequestService.java:48)`",
+        text: "    at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:48)",
         note: "自分たちが書いたコードのパッケージ名で始まり、.java がある、上から最初の行。実ファイルの 48 行目を最初に調べます。",
       },
       {
@@ -185,7 +185,7 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "app",
-        text: "    at `jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:20)`",
+        text: "    at jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:20)",
         note: "呼び出し元の Service。SQL の中身は Mapper の XML（`findMine`）にあります。",
       },
       {
