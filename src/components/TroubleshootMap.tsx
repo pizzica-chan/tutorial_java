@@ -222,7 +222,11 @@ export function TroubleshootMap() {
           <div className="troubleshoot-map-result">
             <button type="button" className="troubleshoot-map-back" onClick={backFromLeaf}>
               <Icon name="arrow-left" size={14} />
-              {viaSearch.current ? "絞り込みの結果に戻る" : "症状の一覧に戻る"}
+              {viaSearch.current
+                ? trimmed !== ""
+                  ? "絞り込みの結果に戻る"
+                  : "画面の様子の一覧に戻る"
+                : "症状の一覧に戻る"}
             </button>
             <p className="troubleshoot-map-symptom">
               <TextWithTerms text={leaf.symptom} highlight={false} />
