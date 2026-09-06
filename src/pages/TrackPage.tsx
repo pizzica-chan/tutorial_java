@@ -3,6 +3,7 @@ import { getTrack, lessonLead } from "../data/curriculum";
 import { NotFoundPage } from "./NotFoundPage";
 import { TextWithTerms } from "../components/TextWithTerms";
 import { Icon } from "../components/Icon";
+import { LessonTitle } from "../components/LessonTitle";
 import { lessonRowAnchor } from "../lib/anchors";
 import { useHashTarget } from "../hooks/useHashTarget";
 
@@ -39,7 +40,7 @@ export function TrackPage() {
           >
             <div>
               <strong>
-                {String(index + 1).padStart(2, "0")} {lesson.title}
+                {String(index + 1).padStart(2, "0")} <LessonTitle title={lesson.title} />
               </strong>
               <p className="lesson-lead">{lessonLead(lesson)}</p>
             </div>

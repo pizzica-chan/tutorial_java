@@ -222,6 +222,26 @@ pre {
   color: var(--paper);
 }
 
+.title-tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.62em;
+  font-weight: 700;
+  line-height: 1.6;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.title-tag.tag-trouble {
+  color: var(--rose);
+}
+
+.title-tag.tag-impact {
+  color: var(--teal);
+}
+
 .nav-dot {
   width: 12px;
   height: 12px;

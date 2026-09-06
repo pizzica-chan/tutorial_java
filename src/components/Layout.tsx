@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { pageDescription, pageTitle, tracks } from "../data/curriculum";
 import { SiteSearch } from "./SiteSearch";
 import { Icon } from "./Icon";
+import { LessonTitle } from "./LessonTitle";
 
 function focusableIn(root: HTMLElement) {
   return [...root.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input, select, textarea")].filter(
@@ -176,7 +177,7 @@ export function Layout() {
                       className={({ isActive }) => `nav-sub ${isActive ? "active" : ""}`}
                     >
                       <span className="nav-dot" />
-                      {lesson.title}
+                      <LessonTitle title={lesson.title} />
                     </NavLink>
                   ))}
                 </div>
