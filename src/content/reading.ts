@@ -1393,6 +1393,34 @@ if (!"PENDING".equals(request.getStatus())) {
           title: "同じ名前の関数が複数ある",
           text: "JavaScript では、同じ名前の関数が別のファイルにもあると、あとから読み込んだ方で上書きされることがあります。エラーは出ず、思っていない方が動きます。検索で複数ヒットしたら、その画面がどの JavaScript を読み込んでいるかを Network タブで確認しましょう。",
         },
+        {
+          type: "h3",
+          text: "バンドル・難読化された JavaScript",
+        },
+        {
+          type: "p",
+          text: "申請くんの `app.js` は、書いたままの形で配布されています。プロジェクトによっては、フロント部分だけ webpack や vite でビルドしており、配布される JavaScript は1つの大きなファイルにまとめられ、変数名も短く書き換えられています。",
+        },
+        {
+          type: "code",
+          title: "難読化された JavaScript の例",
+          lang: "javascript",
+          code: `function n(o){return confirm(o)}document.querySelectorAll(".js-submit-confirm").forEach(function(e){e.addEventListener("submit",function(t){n("提出")||t.preventDefault()})});`,
+        },
+        {
+          type: "p",
+          text: "ファイル名にハッシュが付いている（`main.3f2a1c.js` など）、1行が異常に長い、変数名が1〜2文字ばかり、コメントが無い、といった見た目が目印です。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "関数名での検索は効かなくなる",
+          text: "`confirmAction` のような関数名は、ビルド時に `n` のような短い名前へ書き換えられます。もとの名前で検索しても、この JavaScript の中にはヒットしません。一方、`.js-submit-confirm` のような HTML の `class` や `id` は、実行時に実際の DOM と一致させる必要があるため、文字列としてそのまま残ります。名前がヒットしないときは、関数名ではなくクラス名や `id`、画面の文言で検索し直しましょう。",
+        },
+        {
+          type: "p",
+          text: "検索で見つからない、または見つけたコードが読みにくいときは、「名前で見つからないとき」で見たデバッガでの追い方がそのまま使えます。Sources タブの `{}`（Pretty print）ボタンで改行を復元すると、変数名は元に戻りませんが、構造は読みやすくなります。プロジェクトが `.map` ファイル（ソースマップ）を配布していれば、開発者ツールが元のファイル名・行番号・変数名を復元して表示することもあります。",
+        },
         { type: "quiz", id: "read-js" },
       ],
     },

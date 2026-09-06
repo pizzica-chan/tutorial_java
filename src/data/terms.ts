@@ -1135,6 +1135,21 @@ export const terms: TermDef[] = [
     body: "DOM 操作やイベント登録を簡単に書けるようにする JavaScript のライブラリです。`addEventListener` の代わりに `.on(...)` のような書き方をします。",
   },
   {
+    term: "webpack",
+    aliases: ["webpack", "Webpack"],
+    body: "JavaScript をビルドする代表的なツールの1つ。複数のファイルを1つにまとめ（バンドル）、変数名を短くする最適化（難読化）もします。",
+  },
+  {
+    term: "vite",
+    aliases: ["vite", "Vite"],
+    body: "JavaScript をビルドする、比較的新しいツール。webpack と同じくバンドルと最適化を行います。開発中の起動が速いのが特徴です。",
+  },
+  {
+    term: "ソースマップ",
+    aliases: ["ソースマップ", "source map", "sourcemap"],
+    body: "バンドル・難読化される前の、元のファイル名・行番号・変数名との対応表（`.map` ファイル）。あれば、開発者ツールが配布された JavaScript の代わりに元のソースを表示してくれます。",
+  },
+  {
     term: "Event Listeners",
     aliases: ["Event Listeners"],
     body: "開発者ツールの Elements タブにあるパネルです。選んだ要素と、その親に登録されているイベントの一覧を見られます。ファイル名と行が出るので、そこから JavaScript を開けます。表示や名前はブラウザによって違います。",
@@ -1540,8 +1555,8 @@ export const terms: TermDef[] = [
   {
     term: "開発者ツール",
     kana: "かいはつしゃツール",
-    aliases: ["開発者ツール"],
-    body: "ブラウザに付いている調査画面。Network タブで通信、Console で JS の例外、Sources で JS のブレークポイントを見ます。",
+    aliases: ["開発者ツール", "DevTools"],
+    body: "ブラウザに付いている調査画面。英語では DevTools と呼ばれます。Network タブで通信、Console で JS の例外、Sources で JS のブレークポイントを見ます。",
   },
   {
     term: "パース",
