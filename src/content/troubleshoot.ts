@@ -987,9 +987,9 @@ ERROR 2003 (HY000): Can't connect to MySQL server on 'ホスト名:3306' (110)`,
           title: "例（Docker）",
           lang: "text",
           code: `$ docker ps
-CONTAINER ID   IMAGE            STATUS                         PORTS                     NAMES
-1a2b3c4d5e6f   shinsei:latest   Up 2 hours                     0.0.0.0:8080->8080/tcp   shinsei-app
-7f8e9d0c1b2a   mysql:8.0        Restarting (1) 5 seconds ago                             shinsei-db`,
+CONTAINER ID   IMAGE            COMMAND                CREATED       STATUS                         PORTS                     NAMES
+1a2b3c4d5e6f   shinsei:latest   "java -Duser.time…"    2 hours ago   Up 2 hours                     0.0.0.0:8080->8080/tcp   shinsei-app
+7f8e9d0c1b2a   mysql:8.0        "docker-entrypoint…"   2 hours ago   Restarting (1) 5 seconds ago                             shinsei-db`,
         },
         {
           type: "code",
@@ -1758,6 +1758,12 @@ t_request  ref   fk_request_applicant   fk_request_applicant   3`,
           text: "ヒープダンプの取得中は、アプリの処理が止まることがあります。本番環境で取るときは、影響とタイミングを確認してから実行しましょう。",
         },
         {
+          type: "callout",
+          kind: "trap",
+          title: "これらのコマンドが無いコンテナもある",
+          text: "軽量化のため、コンテナは JRE だけ（JDK 抜き）で作られていることがあります。申請くんの Docker イメージ（`eclipse-temurin:17-jre`）もこの構成で、`jstat` / `jcmd` / `jmap` は入っていません。手元で確認できないときは、詳しい人や運用担当に相談しましょう。",
+        },
+        {
           type: "p",
           text: "ダンプを開いて中身を見るには、VisualVM や Eclipse Memory Analyzer (MAT) のようなツールを使います。読み方はツールの資料を見ましょう。",
         },
@@ -1805,6 +1811,12 @@ t_request  ref   fk_request_applicant   fk_request_applicant   3`,
             ["Docker コンテナの中", "`docker exec -it コンテナ名 jstack PID`"],
             ["Kubernetes の Pod の中", "`kubectl exec -it Pod名 -- jstack PID`"],
           ],
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "`jstack` が入っていないコンテナもある",
+          text: "軽量化のため、コンテナは JRE だけ（JDK 抜き）で作られていることがあります。申請くんの Docker イメージ（`eclipse-temurin:17-jre`）もこの構成で、`jstack` はコンテナの中に入っていません。`command not found` になったら、Java プロセスへ `kill -3 PID` を送りましょう。スレッドダンプと同じ内容が標準出力（多くはアプリのログ）に書き出されます。追加のツールが要らないので、JDK が無いコンテナでも使えます。",
         },
         {
           type: "callout",
