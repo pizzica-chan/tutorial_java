@@ -2759,9 +2759,12 @@ CREATE TABLE IF NOT EXISTS t_request (
           type: "code",
           title: "RequestService.approve（申請くん）",
           lang: "java",
-          highlightLines: [3, 4],
+          highlightLines: [3, 4, 6, 7],
           code: `public void approve(Long requestId, Long approverId) {
   RequestEntity request = requestMapper.findById(requestId, approverId);
+  if (request == null) {
+    throw new NotFoundException("指定した申請は無い、または見る権限がありません。");
+  }
   if (!request.getApproverId().equals(approverId)) {
     throw new ForbiddenException("承認権限がありません");
   }
@@ -2775,7 +2778,31 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "p",
-          text: "今の権限判定は「ログイン中の利用者 ID が、その申請の `approver_id` と一致するか」だけです。役割（ロール）は見ていません。部長職なら誰でも、という条件を足すには、この if に分岐を追加します。",
+          text: "`ForbiddenException` の if だけを見ると、権限判定はここだけのように見えます。役割（ロール）はどちらの if でも見ていません。部長職なら誰でも、という条件を足すには、この2つの if に分岐を追加すればよさそうに思えます。",
+        },
+        {
+          type: "h3",
+          text: "その前に、SQL 自体が絞っている",
+        },
+        {
+          type: "p",
+          text: "`requestMapper.findById` の中身を見ると、この2つの if に届く前に、SQL 自体がすでに絞り込んでいます。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の findById（申請くん・抜粋）",
+          lang: "xml",
+          highlightLines: [2],
+          code: `WHERE r.id = #{id}
+  AND (r.applicant_id = #{userId} OR r.approver_id = #{userId})`,
+        },
+        {
+          type: "p",
+          text: "部長職の利用者が、自分が申請者でも今の承認者でもない申請を承認しようとすると、この `WHERE` に一致せず `findById` は `null` を返します。その結果、`ForbiddenException` の分岐にはたどり着かず、その手前の `NotFoundException`（「指定した申請は無い、または見る権限がありません」）になります。`RequestService.approve` の if にロール分岐を足しても、SQL がレコードをそもそも渡してくれなければ意味がありません。この `WHERE` 句自体を、ロールに応じて緩めるか、SQL の絞り込みをやめて Java 側だけで判定する形に見直す必要があります。",
+        },
+        {
+          type: "p",
+          text: "同じ絞り込みは、申請一覧の `findMine` にもあります。部長職の利用者が承認待ちの申請を探そうとしても、自分が申請者でも承認者でもない申請は一覧にすら出ません。承認する対象を見つける画面自体も、影響範囲に含めて考える必要があります。",
         },
         {
           type: "h3",
@@ -2869,6 +2896,8 @@ CREATE TABLE IF NOT EXISTS t_request (
           type: "table",
           headers: ["箇所", "いま", "修正の要否"],
           rows: [
+            ["`RequestMapper.xml` の `findById`", "`applicant_id OR approver_id` でしか取れない", "要修正。SQL の絞り込み自体を見直さないと、部長職はレコードにすら届かない"],
+            ["`RequestMapper.xml` の `findMine`", "同上。一覧にも出ない", "要修正しないと、承認する対象を部長職が見つけられない"],
             ["`RequestService.approve` の権限判定", "`approver_id` と完全一致のみ", "要修正。ロールによる分岐を追加"],
             ["`t_user.role` / `data.sql`", "`ADMIN` / `USER` のみ", "要修正。部長職に当たるロールの追加が必要"],
             ["`SecurityConfig`", "URL 単位の一律な制御", "変更不要（この判定には使えない）"],
@@ -2890,6 +2919,7 @@ CREATE TABLE IF NOT EXISTS t_request (
         {
           type: "ul",
           items: [
+            "Java の if だけを見て安心せず、その手前の SQL がすでに絞り込んでいないかを確認する",
             "レコードの中身に基づく権限判定は、`SecurityConfig`（URL単位）ではなくビジネスロジック側の役目",
             "ロールを増やすときは、コードだけでなく DB の値（`data.sql` や既存レコード）も見る",
             "「誰が実際に承認したか」を記録したいなら、更新対象のカラム設計から見直しが要る",
@@ -2903,7 +2933,9 @@ CREATE TABLE IF NOT EXISTS t_request (
         {
           type: "investigation-flow",
           items: [
-            "`RequestService.approve` の判定が `approver_id` の完全一致だけと分かる",
+            "`RequestService.approve` の if だけを見ると、`approver_id` の完全一致とロール未対応が分かる",
+            "その手前で `findById` の `WHERE` がすでに `applicant_id OR approver_id` で絞っており、部長職はレコードにすら届かないと気づく",
+            "`findMine`（一覧）も同じ絞り込みで、承認対象を見つける画面にも影響すると分かる",
             "`LoginUser.role` はあるが、`data.sql` に部長職に当たる値が無いと分かる",
             "`SecurityConfig` はURL単位の制御であり、レコード単位の判定には使えないと分かる",
             "`RequestController.approve` がロールを渡していないと分かる",
@@ -3024,8 +3056,27 @@ public class HistorySearchCondition {
         {
           type: "callout",
           kind: "trap",
-          title: "ここに足し忘れると、既存の不具合と同じ症状になる",
-          text: "このクラスに `approverName` を足し忘れると、承認者名の条件だけがセッションに保存されません。「申請履歴から詳細を開いて戻ると、検索条件が消える」の不具合と同じ仕組みなので、新しい項目を追加するときは、ここも一緒に直す必要があります。",
+          title: "ここに足し忘れると、条件だけ検索結果に出て保存されない",
+          text: "このクラスに `approverName` を足し忘れると、検索そのものは通っても、承認者名の条件だけがセッションに保存されません。似た症状の既存の不具合「申請履歴から詳細を開いて戻ると、検索条件が消える」は、セッションのキー文字列が保存側と読み出し側で食い違っていたのが原因で、今回とは原因が別です。ただし「検索条件を保存する仕組みに新しい項目を通し忘れる」という点は同じ種類の見落としなので、新しい項目を追加するときは、既存の仕組み全体に本当に通っているかを1つずつ確認しましょう。",
+        },
+        {
+          type: "p",
+          text: "検索条件を運ぶ経路は、セッションだけではありません。詳細画面から「← 申請履歴」で戻るときの URL は、`RequestController.buildHistoryBackUrl` が組み立てています。",
+        },
+        {
+          type: "code",
+          title: "RequestController.buildHistoryBackUrl（申請くん・抜粋）",
+          lang: "java",
+          code: `return UriComponentsBuilder.fromPath("/requests/history")
+    .queryParamIfPresent("title", Optional.ofNullable(condition.getTitle()))
+    .queryParamIfPresent("requestStatus", Optional.ofNullable(condition.getRequestStatus()))
+    .queryParamIfPresent("createdFrom", Optional.ofNullable(condition.getCreatedFrom()))
+    .queryParamIfPresent("createdTo", Optional.ofNullable(condition.getCreatedTo()))
+    .toUriString();`,
+        },
+        {
+          type: "p",
+          text: "`HistorySearchCondition` に `approverName` を足しても、ここに `.queryParamIfPresent(\"approverName\", ...)` を足し忘れると、検索結果の詳細画面から「戻る」で一覧に戻ったときだけ、承認者名の条件が URL から抜け落ちます。セッションへの保存と、戻り URL の組み立て、2箇所とも直す必要があります。",
         },
         {
           type: "h3",
@@ -3033,7 +3084,7 @@ public class HistorySearchCondition {
         },
         {
           type: "code",
-          title: "RequestMapper.xml の searchHistory（申請くん・抜粋）",
+          title: "RequestMapper.xml の searchHistory（承認者名を追加した例）",
           lang: "xml",
           highlightLines: [8, 9, 10],
           code: `WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
@@ -3068,7 +3119,8 @@ ORDER BY r.created_at DESC`,
           rows: [
             ["`history.html` の検索フォーム", "件名・ステータス・申請日", "要修正。承認者名の入力欄を追加"],
             ["`RequestController.history`", "4つの `@RequestParam`", "要修正。`approverName` を追加"],
-            ["`HistorySearchCondition`", "4つのフィールド", "要修正。足し忘れると検索条件が消える不具合と同型になる"],
+            ["`HistorySearchCondition`", "4つのフィールド", "要修正。足し忘れると条件がセッションに保存されない"],
+            ["`buildHistoryBackUrl`", "4つの `queryParamIfPresent`", "要修正。足し忘れると詳細から戻ったときだけ条件が消える"],
             ["`RequestService.searchHistory`", "4つの引数を Mapper へ渡す", "要修正。引数を追加して渡す"],
             ["`RequestMapper.xml` の `searchHistory`", "件名などの `<if>`", "要修正。`v.display_name` への `<if>` を追加"],
             ["承認者未定の申請の扱い", "一覧には出る", "絞り込むと消える。意図どおりか依頼者へ確認"],
@@ -3088,7 +3140,7 @@ ORDER BY r.created_at DESC`,
           type: "ul",
           items: [
             "既存の検索項目と同じ経路（フォーム → Controller → セッション → Service → 動的SQL）を、そのまま辿ればよい",
-            "検索条件を保存するクラスへの追加を忘れると、既存の不具合と同じ症状が再現する",
+            "検索条件を運ぶ経路は1つではない。セッション保存と、詳細から戻るときの URL 組み立て、両方に新項目を通す必要がある",
             "`LEFT JOIN` した列に絞り込み条件を足すと、結合できなかった行が結果から消える",
           ],
         },
@@ -3101,7 +3153,7 @@ ORDER BY r.created_at DESC`,
           items: [
             "既存の検索項目（件名）が辿る経路を確認する",
             "`history.html` → `RequestController.history` → `HistorySearchCondition` → `RequestService.searchHistory` → `RequestMapper.xml` の順に、同じ経路へ承認者名を追加する必要があると分かる",
-            "`HistorySearchCondition` への追加漏れが、既存の「検索条件が消える」不具合と同型だと気づく",
+            "`buildHistoryBackUrl` にも同じ4項目があり、ここへの追加漏れは詳細画面から戻ったときだけ症状が出ると気づく",
             "`LEFT JOIN` した列への絞り込みで、承認者未定の申請が結果から消えると分かる",
           ],
         },
