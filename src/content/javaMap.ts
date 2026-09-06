@@ -45,7 +45,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "プロジェクトによって、Maven か Gradle かは決まっています。",
+          text: "プロジェクトによって、多くは Maven か Gradle のどちらかに決まっています。",
         },
         {
           type: "p",
