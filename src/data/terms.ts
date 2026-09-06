@@ -1135,6 +1135,16 @@ export const terms: TermDef[] = [
     body: "DOM 操作やイベント登録を簡単に書けるようにする JavaScript のライブラリです。`addEventListener` の代わりに `.on(...)` のような書き方をします。",
   },
   {
+    term: "バンドル",
+    aliases: ["バンドル", "bundle"],
+    body: "複数の JavaScript ファイルを1つ（または少数）にまとめること。webpack や vite が行います。まとめる際に、変数名を短くする最適化（難読化）も一緒に行われることが多いです。",
+  },
+  {
+    term: "ハッシュ",
+    aliases: ["ハッシュ", "hash"],
+    body: "元のデータから計算する、短い固定長の値。データが変われば値も変わるので、変わったかどうかの目印に使われます。バンドルされた JavaScript のファイル名（`main.3f2a1c.js` など）や、Git のコミットハッシュなど、いろいろな場面で使われます。",
+  },
+  {
     term: "webpack",
     aliases: ["webpack", "Webpack"],
     body: "JavaScript をビルドする代表的なツールの1つ。複数のファイルを1つにまとめ（バンドル）、変数名を短くする最適化（難読化）もします。",
