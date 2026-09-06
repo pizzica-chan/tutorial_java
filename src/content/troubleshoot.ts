@@ -987,9 +987,9 @@ ERROR 2003 (HY000): Can't connect to MySQL server on 'ホスト名:3306' (110)`,
           title: "例（Docker）",
           lang: "text",
           code: `$ docker ps
-CONTAINER ID   IMAGE             COMMAND                CREATED       STATUS                         PORTS                     NAMES
-1a2b3c4d5e6f   shinsei-kun-app   "java -Duser.time…"    2 hours ago   Up 2 hours                     0.0.0.0:8080->8080/tcp   shinsei-kun-app-1
-7f8e9d0c1b2a   mysql:8.0         "docker-entrypoint…"   2 hours ago   Restarting (1) 5 seconds ago                             shinsei-kun-db-1`,
+CONTAINER ID   IMAGE             COMMAND                  CREATED       STATUS                         PORTS                     NAMES
+1a2b3c4d5e6f   shinsei-kun-app   "java -Duser.timezon…"   2 hours ago   Up 2 hours                     0.0.0.0:8080->8080/tcp   shinsei-kun-app-1
+7f8e9d0c1b2a   mysql:8.0         "docker-entrypoint.s…"   2 hours ago   Restarting (1) 5 seconds ago                             shinsei-kun-db-1`,
         },
         {
           type: "code",
