@@ -59,12 +59,12 @@ export const javaMapTrack: Track = {
           type: "ul",
           items: [
             "Java の version（8 / 11 / 17 で起動方法が違う）",
-            "spring-boot-starter-web … Web アプリ",
-            "thymeleaf / jsp / freemarker … 画面の種類",
-            "mybatis / jpa / jdbc … DB アクセスの種類",
-            "spring-security … 認証・認可の有無",
+            "`spring-boot-starter-web` … Web アプリ",
+            "Thymeleaf（`spring-boot-starter-thymeleaf`） / JSP（`tomcat-embed-jasper` など） / FreeMarker（`spring-boot-starter-freemarker`） … 画面の種類",
+            "MyBatis（`mybatis-spring-boot-starter`） / JPA（`spring-boot-starter-data-jpa`） / JDBC（`spring-boot-starter-jdbc`） … DB アクセスの種類",
+            "Spring Security（`spring-boot-starter-security`） … 認証・認可の有無",
             "社内の自作ライブラリ … jar だけだとソース検索に出ないことがある",
-            "war パッケージ … 外部 Tomcat に載せる構成",
+            "WAR パッケージ（`pom.xml` の `<packaging>war</packaging>`） … 外部 Tomcat に載せる構成",
           ],
         },
         {
