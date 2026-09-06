@@ -2741,14 +2741,111 @@ th {
   color: var(--text);
 }
 
-.troubleshoot-map-cause {
-  margin: 0 0 14px;
+.troubleshoot-map-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 1 300px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--quiet);
+}
+
+.troubleshoot-map-search:focus-within {
+  border-color: var(--amber);
+}
+
+.troubleshoot-map-search input {
+  width: 100%;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+}
+
+.troubleshoot-map-search input:focus {
+  outline: none;
+}
+
+.troubleshoot-map-trail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--line);
   color: var(--muted);
   font-size: 13px;
 }
 
-.troubleshoot-map-cause strong {
+.troubleshoot-map-trail button {
+  padding: 0;
+  border: 0;
+  background: none;
   color: var(--amber);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.troubleshoot-map-trail button:hover {
+  text-decoration: underline;
+}
+
+.troubleshoot-map-trail-current {
+  color: var(--text);
+}
+
+.troubleshoot-map-causes {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.troubleshoot-map-cause-chip {
+  padding: 1px 8px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 11.5px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+.troubleshoot-map-cause-chip.cause-client {
+  color: var(--teal);
+}
+
+.troubleshoot-map-cause-chip.cause-network {
+  color: var(--amber-2);
+}
+
+.troubleshoot-map-cause-chip.cause-server {
+  color: var(--paper-dim);
+}
+
+.troubleshoot-map-cause {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.troubleshoot-map-cause-note {
+  color: var(--quiet);
+}
+
+.troubleshoot-map-empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
 }
 
 .troubleshoot-map-grid {
@@ -2781,6 +2878,24 @@ th {
   transform: translateY(-1px);
 }
 
+.troubleshoot-map-node-group {
+  overflow: hidden;
+  color: var(--quiet);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.troubleshoot-map-node-label {
+  line-height: 1.55;
+}
+
+.troubleshoot-map-node-count {
+  color: var(--quiet);
+  font-size: 12px;
+}
+
 .troubleshoot-map-result {
   padding: 16px 18px 20px;
 }
@@ -2792,9 +2907,25 @@ th {
   color: var(--paper);
 }
 
+.troubleshoot-map-label {
+  margin: 0 0 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--amber);
+}
+
 .troubleshoot-map-check {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--amber);
+  background: rgba(57, 92, 163, 0.07);
   color: var(--text);
+}
+
+.troubleshoot-map-check p:last-child,
+.troubleshoot-map-tells p:last-child {
+  margin: 0;
 }
 
 .troubleshoot-map-tells {
@@ -2806,9 +2937,8 @@ th {
   font-size: 14px;
 }
 
-.troubleshoot-map-check strong,
-.troubleshoot-map-tells strong {
-  color: var(--paper);
+.troubleshoot-map-tells .troubleshoot-map-label {
+  color: var(--quiet);
 }
 
 .troubleshoot-map-links {

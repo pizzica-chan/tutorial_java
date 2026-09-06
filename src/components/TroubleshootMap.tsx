@@ -1,17 +1,66 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { causeHints, troubleshootMap } from "../data/troubleshootMap";
+import { causeHints, troubleshootMap, type CauseSide, type MapLeaf } from "../data/troubleshootMap";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon } from "./Icon";
 
 const HEADING_ID = "troubleshoot-map-heading";
 
+const causeSlug: Record<CauseSide, string> = {
+  クライアント: "client",
+  ネットワーク: "network",
+  サーバ: "server",
+};
+
+/** 検索用に、コードスパンの記号と全角半角・大小文字の違いを潰す */
+function normalize(value: string): string {
+  return value.replaceAll("`", "").normalize("NFKC").toLowerCase();
+}
+
+type Hit = { groupId: string; groupLabel: string; index: number; leaf: MapLeaf };
+
+const allLeaves: Hit[] = troubleshootMap.flatMap((group) =>
+  group.leaves.map((leaf, index) => ({ groupId: group.id, groupLabel: group.label, index, leaf })),
+);
+
+/** 症状そのものだけでなく、確認することや分かることの語でも引けるようにする */
+const searchText = new Map<MapLeaf, string>(
+  allLeaves.map(({ groupLabel, leaf }) => [
+    leaf,
+    normalize([groupLabel, leaf.symptom, leaf.check, leaf.tells, ...leaf.cause].join("\n")),
+  ]),
+);
+
+function CauseChips({ cause }: { cause: CauseSide[] }) {
+  return (
+    <span className="troubleshoot-map-causes">
+      {cause.map((side) => (
+        <span key={side} className={`troubleshoot-map-cause-chip cause-${causeSlug[side]}`}>
+          {side}
+        </span>
+      ))}
+    </span>
+  );
+}
+
 export function TroubleshootMap() {
   const [groupId, setGroupId] = useState<string | null>(null);
   const [leafIndex, setLeafIndex] = useState<number | null>(null);
+  const [query, setQuery] = useState("");
 
+  const searchId = useId();
   const group = troubleshootMap.find((g) => g.id === groupId) ?? null;
   const leaf = group && leafIndex !== null ? (group.leaves[leafIndex] ?? null) : null;
+  const trimmed = query.trim();
+
+  const hits = useMemo(() => {
+    const needle = normalize(trimmed);
+    if (!needle) return [];
+    return allLeaves.filter((hit) => searchText.get(hit.leaf)?.includes(needle));
+  }, [trimmed]);
+
+  // 絞り込み中は、グループを選んでいなくても症状へ直接進める
+  const searching = trimmed !== "" && !leaf;
 
   const viewRef = useRef<HTMLDivElement>(null);
   // 戻るを押したとき、焦点を返すボタンの data-node
@@ -35,16 +84,30 @@ export function TroubleshootMap() {
     setGroupId(null);
     setLeafIndex(null);
   };
-  const backToSymptoms = () => {
+  const backFromLeaf = () => {
+    if (trimmed !== "") {
+      // 絞り込みの結果から開いたときは、結果の一覧へ戻す
+      restoreNode.current = `${groupId}-${leafIndex}`;
+      setGroupId(null);
+      setLeafIndex(null);
+      return;
+    }
     restoreNode.current = leafIndex === null ? null : String(leafIndex);
     setLeafIndex(null);
   };
 
+  const openLeaf = (nextGroupId: string, index: number) => {
+    setGroupId(nextGroupId);
+    setLeafIndex(index);
+  };
+
   const heading = leaf
     ? "その症状は、こう当たりをつけます"
-    : group
-      ? `「${group.label}」の症状から選びましょう`
-      : "画面の様子に近いものを選びましょう";
+    : searching
+      ? `「${trimmed}」に当てはまる症状`
+      : group
+        ? `「${group.label}」の症状から選びましょう`
+        : "画面の様子に近いものを選びましょう";
 
   return (
     <section className="widget troubleshoot-map" aria-label="症状から探す">
@@ -53,10 +116,39 @@ export function TroubleshootMap() {
           <p className="kicker">SYMPTOM MAP</p>
           <strong id={HEADING_ID}>{heading}</strong>
         </div>
+        <div className="troubleshoot-map-search">
+          <label className="sr-only" htmlFor={searchId}>
+            症状のことばで絞り込む
+          </label>
+          <Icon name="search" size={14} />
+          <input
+            id={searchId}
+            type="search"
+            value={query}
+            placeholder="ことばで絞り込む（例: 遅い、メール、404）"
+            onChange={(event) => setQuery(event.target.value)}
+          />
+        </div>
       </div>
 
+      {group && !searching ? (
+        <p className="troubleshoot-map-trail">
+          <button type="button" onClick={backToGroups}>
+            画面の様子
+          </button>
+          <Icon name="arrow-right" size={12} />
+          {leaf ? (
+            <button type="button" onClick={backFromLeaf}>
+              {group.label}
+            </button>
+          ) : (
+            <span className="troubleshoot-map-trail-current">{group.label}</span>
+          )}
+        </p>
+      ) : null}
+
       <div className="troubleshoot-map-view" ref={viewRef} tabIndex={-1} role="group" aria-labelledby={HEADING_ID}>
-        {!group ? (
+        {!group && !searching ? (
           <div className="troubleshoot-map-grid">
             {troubleshootMap.map((g) => (
               <button
@@ -66,61 +158,86 @@ export function TroubleshootMap() {
                 className="troubleshoot-map-node"
                 onClick={() => setGroupId(g.id)}
               >
-                {g.label}
+                <span className="troubleshoot-map-node-label">{g.label}</span>
+                <span className="troubleshoot-map-node-count">{g.leaves.length} 件の症状</span>
               </button>
             ))}
           </div>
         ) : null}
 
-        {group && !leaf ? (
-          <div className="troubleshoot-map-result">
-            <button type="button" className="troubleshoot-map-back" onClick={backToGroups}>
-              <Icon name="arrow-left" size={14} />
-              画面の様子の一覧に戻る
-            </button>
-            <div className="troubleshoot-map-grid">
-              {group.leaves.map((item, index) => (
+        {searching ? (
+          <div className="troubleshoot-map-grid">
+            {hits.length === 0 ? (
+              <p className="troubleshoot-map-empty">
+                当てはまる症状がありません。別のことばで探すか、絞り込みを消して画面の様子から選びましょう。
+              </p>
+            ) : (
+              hits.map((hit) => (
                 <button
-                  key={item.symptom}
+                  key={`${hit.groupId}-${hit.index}`}
                   type="button"
-                  data-node={String(index)}
+                  data-node={`${hit.groupId}-${hit.index}`}
                   className="troubleshoot-map-node"
-                  onClick={() => setLeafIndex(index)}
+                  onClick={() => openLeaf(hit.groupId, hit.index)}
                 >
-                  <TextWithTerms text={item.symptom} highlight={false} />
+                  <span className="troubleshoot-map-node-group">{hit.groupLabel}</span>
+                  <span className="troubleshoot-map-node-label">
+                    <TextWithTerms text={hit.leaf.symptom} highlight={false} />
+                  </span>
+                  <CauseChips cause={hit.leaf.cause} />
                 </button>
-              ))}
-            </div>
+              ))
+            )}
+          </div>
+        ) : null}
+
+        {group && !leaf && !searching ? (
+          <div className="troubleshoot-map-grid">
+            {group.leaves.map((item, index) => (
+              <button
+                key={item.symptom}
+                type="button"
+                data-node={String(index)}
+                className="troubleshoot-map-node"
+                onClick={() => setLeafIndex(index)}
+              >
+                <span className="troubleshoot-map-node-label">
+                  <TextWithTerms text={item.symptom} highlight={false} />
+                </span>
+                <CauseChips cause={item.cause} />
+              </button>
+            ))}
           </div>
         ) : null}
 
         {leaf ? (
           <div className="troubleshoot-map-result">
-            <button type="button" className="troubleshoot-map-back" onClick={backToSymptoms}>
+            <button type="button" className="troubleshoot-map-back" onClick={backFromLeaf}>
               <Icon name="arrow-left" size={14} />
-              症状の一覧に戻る
+              {trimmed !== "" ? "絞り込みの結果に戻る" : "症状の一覧に戻る"}
             </button>
             <p className="troubleshoot-map-symptom">
               <TextWithTerms text={leaf.symptom} highlight={false} />
             </p>
             <p className="troubleshoot-map-cause">
               原因の当たり：
-              {leaf.cause.map((side, index) => (
-                <span key={side}>
-                  {index > 0 ? " か " : null}
-                  <strong>{side}</strong>
-                </span>
-              ))}
-              （{leaf.causeNote ?? leaf.cause.map((side) => causeHints[side]).join("／")}）
+              <CauseChips cause={leaf.cause} />
+              <span className="troubleshoot-map-cause-note">
+                {leaf.causeNote ?? leaf.cause.map((side) => causeHints[side]).join("／")}
+              </span>
             </p>
-            <p className="troubleshoot-map-check">
-              <strong>最初に確認すること：</strong>
-              <TextWithTerms text={leaf.check} />
-            </p>
-            <p className="troubleshoot-map-tells">
-              <strong>それで分かること：</strong>
-              <TextWithTerms text={leaf.tells} />
-            </p>
+            <div className="troubleshoot-map-check">
+              <p className="troubleshoot-map-label">最初に確認すること</p>
+              <p>
+                <TextWithTerms text={leaf.check} />
+              </p>
+            </div>
+            <div className="troubleshoot-map-tells">
+              <p className="troubleshoot-map-label">それで分かること</p>
+              <p>
+                <TextWithTerms text={leaf.tells} />
+              </p>
+            </div>
             <div className="troubleshoot-map-links">
               {leaf.links.map((link) => (
                 <Link key={link.to} to={link.to} className="btn btn-primary">
