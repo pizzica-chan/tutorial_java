@@ -1156,9 +1156,9 @@ th {
 
 .widget-actions {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   align-items: center;
-  flex-shrink: 0;
+  min-width: 0;
   gap: 8px;
 }
 
@@ -2690,10 +2690,6 @@ th {
   .lesson-mins {
     grid-column: 1;
     justify-self: start;
-  }
-
-  .widget-actions {
-    flex-wrap: wrap;
   }
 
   .topbar {
