@@ -680,6 +680,30 @@ export const quizzes = {
     answer: 1,
     explanation: "JPA では、実行される SQL をライブラリが組み立てることが多く、ソースに無いことがあります。テーブル名や Entity から Repository を見つけ、参照検索で呼び出し元を辿ります。MyBatis なら XML や `@Select` に近い文があることが多いです。",
   },
+  "trace-jdbc": {
+    id: "trace-jdbc",
+    question: "JdbcTemplate の DEBUG ログに `SELECT ... WHERE applicant_id = ?` と出た。渡された実際の値（例: 7）を確認したい。次は？",
+    choices: [
+      "`org.springframework.jdbc.core.StatementCreatorUtils` を TRACE にする",
+      "DEBUG のログをもう一度出力し直す",
+      "JdbcTemplate は値を記録できないので、ソースを読むしかない",
+      "`?` は常に主キーの値なので、DB の主キー一覧と突き合わせる",
+    ],
+    answer: 0,
+    explanation: "JdbcTemplate 自身の DEBUG ログは SQL 文だけで、バインドした値は `?` のままです。実際の値は `StatementCreatorUtils` が TRACE レベルで別に出します。",
+  },
+  "trace-not-found": {
+    id: "trace-not-found",
+    question: "MyBatis の `<if>` タグで組み立てる検索 SQL。ログに出た WHERE 句をそのまま XML 内で全文検索しても見つからない。理由として正しいのは？",
+    choices: [
+      "ログの SQL が書き間違いで、実際には実行されていないから",
+      "条件によって組み立てられる文が変わり、XML にはその組み合わせのままの文が無いから",
+      "MyBatis はログに嘘の SQL を出すことがあるから",
+      "動的 SQL は常に暗号化されてログに出るから",
+    ],
+    answer: 1,
+    explanation: "`<if>` は条件によって含まれたり含まれなかったりします。ログの SQL はそのときの組み合わせの結果であり、XML には `<if>` で分かれたままの断片しかありません。`<if>` の外にある、変化しない部分（テーブル名など）で探しましょう。",
+  },
   "sc-impact-search": {
     id: "sc-impact-search",
     question: "一覧と履歴に部署の絞り込みを追加する。`RequestController.list` から `findMine` へ降りた。同じ `findMine` を呼んでいる別経路は？",

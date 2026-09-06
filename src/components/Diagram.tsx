@@ -904,6 +904,21 @@ function SqlToSource() {
           <Layer icon="cog">呼び出し元</Layer>
         </div>
       </div>
+      <div className="d-col">
+        <h4>
+          <Icon name="code" size={16} />
+          JdbcTemplate
+        </h4>
+        <div className="d-stack">
+          <Layer icon="terminal">調べたい SQL</Layer>
+          <Arrow down label="テーブル名で探す" />
+          <Layer icon="code" accent>
+            SQL を書いた Java クラス
+          </Layer>
+          <Arrow down label="参照検索" />
+          <Layer icon="cog">呼び出し元</Layer>
+        </div>
+      </div>
     </div>
   );
 }

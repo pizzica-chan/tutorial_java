@@ -32,7 +32,7 @@ export const traceTrack: Track = {
         {
           type: "diagram",
           name: "sql-to-source",
-          caption: "MyBatis と JPA（Hibernate）の例です。JdbcTemplate など別の書き方もあります。",
+          caption: "MyBatis・JPA（Hibernate）・JdbcTemplate の例です。",
         },
         {
           type: "h2",
@@ -170,13 +170,118 @@ public class Request {
           type: "p",
           text: "メソッド名だけ、または JPQL なら、実行された SQL では見つかりません。`t_request` で Entity を見つけ、参照検索で呼び出し元を辿りましょう。`nativeQuery` なら、実行された SQL に近い文で MyBatis と同じように検索できます。",
         },
+        { type: "quiz", id: "trace-sql-source" },
+      ],
+    },
+    {
+      id: "jdbc",
+      title: "JdbcTemplate で探す",
+      minutes: 7,
+      blocks: [
+        {
+          type: "p",
+          text: "MyBatis や JPA のほかに、JdbcTemplate のように SQL を Java の文字列として直接書く書き方もあります。ログの出方も、探し方も、また少し違います。",
+        },
+        {
+          type: "code",
+          title: "ログの例（JdbcTemplate の DEBUG）",
+          lang: "text",
+          highlightLines: [2],
+          code: `DEBUG o.s.jdbc.core.JdbcTemplate : Executing prepared SQL query
+DEBUG o.s.jdbc.core.JdbcTemplate : Executing prepared SQL statement [SELECT id, title, status, applicant_id FROM t_request WHERE applicant_id = ?]`,
+        },
+        {
+          type: "p",
+          text: "MyBatis の `Preparing` / `Parameters` の2行組と違い、JdbcTemplate の SQL ログには、バインドした値そのものは出ません。`?` のままです。テーブル名 `t_request` で検索すると、この SQL を書いた Java クラスに直接ヒットします。",
+        },
+        {
+          type: "code",
+          title: "RequestJdbcRepository.java（JdbcTemplate の例）",
+          lang: "java",
+          highlightLines: [5, 6],
+          code: `@Repository
+public class RequestJdbcRepository {
+  private final JdbcTemplate jdbcTemplate;
+
+  private static final String FIND_MINE_SQL =
+      "SELECT id, title, status, applicant_id FROM t_request WHERE applicant_id = ?";
+
+  public List<Map<String, Object>> findMine(Long userId) {
+    return jdbcTemplate.queryForList(FIND_MINE_SQL, userId);
+  }
+}`,
+        },
+        {
+          type: "p",
+          text: "MyBatis は別の XML、JPA はメソッド名や JPQL からの推測が必要でしたが、JdbcTemplate は Java のソースに SQL の文字列がそのままあるので、見つけたあとの1手が要りません。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "バインドした値は、別のログに出る",
+          text: "SQL 文の `?` に入った実際の値は、`org.springframework.jdbc.core.StatementCreatorUtils` という別のクラスが TRACE レベルで出します（`Setting SQL statement parameter value: ... parameter value [7] ...` のような1行）。DEBUG のままだと値は分からないので、疑わしい値を確認したいときは、このロガーだけ TRACE まで上げましょう。",
+        },
+        { type: "quiz", id: "trace-jdbc" },
+      ],
+    },
+    {
+      id: "not-found",
+      title: "見つからない・多すぎるとき",
+      minutes: 7,
+      blocks: [
+        {
+          type: "p",
+          text: "ここまでの探し方は、検索すると1件だけヒットする前提でした。実際には、探しても見つからない、逆に何十件もヒットして絞れない、ということがあります。",
+        },
+        {
+          type: "h2",
+          text: "ログの SQL が、ソースのどこにも無い",
+        },
+        {
+          type: "p",
+          text: "MyBatis の `<if>` や `<where>` タグは、条件によって実際に組み立てられる SQL が変わります。ログに出る SQL は、その瞬間に組み立てられたあとの文なので、XML の中にはその形のまま存在しません。",
+        },
+        {
+          type: "code",
+          title: "RequestMapper.xml の searchHistory（申請くん・抜粋）",
+          lang: "xml",
+          highlightLines: [2, 3, 4, 5, 6, 7],
+          code: `WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
+<if test="title != null and title != ''">
+  AND r.title LIKE CONCAT('%', #{title}, '%')
+</if>
+<if test="requestStatus != null and requestStatus != ''">
+  AND r.status = #{requestStatus}
+</if>`,
+        },
+        {
+          type: "p",
+          text: "検索条件を title と status の両方で絞ったときのログには、`AND r.title LIKE ... AND r.status = ...` とまとめて出ますが、XML にはこの組み合わせのままの行はありません。ログの SQL を一字一句検索するのではなく、`<if>` に関係なく必ず残る部分（テーブル名や、固定の JOIN 条件）で探しましょう。",
+        },
         {
           type: "callout",
           kind: "note",
-          title: "JdbcTemplate という書き方もある",
-          text: "MyBatis や JPA のほかに、JdbcTemplate のように Java の文字列に SQL を直接書く書き方もあります。ログの文言は設定次第です。",
+          title: "JPA でも同じことが起きる",
+          text: "JPA でも、Specification や Criteria API、QueryDSL のように条件を組み立てる書き方では、ログの SQL がソースのどこにも無い形になります。考え方は MyBatis の動的 SQL と同じで、変化しない部分（テーブル名や固定の条件）で探します。",
         },
-        { type: "quiz", id: "trace-sql-source" },
+        {
+          type: "h2",
+          text: "同じテーブル名で何十件もヒットする",
+        },
+        {
+          type: "p",
+          text: "`t_request` のような主要なテーブルは、一覧・詳細・検索・更新など、多くの SQL で使われます。テーブル名だけでは絞れないときは、次のような手がかりを組み合わせましょう。",
+        },
+        {
+          type: "ul",
+          items: [
+            "SELECT する列の組み合わせ（ログに出た列名をいくつかまとめて検索する）",
+            "JOIN しているテーブル名（ログにあれば、その組み合わせで検索する）",
+            "WHERE の固定の条件値（`'PENDING'` のような、`<if>` の外にある文字列）",
+            "ORDER BY の列名",
+          ],
+        },
+        { type: "quiz", id: "trace-not-found" },
       ],
     },
     {
