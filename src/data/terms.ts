@@ -362,6 +362,21 @@ export const terms: TermDef[] = [
     body: "メソッドの戻り値を Spring のコンテナに登録する印です。SecurityConfig の `filterChain` などで使います。Spring のアノテーションです。",
   },
   {
+    term: "@Value",
+    aliases: ["@Value"],
+    body: "設定ファイルの値を1つ、フィールドや引数に読み込む印です。`@Value(\"${app.mail.from}\")` のようにキー名を書きます。対応するキーが無いと、既定値（`:` のあとの値）を書いていない限り起動時に落ちます。Spring のアノテーションです。",
+  },
+  {
+    term: "@ConfigurationProperties",
+    aliases: ["@ConfigurationProperties"],
+    body: "`prefix` に続くキーをまとめてクラスのフィールドへ読み込む印です。ハイフン区切りのキー（`retry-count`）は、キャメルケースのフィールド名（`retryCount`）に対応します。`@Value` と違い、キーが無くても起動時には落ちません。Spring Boot のアノテーションです。",
+  },
+  {
+    term: "@PropertySource",
+    aliases: ["@PropertySource"],
+    body: "`application.yml` や `.properties` とは別のファイルを、追加の設定として読み込む印です。クラスに付けます。ファイル名で検索すると、読み込んでいるクラスが見つかります。Spring のアノテーションです。",
+  },
+  {
     term: "アノテーション",
     aliases: ["アノテーション"],
     body: "クラスやメソッドに付けます。Spring では URL の対応づけなどに使います。種類によっては、本体に書いていない処理が動きます。読み飛ばさず確認しましょう。",

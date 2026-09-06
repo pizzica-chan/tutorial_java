@@ -108,6 +108,10 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
+          text: "接続先やポートのように Spring Boot 自身が読み込むものと、アプリが独自に定義したものが、同じファイルに混ざって書かれます。",
+        },
+        {
+          type: "p",
           text: "外の Tomcat に載せるときは、ポートやコンテキストパスは Tomcat 側で決まることが多いです。",
         },
         {
@@ -181,7 +185,7 @@ logging:
         },
         {
           type: "p",
-          text: "ここまでの `spring.datasource` や `server.port` は、Spring Boot 自身が読んで使う設定です。プロジェクト独自の設定キーは、誰かが書いた Java コードが明示的に読み込んで初めて使われます。読み方は主に2つです。",
+          text: "ここまでの `spring.datasource` や `server.servlet.context-path` は、Spring Boot 自身が読んで使う設定です。プロジェクト独自の設定キーは、誰かが書いた Java コードが明示的に読み込んで初めて使われます。読み方は主に2つです。",
         },
         {
           type: "code",
@@ -215,8 +219,8 @@ public class MailService {
           code: `@Component
 @ConfigurationProperties(prefix = "app.mail")
 public class MailProperties {
-  private String from;
-  private int retryCount;
+  private String from; // app.mail.from の値が自動でセットされる
+  private int retryCount; // app.mail.retry-count の値が自動でセットされる
 
   public String getFrom() { return from; }
   public void setFrom(String from) { this.from = from; }
@@ -233,6 +237,112 @@ public class MailProperties {
           kind: "trap",
           title: "見つからないときの壊れ方が違う",
           text: "`@Value(\"\${app.mail.from}\")` のように既定値を書かないと、対応するキーが1つも無い場合に起動時の例外で落ちます。設定漏れにすぐ気づけます（`\${app.mail.from:no-reply@example.com}` のように既定値を書けば落ちません）。一方 `@ConfigurationProperties` は、キーが無ければそのフィールドが `null` や初期値のままになるだけで、起動は失敗しません。設定を変えたのに反映されないときは、キー名の綴りや `prefix` のずれを疑いましょう。",
+        },
+        {
+          type: "h2",
+          text: "application.yml 以外の設定ファイルもある",
+        },
+        {
+          type: "p",
+          text: "設定は `application.yml`（や `.properties`）だけとは限りません。見慣れないキーで検索しても `application.yml` に無いときは、他の `.properties` / `.yml` ファイルも探しましょう。別ファイルを使う方法は主に3つです。",
+        },
+        {
+          type: "h3",
+          text: "@PropertySource で読み込む",
+        },
+        {
+          type: "p",
+          text: "クラスに付けると、指定したファイルを追加の設定として読み込みます。ファイル名が分かれば、`@PropertySource` の引数に同じファイル名がそのまま書かれているので、それで検索すると読み込んでいる Java クラスが見つかります。",
+        },
+        {
+          type: "code",
+          title: "custom.properties（別ファイルの例）",
+          lang: "text",
+          code: `app.feature.beta-enabled=true`,
+        },
+        {
+          type: "code",
+          title: "@PropertySource で読み込む（例）",
+          lang: "java",
+          highlightLines: [2],
+          code: `@Configuration
+@PropertySource("classpath:custom.properties")
+public class FeatureConfig {
+  @Value("\${app.feature.beta-enabled}")
+  private boolean betaEnabled; // custom.properties の値が自動でセットされる
+}`,
+        },
+        {
+          type: "h3",
+          text: "spring.config.import で取り込む",
+        },
+        {
+          type: "p",
+          text: "クラスを介さず、`application.yml` 自身に書くだけで、指定した別の yml ファイルの中身をそのまま取り込みます。",
+        },
+        {
+          type: "code",
+          title: "application.yml で別ファイルを取り込む（例）",
+          lang: "yaml",
+          code: `spring:
+  config:
+    import: classpath:extra.yml`,
+        },
+        {
+          type: "code",
+          title: "extra.yml（取り込まれる側の例）",
+          lang: "yaml",
+          code: `app:
+  notice:
+    message: メンテナンス予定があります`,
+        },
+        {
+          type: "code",
+          title: "呼び出し側（例）",
+          lang: "java",
+          highlightLines: [3],
+          code: `@Component
+public class NoticeService {
+  @Value("\${app.notice.message}")
+  private String message; // extra.yml の値が自動でセットされる
+}`,
+        },
+        {
+          type: "h3",
+          text: "spring.config.additional-location で指定する",
+        },
+        {
+          type: "p",
+          text: "起動時の引数や環境変数で、追加の設定ファイルの置き場所を指定する方法です。ソースにも `application.yml` にも痕跡が残らないので、見つからないときは Dockerfile や起動スクリプト、`docker-compose.yml` の環境変数も確認しましょう。",
+        },
+        {
+          type: "code",
+          title: "docker-compose.yml で指定する（例）",
+          lang: "yaml",
+          code: `app:
+  environment:
+    SPRING_CONFIG_ADDITIONAL_LOCATION: file:/etc/myapp/`,
+        },
+        {
+          type: "code",
+          title: "/etc/myapp/application.properties（指定先に置く側の例）",
+          lang: "text",
+          code: `app.region=ap-northeast-1`,
+        },
+        {
+          type: "code",
+          title: "呼び出し側（例）",
+          lang: "java",
+          highlightLines: [3],
+          code: `@Component
+public class RegionInfo {
+  @Value("\${app.region}")
+  private String region; // /etc/myapp/application.properties の値が自動でセットされる
+}`,
+        },
+        {
+          type: "p",
+          text: "この3つは、値がどこから来るかが違うだけです。読み込んだあとの値を Java 側で使う方法は、どれも変わらず `@Value` か `@ConfigurationProperties` です。",
         },
         {
           type: "h2",
