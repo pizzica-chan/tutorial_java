@@ -13,6 +13,7 @@ export type DiagramName =
   | "page-assets"
   | "html-json"
   | "session"
+  | "session-store"
   | "layers"
   | "filters"
   | "mapping"

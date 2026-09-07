@@ -2415,6 +2415,11 @@ th {
   color: var(--amber-2);
 }
 
+.d-chip.accent {
+  border-color: rgba(57, 92, 163, 0.45);
+  font-weight: 600;
+}
+
 .d-formula .d-layer.has-icon {
   font-size: 14px;
   padding: 10px 12px;

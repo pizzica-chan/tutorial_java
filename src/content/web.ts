@@ -465,6 +465,11 @@ Cookie: JSESSIONID=AB12CD34`,
   role: USER`,
         },
         {
+          type: "diagram",
+          name: "session-store",
+          caption: "サーバは、ログイン中の利用者の数だけセッションを持っています。上のコード例は、そのうちの `AB12CD34` の1件です。",
+        },
+        {
           type: "p",
           text: "中身をどう持つかは、アプリとフレームワーク次第です。パスワードは Cookie には出ません。",
         },

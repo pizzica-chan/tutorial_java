@@ -26,6 +26,7 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "page-assets": PageAssets,
   "html-json": HtmlJson,
   session: SessionCookie,
+  "session-store": SessionStore,
   layers: Layers,
   filters: Filters,
   mapping: Mapping,
@@ -88,9 +89,9 @@ function ColCard({ icon, title, children }: { icon: IconName; title: string; chi
   );
 }
 
-function Chip({ icon, children }: { icon: IconName; children: string }) {
+function Chip({ icon, children, accent }: { icon: IconName; children: string; accent?: boolean }) {
   return (
-    <span className="d-chip">
+    <span className={`d-chip ${accent ? "accent" : ""}`}>
       <Icon name={icon} size={14} />
       {children}
     </span>
@@ -247,6 +248,25 @@ function SessionCookie() {
         <Arrow label="ID だけ往復する" />
       </div>
       <IconNode icon="box" kicker="SERVER" title="セッション" sub="中身はこちら" size={28} />
+    </div>
+  );
+}
+
+function SessionStore() {
+  return (
+    <div className="d-n1">
+      <Layer icon="server" accent>
+        サーバが持つセッション
+      </Layer>
+      <Arrow down label="ログイン中の利用者ごとに1件" />
+      <div className="d-n1-rows">
+        <Chip icon="key" accent>
+          AB12CD34 → 山田太郎
+        </Chip>
+        <Chip icon="key">9F2E1C77 → 佐藤花子</Chip>
+        <Chip icon="key">5D3A80B1 → 鈴木一郎</Chip>
+        <Chip icon="key">…</Chip>
+      </div>
     </div>
   );
 }
