@@ -159,7 +159,7 @@ HTTP の約束やよくある型は一般論として書いてよい。アプリ
 
 ラベル付きの構造説明（URL 分解、スタックの 1 行、マッピング、Cookie とセッション、層、切り分け）は、CSS 図と `src/components/Icon.tsx` のアイコンにする。
 
-申請くんの画面と Network タブだけ、写真を `public/images/screen-*.jpg` に置く。手順は下の「教材の画面キャプチャ」。雰囲気のフリー素材（ノート PC、机、南京錠、サーバ室）は置かない。
+申請くんの画面、Network タブ、DevTools Application タブの Cookies だけ、写真を `public/images/screen-*.jpg` に置く。手順は下の「教材の画面キャプチャ」。雰囲気のフリー素材（ノート PC、机、南京錠、サーバ室）は置かない。
 
 `src/` や CSS から参照するファイルは、必ず `public/images/` に実体を置く。出典表に無いファイル、参照の無いファイルは置かない。追加・削除のあと `npm run check` で参照と出典の一致を確認する。
 
@@ -250,7 +250,7 @@ Mapper のカラム名
 
 ## 教材の画面キャプチャ（常時適用・shinsei-kun のキャプチャ作業時）
 
-ラベル付きの構造説明は CSS 図のまま。雰囲気の写真は「説明用の画像」ルール。申請くんの画面と Network タブだけ、このルールで撮る。装飾で全ページへ貼らない。
+ラベル付きの構造説明は CSS 図のまま。雰囲気の写真は「説明用の画像」ルール。申請くんの画面、Network タブ、DevTools Application タブの Cookies だけ、このルールで撮る。装飾で全ページへ貼らない。
 
 置き場は `public/images/screen-*.jpg`。本文は `kind: "screen"`。出典は `SOURCES.md`。追加・削除のあと `npm run check`。
 
@@ -304,6 +304,16 @@ node shinsei-kun/scripts/capture-network.mjs
 - 承認 500 は、山田で ID 16「研修参加」を開き、実際に承認を送信して撮る。`request.getApproverId()` が null のため、実アプリが 500 を返す
 - POST 後にログが消えるので、403 / 500 は遷移後の document 行を撮る（preserve log は必須ではない）
 - 画面にエラーが出ているが POST が無い見え方は、ページ単体ではなく Network のウィンドウ全体で撮る。`screen-network-js-error.jpg` は Network のログを消してから押す。ログ消去は手動。スクリプトがダイアログで案内する（`capture-network.mjs` の js-error 撮影）。キャプションは「例」
+
+### DevTools Application タブ（Cookies）
+
+Network タブと同じスクリプト・同じプロファイルを使う。Application タブへの切り替えと、Storage > Cookies > 対象オリジンの選択は、クリック位置を決め打ちできないため手動。スクリプトがダイアログで案内する。
+
+```bash
+node shinsei-kun/scripts/capture-network.mjs --cookies-only
+```
+
+ウィンドウ全体をまず `preserveUi` 付きで撮り、`crop-jpeg.ps1` で Cookies テーブル（`Name` 〜 `Secure` 列）だけを切り出す。左のツリーやアドレスバーは切ってよい（Network タブの Payload / Headers の切り出しと同じ扱い）。値が空の列（SameSite など）まで無理に含めない。
 
 ### 起動とアカウント
 

@@ -444,6 +444,13 @@ Host: intranet.example.co.jp
 Cookie: JSESSIONID=AB12CD34`,
         },
         {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-application-cookies.jpg",
+          alt: "開発者ツールの Application タブで見た JSESSIONID の Cookie",
+          caption: "上のログイン後、ブラウザの開発者ツール（Application タブ → Cookies）で見た `JSESSIONID` です。値だけが入っており、ログインユーザの情報はここには含まれません。",
+        },
+        {
           type: "p",
           text: "サーバは、この `JSESSIONID` をキーにセッションを取り出します。",
         },
@@ -459,7 +466,7 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "中身の持ち方は、アプリとフレームワーク次第です。パスワードは Cookie には出ません。",
+          text: "中身をどう持つかは、アプリとフレームワーク次第です。パスワードは Cookie には出ません。",
         },
         {
           type: "code",
@@ -473,7 +480,11 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "`@AuthenticationPrincipal` が、セッションに結び付いたログインユーザを渡します。`user.getId()` が、上のセッションの `id: 7` にあたります。Cookie の値そのものを読み取っているわけではありません。ここで確認できるのは、同じ ID でログインユーザを取り出せていることです。",
+          text: "`@AuthenticationPrincipal` が、セッションに結び付いたログインユーザを渡します。`user.getId()` が返す `7` は、Cookie の値ではなく、上のセッションの `id: 7` から来ています。",
+        },
+        {
+          type: "p",
+          text: "ここまでの流れは、セッション作成 → Cookie 付与 → ID からの復元です。タイムアウトや Cookie の削除でセッションが切れると、この復元ができなくなり、ログイン情報なら未ログイン扱いになります。",
         },
         {
           type: "h2",
@@ -481,7 +492,7 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "セッションに乗せられるのは、ログインユーザだけではありません。任意の情報を `HttpSession` に直接読み書きできます。次は申請くんではない、一般的な例です。",
+          text: "セッションに乗せられるのは、ログインユーザだけではありません。任意の情報を `HttpSession` に直接読み書きできます。次は、申請くんではない一般的な例です。",
         },
         {
           type: "code",
@@ -508,7 +519,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "`addToCart` で `session.setAttribute` した値を、別のリクエストで動く `showCart` が `session.getAttribute` で読み出しています。キーの名前（ここでは `cart`）を揃えれば、同じセッションの中で値を受け渡せます。",
+          text: "`addToCart` で `session.setAttribute` した値を、別のリクエストで呼ばれる `showCart` が `session.getAttribute` で読み出しています。キーの名前（ここでは `cart`）を揃えれば、同じセッションの中で値を受け渡せます。",
         },
         {
           type: "p",
@@ -517,10 +528,6 @@ public String showCart(HttpSession session, Model model) {
             label: "申請履歴から詳細を開いて戻ると、検索条件が消える",
             to: "/tracks/scenario/history-back",
           },
-        },
-        {
-          type: "p",
-          text: "ここまでの流れは、セッション作成 → Cookie 付与 → ID からの復元、です。タイムアウト、Cookie 削除、ドメイン / Path / Secure の不一致があると、セッションが切れて値が消えます。ログイン情報なら未ログイン扱いになります。",
         },
         { type: "quiz", id: "web-cookie" },
       ],

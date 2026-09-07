@@ -383,6 +383,25 @@ async function captureApprovePayload(page, appBase = base) {
   console.log("payload shot saved to", payloadShot, "- crop manually once coordinates are known");
 }
 
+async function captureCookiesPanel(page, appBase = base) {
+  await page.bringToFront();
+  await sleep(300);
+  waitForManualStep(
+    "次の操作を実施した後、OK を押してください。\n\n" +
+      "1. DevTools で Application タブを開く\n" +
+      "2. 左のツリーで Storage > Cookies > http://localhost:8080 を選ぶ\n" +
+      "3. JSESSIONID の行が、Domain / Path / Expires / HttpOnly / Secure などの\n" +
+      "   列とともに見える状態にする\n" +
+      "4. マウスを DevTools の外へ移す（ツールチップが残らないように）",
+  );
+  const cookiesShot = join(tmpdir(), "screen-application-cookies-full.jpg");
+  shotWindow("screen-application-cookies.jpg", false, {
+    outPath: cookiesShot,
+    preserveUi: true,
+  });
+  console.log("cookies shot saved to", cookiesShot, "- crop manually once coordinates are known");
+}
+
 async function captureCss404(page, appBase = verifyBase) {
   await page.goto(`${appBase}/requests`, { waitUntil: "networkidle0" });
   await page.setRequestInterception(true);
@@ -554,6 +573,15 @@ if (process.argv.includes("--approve-payload-only")) {
   await page.keyboard.press("Escape").catch(() => {});
   await sleep(400);
   await captureApprovePayload(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
+if (process.argv.includes("--cookies-only")) {
+  await login(page, base);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  await captureCookiesPanel(page, base);
   await browser.close();
   process.exit(0);
 }
