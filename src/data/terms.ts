@@ -377,6 +377,11 @@ export const terms: TermDef[] = [
     body: "`application.yml` とは別の `.properties` ファイルを、追加の設定として読み込む印です。クラスに付けます。標準では `.yml` に対応しておらず、エラーにもならず静かに失敗します。ファイル名で検索すると、読み込んでいるクラスが見つかります。Spring のアノテーションです。",
   },
   {
+    term: "property-placeholder",
+    aliases: ["property-placeholder", "context:property-placeholder"],
+    body: "Spring の設定を XML で書いていたころの書き方で、`.properties` ファイルを読み込み、`${...}` や `@Value` に反映させます。`<context:property-placeholder location=\"...\"/>` のように書きます。`@PropertySource` の XML版にあたります。",
+  },
+  {
     term: "アノテーション",
     aliases: ["アノテーション"],
     body: "クラスやメソッドに付けます。Spring では URL の対応づけなどに使います。種類によっては、本体に書いていない処理が動きます。読み飛ばさず確認しましょう。",

@@ -244,7 +244,7 @@ public class MailProperties {
         },
         {
           type: "p",
-          text: "設定は `application.yml`（や `.properties`）だけとは限りません。見慣れないキーで検索しても `application.yml` に無いときは、他の `.properties` / `.yml` ファイルも探しましょう。別ファイルを使う方法は主に3つです。",
+          text: "設定は `application.yml`（や `.properties`）だけとは限りません。見慣れないキーで検索しても `application.yml` に無いときは、他の `.properties` / `.yml` ファイルも探しましょう。別ファイルを使う方法は主に4つです。",
         },
         {
           type: "h3",
@@ -368,7 +368,7 @@ public class RegionInfo {
         },
         {
           type: "p",
-          text: "この4つは、値がどこから来るかが違うだけです。読み込んだあとの値を Java 側で使う方法は、どれも変わらず `@Value` か `@ConfigurationProperties` です。",
+          text: "この4つは、値がどこから来るかが違うだけです。読み込んだあとの値を Java 側で使う方法は、どれも変わらず `@Value` か `@ConfigurationProperties` です。ただし `@ConfigurationProperties` は Spring Boot のアノテーションなので、Spring Boot を使わない XML だけのアプリでは登場せず、`@Value` だけのことが多いです。",
         },
         {
           type: "h2",
