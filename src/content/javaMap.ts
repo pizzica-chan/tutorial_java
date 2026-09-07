@@ -341,8 +341,34 @@ public class RegionInfo {
 }`,
         },
         {
+          type: "h3",
+          text: "XML の property-placeholder で読み込む（古い書き方）",
+        },
+        {
           type: "p",
-          text: "この3つは、値がどこから来るかが違うだけです。読み込んだあとの値を Java 側で使う方法は、どれも変わらず `@Value` か `@ConfigurationProperties` です。",
+          text: "Spring の設定を XML で書いていたころのアプリでは、`<context:property-placeholder>` で `.properties` ファイルを読み込み、`${...}` や `@Value` に反映させる書き方をします。「トランザクションと同時実行」で見た `applicationContext.xml` は Bean の配線先でしたが、同じファイルに、この書き方で値の読み込みも混ざっていることがあります。",
+          link: {
+            label: "トランザクションと同時実行",
+            to: "/tracks/java-map/transaction",
+          },
+        },
+        {
+          type: "code",
+          title: "applicationContext.xml（例。申請くんではありません）",
+          lang: "xml",
+          highlightLines: [2],
+          code: `<context:annotation-config/>
+<context:property-placeholder location="classpath:app.properties"/>`,
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "annotation-config が無いと @Value が効かない",
+          text: "`<context:property-placeholder>` は `${...}` をファイルの値に置き換える仕組みを登録するだけで、`@Value` アノテーション自体を読む仕組みは別です。XML だけの設定で `<context:annotation-config/>`（または `<context:component-scan>`）が無いと、`@Value` を付けても値は入らず、フィールドは `null` のままになります。",
+        },
+        {
+          type: "p",
+          text: "この4つは、値がどこから来るかが違うだけです。読み込んだあとの値を Java 側で使う方法は、どれも変わらず `@Value` か `@ConfigurationProperties` です。",
         },
         {
           type: "h2",
