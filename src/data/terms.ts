@@ -1260,6 +1260,11 @@ export const terms: TermDef[] = [
     body: "Cookie の属性。HTTPS のときだけブラウザが付けます。http で開くと、ログインが切れて見えることがあります。",
   },
   {
+    term: "Expires / Max-Age",
+    aliases: ["Expires / Max-Age", "Expires", "Max-Age"],
+    body: "Cookie の有効期限を決める属性です。無ければセッション Cookie として扱われ、ブラウザを閉じると消えます。",
+  },
+  {
     term: "ドメイン",
     aliases: ["ドメイン"],
     body: "example.co.jp のようなサイトの範囲。Cookie の届く先もここで決まります。",
