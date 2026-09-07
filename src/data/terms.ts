@@ -1101,7 +1101,7 @@ export const terms: TermDef[] = [
   {
     term: "CSS",
     aliases: ["CSS"],
-    body: "見た目の指定。当たっていないときは、処理が無いのではなくファイルの 404 が多いです。",
+    body: "HTML の見た目（色、余白、レイアウトなど）を指定するファイルです。",
   },
   {
     term: "JavaScript",
