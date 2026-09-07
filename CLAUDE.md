@@ -310,8 +310,10 @@ node shinsei-kun/scripts/capture-network.mjs
 Network タブと同じスクリプト・同じプロファイルを使う。Application タブへの切り替えと、Storage > Cookies > 対象オリジンの選択は、クリック位置を決め打ちできないため手動。スクリプトがダイアログで案内する。
 
 ```bash
-node shinsei-kun/scripts/capture-network.mjs --cookies-only
+node shinsei-kun/scripts/capture-network.mjs --cookies-only --verify
 ```
+
+`screen-application-cookies.jpg` は `intranet.example.co.jp:8080` で撮る（Cookie とセッションのレッスン本文が同じホスト名を使っているため）。hosts の設定は Network タブの節と同じ。
 
 ウィンドウ全体をまず `preserveUi` 付きで撮り、`crop-jpeg.ps1` で Cookies テーブル（`Name` 〜 `Secure` 列）だけを切り出す。左のツリーやアドレスバーは切ってよい（Network タブの Payload / Headers の切り出しと同じ扱い）。値が空の列（SameSite など）まで無理に含めない。
 
