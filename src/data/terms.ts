@@ -496,6 +496,11 @@ export const terms: TermDef[] = [
     body: "複数のテーブルを、共通のカラムで紐付けて1つの結果にまとめる SQL の操作です。SQL では JOIN と書きます。",
   },
   {
+    term: "LEFT JOIN",
+    aliases: ["LEFT JOIN", "左外部結合"],
+    body: "結合先に一致するレコードが無くても、結合元のレコードを残す JOIN です（結合先の列は `NULL` になります）。ただの `JOIN`（内部結合）は、両方に一致するレコードが無いと消えます。`LEFT JOIN` した列に `WHERE` や `LIKE` の条件を足すと、その列が `NULL` の行は条件に一致せず、一覧から消えることがあります。",
+  },
+  {
     term: "インデックス",
     aliases: ["インデックス"],
     body: "検索を速くするための DB の索引。無いとフルスキャンになりやすいです。",
@@ -773,6 +778,16 @@ export const terms: TermDef[] = [
     term: "Web API",
     aliases: ["Web API", "WebAPI"],
     body: "データを HTTP で提供する窓口。本文は JSON が多く、ブラウザの画面、モバイルアプリ、ほかのサーバなどから使われます。",
+  },
+  {
+    term: "Webhook",
+    aliases: ["Webhook", "webhook"],
+    body: "何かが起きたタイミングで、登録しておいた URL へアプリ側から自動で HTTP リクエストを送る仕組みです。Slack への通知などに使われます。呼び出し先の応答が遅いと、呼び出し元の処理もその分待たされます。",
+  },
+  {
+    term: "Slack",
+    aliases: ["Slack"],
+    body: "社内のチャットツールの一つです。Incoming Webhook という仕組みを使うと、登録した URL へ決まった形式（JSON）でリクエストを送るだけで、指定したチャンネルに通知を投稿できます。",
   },
   {
     term: "Content-Type",
