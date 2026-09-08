@@ -116,7 +116,7 @@ export function TroubleshootMap() {
   };
 
   const heading = leaf
-    ? "その症状は、こう当たりをつけます"
+    ? "当たりのつけ方"
     : searching
       ? `「${trimmed}」に当てはまる症状`
       : group
