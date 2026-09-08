@@ -814,7 +814,7 @@ traceroute -T -p 8080 intranet.example.co.jp`,
           type: "callout",
           kind: "note",
           title: "プロトコルとポートで経路が変わる",
-          text: "ブラウザは HTTP を TCP で送ります。ポートは 80 や 443、8080 など、接続先で決まります。traceroute の既定が ICMP や UDP だと、見える経路が変わることがあります。途中の FW の許可だけでなく、ポリシーベースルーティングのように、プロトコルやポートで道を分ける制御もあります。HTTP と同じ道（プロトコル）を見る TCP の例は、上の Linux の例です。Windows の tracert は ICMP のままなので、ポートまで届くかは次で確認しましょう。",
+          text: "ブラウザは HTTP を TCP で送ります。ポートは 80 や 443、8080 など、接続先で決まります。traceroute の既定が ICMP や UDP だと、見える経路が変わることがあります。途中の FW の許可だけでなく、ポリシーベースルーティングのように、プロトコルやポートで道を分ける制御もあります。HTTP と同じ TCP で経路を見るには、上の Linux の TCP の例（`traceroute -T -p 8080`）を使いましょう。Windows の tracert は ICMP のままなので、ポートまで届くかは次で確認しましょう。",
         },
         {
           type: "h2",
