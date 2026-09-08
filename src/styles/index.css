@@ -384,7 +384,8 @@ pre {
 }
 
 :target,
-.glossary [id] {
+.glossary [id],
+[id^="idx-"] {
   scroll-margin-top: 5.5rem;
 }
 
