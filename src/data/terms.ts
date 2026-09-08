@@ -16,12 +16,12 @@ export const terms: TermDef[] = [
   {
     term: "HTTP",
     aliases: ["HTTP"],
-    body: "ブラウザとサーバがデータをやり取りする約束事。1 回の会話はリクエストとレスポンスで完結します。",
+    body: "ブラウザとサーバがデータをやり取りするための通信プロトコルです。TCP の上で動きます。1 回の会話はリクエストとレスポンスで完結します。",
   },
   {
     term: "HTTPS",
     aliases: ["HTTPS"],
-    body: "HTTP を暗号化したもの。通信の途中で中身を読まれにくくします。アドレスは https:// で始まります。",
+    body: "HTTP を TLS で暗号化した通信プロトコルです。通信の途中で中身を読まれにくくします。アドレスは https:// で始まります。",
   },
   {
     term: "GET / POST",
@@ -534,7 +534,7 @@ export const terms: TermDef[] = [
   {
     term: "SSL / TLS",
     aliases: ["SSL", "TLS"],
-    body: "HTTP を暗号化する仕組みです。SSL は古い呼び名で、現在の規格は TLS ですが、SSL という呼び方も現場でよく使われます。",
+    body: "HTTP など、上位のプロトコルを暗号化する通信プロトコルです。SSL は古い呼び名で、現在の規格は TLS ですが、SSL という呼び方も現場でよく使われます。",
   },
   {
     term: "SSL 終端",
@@ -590,7 +590,7 @@ export const terms: TermDef[] = [
   {
     term: "DNS",
     aliases: ["DNS"],
-    body: "名前（ホスト名）を IP アドレスに変換する仕組みです。",
+    body: "名前（ホスト名）を IP アドレスに変換する（名前解決する）プロトコルです。",
   },
   {
     term: "名前解決",
@@ -601,7 +601,7 @@ export const terms: TermDef[] = [
   {
     term: "TCP/IP",
     aliases: ["TCP/IP", "TCP"],
-    body: "インターネットでデータを届ける約束の組み合わせ。IP がホストまで、TCP がポートまで届ける役割を持ちます。HTTP はその上で動きます。",
+    body: "インターネットでデータを届けるプロトコルの組み合わせです。IP がホストまで、TCP がポートまで届ける役割を持ちます。HTTP はその上で動きます。",
   },
   {
     term: "ICMP",
@@ -631,7 +631,7 @@ export const terms: TermDef[] = [
   {
     term: "SSH",
     aliases: ["SSH"],
-    body: "ネットワーク越しにサーバのターミナルを安全に操作する仕組みです。GUI の無いサーバでは、SSH でログインしてコマンドを打って調べます。",
+    body: "通信を暗号化し、ネットワーク越しにサーバのターミナルを安全に操作するプロトコルです。GUI の無いサーバでは、SSH でログインしてコマンドを打って調べます。",
   },
   {
     term: "grep",
@@ -1207,7 +1207,7 @@ export const terms: TermDef[] = [
   {
     term: "DB",
     aliases: ["データベース", "DB"],
-    body: "データを保存する置き場。MySQL など。一覧の件数や更新結果はここにあります。",
+    body: "データを保存し、SQL で検索・更新する仕組みです。MySQL など。一覧の件数や更新結果はここにあります。",
   },
   {
     term: "MySQL",
