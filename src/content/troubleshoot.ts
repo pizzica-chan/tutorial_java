@@ -1257,6 +1257,32 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "h2",
+          text: "Caused by の読み方",
+        },
+        {
+          type: "p",
+          text: "例外は、別の例外に包まれて投げ直されることがあります。フレームワークやライブラリがよく行います。このとき、スタックトレースには包んだ側の例外が先に出て、その下に `Caused by:` として包まれた元の例外が続きます。何段も続くこともあります。いちばん下が最初に起きた例外で、これが直接の原因です。",
+        },
+        {
+          type: "code",
+          title: "例（申請くんの実ログではない）",
+          lang: "text",
+          highlightLines: [5],
+          code: `org.springframework.dao.DataIntegrityViolationException: nested exception is java.sql.SQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (\`t_request\`, CONSTRAINT \`fk_request_applicant\`)
+	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:239)
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:87)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:432)
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (\`t_request\`, CONSTRAINT \`fk_request_applicant\`)
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
+	at jp.co.example.shinsei.mapper.RequestMapper.insert(RequestMapper.java)
+	at jp.co.example.shinsei.service.RequestService.create(RequestService.java:38)`,
+        },
+        {
+          type: "p",
+          text: "先頭の `DataIntegrityViolationException` は、Spring がラップした汎用的な例外で、これだけでは何が起きたか分かりません。読むのは `Caused by` の方です。`SQLIntegrityConstraintViolationException` のメッセージが、`fk_request_applicant` という外部キー制約への違反、つまり `t_request.applicant_id` が指すレコードが `t_user` に無いことを示しています。まず開くのは、その下の `at` 行にある `RequestService.java:38` です。",
+        },
+        {
+          type: "h2",
           text: "パッケージ名で見分ける",
         },
         {
