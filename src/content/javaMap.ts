@@ -841,7 +841,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "申請くんは Thymeleaf です。JSP や FreeMarker など別のテンプレートエンジンでも、Model に載せた名前と HTML 側の参照、form の action、表示条件を突き合わせる、という読み方は同じです。",
+          text: "申請くんは Thymeleaf を使っています。JSP や FreeMarker など別のテンプレートエンジンでも、Model に載せた名前と HTML 側の参照、form の action、表示条件を突き合わせる、という読み方は同じです。",
         },
         {
           type: "h2",

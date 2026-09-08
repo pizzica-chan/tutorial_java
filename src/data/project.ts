@@ -335,7 +335,7 @@ public class MailService {
   {
     path: "src/main/java/.../mapper/RequestMapper.java",
     note: "SQL との対応（インタフェース）",
-    why: "Java のメソッド名と、XML の id が対になります。申請くんは MyBatis なので、Spring Data の Repository ではなく Mapper です。",
+    why: "Java のメソッド名と、XML の id が対になります。申請くんは MyBatis を使っているので、Spring Data の Repository ではなく Mapper です。",
     code: `public interface RequestMapper {
   List<RequestEntity> findMine(@Param("userId") Long userId);
   RequestEntity findById(@Param("id") Long id, @Param("userId") Long userId);
