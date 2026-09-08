@@ -1268,13 +1268,12 @@ public void approve(Long requestId, Long approverId) {
           title: "例（申請くんの実ログではない）",
           lang: "text",
           highlightLines: [5],
-          code: `org.springframework.dao.DataIntegrityViolationException: nested exception is java.sql.SQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (\`t_request\`, CONSTRAINT \`fk_request_applicant\`)
+          code: `org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [insert into t_request (title, applicant_id, approver_id, status) values (?, ?, ?, ?)]
 	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:239)
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:87)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:432)
 Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (\`t_request\`, CONSTRAINT \`fk_request_applicant\`)
 	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
-	at jp.co.example.shinsei.mapper.RequestMapper.insert(RequestMapper.java)
 	at jp.co.example.shinsei.service.RequestService.create(RequestService.java:38)`,
         },
         {
