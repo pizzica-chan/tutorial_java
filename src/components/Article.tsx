@@ -246,6 +246,5 @@ function label(kind: CalloutKind) {
   if (kind === "warn") return "注意";
   if (kind === "trap") return "落とし穴";
   if (kind === "note") return "補足";
-  if (kind === "scenario") return "シナリオ";
   return "ヒント";
 }

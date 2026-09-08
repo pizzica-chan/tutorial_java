@@ -1,6 +1,6 @@
 export type TrackId = "intro" | "web" | "java-map" | "reading" | "trace" | "troubleshoot" | "scenario";
 
-export type CalloutKind = "tip" | "note" | "warn" | "trap" | "scenario";
+export type CalloutKind = "tip" | "note" | "warn" | "trap";
 
 export type WidgetName = "explorer" | "flow" | "stack" | "http" | "troubleshoot-map";
 

@@ -22,8 +22,11 @@ export const scenarioTrack: Track = {
           text: "検証用環境のデータは、シナリオごとの例です。前のシナリオで見たデータと食い違っていても、間違いではありません。",
         },
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "申請一覧画面で、承認ボタンを押しても何も起きない。画面は切り替わらず、エラーメッセージも出ない。",
         },
         {
@@ -165,8 +168,11 @@ export const scenarioTrack: Track = {
       minutes: 8,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "申請詳細画面で承認ボタンを押すと、「エラーが発生しました」と出る。一覧には戻らない。",
         },
         {
@@ -301,8 +307,11 @@ WHERE id = 16;`,
       minutes: 8,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "申請詳細で承認ボタンを押すと、「この申請は承認できません」と出る。一覧には戻らない。",
         },
         {
@@ -412,8 +421,11 @@ requestService.approve(id, user.getId());`,
       minutes: 9,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "承認者の佐藤花子から、「申請者にメールを2通送ってしまったかもしれない」と報告があった。実際に、申請者の山田には同じ内容の承認完了メールが2通届いている。画面にはエラーが出ておらず、DB の申請レコードは1件だけ APPROVED になっている。",
         },
         {
@@ -536,7 +548,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "`WHERE` に `status = 'PENDING'` のような条件がありません。ほぼ同時刻に届いた2つのリクエストは、どちらも `findById` で `status='PENDING'` を読み、どちらも判定を通過します。先に読んだ側の更新がまだ終わっていなくても、あとから読んだ側は同じ `PENDING` を見ているので、両方とも `update` と `mailService.notifyApplicant` まで進んでしまいます。",
+          text: "`WHERE` に `status = 'PENDING'` のような条件がありません。ほぼ同時刻に届いた2つのリクエストは、どちらも `findById` で `status='PENDING'` を読み、どちらも判定を通過します。どちらのリクエストも、自分が読んだ時点の `status` を基準に判定しているため、相手がどこまで進んだかに関係なく、両方とも `update` と `mailService.notifyApplicant` まで進んでしまいます。",
         },
         {
           type: "callout",
@@ -586,8 +598,11 @@ mailService.notifyApplicant(request);`,
       minutes: 10,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "佐藤花子が ID 13「休暇申請」を承認すると、画面は承認済みに変わり、エラーは出ない。しかし、申請者の山田太郎に確認したところ、通知メールが届いていない。",
         },
         {
@@ -711,8 +726,11 @@ java.lang.StringIndexOutOfBoundsException: begin 0, end 10, length 4
       minutes: 8,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "申請一覧画面が、検証用環境だけ 0 件になる。ローカル環境では、同じログインユーザで 4 件出る。",
         },
         {
@@ -846,8 +864,11 @@ WHERE (applicant_id = 7 OR approver_id = 7)
       minutes: 12,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "申請履歴画面で、件名を「申請」、ステータスを「承認済み」にして検索すると、未承認のレコードが出る。エラーメッセージは出ない。",
         },
         {
@@ -1096,8 +1117,11 @@ public String history(
       minutes: 10,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "申請履歴で件名「研修」、ステータス「未承認」を検索すると1件だけ出る。その行から詳細を開き、「← 申請履歴」で一覧に戻ると、絞り込みが消えて全件が表示される。エラーメッセージは出ない。",
         },
         {
@@ -1257,8 +1281,11 @@ GET /shinsei/requests/history                   200`,
       minutes: 10,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "申請履歴でステータスを「承認済み」にして検索すると、レコードは正しい件数で出る。ただし、新しく追加された「承認日時」の列が、どのレコードも「-」のままになっている。",
         },
         {
@@ -1407,8 +1434,11 @@ private LocalDateTime approvedAt;`,
       minutes: 13,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "検証用環境で、申請履歴が多いユーザが申請履歴を検索すると、応答が遅い。エラーメッセージは出ない。ローカルでは同じ操作でもすぐ終わる。",
         },
         {
@@ -1593,8 +1623,11 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
       minutes: 8,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "検証用環境の URL を開いても読み込みが終わらない。ログイン画面も申請一覧も同じ。HTML が返らないので画面は白いまま、タブが読み込み中になることが多い。ローカルでは同じ URL で 200。",
         },
         {
@@ -1736,8 +1769,11 @@ Content-Type: text/html;charset=UTF-8`,
       minutes: 10,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "検証用環境で申請一覧を開くと、しばらく待ってから「エラーが発生しました」と出る。ローカル環境では、同じ操作で問題なく開ける。",
         },
         {
@@ -1859,8 +1895,11 @@ traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packet
       minutes: 8,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "検証用環境にデプロイした直後から、申請くんの画面が開けない。ブラウザは 502 を返す。直前に、運用担当者がログの出力先ディレクトリを作り直す作業をしていた。ローカル環境では、同じコード・同じ手順で問題なく起動する。",
         },
         {
@@ -1980,8 +2019,11 @@ drwxr-xr-x 2 yamada yamada 4096 Aug 20 09:10 shinsei-kun`,
       minutes: 8,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "申請一覧画面は開くが、表の罫線も色も当たっていない。文字だけが並ぶ。",
         },
         {
@@ -2136,8 +2178,11 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
       minutes: 11,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "取り下げ機能の見積もりのため、申請ステータスに `CANCELLED` を追加したときの影響範囲を調べてほしい、と依頼された。不具合報告ではない。",
         },
         {
@@ -2381,8 +2426,11 @@ requestMapper.update(request);`,
       minutes: 14,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "申請一覧と申請履歴に「部署で絞り込み」を追加したい。既存の処理への影響を教えてほしい、と依頼された。",
         },
         {
@@ -2724,8 +2772,11 @@ CREATE TABLE IF NOT EXISTS t_request (
       minutes: 13,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "承認者が不在のときに備え、部長職の人なら誰でも承認できるようにしたい。影響範囲を教えてほしい、と依頼された。",
         },
         {
@@ -2952,8 +3003,11 @@ CREATE TABLE IF NOT EXISTS t_request (
       minutes: 12,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "申請履歴検索に、承認者の名前で絞り込む機能を追加したい。影響範囲を教えてほしい、と依頼された。",
         },
         {
@@ -3166,8 +3220,11 @@ ORDER BY r.created_at DESC`,
       minutes: 13,
       blocks: [
         {
-          type: "callout",
-          kind: "scenario",
+          type: "h2",
+          text: "シナリオ",
+        },
+        {
+          type: "p",
           text: "承認が完了したタイミングで、社内 Slack へ通知を送りたい。影響範囲を教えてほしい、と依頼された。",
         },
         {

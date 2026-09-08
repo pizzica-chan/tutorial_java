@@ -285,7 +285,6 @@ export function Icon({
 }
 
 export function calloutIcon(kind: CalloutKind): IconName {
-  if (kind === "scenario") return "flag";
   if (kind === "note") return "note";
   if (kind === "warn" || kind === "trap") return "warn";
   return "tip";
