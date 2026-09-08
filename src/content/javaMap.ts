@@ -77,7 +77,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "申請くんは Maven です。いま挙げた項目は、`pom.xml` の dependencies では次のとおりです。",
+          text: "申請くんは Maven を使っています。いま挙げた項目は、`pom.xml` の dependencies では次のとおりです。",
         },
         {
           type: "code",
@@ -1069,7 +1069,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
       blocks: [
         {
           type: "p",
-          text: "MyBatis の Mapper は、メソッド宣言だけの Java インタフェースと、SQL を書いた XML ファイルの組であることが多いです。アノテーションだけで SQL を書く方法もありますが、申請くんは XML です。置き場所や細かい動きは、`application.yml` の `mybatis:` に書いてあります。",
+          text: "MyBatis の Mapper は、メソッド宣言だけの Java インタフェースと、SQL を書いた XML ファイルの組であることが多いです。アノテーションだけで SQL を書く方法もありますが、申請くんは XML を使っています。置き場所や細かい動きは、`application.yml` の `mybatis:` に書いてあります。",
         },
         {
           type: "code",

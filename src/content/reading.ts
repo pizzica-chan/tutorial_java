@@ -821,7 +821,7 @@ a1b2c3d4 (Sato Taro 2026-03-12 10:14:22 +0900 52)   throw new ConflictException(
         },
         {
           type: "p",
-          text: "行の左にある `a1b2c3d4` は、その変更を指すハッシュ値です。git log -1 や git show に渡すと、コミットメッセージ（なぜ変えたかの説明）を読めます。",
+          text: "行の左にある `a1b2c3d4` は、その変更を指すハッシュ値です。git log -1 に渡すと、コミットメッセージ（なぜ変えたかの説明）を読めます。",
         },
         {
           type: "code",
