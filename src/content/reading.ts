@@ -842,6 +842,40 @@ Date:   2026-03-12 10:14:22 +0900
           text: "`#482` のようなチケット番号があれば、課題管理システム側にもっと詳しい経緯が残っていることがあります。",
         },
         {
+          type: "p",
+          text: "`git log -1` で分かるのはコミットメッセージまでです。実際に何を変えたか（差分）まで見たいときは、`git show` を使います。",
+        },
+        {
+          type: "code",
+          title: "git show（例）",
+          lang: "text",
+          highlightLines: [17, 18, 19],
+          code: `$ git show a1b2c3d4
+commit a1b2c3d4f9e2b6c1...
+Author: Sato Taro
+Date:   2026-03-12 10:14:22 +0900
+
+    承認済みの申請を二重承認できてしまう不具合を修正 (#482)
+
+    ステータスが PENDING 以外なら ConflictException を投げるようにした。
+
+diff --git a/RequestService.java b/RequestService.java
+--- a/RequestService.java
++++ b/RequestService.java
+@@ -48,6 +48,9 @@ public void approve(Long requestId, Long approverId) {
+   if (!request.getApproverId().equals(approverId)) {
+     throw new ForbiddenException("承認権限がありません");
+   }
++  if (!"PENDING".equals(request.getStatus())) {
++    throw new ConflictException("この申請は承認できません");
++  }
+   request.setStatus("APPROVED");`,
+        },
+        {
+          type: "p",
+          text: "先頭が `-` の行は削除、`+` の行は追加です。1つのファイルだけに絞りたいときは `git show a1b2c3d4 -- RequestService.java` のように、`--` のあとにファイル名を指定します。",
+        },
+        {
           type: "callout",
           kind: "trap",
           title: "blame の変更者は、意図を書いた人とは限らない",
@@ -891,11 +925,32 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
 ------------------------------------------------------------------`,
         },
         {
+          type: "p",
+          text: "そのリビジョンでの差分は `svn diff -c` で見ます。",
+        },
+        {
+          type: "code",
+          title: "svn diff -c（例）",
+          lang: "text",
+          code: `$ svn diff -c 1187 RequestService.java
+--- RequestService.java (revision 1186)
++++ RequestService.java (revision 1187)
+@@ -48,6 +48,9 @@
+   if (!request.getApproverId().equals(approverId)) {
+     throw new ForbiddenException("承認権限がありません");
+   }
++  if (!"PENDING".equals(request.getStatus())) {
++    throw new ConflictException("この申請は承認できません");
++  }
+   request.setStatus("APPROVED");`,
+        },
+        {
           type: "table",
           headers: ["調べたいこと", "Git", "SVN"],
           rows: [
             ["行ごとの変更者と日時", "`git blame ファイル名`", "`svn blame -v ファイル名`（`-v` 無しだとリビジョンと変更者だけ）"],
-            ["その変更の説明を読む", "`git log -1 <hash>` / `git show <hash>`", "`svn log -r <リビジョン番号> ファイル名`"],
+            ["コミットメッセージを読む", "`git log -1 <hash>`", "`svn log -r <リビジョン番号> ファイル名`"],
+            ["実際の差分（コード変更）を見る", "`git show <hash>`", "`svn diff -c <リビジョン番号> ファイル名`"],
             ["特定の文字列がいつ入ったかを探す", "`git log -S\"文字列\" -- ファイル名`", "専用の機能は無く、ログを遡るか外部ツールを使うことが多い"],
           ],
         },
