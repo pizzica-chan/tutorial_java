@@ -867,8 +867,23 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
           items: [
             "200 や 302 … HTTP までは届き、アプリか前段の HTTP サーバが応答した",
             "404 … 届いているがパスやマッピングが違う",
-            "接続できない / タイムアウト … TCP 以前、または TLS・プロキシの手前",
+            "接続できない / タイムアウト … TCP 以前、または TLS・プロキシの手前。curl 自身のエラーメッセージも手がかりになる",
             "ブラウザだけ失敗 … Cookie、プロキシ設定、別ネットワークからのアクセス制限も疑う",
+          ],
+        },
+        {
+          type: "p",
+          text: "HTTP の応答すら返らないときは、curl 自身が出すエラーメッセージ（よくある例）で、どこまで届いていないかが分かります。",
+        },
+        {
+          type: "table",
+          headers: ["curl のエラーメッセージ（よくある例）", "疑うこと"],
+          rows: [
+            ["`Could not resolve host`", "DNS で名前が引けない。ホスト名の綴り、DNS サーバ、`/etc/hosts` を疑う"],
+            ["`Connection refused`", "その先までは届いたが、指定したポートで待ち受けが無い。アプリ未起動やポート番号違いを疑う"],
+            ["`Connection timed out`", "応答が返ってこない。FW やセキュリティグループで止められていることが多い"],
+            ["`SSL certificate problem` / `SSL connect error`", "TLS 証明書や設定の問題。証明書の期限切れ、ホスト名不一致、社内 CA が信頼されていない、など"],
+            ["`Empty reply from server`", "TCP は繋がったが、HTTP の応答が無いまま切れた。別プロトコルが動いている、アプリが処理中に落ちた、など"],
           ],
         },
         {
