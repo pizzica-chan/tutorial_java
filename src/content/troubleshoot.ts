@@ -1268,7 +1268,7 @@ public void approve(Long requestId, Long approverId) {
           title: "例（申請くんの実ログではない）",
           lang: "text",
           highlightLines: [5],
-          code: `org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [insert into t_request (title, applicant_id, approver_id, status) values (?, ?, ?, ?)]
+          code: `org.springframework.dao.DataIntegrityViolationException: PreparedStatementCallback; SQL [insert into t_request (title, applicant_id, approver_id, status) values (?, ?, ?, ?)]
 	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:239)
 	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:87)
 	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:432)
