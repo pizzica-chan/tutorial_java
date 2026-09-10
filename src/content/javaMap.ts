@@ -1479,7 +1479,7 @@ public void addInterceptors(InterceptorRegistry registry) {
           type: "ul",
           items: [
             "静的ファイルの 404 は、手前の HTTP サーバのパス設定のことがある（パターン3）",
-            "アプリのエラーログは、サーブレットコンテナ側にある",
+            "アプリのエラーログは、手前の HTTP サーバの error.log ではなく、サーブレットコンテナ側にある（外部 Tomcat なら catalina.out など。パターン2・3）",
             "コンテキストパスは、手前と後ろの両方に付いていることがある（パターン3）",
           ],
         },
