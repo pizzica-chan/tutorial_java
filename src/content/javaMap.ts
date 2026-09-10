@@ -15,7 +15,7 @@ export const javaMapTrack: Track = {
   no: "03",
   title: "Javaアプリの構成",
   kicker: "STRUCTURE",
-  description: "リポジトリを開いたとき、ファイルと層の役割が分かるようにします。",
+  description: "リポジトリを開いたとき、ファイルと層の役割に加え、設定ファイルやトランザクション、共通処理の仕組みまで見渡せるようにします。",
   accent: "#f5cf4d",
   lessons: [
     {
@@ -1145,7 +1145,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "p",
           text: "実際にこれが起きた例は、「実務のシナリオ」の「申請履歴の『承認日時』が、承認済みでも空欄になる」で扱います。",
           link: {
-            label: "申請履歴の「承認日時」が、承認済みでも空欄になる",
+            label: "申請履歴の『承認日時』が、承認済みでも空欄になる",
             to: "/tracks/scenario/history-approved-at",
           },
         },

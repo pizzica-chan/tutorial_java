@@ -6,7 +6,7 @@ export const webTrack: Track = {
   no: "02",
   title: "Webの基礎",
   kicker: "HTTP",
-  description: "URL、ステータスコード、Cookie など、HTTP の読み方を身につけます。",
+  description: "URL、ステータスコード、Cookie など HTTP の読み方に加え、フロントエンドとバックエンドの役割分担や Ajax・JSON の扱いも身につけます。",
   accent: "#4fb0a5",
   lessons: [
     {

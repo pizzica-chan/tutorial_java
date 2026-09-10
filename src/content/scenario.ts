@@ -1381,7 +1381,7 @@ private LocalDateTime approvedAt;`,
         },
         {
           type: "p",
-          text: "`r.updated_at` にはエイリアスが付いていません。`application.yml` の `map-underscore-to-camel-case: true` により、`updated_at` はカラム名から自動で `updatedAt` というフィールド名に変換されます。しかし `RequestEntity` にあるのは `approvedAt` です。",
+          text: "`r.updated_at` にはエイリアスが付いていません。`application.yml` の `map-underscore-to-camel-case: true` により、`updated_at` はカラム名から自動で `updatedAt` というフィールド名に変換されます。しかし `RequestEntity` にあるのは `approvedAt` です。この自動変換の仕組みは「mapper.xml の読み方」で扱っています。",
           link: {
             label: "mapper.xml の読み方",
             to: "/tracks/java-map/mapper-xml",
@@ -3351,7 +3351,7 @@ public class SlackNotificationService {
           type: "p",
           text: "`approve` は `@Transactional` です。Slack の Webhook 呼び出しがこのメソッドの中にあると、外部通信が終わるまでトランザクションが終わりません。「トラブル例：外部システム / 外部 API」で見たとおり、外部呼び出しはタイムアウトを明示的に設定しないと、応答が返らないまま長時間待つことがあります。",
           link: {
-            label: "トラブル例：外部システム / 外部API",
+            label: "トラブル例：外部システム / 外部 API",
             to: "/tracks/troubleshoot/p-external",
           },
         },

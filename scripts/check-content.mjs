@@ -96,6 +96,18 @@ for (const name of onDisk) {
   if (!uniqueImages.includes(name)) errors.push(`参照されていない画像: public/images/${name}`);
 }
 
+const linkPairs = [
+  ...sourceText.matchAll(/text:\s*"((?:[^"\\]|\\.)*)",\s*\n\s*link:\s*\{\s*\n\s*label:\s*"((?:[^"\\]|\\.)*)"/g),
+];
+for (const [, rawText, rawLabel] of linkPairs) {
+  const unescape = (value) => value.replace(/\\"/g, '"').replace(/\\n/g, "\n");
+  const text = unescape(rawText);
+  const label = unescape(rawLabel);
+  if (!text.includes(label)) {
+    errors.push(`本文に無い link.label: "${label}"（本文: "${text.slice(0, 40)}..."）`);
+  }
+}
+
 const answerIndexes = [...quizzesSrc.matchAll(/answer:\s*(\d+)/g)].map((match) => Number(match[1]));
 const choiceBlocks = [...quizzesSrc.matchAll(/choices:\s*\[([\s\S]*?)\],\s*answer:\s*(\d+)/g)];
 for (const match of choiceBlocks) {

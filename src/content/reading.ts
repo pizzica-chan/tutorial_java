@@ -7,7 +7,7 @@ export const readingTrack: Track = {
   no: "04",
   title: "ソースの読み方",
   kicker: "READING",
-  description: "画面と URL を手がかりに、サーバ側の処理の入口を特定し、Service から Mapper までを辿ります。",
+  description: "画面と URL を手がかりに処理の入口を特定し、キーワード検索や呼び出しの追跡、変更履歴、デバッガなどでコードを読み解きます。",
   accent: "#4fb0a5",
   lessons: [
     {
@@ -164,7 +164,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "次の項目「URL マッピング」と「Service から Mapper へ」では、この入口から、URL マッピング → Service の分岐という具体的な流れを、申請一覧で辿ります。SQL と応答は、次章「SQL からソースを探す」で扱います。",
+          text: "次の項目「URL マッピング」と「Service から Mapper へ」では、この入口から、URL マッピング → Service の分岐という具体的な流れを、申請くんの例で辿ります。SQL と応答は、次章「SQL からソースを探す」で扱います。",
         },
       ],
     },
