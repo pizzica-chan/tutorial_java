@@ -444,7 +444,7 @@ public class RegionInfo {
         },
         {
           type: "p",
-          text: "ここまでは、Controller → Service → Mapper と分かれている想定です。実際には Service を飛ばして Controller から Mapper を呼ぶなど、並びがずれることがあります。ずれていても、上の順番（受付 → ビジネスロジック → DB）で、今の Java メソッドから呼ばれている先を開いていけば十分です。",
+          text: "ここまでは、Controller → Service → Mapper と分かれている想定です。実際には Service を飛ばして Controller から Mapper を呼ぶなど、並びがずれることがあります。ずれていても、上の順番（受付 → ビジネスロジック → DB）で、今の Java メソッドから呼ばれている先を開いていけば追えます。",
         },
         {
           type: "h2",

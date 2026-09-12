@@ -804,6 +804,12 @@ requestService.approve(id, user.getId());`,
           text: "ここまでの読み方は、今のソースが何をしているかを追う方法でした。なぜ今の形になっているかは、ソースの中には書かれていないことがあります。変更履歴を見ると、いつ・誰が・何のために変えたかが分かることがあります。",
         },
         {
+          type: "callout",
+          kind: "tip",
+          title: "GUI ツールでも同じことができます",
+          text: "ここではコマンドで説明しますが、GitKraken や SourceTree、TortoiseGit のような GUI ツールでも、blame・コミットの説明・差分を同じように確認できます。SVN にも TortoiseSVN などがあります。使い慣れたものがあれば、そちらで構いません。",
+        },
+        {
           type: "h2",
           text: "Git で調べる",
         },
