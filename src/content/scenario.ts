@@ -3140,8 +3140,11 @@ public class HistorySearchCondition {
           type: "code",
           title: "RequestMapper.xml の searchHistory（承認者名を追加した例）",
           lang: "xml",
-          highlightLines: [8, 9, 10],
-          code: `WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
+          highlightLines: [11, 12, 13],
+          code: `FROM t_request r
+JOIN t_user a ON a.id = r.applicant_id
+LEFT JOIN t_user v ON v.id = r.approver_id
+WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
 <if test="title != null and title != ''">
   AND r.title LIKE CONCAT('%', #{title}, '%')
 </if>

@@ -374,7 +374,7 @@ export const terms: TermDef[] = [
   {
     term: "@PropertySource",
     aliases: ["@PropertySource"],
-    body: "`application.yml` とは別の `.properties` ファイルを、追加の設定として読み込む印です。クラスに付けます。標準では `.yml` に対応しておらず、エラーにもならず静かに失敗します。ファイル名で検索すると、読み込んでいるクラスが見つかります。Spring のアノテーションです。",
+    body: "`application.yml` とは別の `.properties` ファイルを、追加の設定として読み込む印です。クラスに付けます。標準では `.yml` に対応しておらず、エラーにもならず失敗します。ファイル名で検索すると、読み込んでいるクラスが見つかります。Spring のアノテーションです。",
   },
   {
     term: "property-placeholder",
