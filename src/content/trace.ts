@@ -239,7 +239,7 @@ public class RequestJdbcRepository {
         },
         {
           type: "p",
-          text: "MyBatis の `<if>` や `<where>` タグは、条件によって実際に組み立てられる SQL が変わります。ログに出る SQL は、その瞬間に組み立てられたあとの文なので、XML の中にはその形のまま存在しません。",
+          text: "MyBatis の `<if>` や `<where>` タグは、条件によって実際に組み立てられる SQL が変わります。ログに出る SQL は、実行時に組み立てられたあとの文なので、XML の中にはその形のまま存在しません。",
         },
         {
           type: "code",
