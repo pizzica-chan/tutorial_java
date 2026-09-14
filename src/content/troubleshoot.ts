@@ -1226,7 +1226,7 @@ ORDER BY r.created_at DESC
         },
         {
           type: "p",
-          text: "申請くんなら、自分たちが書いたコードのパッケージは jp.co.example.shinsei です。org.springframework や java. はフレームワークや Java 本体なので、直す場所ではありません。",
+          text: "申請くんなら、自分たちが書いたコードのパッケージは jp.co.example.shinsei です。org.springframework や java. はフレームワークや Java 本体なので、見る対象ではありません。",
         },
         {
           type: "h2",
