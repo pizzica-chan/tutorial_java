@@ -33,7 +33,7 @@ export const cheatSheet: CheatSection[] = [
       },
       {
         title: "ログを絞り込む・数える",
-        note: "1つのファイルが大きい、パターンが複数ある、圧縮済みで探せない、といった「ログが多すぎる／見づらい」ときの組み合わせです。",
+        note: "1つのファイルが大きい、パターンが複数ある、圧縮済みで探せない、といった「ログが多すぎる／見づらい」ときに使います。",
         rows: [
           { cmd: "`tail -f app.log | grep requestId=12`", env: "Linux", desc: "追記される行をリアルタイムで絞り込む" },
           { cmd: "`grep -n -A 5 -B 5 'ERROR' app.log`", env: "Linux", desc: "`ERROR` の行と、その前後 5 行ずつを行番号付きで見る。例外の直前に何が起きていたかが分かる" },
@@ -60,7 +60,7 @@ export const cheatSheet: CheatSection[] = [
       },
       {
         title: "プロセス・スレッドの負荷",
-        note: "「重い」がアプリ全体か、特定のスレッド（処理）かを切り分けるときに使います。",
+        note: "アプリ全体が重いのか、特定のスレッド（処理）だけが重いのかを切り分けるときに使います。",
         rows: [
           { cmd: "`ps -eo pid,ppid,%cpu,%mem,etime,cmd --sort=-%cpu | head`", env: "Linux", desc: "CPU 使用率が高いプロセスを上位から見る" },
           { cmd: "`top -H -p PID`", env: "Linux", desc: "そのプロセスの中で、どのスレッドが CPU を使っているかを見る" },
@@ -93,7 +93,7 @@ export const cheatSheet: CheatSection[] = [
       },
       {
         title: "プロセス・サービスを止める・再起動する",
-        note: "ここからは調査ではなく操作です。本番・共有環境では、対象と影響範囲（他の利用者がいないか、処理の途中でないか）を確認してから実行しましょう。",
+        note: "本番・共有環境では、対象と影響範囲（他の利用者がいないか、処理の途中でないか）を確認してから実行しましょう。",
         rows: [
           { cmd: "`kill -TERM PID`", env: "Linux", desc: "正常終了のシグナルを送る。アプリ側の後始末（シャットダウン処理）が動く猶予がある。`kill PID` も既定で同じ" },
           { cmd: "`kill -9 PID`", env: "Linux", desc: "強制終了。後始末は動かない。`TERM` で終わらないときの最終手段" },
@@ -114,7 +114,7 @@ export const cheatSheet: CheatSection[] = [
       },
       {
         title: "設定ファイルを横断して探す",
-        note: "設定は `application.yml` / `application-dev.yml` / `docker-compose.yml` のように複数ファイルへ分かれ、あとから読み込む方や環境変数が上書きすることもあります。特定のキーや値がどのファイルに書いてあるかを、ディレクトリごと探すときに使います。",
+        note: "特定のキーや値がどのファイルに書いてあるかを、ディレクトリごと探すときに使います。",
         rows: [
           { cmd: "`grep -Rn \"context-path\" --include=\"*.yml\" .`", env: "Linux", desc: "カレントディレクトリ以下の `.yml` ファイルから、そのキーを持つ行をファイル名・行番号付きで探す" },
           { cmd: "`grep -Rln \"shinsei_dev\" .`", env: "Linux", desc: "その値（DB 名やホスト名など）を含むファイルの名前だけを一覧する（`-l` は行内容ではなくファイル名を出す指定）" },
@@ -130,7 +130,7 @@ export const cheatSheet: CheatSection[] = [
     groups: [
       {
         title: "いつ、誰が、何を変えたか",
-        note: "「昨日まで動いていたのに」という調査で、疑わしいファイルや行を起点に、変更の経緯を辿るときの組み合わせです。",
+        note: "疑わしいファイルや行を起点に、変更の経緯を辿るときに使います。",
         rows: [
           {
             cmd: "`git log --until=\"2026-08-30 09:00\" -3 --pretty=format:\"%h %ad %s\" --date=format:\"%Y-%m-%d %H:%M\"`",
@@ -147,7 +147,7 @@ export const cheatSheet: CheatSection[] = [
       },
       {
         title: "壊れたコミットを二分探索で特定する",
-        note: "「いつからか」は分かったが、その間に何十件もコミットがあって1件ずつ追えないときの手段です。",
+        note: "いつから起きているかは分かっても、その間に何十件もコミットがあって1件ずつ追えないときの手段です。",
         rows: [
           {
             cmd: "`git bisect start`\n`git bisect bad`\n`git bisect good コミットハッシュ`",
@@ -164,7 +164,6 @@ export const cheatSheet: CheatSection[] = [
     groups: [
       {
         title: "テーブル定義を確認する",
-        note: "ソースだけを見て思い込んだカラム名や型が、実際の DB と違っていることがあります。SQL やコードを疑う前に、まず実物を見ましょう。",
         rows: [
           { cmd: "`SHOW TABLES;`", env: "MySQL", desc: "今つないでいる DB にあるテーブルの一覧を見る" },
           { cmd: "`DESCRIBE テーブル名;`", env: "MySQL", desc: "カラム名・型・NULL を許すか・キーの種類を一覧する" },
@@ -211,7 +210,7 @@ export const cheatSheet: CheatSection[] = [
       },
       {
         title: "応答内容・応答時間を掘る",
-        note: "疎通はしているのに、内容や速さがおかしいときの組み合わせです。",
+        note: "疎通はしているのに、内容がおかしい、または遅いときに使います。",
         rows: [
           { cmd: "`curl -o /dev/null -s -w \"%{http_code} %{time_total}s\\n\" URL`", env: "Linux / Windows", desc: "本文は捨てて、ステータスコードと合計時間だけを簡潔に見る" },
           { cmd: "`curl -s URL | jq .`", env: "Linux", desc: "JSON の応答を整形して見る（`jq` が入っている環境）" },

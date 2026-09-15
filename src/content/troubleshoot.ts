@@ -466,7 +466,7 @@ appuser   1842  java -jar shinsei-kun.jar`,
         },
         {
           type: "p",
-          text: "アプリを起動しようとして `Address already in use`（`BindException`）のようなエラーが出るときは、そのポートを別のプロセスがすでに使っています。どのプロセスかを探しましょう。",
+          text: "アプリを起動しようとして `Address already in use`（`BindException`）のようなエラーが出るときは、アプリが使おうとしたポートを、別のプロセスがすでに使っています。どのプロセスかを探しましょう。",
         },
         {
           type: "code",
