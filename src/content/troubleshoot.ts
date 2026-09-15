@@ -1600,7 +1600,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
     {
       id: "p-slow",
       title: "トラブル例：遅い",
-      minutes: 9,
+      minutes: 10,
       blocks: [
         {
           type: "p",
@@ -1616,16 +1616,22 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
         },
         {
           type: "code",
-          title: "計測ログを追加した例（申請くんの実ログではない）",
-          highlightLines: [2, 3],
-          code: `2026-08-16 04:12:03.100 INFO  ... [nio-8080-exec-3] j.c.e.s.controller.RequestController : list start
-2026-08-16 04:12:03.105 INFO  ... [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine start
-2026-08-16 04:12:08.410 INFO  ... [nio-8080-exec-3] j.c.e.s.service.RequestService : findMine done
-2026-08-16 04:12:08.412 INFO  ... [nio-8080-exec-3] j.c.e.s.controller.RequestController : list done`,
+          title: "例（申請くんの実ログではない）",
+          highlightLines: [4, 5],
+          code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests/history
+04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : start RequestService.searchByTitle(..)
+04:12:03.108 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.searchByTitle : ==>  Preparing: SELECT ... FROM t_request WHERE title LIKE ? ORDER BY created_at DESC
+04:12:03.109 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.searchByTitle : ==> Parameters: %申請%(String)
+04:12:08.410 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.searchByTitle : <==      Total: 36
+04:12:08.413 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : end RequestService.searchByTitle(..)`,
         },
         {
           type: "p",
-          text: "`findMine` の start と done のあいだが約 5 秒なので、遅いのは Service の中（SQL やその前後の I/O）です。申請くんの既存ログでは `ServiceLoggingAspect` が DEBUG で start / end を出します。",
+          text: "上から順に、連続した 2 行の差を見ていきます。ほとんどは数ミリ秒ですが、`Parameters` の行と `Total` の行のあいだだけが約 5 秒です。",
+        },
+        {
+          type: "p",
+          text: "この 2 行のあいだは、SQL を DB へ投げてから結果が返るまでです。つまり、Java の処理ではなく SQL の実行に時間がかかっています。",
         },
         {
           type: "ul",
@@ -1633,8 +1639,41 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
             "ミリ秒まで見る。秒だけだと差が消える",
             "スレッド名（`nio-8080-exec-3` など）やリクエスト ID で、同じリクエストの行だけを揃える。別リクエストの行が混ざると差が無意味になる",
             "Network タブの待ち時間と、サーバログの最初と最後の時刻を比べる。Network タブだけ長いなら、アプリに入る前（待ち行列、LB、DNS）",
-            "通過点のログが少なければ、空いている区間の中を疑う。足りないときだけ、ID 付きの通過点を一時的に足す",
           ],
+        },
+        {
+          type: "h2",
+          text: "細かいログが出ていないとき",
+        },
+        {
+          type: "p",
+          text: "どこまで絞れるかは、出ているログの細かさで決まります。上の例で SQL の実行まで分かったのは、Mapper が 1 回の SQL につき 3 行を出していたからです。",
+        },
+        {
+          type: "p",
+          text: "申請くんは `logback-spring.xml` で、`ServiceLoggingAspect` と `jp.co.example.shinsei.mapper` を、それぞれ DEBUG にしています。Mapper 側を DEBUG にしていない環境では、同じリクエストでも次の 3 行しか出ません。",
+        },
+        {
+          type: "code",
+          title: "Mapper のログが出ていない場合（同じリクエスト）",
+          highlightLines: [2, 3],
+          code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests/history
+04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : start RequestService.searchByTitle(..)
+04:12:08.413 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : end RequestService.searchByTitle(..)`,
+        },
+        {
+          type: "p",
+          text: "連続した 2 行は `start` と `end` になり、差は同じ約 5 秒です。ただし分かるのは、Service の中のどこかまでです。SQL が遅いのか、その前後の I/O が遅いのかは、この 3 行だけでは区別できません。",
+        },
+        {
+          type: "p",
+          text: "検証環境で Mapper のログレベルを一時的に DEBUG にすると、最初の例と同じところまで絞れます。ログレベルを変えられないときは、調べたい範囲の前後にログを一時的に足すか、次の表で当たりをつけましょう。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "本番で SQL のログが切られていることがある",
+          text: "本番では、ログの量や性能への影響を避けるために、SQL のログを切っている環境もあります。出ていないことが、そのまま設定ミスとは限りません。",
         },
         {
           type: "h2",
@@ -1660,7 +1699,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
         },
         {
           type: "p",
-          text: "レコードロックや同時実行が疑わしいときは「トランザクションと同時実行」で扱います。ここからは、SQL が原因のときの調べ方です。",
+          text: "レコードロックや同時実行が疑わしいときは「トランザクションと同時実行」で扱います。",
           link: {
             label: "トランザクションと同時実行",
             to: "/tracks/java-map/transaction",
@@ -1669,6 +1708,10 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
         {
           type: "h2",
           text: "SQL が原因のとき",
+        },
+        {
+          type: "p",
+          text: "SQL で時間を使っているときは、2 つの形があります。SQL の回数そのものが多いのか、1 回の SQL が遅いのかで、見るものが変わります。",
         },
         {
           type: "h3",
@@ -1684,15 +1727,15 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
           title: "例（申請くんの実ログではない）",
           lang: "text",
           highlightLines: [4, 5, 6, 7, 8, 9],
-          code: `04:12:03.100 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.findMine : ==>  Preparing: SELECT id, title, status, applicant_id, approver_id FROM t_request WHERE applicant_id = ?
-04:12:03.101 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.findMine : ==> Parameters: 7(Long)
-04:12:03.102 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.findMine : <==      Total: 1000
-04:12:03.103 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
-04:12:03.104 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 3(Long)
-04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : <==      Total: 1
-04:12:03.106 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
-04:12:03.107 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 5(Long)
-04:12:03.108 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : <==      Total: 1
+          code: `04:20:11.100 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.RequestMapper.findMine : ==>  Preparing: SELECT id, title, status, applicant_id, approver_id FROM t_request WHERE applicant_id = ?
+04:20:11.101 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.RequestMapper.findMine : ==> Parameters: 7(Long)
+04:20:11.102 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.RequestMapper.findMine : <==      Total: 1000
+04:20:11.103 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
+04:20:11.104 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 3(Long)
+04:20:11.105 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : <==      Total: 1
+04:20:11.106 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
+04:20:11.107 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 5(Long)
+04:20:11.108 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : <==      Total: 1
 （以下、一覧の件数だけ繰り返す）`,
         },
         {
@@ -1705,20 +1748,11 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
         },
         {
           type: "p",
-          text: "回数は増えていないのに遅いなら、その SQL 自体を疑います。同じ SQL の `Preparing` から `Total` までの間隔が空いていれば、そのクエリが遅いということです。",
-        },
-        {
-          type: "code",
-          title: "例（申請くんの実ログではない）",
-          lang: "text",
-          highlightLines: [1, 3],
-          code: `04:12:03.100 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchByTitle : ==>  Preparing: SELECT ... FROM t_request WHERE title LIKE ? ORDER BY created_at DESC
-04:12:03.101 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchByTitle : ==> Parameters: %申請%(String)
-04:12:08.410 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchByTitle : <==      Total: 36`,
+          text: "SQL の回数は増えず、1 回の SQL で時間を使っているときです。このページの最初に見た `searchByTitle` が、この形でした。",
         },
         {
           type: "p",
-          text: "その SQL を、検証用 DB で `EXPLAIN` してみましょう。DB がその SQL をどう読むか（実行計画）が分かります。MySQL では次のように書きます。",
+          text: "`==>  Preparing` の行に出ている SQL を、検証用 DB で `EXPLAIN` してみましょう。DB がその SQL をどう読むか（実行計画）が分かります。MySQL では次のように書きます。",
         },
         {
           type: "code",
@@ -1758,7 +1792,7 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
         },
         {
           type: "p",
-          text: "この例では `rows` が約 85 万件なのに、ログの `Total` は 36 件です。`rows` は DB が読む見積もり、`Total` は SQL が返した件数です。36 件を返すために約 85 万件を読んでいて、その時間がログの `Preparing` から `Total` までの 5 秒に表れています。",
+          text: "この例では `rows` が約 85 万件なのに、最初に見たログの `Total` は 36 件です。`rows` は DB が読む見積もり、`Total` は SQL が返した件数です。36 件を返すために約 85 万件を読んでいて、その時間が `Parameters` から `Total` までの 5 秒に表れています。",
         },
         {
           type: "callout",
