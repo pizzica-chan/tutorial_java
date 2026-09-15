@@ -1713,7 +1713,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
           lang: "text",
           highlightLines: [1, 3],
           code: `04:12:03.100 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchByTitle : ==>  Preparing: SELECT ... FROM t_request WHERE title LIKE ? ORDER BY created_at DESC
-04:12:03.101 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchByTitle : ==> Parameters: 申請(String)
+04:12:03.101 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchByTitle : ==> Parameters: %申請%(String)
 04:12:08.410 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchByTitle : <==      Total: 36`,
         },
         {
