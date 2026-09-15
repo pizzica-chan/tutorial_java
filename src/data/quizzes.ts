@@ -71,7 +71,7 @@ export const quizzes = {
       "React の state が更新されたかだけ",
     ],
     answer: 1,
-    explanation: "上の例では一覧の行を JSON から組みます。Network タブの Fetch/XHR で応答を確認しましょう。JSON の件数も違うなら API の SQL と DB、JSON が正しいなら画面側の filter、React の state、React のプロパティ名を調べます。",
+    explanation: "上の例では一覧の行を JSON から組みます。Network タブの Fetch/XHR で応答を確認しましょう。JSON の件数も違うなら API の SQL と DB、JSON が正しいならプロパティ名、React の state、JavaScript の例外を調べます。",
   },
   "web-status": {
     id: "web-status",

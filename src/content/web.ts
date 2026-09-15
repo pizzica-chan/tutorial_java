@@ -915,11 +915,11 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "下の例では React を使います。React の文法を覚えるのではなく、JSON が画面になるまでの流れを見ましょう。React の `fetch` が受け取るのは、次のような JSON の配列です。前の項目で見た 1 件の抜粋が、複数並んだものと考えましょう。",
+          text: "下の例では React を使います。React の文法を覚えるのではなく、JSON が画面になるまでの流れを見ましょう。`fetch` が受け取るのは、次のような JSON の配列です。前の項目で見た 1 件の抜粋が、複数並んだものと考えましょう。",
         },
         {
           type: "code",
-          title: "GET /shinsei/api/requests の応答（React が受け取る JSON）",
+          title: "GET /shinsei/api/requests の応答から 2 件を抜粋",
           lang: "json",
           code: `[
   {
@@ -938,7 +938,7 @@ public String showCart(HttpSession session, Model model) {
     "applicantId": 7,
     "approverId": 3,
     "applicantEmail": "yamada@example.co.jp",
-    "createdAt": "2026-04-10T09:15:00"
+    "createdAt": "2026-04-12T11:00:00"
   }
 ]`,
         },
@@ -986,7 +986,7 @@ function RequestList() {
         },
         {
           type: "p",
-          text: "先ほどの JSON（2件）を `items.map` に渡すと、ブラウザには次の HTML が組み立てられます。`key` は React が内部で使う目印なので、実際の HTML には出ません。",
+          text: "先ほどの JSON（2 件）を `items.map` に渡すと、ブラウザには次の HTML が組み立てられます。`key` は React が内部で使う目印なので、実際の HTML には出ません。",
         },
         {
           type: "code",
@@ -999,7 +999,7 @@ function RequestList() {
         },
         {
           type: "p",
-          text: "item.title と item.status は、前の項目で見た JSON の title と status です。プロパティ名が違うと、画面には出ません。",
+          text: "`item.title` と `item.status` は、前の項目で見た JSON の `title` と `status` です。JSON 側と違う名前を書くと、その値だけが空になります。行自体は出るので、JSON は届いているのに中身が抜けている、という見え方になります。",
         },
         {
           type: "h2",
@@ -1024,7 +1024,11 @@ function RequestList() {
         },
         {
           type: "p",
-          text: "上の例のように、React は JSON から画面を作るために使えます。ただし、React を使うだけで SPA になるわけではありません。Web API も SPA 専用ではありません。名前だけで決めず、Network タブで実際の応答を確認しましょう。",
+          text: "上の例のように、React は JSON から画面を作るために使えます。ただし、React を使うだけで SPA になるわけではありません。Web API も SPA 専用ではありません。",
+        },
+        {
+          type: "p",
+          text: "使っているライブラリの名前ではなく、Network タブの通信で判断しましょう。画面を切り替えたときに HTML が返ってくるのか、JSON だけが返ってくるのかで、どちらの作りかが分かります。",
         },
         {
           type: "h2",
@@ -1032,7 +1036,15 @@ function RequestList() {
         },
         {
           type: "p",
-          text: "JSON の件数もおかしいなら、API の SQL と DB を確認しましょう。JSON は正しいのに画面だけ違うなら、プロパティ名、filter や並べ替え、React の state、JavaScript の例外を確認しましょう。",
+          text: "まず、Network タブの Fetch/XHR で一覧 API の応答を開きましょう。画面の元になるデータは、そこにあります。",
+        },
+        {
+          type: "p",
+          text: "JSON の時点で件数や値がおかしいなら、画面を組む前の段階で違っています。API 側の Java のコードと SQL、DB のレコードを確認しましょう。",
+        },
+        {
+          type: "p",
+          text: "JSON は正しいのに画面だけ違うなら、JSON を画面にする側を疑います。プロパティ名、React の state、ブラウザの Console に出る JavaScript の例外を確認しましょう。",
         },
         { type: "quiz", id: "web-json-ui" },
       ],
