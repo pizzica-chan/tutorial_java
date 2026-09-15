@@ -1604,7 +1604,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
       blocks: [
         {
           type: "p",
-          text: "遅さはエラーログに出ないことが多いです。先に、同じリクエストのログのタイムスタンプを並べ、どこで時間が空いているかを見ましょう。",
+          text: "同じリクエストのログのタイムスタンプを並べ、どこで時間が空いているかを見て、遅い箇所を特定しましょう。",
         },
         {
           type: "h2",
@@ -1640,7 +1640,6 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
           type: "h2",
           text: "区間の中で疑うもの",
         },
-        { type: "diagram", name: "n-plus-one" },
         {
           type: "table",
           headers: ["兆候", "疑う場所"],
@@ -1653,15 +1652,65 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
         },
         {
           type: "p",
-          text: "SQL ログの回数を見ましょう。一覧のレコード数だけ SELECT が増えるなら N+1 です。",
+          text: "外部 API が疑わしいときは「トラブル例：外部システム / 外部 API」、レコードロックや同時実行が疑わしいときは「トランザクションと同時実行」で扱います。ここからは、SQL が原因のときの調べ方です。",
+          link: {
+            label: "トラブル例：外部システム / 外部 API",
+            to: "/tracks/troubleshoot/p-external",
+          },
         },
         {
           type: "h2",
-          text: "`EXPLAIN` で SQL の実行計画を見る",
+          text: "SQL が原因のとき",
+        },
+        {
+          type: "h3",
+          text: "回数が多い（N+1）",
+        },
+        { type: "diagram", name: "n-plus-one" },
+        {
+          type: "p",
+          text: "SQL ログの回数を見ましょう。一覧のレコード数だけ SELECT が増えるなら N+1 です。",
+        },
+        {
+          type: "code",
+          title: "例（申請くんの実ログではない）",
+          lang: "text",
+          highlightLines: [4, 5, 6, 7, 8, 9],
+          code: `04:12:03.100 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.findMine : ==>  Preparing: SELECT id, title, status, applicant_id, approver_id FROM t_request WHERE applicant_id = ?
+04:12:03.101 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.findMine : ==> Parameters: 7(Long)
+04:12:03.102 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.findMine : <==      Total: 1000
+04:12:03.103 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
+04:12:03.104 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 3(Long)
+04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : <==      Total: 1
+04:12:03.106 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
+04:12:03.107 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 5(Long)
+04:12:03.108 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.UserMapper.findById : <==      Total: 1
+（以下、一覧の件数だけ繰り返す）`,
         },
         {
           type: "p",
-          text: "ログの時刻差で、遅い SQL まで絞れたら、その SQL を検証用 DB で `EXPLAIN` してみましょう。実行計画とは、DB がその SQL をどう読むかの手順です。MySQL では次の書き方です。",
+          text: "一覧を取る `findMine` は1回だけですが、そのあとに同じ形の `UserMapper.findById` が件数分（ここでは1000回）並びます。JOIN や IN 句でまとめて取得するなど、SQL を1回にまとめると減らせます。",
+        },
+        {
+          type: "h3",
+          text: "1件の SQL 自体が遅い（EXPLAIN）",
+        },
+        {
+          type: "p",
+          text: "回数は増えていないのに遅いなら、その SQL 自体を疑います。同じ SQL の `Preparing` から `Total` までの間隔が空いていれば、そのクエリが遅いということです。",
+        },
+        {
+          type: "code",
+          title: "例（申請くんの実ログではない）",
+          lang: "text",
+          highlightLines: [1, 3],
+          code: `04:12:03.100 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchHistory : ==>  Preparing: SELECT ... FROM t_request WHERE title LIKE ? ORDER BY created_at DESC
+04:12:03.101 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchHistory : ==> Parameters: 申請(String)
+04:12:08.410 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchHistory : <==      Total: 1`,
+        },
+        {
+          type: "p",
+          text: "検証用 DB で、その SQL を `EXPLAIN` してみましょう。DB がその SQL をどう読むか（実行計画）が分かります。MySQL では次のように書きます。",
         },
         {
           type: "code",
@@ -1942,7 +1991,7 @@ t_request  ref   fk_request_applicant   fk_request_applicant   3`,
         },
         {
           type: "p",
-          text: "外部 API とは、自社アプリの外にある HTTP の API や、SMTP・SFTP など別プロセスへの接続をまとめて呼ぶ言い方です。社内の人事マスタ API も、クラウドの通知 API も同じ切り分けです。",
+          text: "外部 API とは、自社アプリの外にある HTTP API や、SMTP・SFTP のような別プロセスへの接続の総称です。社内の人事マスタ API も、クラウドの通知 API も、これに含まれます。",
         },
         {
           type: "table",
@@ -1961,7 +2010,7 @@ t_request  ref   fk_request_applicant   fk_request_applicant   3`,
         },
         {
           type: "p",
-          text: "処理の入口から Service へ降りたあと、Mapper の SQL が終わった時刻と、次のログの時刻のあいだが空いていれば、その間で外部 I/O をしていることが多いです。",
+          text: "ログを順に並べ、時刻が大きく空いている行を探しましょう。DB の SQL がそこまで時間を使っていなければ、その間で外部 I/O をしていることが多いです。",
         },
         {
           type: "code",
@@ -1977,7 +2026,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
         },
         {
           type: "p",
-          text: "DB 更新は 03.206 で終わっています。ERROR は 08.910 です。あいだは外部への POST 待ちです。例外クラス名はフレームワークやライブラリごとに違いますが、接続失敗・タイムアウト・HTTP 4xx / 5xx を示すことが多いです。",
+          text: "DB 更新は 03.206 で終わっています。ERROR は 08.910 です。あいだは外部への POST 待ちです。`ERROR` 行自体にも `NotificationClient` というクラス名と、送信先の URL（`https://notify.example.internal/api/send`）が出ており、外部の通知 API への接続が失敗したと分かります。",
         },
         {
           type: "h2",
@@ -2007,7 +2056,7 @@ org.springframework.web.client.ResourceAccessException: I/O error on POST reques
         },
         {
           type: "p",
-          text: "承認処理は DB を更新したあと、MailService で申請者へメールを送る想定です。画面は承認済みなのにメールが来ないときは、Mapper の更新ログのあとに MailService の行があるかを見ましょう。SMTP サーバや通知 API の向き先は `application.yml` にあることが多いです。ただし、MailService の行が `WARN` などで残っていても、そこで例外が握りつぶされていると、それだけでは原因まで辿れません。実際にこれが起きた例は、「実務のシナリオ」の「承認は成功するのに、申請者への通知メールが届かない」で扱います。",
+          text: "承認処理は DB を更新したあと、MailService で申請者へメールを送る想定です。画面は承認済みなのにメールが来ないときは、Mapper の更新ログのあとに MailService の行があるかを見ましょう。SMTP サーバや通知 API の向き先は `application.yml` にあることが多いです。実際にこれが起きた例は、「実務のシナリオ」の「承認は成功するのに、申請者への通知メールが届かない」で扱います。",
           link: {
             label: "承認は成功するのに、申請者への通知メールが届かない",
             to: "/tracks/scenario/mail-silent",
