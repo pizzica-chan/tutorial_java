@@ -1612,7 +1612,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
         },
         {
           type: "p",
-          text: "連続した 2 行の時刻差が、その間にかかった時間です。差が大きい区間が、遅い箇所です。処理の入口のメソッドを読む前に、この差で範囲を狭めましょう。",
+          text: "連続した 2 行の時刻差が、そのあいだにかかった時間です。差が大きい区間が、遅い箇所です。処理の入口のメソッドを読む前に、この差で範囲を狭めましょう。",
         },
         {
           type: "code",
@@ -1651,7 +1651,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
         },
         {
           type: "p",
-          text: "申請くんは `logback-spring.xml` で、`ServiceLoggingAspect` と `jp.co.example.shinsei.mapper` を、それぞれ DEBUG にしています。Mapper 側を DEBUG にしていない環境では、同じリクエストでも次の 3 行しか出ません。",
+          text: "申請くんは `logback-spring.xml` で、`ServiceLoggingAspect` と `jp.co.example.shinsei.mapper` をそれぞれ DEBUG にしています。Mapper 側を DEBUG にしていない環境では、同じリクエストでも次の 3 行しか出ません。",
         },
         {
           type: "code",
@@ -1663,17 +1663,21 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
         },
         {
           type: "p",
-          text: "連続した 2 行は `start` と `end` になり、差は同じ約 5 秒です。ただし分かるのは、Service の中のどこかまでです。SQL が遅いのか、その前後の I/O が遅いのかは、この 3 行だけでは区別できません。",
+          text: "連続した 2 行は `start` と `end` になり、差は最初の例と同じ約 5 秒です。ここから分かるのは、この Service のメソッドの中で 5 秒かかったことまでです。",
         },
         {
           type: "p",
-          text: "検証環境で Mapper のログレベルを一時的に DEBUG にすると、最初の例と同じところまで絞れます。ログレベルを変えられないときは、調べたい範囲の前後にログを一時的に足すか、次の表で当たりをつけましょう。",
+          text: "1 回の SQL に 5 秒かかっていても、速い SQL を 1000 回投げていても（N+1）、ログはこの 3 行のままです。直し方は違うので、ここを取り違えると見当違いの対処になります。",
+        },
+        {
+          type: "p",
+          text: "検証環境で Mapper のログレベルを DEBUG にすると、SQL の回数と、1 回ごとにかかった時間が分かります。ログレベルを変えられないときは、調べたい範囲の前後にログを一時的に足すか、次の表で当たりをつけましょう。",
         },
         {
           type: "callout",
           kind: "note",
           title: "本番で SQL のログが切られていることがある",
-          text: "本番では、ログの量や性能への影響を避けるために、SQL のログを切っている環境もあります。出ていないことが、そのまま設定ミスとは限りません。",
+          text: "本番では、ログの量や性能への影響を避けるために、SQL のログを切っている環境もあります。出ていないからといって、設定ミスとは限りません。",
         },
         {
           type: "h2",
@@ -1711,7 +1715,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
         },
         {
           type: "p",
-          text: "SQL で時間を使っているときは、2 つの形があります。SQL の回数そのものが多いのか、1 回の SQL が遅いのかで、見るものが変わります。",
+          text: "SQL に時間がかかっているときは、2 つの形があります。SQL の回数そのものが多いのか、1 回の SQL が遅いのかで、見るものが変わります。",
         },
         {
           type: "h3",
@@ -1740,19 +1744,19 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
         },
         {
           type: "p",
-          text: "一覧を取る `findMine` は1回だけですが、そのあとに同じ形の `UserMapper.findById` が件数分（ここでは1000回）並びます。JOIN や IN 句でまとめて取得するなど、SQL を1回にまとめると減らせます。",
+          text: "一覧を取る `findMine` は 1 回だけですが、そのあとに同じ形の `UserMapper.findById` が件数分（ここでは 1000 回）並びます。JOIN や IN 句でまとめて取得するなど、SQL を 1 回にまとめると減らせます。",
         },
         {
           type: "h3",
-          text: "1件の SQL 自体が遅い（EXPLAIN）",
+          text: "1 件の SQL 自体が遅い（EXPLAIN）",
         },
         {
           type: "p",
-          text: "SQL の回数は増えず、1 回の SQL で時間を使っているときです。このページの最初に見た `searchByTitle` が、この形でした。",
+          text: "SQL の回数は増えず、1 回の SQL に時間がかかっているときです。このページの最初に見た `searchByTitle` が、この形でした。",
         },
         {
           type: "p",
-          text: "`==>  Preparing` の行に出ている SQL を、検証用 DB で `EXPLAIN` してみましょう。DB がその SQL をどう読むか（実行計画）が分かります。MySQL では次のように書きます。",
+          text: "`Preparing` の行に出ている SQL を、検証用 DB で `EXPLAIN` してみましょう。DB がその SQL をどう読むか（実行計画）が分かります。MySQL では次のように書きます。",
         },
         {
           type: "code",
