@@ -1652,10 +1652,18 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
         },
         {
           type: "p",
-          text: "外部 API が疑わしいときは「トラブル例：外部システム / 外部 API」、レコードロックや同時実行が疑わしいときは「トランザクションと同時実行」で扱います。ここからは、SQL が原因のときの調べ方です。",
+          text: "外部 API が疑わしいときは「トラブル例：外部システム / 外部 API」で扱います。",
           link: {
             label: "トラブル例：外部システム / 外部 API",
             to: "/tracks/troubleshoot/p-external",
+          },
+        },
+        {
+          type: "p",
+          text: "レコードロックや同時実行が疑わしいときは「トランザクションと同時実行」で扱います。ここからは、SQL が原因のときの調べ方です。",
+          link: {
+            label: "トランザクションと同時実行",
+            to: "/tracks/java-map/transaction",
           },
         },
         {
@@ -1704,30 +1712,34 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
           title: "例（申請くんの実ログではない）",
           lang: "text",
           highlightLines: [1, 3],
-          code: `04:12:03.100 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchHistory : ==>  Preparing: SELECT ... FROM t_request WHERE title LIKE ? ORDER BY created_at DESC
-04:12:03.101 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchHistory : ==> Parameters: 申請(String)
-04:12:08.410 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchHistory : <==      Total: 1`,
+          code: `04:12:03.100 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchByTitle : ==>  Preparing: SELECT ... FROM t_request WHERE title LIKE ? ORDER BY created_at DESC
+04:12:03.101 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchByTitle : ==> Parameters: 申請(String)
+04:12:08.410 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.searchByTitle : <==      Total: 36`,
         },
         {
           type: "p",
-          text: "検証用 DB で、その SQL を `EXPLAIN` してみましょう。DB がその SQL をどう読むか（実行計画）が分かります。MySQL では次のように書きます。",
+          text: "その SQL を、検証用 DB で `EXPLAIN` してみましょう。DB がその SQL をどう読むか（実行計画）が分かります。MySQL では次のように書きます。",
         },
         {
           type: "code",
           title: "例（検証用環境の MySQL）",
           lang: "sql",
-          code: `EXPLAIN SELECT * FROM t_request WHERE applicant_id = 7;`,
+          code: `EXPLAIN SELECT * FROM t_request WHERE title LIKE '%申請%' ORDER BY created_at DESC;`,
         },
         {
           type: "code",
           title: "EXPLAIN の結果（検証用環境）",
           lang: "text",
-          code: `table      type  possible_keys          key                    rows  Extra
-t_request  ref   fk_request_applicant   fk_request_applicant   3`,
+          code: `table      type  possible_keys  key   rows    Extra
+t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
         },
         {
           type: "p",
-          text: "`t_request` は `applicant_id` に外部キー制約があり、MySQL が自動でインデックスを付けていることが多いです。`type` が `ref`（インデックスを使った絞り込み）、`key` にそのインデックス名が入り、`rows` の見積もりも小さく済んでいます。インデックスが使えていないと、この `key` が `NULL` になり、`type` は `ALL`（フルスキャン）に近づきます。",
+          text: "`title LIKE '%申請%'` のように先頭が `%` の条件は、`title` にインデックスを足しても使えません。先頭の文字が決まっていないと、インデックスで絞り込む手がかりにならないためです。",
+        },
+        {
+          type: "p",
+          text: "そのため `possible_keys` は `NULL`（使える候補が無い）、`type` は `ALL`（フルスキャン）になっています。`ORDER BY created_at` の並び替えもインデックスで賄えず、`Extra` に `Using filesort` と出ています。",
         },
         {
           type: "p",
@@ -1746,7 +1758,7 @@ t_request  ref   fk_request_applicant   fk_request_applicant   3`,
         },
         {
           type: "p",
-          text: "`type` が `ALL` で `rows` の見積もりが大きいなら、条件に合わないレコードも大量に読んでからフィルタしています。それがそのままログの `Preparing` から `Total` までの時間に表れます。",
+          text: "この例では `rows` が約 85 万件なのに、ログの `Total` は 36 件です。`rows` は DB が読む見積もり、`Total` は SQL が返した件数です。36 件を返すために約 85 万件を読んでいて、その時間がログの `Preparing` から `Total` までの 5 秒に表れています。",
         },
         {
           type: "callout",
@@ -1756,7 +1768,7 @@ t_request  ref   fk_request_applicant   fk_request_applicant   3`,
         },
         {
           type: "p",
-          text: "`EXPLAIN` の結果だけで、インデックスを足せば直るとは限りません。SQL の書き方自体を見直す必要があることもあります。具体例はシナリオ「申請履歴の検索が遅い」にあります。",
+          text: "フルスキャンになる原因は、先頭が `%` の `LIKE` だけではありません。シナリオ「申請履歴の検索が遅い」では、別の SQL で `type` が `ALL` になる例を扱っています。",
           link: {
             label: "申請履歴の検索が遅い",
             to: "/tracks/scenario/history-slow",
