@@ -39,7 +39,7 @@ export const troubleshootMap: ObservableGroup[] = [
     leaves: [
       {
         symptom: "エラーの文言だけが出る、または画面が真っ白になる",
-        keywords: ["500", "5xx", "白い画面", "ブランク", "例外", "エラー画面", "internal server error"],
+        keywords: ["500", "5xx", "白い画面", "ブランク", "例外", "エラー画面", "internal server error", "スタックトレース", "Exception", "エラーログ"],
         cause: ["クライアント", "サーバ"],
         causeNote: "新しいリクエストがあるかどうかで分かれます",
         check: "Network タブに、操作した瞬間の新しいリクエストがあるかを確認しましょう。無ければ Console を、あればステータスコードを見ましょう。",
