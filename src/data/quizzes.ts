@@ -394,6 +394,18 @@ export const quizzes = {
     answer: 2,
     explanation: "環境差は設定・データ・権限・ネットワークが定番です。",
   },
+  "ts-env-build": {
+    id: "ts-env-build",
+    question: "検証用環境だけで症状が出る。設定ファイルを見比べる前に、確かめておきたいのは？",
+    choices: [
+      "両方の環境で、同じビルドのアプリが動いているか",
+      "検証用環境のログレベルを DEBUG に上げられるか",
+      "ローカルの DB のバージョンを、検証用環境に合わせられるか",
+      "怪しい `if` がソースのどこにあるか",
+    ],
+    answer: 0,
+    explanation: "片方のデプロイが古いままだと、環境の差を探しても答えは出ません。まず同じコードが動いていることを確かめ、そのうえで設定・データ・権限・経路の差を表にしましょう。",
+  },
   "ts-slow-explain": {
     id: "ts-slow-explain",
     question: "遅い SQL を検証用 DB で `EXPLAIN` すると、`type` が `ALL`、`possible_keys` が `NULL`、`rows` が数十万だった。ここから言えるのは？",

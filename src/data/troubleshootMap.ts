@@ -266,7 +266,7 @@ export const troubleshootMap: ObservableGroup[] = [
         check: "設定・データ・権限の差を確認しましょう。まず、起動プロファイルと `application.yml` の接続先を見ましょう。",
         tells: "同じコードでも、接続先やマスタ、ログインユーザが違えば結果は変わります。原因はコードよりも、こうした環境の差にあることが多いです。",
         links: [
-          { label: "トラブル例：環境差", to: "/tracks/troubleshoot/p-env" },
+          { label: "トラブル例：ある環境だけで再現する", to: "/tracks/troubleshoot/p-env" },
           { label: "[障害調査] 検証用環境だけ、申請一覧が 0 件", to: "/tracks/scenario/db" },
         ],
       },
