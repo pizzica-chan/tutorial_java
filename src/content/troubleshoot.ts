@@ -1823,13 +1823,36 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
           text: "環境の差が原因だったシナリオが 4 本あります。どれも、症状から原因までを追っています。",
         },
         {
-          type: "ul",
-          items: [
-            "[障害調査] 検証用環境だけ、申請一覧が 0 件 … データの差",
-            "[障害調査] 検証用環境だけ、読み込みが終わらない … 経路の差",
-            "[障害調査] デプロイ後、検証用環境でアプリが起動しなくなった … 実行ユーザと権限の差",
-            "[障害調査] 一覧は出るが、画面だけ崩れている … 手前の HTTP サーバの差",
-          ],
+          type: "p",
+          text: "[障害調査] 検証用環境だけ、申請一覧が 0 件 … データの差",
+          link: {
+            label: "[障害調査] 検証用環境だけ、申請一覧が 0 件",
+            to: "/tracks/scenario/db",
+          },
+        },
+        {
+          type: "p",
+          text: "[障害調査] 検証用環境だけ、読み込みが終わらない … 経路の差",
+          link: {
+            label: "[障害調査] 検証用環境だけ、読み込みが終わらない",
+            to: "/tracks/scenario/net",
+          },
+        },
+        {
+          type: "p",
+          text: "[障害調査] デプロイ後、検証用環境でアプリが起動しなくなった … 実行ユーザと権限の差",
+          link: {
+            label: "[障害調査] デプロイ後、検証用環境でアプリが起動しなくなった",
+            to: "/tracks/scenario/process-user",
+          },
+        },
+        {
+          type: "p",
+          text: "[障害調査] 一覧は出るが、画面だけ崩れている … 手前の HTTP サーバの差",
+          link: {
+            label: "[障害調査] 一覧は出るが、画面だけ崩れている",
+            to: "/tracks/scenario/http-server",
+          },
         },
         {
           type: "h2",
@@ -1887,8 +1910,8 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
           title: "同じ環境の中に差があることもある",
           text: "アプリが複数のインスタンスで動いている構成では、片方だけ設定やビルドが古いことがあります。同じ URL でも、当たったインスタンスによって症状が出たり出なかったりします。何度か試して結果が変わるときは、どのインスタンスのログに残っているかも確認しましょう。",
         },
-        { type: "quiz", id: "ts-env" },
         { type: "quiz", id: "ts-env-build" },
+        { type: "quiz", id: "ts-env" },
       ],
     },
     {
