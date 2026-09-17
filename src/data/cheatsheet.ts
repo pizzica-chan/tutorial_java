@@ -85,8 +85,10 @@ export const cheatSheet: CheatSection[] = [
         rows: [
           { cmd: "`lsof -i :ポート番号`", env: "Linux", desc: "そのポートを使っているプロセスを見る" },
           { cmd: "`ss -ltnp | grep ポート番号`", env: "Linux", desc: "同じことを `ss` で見る。`lsof` が無い環境向け" },
+          { cmd: "`ss -tnp | grep pid=PID`", env: "Linux", desc: "そのプロセスの TCP 接続を一覧する（相手の IP とポート、状態）。待ち受けは出ない。`CLOSE_WAIT` など、閉じかけも含む" },
           { cmd: "`lsof app.log`", env: "Linux", desc: "そのファイルを開いているプロセスを見る" },
           { cmd: "`ps -p PID -o pid,ppid,user,cmd`", env: "Linux", desc: "`lsof`/`ss` で見つけた PID が、実際にどのユーザーで何のコマンドとして動いているかを確認する" },
+          { cmd: "`ps -p PID -o args=`", env: "Linux", desc: "起動コマンドをオプションごと出す。`-o args=` の `=` はヘッダを出さない指定。上の `cmd` は他の列と並ぶと途中で切れることがある" },
           { cmd: "`df -h`", env: "Linux", desc: "ディスクの空き容量を見る" },
           { cmd: "`free -h`", env: "Linux", desc: "メモリの空き容量を見る" },
           { cmd: "`du -sh * | sort -rh | head`", env: "Linux", desc: "今いるディレクトリの中で、容量を食っている項目を上位から見る" },
