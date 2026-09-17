@@ -68,6 +68,19 @@ export const cheatSheet: CheatSection[] = [
         ],
       },
       {
+        title: "プロセスが呼んでいるシステムコールを見る（strace）",
+        note: "どのファイルを開こうとしているか、どのホストやポートへつなごうとしているかなど、プロセスが OS に依頼している処理を見たいときに使います。付けているあいだ対象のプロセスは遅くなるので、必要な行が出たら Ctrl+C で外しましょう。",
+        rows: [
+          { cmd: "`strace -f -p PID`", env: "Linux", desc: "そのプロセスと、その中のスレッドが呼んでいるシステムコールをリアルタイムで見る" },
+          { cmd: "`strace -f -p PID -e trace=network`", env: "Linux", desc: "ネットワーク関連だけに絞る。`connect` の行で、接続先の IP アドレスとポートが分かる" },
+          { cmd: "`strace -f -p PID -e trace=file -s 256`", env: "Linux", desc: "ファイル関連だけに絞る。`-s 256` は、パスなどの文字列が省略されないようにするオプション" },
+          { cmd: "`strace -tt -f -p PID`", env: "Linux", desc: "各行の先頭に時刻を付ける。アプリのログの時刻と突き合わせて、どの操作のときの行かを絞り込める" },
+          { cmd: "`strace -T -f -p PID`", env: "Linux", desc: "1 つのシステムコールにかかった時間が、行末に `<0.000123>` のように出る。時間のかかっている呼び出しを探すときに使う" },
+          { cmd: "`strace -c -f -p PID`", env: "Linux", desc: "数秒動かして Ctrl+C すると、システムコールごとの回数と、かかった時間の合計が出る。どこに時間を使っているかの当たりをつける" },
+          { cmd: "`strace -f -p PID -o /tmp/strace.log`", env: "Linux", desc: "その場で読まずファイルへ書く。Java のプロセスだと出力の行数が多いので、あとで必要な行だけを絞り込める" },
+        ],
+      },
+      {
         title: "ポート・ファイル・ディスク",
         rows: [
           { cmd: "`lsof -i :ポート番号`", env: "Linux", desc: "そのポートを使っているプロセスを見る" },

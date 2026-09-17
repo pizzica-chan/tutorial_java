@@ -654,6 +654,11 @@ export const terms: TermDef[] = [
     body: "実行中のプログラムの単位です。Java アプリなら、起動すると1つの Java プロセスとして動きます。`ps` コマンドで、起動しているプロセスの一覧を見られます。",
   },
   {
+    term: "システムコール",
+    aliases: ["システムコール", "syscall"],
+    body: "ファイルを開く、ネットワークにつなぐなど、プロセスが OS に依頼する処理です。ファイルが無いことや、相手先が応答しないことは、アプリのログだけでは分からないことがあります。その切り分けには、`strace` でシステムコールを見ます。",
+  },
+  {
     term: "kill",
     aliases: ["kill", "SIGTERM", "SIGKILL"],
     body: "プロセスへシグナルを送るコマンドです。`kill -TERM PID`（既定）は正常終了を促し、後始末の猶予があります。`kill -9`（`SIGKILL`）は後始末なしの強制終了です。Java プロセスに `kill -3` を送ると、終了させずにスレッドダンプだけを書き出します。",
@@ -717,6 +722,21 @@ export const terms: TermDef[] = [
     term: "tcpdump",
     aliases: ["tcpdump"],
     body: "実際に流れているパケットをキャプチャするコマンドです。`tcpdump -i any port 8080` のように、インタフェースや条件を指定します（`-i any` は全インタフェース対象）。root 権限が要ることが多いです。`curl` や `nc` は届いたかどうかまでですが、`tcpdump` は通信の中身やタイミングまで見えます。暗号化された HTTPS の本文までは読めません。",
+  },
+  {
+    term: "strace",
+    aliases: ["strace"],
+    body: "プロセスが呼んでいるシステムコールを追跡する Linux のコマンドです。`strace -f -p PID` で、実行中のプロセスに付けます。root 権限が要ることが多く、`strace` を付けているあいだはプロセスが遅くなります。どのファイルを開こうとしているか、どのホストやポートへつなごうとしているかを確認するのに使います。",
+  },
+  {
+    term: "ENOENT",
+    aliases: ["ENOENT"],
+    body: "指定したパスに、ファイルやディレクトリが無いときに OS が返すエラーです。",
+  },
+  {
+    term: "ECONNREFUSED",
+    aliases: ["ECONNREFUSED"],
+    body: "相手のホストまでは届いたが、そのポートで待ち受けが無いときに OS が返すエラーです。",
   },
   {
     term: "iptables",
