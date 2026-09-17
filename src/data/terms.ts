@@ -11,7 +11,7 @@ export const terms: TermDef[] = [
     term: "申請くん",
     kana: "しんせいくん",
     aliases: ["申請くん"],
-    body: "この教材の架空の社内申請アプリ。社員が申請を出し、承認者が承認する、という想定です。Spring Boot、Thymeleaf、MyBatis、MySQL、Spring Security を使う設定ですが、このアプリ自体は実在しません。",
+    body: "この教材の架空の社内申請アプリ。社員が申請を出し、承認者が承認する想定です。Spring Boot、Thymeleaf、MyBatis、MySQL、Spring Security を使う設定ですが、このアプリ自体は実在しません。",
   },
   {
     term: "HTTP",
@@ -31,22 +31,22 @@ export const terms: TermDef[] = [
   {
     term: "HTTPステータスコード",
     aliases: ["HTTPステータスコード", "HTTP ステータスコード", "ステータスコード", "2xx", "3xx", "4xx", "5xx"],
-    body: "応答の結果を表す 3 桁の番号。2xx は成功、3xx は別 URL へ、4xx はクライアント側、5xx はサーバ側の問題です。",
+    body: "応答の結果を表す 3 桁の数字です。2xx は成功、3xx は別 URL へ、4xx はクライアント側、5xx はサーバ側の問題です。",
   },
   {
     term: "404",
     aliases: ["404"],
-    body: "Not Found。その URL に対応する処理やファイルが無い、という応答です。",
+    body: "Not Found。その URL に対応する処理やファイルが無いことを示す応答です。",
   },
   {
     term: "401 / 403",
     aliases: ["401", "403"],
-    body: "ステータスコードとしての読み方は、401 が未ログイン、403 が権限が無い、です。ただしこの2つが実際に返るとは限らず、遷移先やエラー画面もアプリ次第です。Network タブで確認しましょう。",
+    body: "ステータスコードとしては、401 を未ログイン、403 を権限が無いと読みます。ただしこの2つが実際に返るとは限らず、遷移先やエラー画面もアプリ次第です。Network タブで確認しましょう。",
   },
   {
     term: "400",
     aliases: ["400"],
-    body: "Bad Request。送り方やパラメータが不正、という応答です。",
+    body: "Bad Request。送り方やパラメータが正しくないことを示す応答です。",
   },
   {
     term: "500",
@@ -66,7 +66,7 @@ export const terms: TermDef[] = [
   {
     term: "200",
     aliases: ["200"],
-    body: "OK。サーバは応答を返せた、という意味です。中身が業務的に正しいかは別です。",
+    body: "OK。サーバが応答を返せたことを示します。中身が業務的に正しいかは別です。",
   },
   {
     term: "ヘッダ",
@@ -117,7 +117,7 @@ export const terms: TermDef[] = [
     term: "処理の入口",
     kana: "しょりのいりぐち",
     aliases: ["処理の入口"],
-    body: "調べたい画面や機能で、サーバ側の処理が始まる場所。多くは URL に対応する Controller の Java メソッドです。申請くんでは `RequestController.java` の `@GetMapping` などが該当します。",
+    body: "調べたい画面や機能で、サーバ側の処理が始まる場所です。多くは、URL に対応する Controller の Java メソッドです。",
   },
   {
     term: "RestController",
@@ -132,7 +132,7 @@ export const terms: TermDef[] = [
   {
     term: "Service",
     aliases: ["Service"],
-    body: "ビジネスロジックを置く層。業務として何をするかを書きます。申請くんの承認を例にすると、承認可否の判定、ステータスの更新、メール送信がここにあります。Spring ではこの名前が多いです。",
+    body: "ビジネスロジックを置く層です。業務として何をするかを書きます。可否の判定、状態の更新、メールなどの通知が、ここにまとまることが多いです。Spring ではこの名前が多いです。",
   },
   {
     term: "Repository",
@@ -162,12 +162,12 @@ export const terms: TermDef[] = [
   {
     term: "@Table",
     aliases: ["@Table"],
-    body: "Entity がどのテーブルに対応するかを示す印です。name にテーブル名を書きます。JPA のアノテーションです。Hibernate のログからソースを探すときは、このテーブル名で検索します。",
+    body: "Entity がどのテーブルに対応するかを示す印です。name にテーブル名を書きます。JPA のアノテーションです。",
   },
   {
     term: "Spring Framework",
     aliases: ["Spring Framework", "Spring"],
-    body: "Java のアプリを作るための枠組みです。略して Spring と呼ぶことが多いです。この教材では、起動の土台が Spring Boot、URL と Controller が Spring MVC、ログインと権限が Spring Security です。",
+    body: "Java のアプリを作るための枠組みです。略して Spring と呼ぶことが多いです。起動の土台になる Spring Boot、URL と Controller を結びつける Spring MVC、ログインと権限を担う Spring Security など、役割ごとの部品に分かれています。",
   },
   {
     term: "Spring Boot",
@@ -192,7 +192,7 @@ export const terms: TermDef[] = [
   {
     term: "フラグメント",
     aliases: ["フラグメント", "th:fragment", "th:replace"],
-    body: "Thymeleaf で、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。複数画面で共通する HTML を1か所にまとめて共有できます。申請くんでは `fragments/layout.html` が全画面共通のヘッダと CSS を持ち、各画面の個別ファイルが、そのフラグメントを `th:replace` で使います。",
+    body: "Thymeleaf で、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。共通のヘッダや CSS の読み込みなど、複数画面で同じ HTML を1か所にまとめられます。名前を付ける側が `th:fragment`、差し込む側が `th:replace` です。",
   },
   {
     term: "JSP",
@@ -261,13 +261,13 @@ export const terms: TermDef[] = [
   {
     term: "スタックトレース",
     aliases: ["スタックトレース"],
-    body: "例外が起きたときの呼び出し履歴。右端の `(File.java:行番号)` がソースの位置です。`org.springframework` や `java.` は飛ばして、自分たちが書いたコードのパッケージ名の行を上から探します。",
+    body: "例外が起きたときの呼び出し履歴です。上が例外の発生した場所、下へ行くほど呼び出し元になります。各行の右端にある `(File.java:行番号)` が、その行に対応するソースの位置です。",
   },
   {
     term: "自作クラス",
     kana: "じさくクラス",
     aliases: ["自作クラス", "自作パッケージ"],
-    body: "このプロジェクトで書いたコードです。スタックトレースでは、at 行のパッケージが、自分たちが書いたコードのもの（申請くんなら `jp.co.example.shinsei`）で始まる行がこれにあたります。",
+    body: "そのプロジェクトで書いたコードです。フレームワークやライブラリのクラスとは、パッケージ名の先頭で見分けられます。",
   },
   {
     term: "NullPointerException",
@@ -374,7 +374,7 @@ export const terms: TermDef[] = [
   {
     term: "@PropertySource",
     aliases: ["@PropertySource"],
-    body: "`application.yml` とは別の `.properties` ファイルを、追加の設定として読み込む印です。クラスに付けます。標準では `.yml` に対応しておらず、エラーにもならず失敗します。ファイル名で検索すると、読み込んでいるクラスが見つかります。Spring のアノテーションです。",
+    body: "`application.yml` とは別の `.properties` ファイルを、追加の設定として読み込む印です。クラスに付けます。標準では `.yml` に対応しておらず、エラーにもならず失敗します。Spring のアノテーションです。",
   },
   {
     term: "property-placeholder",
@@ -498,7 +498,7 @@ export const terms: TermDef[] = [
   {
     term: "LEFT JOIN",
     aliases: ["LEFT JOIN", "左外部結合"],
-    body: "結合先に一致するレコードが無くても、結合元のレコードを残す JOIN です（結合先の列は `NULL` になります）。ただの `JOIN`（内部結合）は、両方に一致するレコードが無いと消えます。`LEFT JOIN` した列に `WHERE` や `LIKE` の条件を足すと、その列が `NULL` の行は条件に一致せず、一覧から消えることがあります。",
+    body: "結合先に一致するレコードが無くても、結合元のレコードを残す JOIN です（結合先のカラムは `NULL` になります）。ただの `JOIN`（内部結合）は、両方に一致するレコードが無いと消えます。`LEFT JOIN` したカラムに `WHERE` や `LIKE` の条件を足すと、そのカラムが `NULL` のレコードは条件に一致せず、一覧から消えることがあります。",
   },
   {
     term: "インデックス",
@@ -596,7 +596,7 @@ export const terms: TermDef[] = [
     term: "名前解決",
     kana: "なまえかいけつ",
     aliases: ["名前解決"],
-    body: "ホスト名を IP アドレスに変換すること。多くの環境では DNS が担当します。名前解決に失敗すると、ping や curl の前段で止まります。",
+    body: "ホスト名を IP アドレスに変換すること。多くの環境では DNS が担当します。名前解決に失敗すると、そのホストへの通信は始まりません。",
   },
   {
     term: "TCP/IP",
@@ -636,7 +636,7 @@ export const terms: TermDef[] = [
   {
     term: "grep",
     aliases: ["grep"],
-    body: "指定した文字列を含む行だけを取り出すコマンドです。ログファイルから、特定の userId や申請 ID の行だけを絞り込むときに使います。",
+    body: "指定した文字列を含む行だけを取り出すコマンドです。`grep 文字列 ファイル名` のように使い、大きなログファイルから必要な行だけを絞り込めます。",
   },
   {
     term: "パーミッション",
@@ -721,7 +721,7 @@ export const terms: TermDef[] = [
   {
     term: "tcpdump",
     aliases: ["tcpdump"],
-    body: "実際に流れているパケットをキャプチャするコマンドです。`tcpdump -i any port 8080` のように、インタフェースや条件を指定します（`-i any` は全インタフェース対象）。root 権限が要ることが多いです。`curl` や `nc` は届いたかどうかまでですが、`tcpdump` は通信の中身やタイミングまで見えます。暗号化された HTTPS の本文までは読めません。",
+    body: "実際に流れているパケットをキャプチャするコマンドです。`tcpdump -i any port 8080` のように、インタフェースや条件を指定します（`-i any` は全インタフェース対象）。root 権限が要ることが多いです。通信の中身やタイミングまで分かりますが、暗号化された HTTPS の本文までは読めません。",
   },
   {
     term: "strace",
@@ -1136,7 +1136,7 @@ export const terms: TermDef[] = [
   {
     term: "Uncaught TypeError",
     aliases: ["Uncaught TypeError", "TypeError"],
-    body: "JavaScript の例外の一種です。型が合わない操作（null のプロパティを読むなど）で出ます。Uncaught は、例外を catch しなかった、という意味です。",
+    body: "JavaScript の例外の一種です。型が合わない操作（null のプロパティを読むなど）で出ます。Uncaught は、例外を catch しなかったことを表します。",
   },
   {
     term: "要素",
@@ -1272,7 +1272,7 @@ export const terms: TermDef[] = [
   {
     term: "Location",
     aliases: ["Location"],
-    body: "リダイレクト先を示すレスポンスヘッダです。意図しない /login なら認証を疑います。",
+    body: "リダイレクト先の URL を示すレスポンスヘッダです。ブラウザは、この URL を開き直します。",
   },
   {
     term: "Referer",
@@ -1409,7 +1409,7 @@ export const terms: TermDef[] = [
   {
     term: "groupId",
     aliases: ["groupId"],
-    body: "Maven で組織を表す識別子。パッケージ名の先頭（申請くんなら jp.co.example）と揃えることが多いです。",
+    body: "Maven で組織を表す識別子です。`jp.co.example` のように、パッケージ名の先頭と揃えることが多いです。",
   },
   {
     term: "artifactId",
@@ -1419,12 +1419,12 @@ export const terms: TermDef[] = [
   {
     term: "$Proxy / CGLIB",
     aliases: ["$Proxy", "CGLIB", "generated"],
-    body: "フレームワークが実行時に作るクラス。自作コードではないので、隣の自作パッケージへ戻ります。Spring ではよく見ます。",
+    body: "フレームワークが実行時に作るクラスです。プロジェクトのソースには、対応するファイルがありません。Spring ではよく出てきます。",
   },
   {
     term: "org.springframework",
     aliases: ["org.springframework"],
-    body: "Spring Framework のパッケージです。スタックトレースでは飛ばします。",
+    body: "Spring Framework のパッケージです。このパッケージ名で始まるクラスは、フレームワーク側のコードです。",
   },
   {
     term: "permitAll",
@@ -1463,7 +1463,7 @@ export const terms: TermDef[] = [
   {
     term: "WHERE",
     aliases: ["WHERE"],
-    body: "SQL の条件。件数が合わないときは、まずここが厳しすぎないか・漏れていないかを見ます。",
+    body: "SQL で、対象のレコードを絞り込む条件です。ここに書いた条件に合うレコードだけが、取得や更新の対象になります。",
   },
   {
     term: "SELECT",
@@ -1473,7 +1473,7 @@ export const terms: TermDef[] = [
   {
     term: "UPDATE",
     aliases: ["UPDATE", "INSERT"],
-    body: "DB を変える SQL。更新されないときは WHERE とコミットを疑います。",
+    body: "DB のデータを変える SQL です。`UPDATE` は既存のレコードの更新、`INSERT` は新しいレコードの追加です。",
   },
   {
     term: "ORDER BY",
@@ -1483,7 +1483,7 @@ export const terms: TermDef[] = [
   {
     term: "キャッシュ",
     aliases: ["キャッシュ"],
-    body: "一度読んだ結果を再利用する仕組み。画面と DB が違うときに疑います。",
+    body: "一度読んだ結果を保持し、次からはそれを再利用する仕組みです。元のデータが変わっても、古い結果が返ることがあります。",
   },
   {
     term: "タイムゾーン",
@@ -1509,12 +1509,12 @@ export const terms: TermDef[] = [
   {
     term: "ERROR",
     aliases: ["ERROR"],
-    body: "失敗の記録。調査ではここを先に見ます。",
+    body: "処理が失敗したことを示す記録です。",
   },
   {
     term: "WARN",
     aliases: ["WARN"],
-    body: "処理は続いているが、おかしい、という記録です。",
+    body: "処理は続いているものの、何かがおかしいことを示す記録です。",
   },
   {
     term: "INFO",
@@ -1615,7 +1615,7 @@ export const terms: TermDef[] = [
   {
     term: "アドレスバー",
     aliases: ["アドレスバー"],
-    body: "ブラウザ上部の URL 表示欄。処理の入口を特定するときに見ます。",
+    body: "ブラウザ上部にある、今開いている URL の表示欄です。ここに URL を入力して開くこともできます。",
   },
   {
     term: "開発者ツール",
