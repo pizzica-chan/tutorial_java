@@ -406,12 +406,24 @@ export const quizzes = {
     answer: 0,
     explanation: "片方のデプロイが古いままだと、環境の差を探しても答えは出ません。まず同じコードが動いていることを確かめ、そのうえで設定・データ・権限・経路の差を表にしましょう。",
   },
+  "ts-slow-log-level": {
+    id: "ts-slow-log-level",
+    question: "遅いリクエストのログに、Service の `start` と `end` の 2 行しか出ていない。その差は約 5 秒だった。ここから言えるのは？",
+    choices: [
+      "この Service の Java メソッドの中で、5 秒かかったことまで",
+      "1 回の SQL に 5 秒かかっている",
+      "SQL を何百回も投げている（N+1）",
+      "DB への接続ができていない",
+    ],
+    answer: 0,
+    explanation: "Mapper のログが DEBUG で出ていないと、SQL の回数も 1 回ごとの時間も分かりません。1 回の SQL が遅いのか、速い SQL を何百回も投げているのかは、この 2 行では区別できません。検証用環境で Mapper のログレベルを DEBUG にするか、調べたい範囲の前後にログを一時的に足しましょう。",
+  },
   "ts-slow-explain": {
     id: "ts-slow-explain",
     question: "遅い SQL を検証用 DB で `EXPLAIN` すると、`type` が `ALL`、`possible_keys` が `NULL`、`rows` が数十万だった。ここから言えるのは？",
     choices: [
       "`possible_keys` が `NULL` なので、このテーブルにはインデックスが一つも無い",
-      "条件に合うカラムに使えるインデックスの候補が無く、テーブルをほぼ全件読んでいる",
+      "条件に使っているカラムに、使えるインデックスが無く、テーブルをほぼ全件読んでいる",
       "その SQL の文法が間違っている",
       "`rows` は、実際に読んだ件数の実測値である",
     ],

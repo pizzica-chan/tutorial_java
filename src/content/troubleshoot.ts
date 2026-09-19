@@ -1917,11 +1917,15 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
     {
       id: "p-slow",
       title: "トラブル例：遅い",
-      minutes: 10,
+      minutes: 12,
       blocks: [
         {
           type: "p",
           text: "原因を考える前に、どこで時間がかかっているかを見ましょう。同じリクエストのログを時刻順に並べると、時間が空いている区間が見つかります。",
+        },
+        {
+          type: "p",
+          text: "ただし、アプリに入る前で待っていることもあります。Network タブの待ち時間と、サーバログの最初と最後の時刻を比べましょう。Network タブだけが長ければ、アプリの手前（待ち行列、LB、DNS）で時間を使っています。",
         },
         {
           type: "h2",
@@ -1934,6 +1938,7 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
         {
           type: "code",
           title: "例（申請くんの実ログではない）",
+          lang: "text",
           highlightLines: [4, 5],
           code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests/history
 04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : start RequestService.searchByTitle(..)
@@ -1959,7 +1964,6 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
           items: [
             "ミリ秒まで見る。秒だけだと差が消える",
             "スレッド名（`nio-8080-exec-3` など）やリクエスト ID で、同じリクエストの行だけを揃える。別リクエストの行が混ざると差が無意味になる",
-            "Network タブの待ち時間と、サーバログの最初と最後の時刻を比べる。Network タブだけ長いなら、アプリに入る前（待ち行列、LB、DNS）",
           ],
         },
         {
@@ -1977,6 +1981,7 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
         {
           type: "code",
           title: "Mapper のログが出ていない場合（同じリクエスト）",
+          lang: "text",
           highlightLines: [2, 3],
           code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests/history
 04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : start RequestService.searchByTitle(..)
@@ -1992,7 +1997,7 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
         },
         {
           type: "p",
-          text: "検証用環境で Mapper のログレベルを DEBUG にすると、SQL の回数と、1 回ごとにかかった時間が分かります。ログレベルを変えられないときは、調べたい範囲の前後にログを一時的に足すか、次の表で当たりをつけましょう。",
+          text: "検証用環境で Mapper のログレベルを DEBUG にすると、SQL の回数と、1 回ごとにかかった時間が分かります。ログレベルを変えられないときは、調べたい範囲の前後にログを一時的に足すか、下の「区間の中で疑うもの」で当たりをつけましょう。",
         },
         {
           type: "callout",
@@ -2082,7 +2087,11 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
         },
         {
           type: "p",
-          text: "`Preparing` の行に出ている SQL を、検証用 DB で `EXPLAIN` してみましょう。DB がその SQL をどう読むか（実行計画）が分かります。MySQL では次のように書きます。",
+          text: "`Preparing` の行に出ている SQL を、検証用 DB で `EXPLAIN` してみましょう。DB がその SQL をどう読むか（実行計画）が分かります。",
+        },
+        {
+          type: "p",
+          text: "ログの `?` は、`Parameters` の行に出ている値に置き換えます。MySQL では次のように書きます。",
         },
         {
           type: "code",
@@ -2138,6 +2147,7 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
             to: "/tracks/scenario/history-slow",
           },
         },
+        { type: "quiz", id: "ts-slow-log-level" },
         { type: "quiz", id: "ts-slow-explain" },
       ],
     },

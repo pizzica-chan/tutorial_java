@@ -878,13 +878,13 @@ function ArchPatterns() {
 function NPlusOne() {
   return (
     <div className="d-n1">
-      <Layer icon="database">一覧 1 回 SELECT（10 件）</Layer>
-      <Arrow down label="各行で追加" />
+      <Layer icon="database">一覧 1 回 SELECT（1000 件）</Layer>
+      <Arrow down label="各レコードで追加" />
       <div className="d-n1-rows">
         <Chip icon="terminal">SELECT #1</Chip>
         <Chip icon="terminal">SELECT #2</Chip>
         <Chip icon="terminal">…</Chip>
-        <Chip icon="terminal">SELECT #10</Chip>
+        <Chip icon="terminal">SELECT #1000</Chip>
       </div>
       <p className="diagram-note">件数だけ SQL が増えるのが N+1。</p>
     </div>
