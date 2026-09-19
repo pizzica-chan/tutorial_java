@@ -429,7 +429,7 @@ appuser   1842  java -jar shinsei-kun.jar`,
         },
         {
           type: "p",
-          text: "`USER` の列に出る `appuser` が、そのプロセスを動かしているユーザです。コマンドのうしろの `grep -v grep` は、`grep java` 自身が結果に混ざらないようにする指定です。",
+          text: "`-o user,pid,cmd` は、ユーザ・PID・コマンドの順に出す指定です。左端の `appuser` が、そのプロセスを動かしているユーザです。うしろの `grep -v grep` は、`grep java` 自身が結果に混ざらないようにする指定です。",
         },
         {
           type: "code",
@@ -652,7 +652,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
           title: "例（どこへつなごうとしているかを見る）",
           lang: "text",
           code: `$ sudo strace -f -p 1842 -e trace=network -s 256
-[pid 1842] connect(48, {sa_family=AF_INET, sin_port=htons(5432), sin_addr=inet_addr("10.0.2.31")}, 16) = -1 ECONNREFUSED (Connection refused)`,
+[pid 1842] connect(48, {sa_family=AF_INET, sin_port=htons(3306), sin_addr=inet_addr("10.0.2.31")}, 16) = -1 ECONNREFUSED (Connection refused)`,
         },
         {
           type: "table",
@@ -1893,12 +1893,12 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
           lang: "text",
           code: `$ ps -p 1842 -o args=
 java -jar /opt/app/shinsei-kun.jar --spring.profiles.active=stg
-$ sudo tr '\\0' '\\n' < /proc/1842/environ | grep SPRING
+$ sudo cat /proc/1842/environ | tr '\\0' '\\n' | grep SPRING
 SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
         },
         {
           type: "p",
-          text: "`-o args=` は、ヘッダを出さずに起動コマンド全体を出す指定です。`/proc/PID/environ` の中身は NUL 区切りで並んでいるので、`tr` で改行に直しています。コンテナで動いているなら、`docker exec` でコンテナに入り、その中の PID に対して同じことをしましょう。",
+          text: "`-o args=` は、ヘッダを出さずに起動コマンド全体を出す指定です。`/proc/PID/environ` は、そのプロセスを動かしているユーザしか読めないので、`sudo` で読んでいます。中身は NUL 区切りで並んでいるので、`tr` で改行に直しています。コンテナで動いているなら、`docker exec` でコンテナに入り、その中の PID に対して同じことをしましょう。",
         },
         {
           type: "p",
@@ -1921,7 +1921,7 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
       blocks: [
         {
           type: "p",
-          text: "同じリクエストのログのタイムスタンプを並べ、どこで時間が空いているかを見て、遅い箇所を特定しましょう。",
+          text: "原因を考える前に、どこで時間がかかっているかを見ましょう。同じリクエストのログを時刻順に並べると、時間が空いている区間が見つかります。",
         },
         {
           type: "h2",
@@ -1949,6 +1949,10 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
         {
           type: "p",
           text: "この 2 行のあいだは、SQL を DB へ投げてから結果が返るまでです。つまり、Java の処理ではなく SQL の実行に時間がかかっています。",
+        },
+        {
+          type: "p",
+          text: "時刻差で絞るときは、次の点に気をつけましょう。",
         },
         {
           type: "ul",
@@ -1988,7 +1992,7 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
         },
         {
           type: "p",
-          text: "検証環境で Mapper のログレベルを DEBUG にすると、SQL の回数と、1 回ごとにかかった時間が分かります。ログレベルを変えられないときは、調べたい範囲の前後にログを一時的に足すか、次の表で当たりをつけましょう。",
+          text: "検証用環境で Mapper のログレベルを DEBUG にすると、SQL の回数と、1 回ごとにかかった時間が分かります。ログレベルを変えられないときは、調べたい範囲の前後にログを一時的に足すか、次の表で当たりをつけましょう。",
         },
         {
           type: "callout",
@@ -2047,25 +2051,30 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
           type: "code",
           title: "例（申請くんの実ログではない）",
           lang: "text",
-          highlightLines: [4, 5, 6, 7, 8, 9],
-          code: `04:20:11.100 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findMine : ==>  Preparing: SELECT id, title, status, applicant_id, approver_id FROM t_request WHERE applicant_id = ?
-04:20:11.101 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findMine : ==> Parameters: 7(Long)
-04:20:11.102 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findMine : <==      Total: 1000
+          highlightLines: [4, 5, 6, 7, 8, 9, 11],
+          code: `04:20:11.100 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findByApplicant : ==>  Preparing: SELECT id, title, status, applicant_id, approver_id FROM t_request WHERE applicant_id = ?
+04:20:11.101 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findByApplicant : ==> Parameters: 7(Long)
+04:20:11.102 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findByApplicant : <==      Total: 1000
 04:20:11.103 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
 04:20:11.104 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : ==> Parameters: 3(Long)
 04:20:11.105 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : <==      Total: 1
 04:20:11.106 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
 04:20:11.107 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : ==> Parameters: 5(Long)
 04:20:11.108 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : <==      Total: 1
-（以下、一覧の件数だけ繰り返す）`,
+（同じ 3 行が、一覧の件数だけ繰り返す）
+04:20:14.102 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : <==      Total: 1`,
         },
         {
           type: "p",
-          text: "一覧を取る `findMine` は 1 回だけですが、そのあとに同じ形の `UserMapper.findById` が件数分（ここでは 1000 回）並びます。JOIN や IN 句でまとめて取得するなど、SQL を 1 回にまとめると減らせます。",
+          text: "一覧を取る `findByApplicant` は 1 回だけですが、そのあとに同じ形の `UserMapper.findById` が件数分（ここでは 1000 回）並びます。1 回は 3 ミリ秒ほどでも、最初の `findById` が `04:20:11.103`、最後が `04:20:14.102` なので、この区間だけで約 3 秒です。",
+        },
+        {
+          type: "p",
+          text: "JOIN や IN 句でまとめて取得するなど、SQL を 1 回にまとめると減らせます。",
         },
         {
           type: "h3",
-          text: "1 件の SQL 自体が遅い（EXPLAIN）",
+          text: "1 回の SQL が遅い（EXPLAIN）",
         },
         {
           type: "p",
