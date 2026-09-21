@@ -69,7 +69,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "Spring Boot 2.7 と 3.x では、Servlet などの import パッケージ名が `javax` か `jakarta` かで変わります。参照するサンプルは、対象プロジェクトの版に合わせましょう。",
+          text: "Spring Boot 2.7 と 3.x では、Servlet などの import パッケージ名が `javax` か `jakarta` かで変わります。参照するサンプルは、対象プロジェクトの Spring Boot バージョンに合わせましょう。",
         },
         {
           type: "h2",
@@ -1264,7 +1264,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
             ["Filter", "サーブレットコンテナ。Controller の前（静的ファイルも通ることがある）", "Controller から呼ばれない。Filter 実装や SecurityConfig を別検索する"],
             ["Interceptor", "Spring MVC。Controller の Java メソッドの直前・直後", "`HandlerInterceptor` と WebMvcConfigurer の `addInterceptors`。Controller に呼び出しは無い"],
             ["AOP / プロキシ", "Service などの Java メソッド呼び出しの手前", "見た目は `requestService.approve()`。実行時は `$Proxy` や CGLIB を経由する"],
-            ["`@ControllerAdvice`", "例外のあと。戻り値や画面を別クラスが決める", "throw したメソッドの return を追っても、実際の応答はここ"],
+            ["`@ControllerAdvice`", "例外のあと。レスポンスの画面や JSON を別クラスが決める", "throw したメソッドの return を追っても、レスポンスはここで決まる"],
           ],
         },
         {

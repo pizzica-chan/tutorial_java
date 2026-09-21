@@ -200,7 +200,7 @@ export const projectFiles: ProjectFile[] = [
   {
     path: "pom.xml",
     note: "何で動いているか",
-    why: "Spring Boot の版、Thymeleaf、MyBatis、MySQL ドライバなど、使っているものがここに並びます。知らない依存を全部理解する必要はありません。画面と DB に直結するものから見ます。",
+    why: "Spring Boot のバージョン、Thymeleaf、MyBatis、MySQL ドライバなど、使っているものがここに並びます。知らない依存を全部理解する必要はありません。画面と DB に直結するものから見ます。",
     code: shinseiPomSnippet,
   },
   {

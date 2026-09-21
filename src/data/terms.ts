@@ -46,7 +46,7 @@ export const terms: TermDef[] = [
   {
     term: "400",
     aliases: ["400"],
-    body: "Bad Request。送り方やパラメータが正しくないことを示す応答です。",
+    body: "Bad Request。クライアントから送られたリクエストの送り方やパラメータが、サーバの期待と合わないことを示す応答です。",
   },
   {
     term: "500",
@@ -56,7 +56,7 @@ export const terms: TermDef[] = [
   {
     term: "502 / 503",
     aliases: ["502", "503"],
-    body: "502 は Bad Gateway、503 は Service Unavailable。502 は、手前の HTTP サーバやロードバランサから、後ろのアプリにリクエストが届かないときに多いステータスコードです。503 は、502 と同じ原因に加えて、アプリ自身が過負荷やメンテナンスで返すこともあります。手前だけでなくアプリのログも確認しましょう。",
+    body: "502 は Bad Gateway、503 は Service Unavailable。502 は、手前の HTTP サーバやロードバランサから、後ろのアプリにリクエストが届かないときに多いステータスコードです。503 は、502 と同じ原因に加えて、アプリ自身が過負荷やメンテナンスで返すこともあります。アプリより前のレイヤのログだけでなく、アプリのログも確認しましょう。",
   },
   {
     term: "302 / 303",
@@ -66,7 +66,7 @@ export const terms: TermDef[] = [
   {
     term: "200",
     aliases: ["200"],
-    body: "OK。サーバが応答を返せたことを示します。中身が業務的に正しいかは別です。",
+    body: "OK。HTTP としては正常に返せた印です。期待どおりのデータや画面かどうかは、ステータスコードだけでは分かりません。",
   },
   {
     term: "ヘッダ",
@@ -324,7 +324,7 @@ export const terms: TermDef[] = [
   {
     term: "@ControllerAdvice",
     aliases: ["@ControllerAdvice", "ControllerAdvice"],
-    body: "複数の Controller の例外や共通処理をまとめる印です。throw したメソッドの return ではなく、こちらが画面や JSON を決めることがあります。",
+    body: "複数の Controller の例外や共通処理をまとめる印です。例外が throw されると、throw したメソッドの return まで届かず、こちらが返す画面や JSON がレスポンスになることがあります。",
   },
   {
     term: "@Controller",
@@ -389,7 +389,7 @@ export const terms: TermDef[] = [
   {
     term: "@GetMapping",
     aliases: ["@GetMapping"],
-    body: "指定した URL への GET を、この Java メソッドが受け取るという印です。画面を開く、一覧を表示するといった取得処理で使います。Spring のアノテーションです。",
+    body: "指定した URL への GET を、この Java メソッドが受け取るという印です。画面の表示や一覧の取得など、データを読むときに使います。Spring のアノテーションです。",
   },
   {
     term: "@PostMapping",
@@ -1242,7 +1242,7 @@ export const terms: TermDef[] = [
   {
     term: "レコード",
     aliases: ["レコード"],
-    body: "テーブルの 1 件のデータです。Java では同じレコードを Entity として扱うことが多いです。",
+    body: "テーブルの 1 件のデータです。Java では、1 件分を Entity というオブジェクトで表すことが多いです。",
   },
   {
     term: "カラム",
