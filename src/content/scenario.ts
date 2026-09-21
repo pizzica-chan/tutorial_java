@@ -1678,7 +1678,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "社内の端末から、次のコマンドを打ちました。",
+          text: "申請くんを開いていた社内 Windows 端末の PowerShell から、次のコマンドを打ちました。",
         },
         {
           type: "code",
