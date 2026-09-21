@@ -1238,7 +1238,7 @@ GET /shinsei/requests/history                   200`,
         },
         {
           type: "p",
-          text: "保存しているキーは `historySearchCondition`、読んでいるキーは `historyCondition` です。1文字も一致していません。`HttpSession` は、`setAttribute` で使ったキーと同じ文字列で `getAttribute` しないと値を取り出せない仕組みなので、`buildHistoryBackUrl` の `condition` は毎回 `null` になり、クエリの無い `/requests/history` に戻ります。",
+          text: "保存しているキーは `historySearchCondition`、読んでいるキーは `historyCondition` です。名前は似ていますが、キー名として一致していません。`HttpSession` は、`setAttribute` で使ったキーと同じ文字列で `getAttribute` しないと値を取り出せない仕組みなので、`buildHistoryBackUrl` の `condition` は毎回 `null` になり、クエリの無い `/requests/history` に戻ります。",
         },
         {
           type: "callout",

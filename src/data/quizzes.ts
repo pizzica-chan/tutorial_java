@@ -600,7 +600,7 @@ export const quizzes = {
       "MyBatis のキャッシュが古い検索結果を返している",
     ],
     answer: 1,
-    explanation: "`HttpSession` の `setAttribute` / `getAttribute` は、キーの文字列が完全に一致していないと結び付きません。今回は保存側が `historySearchCondition`、取り出す側が `historyCondition` で、1文字も一致していないため、条件は常に見つからず `null` になります。コンパイルも実行も止まらないので、気づくには両方のキーを見比べる必要があります。",
+    explanation: "`HttpSession` の `setAttribute` / `getAttribute` は、キーの文字列が完全に一致していないと結び付きません。今回は保存側が `historySearchCondition`、取り出す側が `historyCondition` で、キー名が一致しないため、条件は常に見つからず `null` になります。コンパイルも実行も止まらないので、気づくには両方のキーを見比べる必要があります。",
   },
   "sc-history-approved-at": {
     id: "sc-history-approved-at",
