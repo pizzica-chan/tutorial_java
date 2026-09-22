@@ -122,7 +122,7 @@ export const terms: TermDef[] = [
   {
     term: "RestController",
     aliases: ["@RestController", "RestController"],
-    body: "Controller の一種。戻り値を HTML ではなく JSON にします。templates は使いません。Spring のアノテーションです。",
+    body: "Controller の一種。戻り値を JSON などの本文にします。templates は使いません。Spring のアノテーションです。",
   },
   {
     term: "@ResponseBody",
