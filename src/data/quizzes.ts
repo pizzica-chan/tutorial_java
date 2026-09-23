@@ -145,16 +145,16 @@ export const quizzes = {
   "java-transaction": {
     id: "java-transaction",
     question:
-      "`findById` で status を読んで判定したあと、条件の無い `UPDATE` で更新する承認処理がある。分離レベルを上げれば、2つのリクエストがほぼ同時に来ても安全になる？",
+      "`findById` で status を読んで判定したあと、条件の無い `UPDATE` で更新する承認処理がある。MySQL の既定の分離レベル（`REPEATABLE READ`）のまま、2 つのリクエストがほぼ同時に来ると、どうなる？",
     choices: [
-      "なる。分離レベルを上げれば同時実行はすべて防げる",
-      "ならない。それぞれのリクエストは自分の SELECT の時点では正しく PENDING を読んでいるため",
-      "ならない。@Transactional を外さないと意味が無いため",
-      "なる。ただしメール送信だけは防げない",
+      "片方の SELECT は先に来た側が確定するまで待たされるので、二重には承認されない",
+      "どちらも自分の SELECT の時点で PENDING を読むので、両方とも判定を通過する",
+      "@Transactional があるので、2 つ目のリクエストは自動でロールバックされる",
+      "UPDATE が同時に走るとエラーになるので、二重には承認されない",
     ],
     answer: 1,
     explanation:
-      "分離レベルは、他のトランザクションの変更がどこまで見えるかを決めるものです。今回の2つのリクエストは、それぞれ自分が読んだ時点では本当に PENDING だったので、分離レベルを上げても隙は埋まりません。UPDATE の WHERE に状態の条件を含める（楽観ロック）か、SELECT ... FOR UPDATE で先にレコードをロックする（悲観ロック）必要があります。",
+      "既定の `REPEATABLE READ` では、普通の SELECT はレコードをロックしません。2 つのリクエストは、それぞれ自分が読んだ時点では本当に PENDING なので、両方が判定を通ります。あとから来た側の UPDATE は、先に来た側がまだ確定していなければ確定を待ちますが、WHERE に状態の条件が無いので、待ったあとにそのまま更新します。UPDATE の WHERE に状態の条件を含める（楽観ロック）か、SELECT ... FOR UPDATE で先にレコードをロックする（悲観ロック）のが、よくある対処です。",
   },
   "java-template": {
     id: "java-template",
@@ -332,7 +332,7 @@ export const quizzes = {
     ],
     answer: 0,
     explanation:
-      "Permission denied は、操作している自分ではなく、アプリを動かしているプロセスのユーザの権限で起きます。`ps -ef -o user,pid,cmd` でそのユーザを確認し、`sudo -u` で同じユーザとして試すと再現できます。",
+      "Permission denied は、操作している自分ではなく、アプリを動かしているプロセスのユーザの権限で起きます。`ps -eo user,pid,cmd` でそのユーザを確認し、`sudo -u` で同じユーザとして試すと再現できます。",
   },
   "ts-log": {
     id: "ts-log",
@@ -541,7 +541,7 @@ export const quizzes = {
   "sc-duplicate-mail": {
     id: "sc-duplicate-mail",
     question:
-      "承認すると、申請者に同じ内容のメールが2通届いた。画面にエラーは無く、DB のレコードは1件だけ APPROVED になっている。アプリのログを見ると、同じ requestId への approve 処理が、別スレッドでほぼ同時刻に2回実行されていた。疑うのは？",
+      "承認すると、申請者に同じ内容のメールが 2 通届いた。画面にエラーは無く、DB のレコードは 1 件だけ APPROVED になっている。アプリのログを見ると、同じ申請への approve 処理が、別スレッドで約 2 秒の間隔で 2 回実行されていた。1 回目は、メール送信を終えて確定するまで約 3 秒かかっていた。疑うのは？",
     choices: [
       "@Transactional の設定漏れで、SQL がロールバックされていないこと",
       "承認ボタンの二重送信と、update の SQL に status の条件が無いこと",
@@ -550,7 +550,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "@Transactional は1つのリクエスト内の SQL をまとめる仕組みで、複数リクエストの同時実行は防ぎません。二重送信を防ぐ仕組みが無いボタンと、status = 'PENDING' を条件にしていない UPDATE が重なると、ほぼ同時に来た2つのリクエストが両方とも承認処理を通してしまいます。",
+      "@Transactional は 1 つのリクエスト内の SQL をまとめる仕組みで、複数リクエストの同時実行は防ぎません。二重送信を防ぐ仕組みが無いボタンと、status = 'PENDING' を条件にしていない UPDATE が重なると、1 回目が確定する前に来た 2 回目も承認処理を通ってしまいます。",
   },
   "sc-mail-silent": {
     id: "sc-mail-silent",
@@ -560,7 +560,7 @@ export const quizzes = {
       "WARN ログで説明がついているので、これ以上は追わない",
       "その WARN を出しているログ出力が、例外を握りつぶしていないかソースを確認する",
       "DB のレコードを直接見て、承認日時が正しいか確認する",
-      "メールサーバーを再起動する",
+      "メールサーバを再起動する",
     ],
     answer: 1,
     explanation:
@@ -576,7 +576,7 @@ export const quizzes = {
       "Controller の権限チェックで弾かれて 0 件に見えている",
     ],
     answer: 1,
-    explanation: "200 で件数が違うなら、原因の多くは DB のレコードや接続先です。コード通読より先に、実行された SQL と、その条件での件数を確認しましょう。キャッシュでずれることもあります。",
+    explanation: "200 で件数が違うなら、原因の多くは DB のレコードや接続先です。コード通読より先に、実行された SQL と、その条件での件数を確認しましょう。このシナリオでは、検証用環境で山田に関係する申請がすべて承認済みで、未承認だけを出す一覧が 0 件になっていました。",
   },
   "sc-history": {
     id: "sc-history",
@@ -592,7 +592,7 @@ export const quizzes = {
   },
   "sc-history-back": {
     id: "sc-history-back",
-    question: "申請履歴で検索してから詳細を開き、「← 申請履歴」で戻ると、絞り込みが消えて全件が表示される。エラーは出ない。詳細を開くリクエストと、戻ったあとのリクエストは両方 200。戻ったあとの `GET /requests/history` にクエリパラメータが無い。原因は？",
+    question: "申請履歴で検索してから詳細を開き、「← 申請履歴」で戻ると、絞り込みが消えて全件が表示される。エラーは出ない。詳細を開くリクエストと、戻ったあとのリクエストは両方 200。戻ったあとの `GET /shinsei/requests/history` にクエリパラメータが無い。原因は？",
     choices: [
       "`th:href` の書き方が間違っていて、リンクが機能していない",
       "検索条件をセッションに保存するキーと、取り出すキーの文字列が違い、`getAttribute` が常に `null` を返している",
@@ -643,7 +643,7 @@ export const quizzes = {
   "sc-db-network": {
     id: "sc-db-network",
     question:
-      "検証用環境だけ、申請一覧を開くとしばらくして 500 になる。ログには DB への `CommunicationsException` が出ている。`application-stg.yml` の接続先は正しそうに見える。次にすることは？",
+      "検証用環境だけ、申請一覧を開くとしばらくして 500 になる。ログには `CannotGetJdbcConnectionException`（`Connection is not available, request timed out after 30052ms`）が出ている。`application-stg.yml` の接続先は正しそうに見える。次にすることは？",
     choices: [
       "SQL の文法を疑う",
       "設定ファイルに書かれた接続先へ、アプリのサーバから疎通確認をする",
@@ -652,7 +652,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "`CommunicationsException` は SQL ではなく通信の失敗です。設定が正しくても、その先への経路が届くとは限りません。アプリのサーバから接続先への疎通を確認しましょう。再起動するとログが消えるので、先に疎通確認をしましょう。",
+      "`CannotGetJdbcConnectionException` は SQL の誤りではなく、DB への接続を取れなかったことを示します。設定が正しくても、その先への経路が通っているとは限りません。アプリのサーバから接続先への疎通を確認しましょう。再起動するとログが消えるので、先に疎通確認をしましょう。",
   },
   "sc-process-user": {
     id: "sc-process-user",
@@ -762,7 +762,7 @@ export const quizzes = {
       "検索条件を指定すると、アプリがエラーで落ちる",
     ],
     answer: 0,
-    explanation: "`v` は `LEFT JOIN` なので一覧には出ますが、`v.display_name LIKE ...` の条件を足すと、`display_name` が無い行は比較が真にならず、絞り込んだ瞬間に結果から消えます。",
+    explanation: "`v` は `LEFT JOIN` なので一覧には出ますが、`v.display_name LIKE ...` の条件を足すと、`display_name` が無いレコードは比較が真にならず、絞り込んだ瞬間に結果から消えます。",
   },
   "sc-impact-slack": {
     id: "sc-impact-slack",

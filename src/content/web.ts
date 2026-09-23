@@ -4,7 +4,7 @@ import { shinseiLayoutStaticSnippet } from "../data/project";
 export const webTrack: Track = {
   id: "web",
   no: "02",
-  title: "Webの基礎",
+  title: "Web の基礎",
   kicker: "HTTP",
   description: "URL、ステータスコード、Cookie など HTTP の読み方に加え、フロントエンドとバックエンドの役割分担や Ajax・JSON の扱いも身につけます。",
   accent: "#4fb0a5",
@@ -401,7 +401,7 @@ Content-Type: application/json
             "`Location`（レスポンス）… リダイレクト先",
             "`Set-Cookie`（レスポンス）… サーバがブラウザへ渡す Cookie",
             "`Cookie`（リクエスト）… ブラウザが送る Cookie。ログイン状態の識別子",
-            "`Referer`（リクエスト）… どの画面から POST されたか",
+            "`Referer`（リクエスト）… どの画面から来たリクエストか。POST に限らず、リンクのクリックや CSS の取得にも付くことが多い",
           ],
         },
         { type: "quiz", id: "web-api" },
@@ -452,7 +452,7 @@ Cookie: JSESSIONID=AB12CD34`,
         },
         {
           type: "p",
-          text: "`Expires / Max-Age` が `Session` なのは、有効期限を持たない Cookie（セッション Cookie）だからです。ブラウザ自体を閉じると消えます。",
+          text: "`Expires / Max-Age` が `Session` なのは、有効期限を持たない Cookie（セッション Cookie）だからです。ブラウザ自体を閉じると消えるのが基本です。ただし、前回のタブを復元する設定のブラウザでは、閉じても残ることがあります。",
         },
         {
           type: "p",

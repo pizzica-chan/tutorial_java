@@ -382,9 +382,7 @@ CREATE TABLE IF NOT EXISTS t_request (
   approver_id BIGINT,
   applicant_email VARCHAR(255),
   created_at DATETIME NOT NULL,
-  updated_at DATETIME,
-  CONSTRAINT fk_request_applicant FOREIGN KEY (applicant_id) REFERENCES t_user (id),
-  CONSTRAINT fk_request_approver FOREIGN KEY (approver_id) REFERENCES t_user (id)
+  updated_at DATETIME
 );`,
   },
   {
@@ -542,7 +540,7 @@ CREATE TABLE IF NOT EXISTS t_request (
   {
     path: "src/main/java/.../config/SecurityConfig.java",
     note: "Spring Security。ログインと権限",
-    why: "401/403、ログイン画面への飛ばされ、CSRFエラーはまずここを疑います。`/api/**` だけ未ログインの応答を 401 にし、CSRF も対象外にしているので、画面（302 でログインへ、フォームは CSRF 必須）と Web API（401 で JSON、CSRF 不要）の違いはここで分かれます。",
+    why: "401/403 になる、ログイン画面へ飛ばされる、CSRF エラーになるといったときは、まずここを疑います。未ログインのとき、画面は 302 でログイン画面へ飛ばし、`/api/**` だけは 401 を返します。この振り分けは、ここで設定しています。CSRF の検査は画面にも Web API にもかかるので、ログイン中のセッションで Web API へ POST するときも CSRF トークンが要ります。",
     code: `@Bean
 SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
   http.authorizeHttpRequests(auth -> auth
@@ -550,7 +548,6 @@ SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
       .antMatchers("/admin/**").hasRole("ADMIN")
       .anyRequest().authenticated()
     )
-    .csrf(csrf -> csrf.ignoringAntMatchers("/api/**"))
     .formLogin(login -> login.loginPage("/login").defaultSuccessUrl("/requests"))
     .logout(logout -> logout.logoutSuccessUrl("/login"))
     .exceptionHandling(ex -> ex

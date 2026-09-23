@@ -71,7 +71,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "table",
-          headers: ["Networkタブ / コンソール", "分かること", "次に確認すること"],
+          headers: ["Network タブ / コンソール", "分かること", "次に確認すること"],
           rows: [
             ["新しいリクエストが無い", "サーバはまだ関係ない。フォームか JS", "コンソール、フォーム、一覧の JS"],
             ["コンソールに JS エラー", "リクエスト送信の手前で止まっている", "エラーのファイルと行"],
@@ -417,7 +417,7 @@ requestService.approve(id, user.getId());`,
     },
     {
       id: "duplicate-mail",
-      title: "[障害調査] 承認すると、申請者に確認メールが2通届く",
+      title: "[障害調査] 承認すると、申請者に確認メールが 2 通届く",
       minutes: 9,
       blocks: [
         {
@@ -426,7 +426,7 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "承認者の佐藤花子から、「申請者にメールを2通送ってしまったかもしれない」と報告があった。実際に、申請者の山田には同じ内容の承認完了メールが2通届いている。画面にはエラーが出ておらず、DB の申請レコードは1件だけ APPROVED になっている。",
+          text: "承認者の佐藤花子から、「申請者にメールを 2 通送ってしまったかもしれない」と報告があった。実際に、申請者の山田には同じ内容の承認完了メールが 2 通届いている。画面にはエラーが出ておらず、DB の申請レコードは 1 件だけ APPROVED になっている。",
         },
         {
           type: "h2",
@@ -435,11 +435,12 @@ requestService.approve(id, user.getId());`,
         {
           type: "ul",
           items: [
-            "申請者（山田）に、同じ内容の承認完了メールが2通届いている",
+            "申請者（山田）に、同じ内容の承認完了メールが 2 通届いている",
             "画面にはエラーが出ていない。承認操作自体は成功している",
-            "DB の該当レコードは1件だけで、ステータスは APPROVED（重複レコードは無い）",
-            "承認したのは佐藤花子1人。二人の承認者が別々に承認したわけではない",
-            "佐藤花子は、申請詳細画面から承認した",
+            "DB の該当レコードは 1 件だけで、ステータスは APPROVED（重複レコードは無い）",
+            "承認したのは佐藤花子 1 人。二人の承認者が別々に承認したわけではない",
+            "佐藤花子は、申請詳細画面から承認した。承認を押したあと、画面がしばらく変わらなかったと言っている",
+            "検証用環境。メールは社内の SMTP サーバから送っている",
           ],
         },
         {
@@ -448,7 +449,7 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "画面の更新とメール送信は別処理です。メールが2通なら、メール送信の処理そのものが2回走った可能性を疑いましょう。アプリのログで、承認処理が何回実行されたかを確認しましょう。",
+          text: "画面の更新とメール送信は別処理です。メールが 2 通なら、メール送信の処理そのものが 2 回走った可能性を疑いましょう。アプリのログで、承認処理が何回実行されたかを確認しましょう。",
         },
         {
           type: "h2",
@@ -460,17 +461,21 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "code",
-          title: "操作時刻のサーバログ（申請くん）",
+          title: "操作時刻のサーバログ（申請くん・検証用環境・抜粋）",
           code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : POST /shinsei/requests/13/approve
-04:12:03.101 INFO  [nio-8080-exec-7] j.c.e.s.i.AccessLogInterceptor : POST /shinsei/requests/13/approve
 04:12:03.106 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findById : <==      Total: 1
-04:12:03.107 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findById : <==      Total: 1
-04:12:03.112 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.update : ==>  Preparing: UPDATE t_request SET status = ?, updated_at = NOW() WHERE id = ?
-04:12:03.114 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.update : ==>  Preparing: UPDATE t_request SET status = ?, updated_at = NOW() WHERE id = ?`,
+04:12:03.112 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.update : ==>  Preparing: UPDATE t_request SET status = ?, updated_at = NOW() WHERE id = ?
+04:12:03.115 DEBUG [nio-8080-exec-3] j.c.e.s.mapper.RequestMapper.update : <==    Updates: 1
+04:12:05.020 INFO  [nio-8080-exec-7] j.c.e.s.i.AccessLogInterceptor : POST /shinsei/requests/13/approve
+04:12:05.026 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findById : <==      Total: 1
+04:12:05.031 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.RequestMapper.update : ==>  Preparing: UPDATE t_request SET status = ?, updated_at = NOW() WHERE id = ?
+04:12:06.418 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : end RequestService.approve(..)
+04:12:06.425 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.RequestMapper.update : <==    Updates: 1
+04:12:09.702 DEBUG [nio-8080-exec-7] j.c.e.s.aspect.ServiceLoggingAspect : end RequestService.approve(..)`,
         },
         {
           type: "p",
-          text: "同じ `requestId=13` への `POST /shinsei/requests/13/approve` が、`nio-8080-exec-3` と `nio-8080-exec-7` という別々のスレッドで、1秒に満たない間隔で2回実行されています。申請詳細画面の承認フォームを見ましょう。",
+          text: "同じ `POST /shinsei/requests/13/approve` が、`nio-8080-exec-3` と `nio-8080-exec-7` という別々のスレッドで、約 2 秒の間隔で 2 回実行されています。1 回目は `update` のあと、`end` まで約 3 秒かかっています。佐藤花子に確認すると、画面が変わらなかったので、もう一度承認を押し、確認ダイアログでも OK を選んでいました。申請詳細画面の承認フォームを見ましょう。",
         },
         {
           type: "code",
@@ -511,7 +516,7 @@ document.querySelectorAll("form.js-approve-confirm").forEach((form) => {
         },
         {
           type: "p",
-          text: "承認の処理自体が、この二重送信に耐えられるかを見ます。詳細画面の Controller にも、承認前に同じ `status` の判定があります（前のシナリオ「この申請は承認できません」で見た分岐です）。ただし、ほぼ同時刻に届いた2つのリクエストは、どちらも Controller の判定時点ではまだ相手の更新が終わっておらず、両方とも `PENDING` のまま判定を通過してしまいます。",
+          text: "承認の処理自体が、この二重送信に耐えられるかを見ます。詳細画面の Controller にも、承認前に同じ `status` の判定があります（前のシナリオ「この申請は承認できません」で見た分岐です）。ただし、2 回目が届いた `04:12:05.020` の時点では、1 回目のトランザクションはまだ確定していません。2 回目は確定前の `PENDING` を読むので、判定を通過してしまいます。",
         },
         {
           type: "code",
@@ -548,17 +553,21 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "`WHERE` に `status = 'PENDING'` のような条件がありません。ほぼ同時刻に届いた2つのリクエストは、どちらも `findById` で `status='PENDING'` を読み、どちらも判定を通過します。どちらのリクエストも、自分が読んだ時点の `status` を基準に判定しているため、相手がどこまで進んだかに関係なく、両方とも `update` と `mailService.notifyApplicant` まで進んでしまいます。",
+          text: "`WHERE` に `status = 'PENDING'` のような条件がありません。1 回目が更新したレコードは、まだ確定していません。そのため、2 回目の `update`（`04:12:05.031`）は、1 回目の確定まで待たされます。2 回目の `Updates: 1` がログに出るのが `04:12:06.425` なのは、この待ちのためです。待ったあとも `WHERE` に状態の条件が無いので、そのまま更新し、`mailService.notifyApplicant` まで進んでしまいます。",
+        },
+        {
+          type: "p",
+          text: "1 回目が確定するまで約 3 秒かかったのは、`approve` が `@Transactional` で、その中でメールを送っているからです。トランザクションは、SMTP サーバの応答を待ってメール送信が終わるまで確定しません。",
         },
         {
           type: "callout",
           kind: "trap",
           title: "`@Transactional` は同時実行を防がない",
-          text: "`@Transactional` は、1つのリクエストの中の複数の SQL を1つの単位にまとめる仕組みで、複数のリクエストが同時に来ることを防ぐものではありません。二重に送信された2つのリクエストは、それぞれ別のトランザクションとして、ほぼ同時に処理されます。",
+          text: "`@Transactional` は、1 つのリクエストの中の複数の SQL を 1 つの単位にまとめる仕組みで、複数のリクエストが同時に来ることを防ぐものではありません。二重に送信された 2 つのリクエストは、それぞれ別のトランザクションとして、並行して処理されます。",
         },
         {
           type: "p",
-          text: "分離レベルや、楽観ロック・悲観ロックといった防ぎ方は、「Javaアプリの構成」の「トランザクションと同時実行」で扱います。",
+          text: "分離レベルや、楽観ロック・悲観ロックといった防ぎ方は、「Java アプリの構成」の「トランザクションと同時実行」で扱います。",
           link: {
             label: "トランザクションと同時実行",
             to: "/tracks/java-map/transaction",
@@ -582,10 +591,11 @@ mailService.notifyApplicant(request);`,
         {
           type: "investigation-flow",
           items: [
-            "メールが2通届いていること、画面にはエラーが無く DB のレコードは1件だけであることを確認",
-            "アプリのログで、同じ `requestId` への `approve` 処理が、別スレッドでほぼ同時刻に2回実行されていることを確認",
+            "メールが 2 通届いていること、画面にはエラーが無く DB のレコードは 1 件だけであることを確認",
+            "アプリのログで、同じ申請への `approve` 処理が、別スレッドで約 2 秒の間隔で 2 回実行されていることを確認",
             "承認フォームに付いた `js-approve-confirm` から app.js を辿り、確認ダイアログは二重送信を防ぐ仕組みではないことを確認",
             "`RequestService.approve` が `status` を読んでから判定しており、`update` の SQL に `status` の条件が無いことを確認",
+            "1 回目はトランザクションの中のメール送信で確定が約 3 秒遅れ、そのあいだに届いた 2 回目が確定前の `PENDING` を読んだと分かる",
             "二重送信と、`update` に更新前提の `status` 条件が無いことから、同じ申請で承認処理とメール送信が 2 回走ったと特定",
           ],
         },
@@ -638,11 +648,11 @@ mailService.notifyApplicant(request);`,
           title: "操作時刻のサーバログ（申請くん・検証用環境）",
           lang: "text",
           highlightLines: [4],
-          code: `10:15:03.100 DEBUG [nio-8080-exec-4] ...ServiceLoggingAspect : start RequestService.approve(..)
-10:15:03.105 DEBUG [nio-8080-exec-4] ...RequestMapper.update : ==>  Preparing: UPDATE t_request SET status = ?, updated_at = NOW() WHERE id = ?
-10:15:03.107 DEBUG [nio-8080-exec-4] ...RequestMapper.update : <==    Updates: 1
-10:15:03.110 WARN  [nio-8080-exec-4] ...service.MailService : 通知メールの送信に失敗しました requestId=13
-10:15:03.111 DEBUG [nio-8080-exec-4] ...ServiceLoggingAspect : end RequestService.approve(..)`,
+          code: `10:15:03.100 DEBUG [nio-8080-exec-4] j.c.e.s.aspect.ServiceLoggingAspect : start RequestService.approve(..)
+10:15:03.105 DEBUG [nio-8080-exec-4] j.c.e.s.mapper.RequestMapper.update : ==>  Preparing: UPDATE t_request SET status = ?, updated_at = NOW() WHERE id = ?
+10:15:03.107 DEBUG [nio-8080-exec-4] j.c.e.s.mapper.RequestMapper.update : <==    Updates: 1
+10:15:03.110 WARN  [nio-8080-exec-4] j.c.e.shinsei.service.MailService : 通知メールの送信に失敗しました requestId=13
+10:15:03.111 DEBUG [nio-8080-exec-4] j.c.e.s.aspect.ServiceLoggingAspect : end RequestService.approve(..)`,
         },
         {
           type: "p",
@@ -675,7 +685,7 @@ mailService.notifyApplicant(request);`,
           title: "e を渡して再現させたログ（申請くん）",
           lang: "text",
           highlightLines: [2],
-          code: `10:15:03.110 WARN  [nio-8080-exec-4] ...service.MailService : 通知メールの送信に失敗しました requestId=13
+          code: `10:15:03.110 WARN  [nio-8080-exec-4] j.c.e.shinsei.service.MailService : 通知メールの送信に失敗しました requestId=13
 java.lang.StringIndexOutOfBoundsException: begin 0, end 10, length 4
     at java.base/java.lang.String.checkBoundsBeginEnd(String.java:4602)
     at java.base/java.lang.String.substring(String.java:2707)
@@ -710,7 +720,7 @@ java.lang.StringIndexOutOfBoundsException: begin 0, end 10, length 4
         {
           type: "investigation-flow",
           items: [
-            "Network タブで `POST /requests/13/approve` が成功しており、画面にもエラーが無いことを確認",
+            "Network タブで `POST /shinsei/requests/13/approve` が成功しており、画面にもエラーが無いことを確認",
             "アプリログで、DB 更新の直後に `MailService` の `WARN` があるが、例外の詳細が無いことを確認",
             "`catch (Exception e)` がログに `e` を渡していないと分かる",
             "ログに `e` を渡して再現させ、`StringIndexOutOfBoundsException` と分かる",
@@ -828,7 +838,33 @@ WHERE (applicant_id = 7 OR approver_id = 7)
         },
         {
           type: "p",
-          text: "ローカル環境では 4 件あります。WHERE は検証用環境と同じです。件数が違うのは、各環境のアプリが接続している DB が違うからです。",
+          text: "ローカル環境では 4 件あります。WHERE は検証用環境と同じなので、違うのは各環境の DB に入っているレコードです。検証用環境で、`status` の条件だけを外して、山田に関係する申請を見てみましょう。",
+        },
+        {
+          type: "code",
+          title: "t_request（申請くん・検証用環境・status の条件なし）",
+          lang: "sql",
+          code: `SELECT id, title, status, updated_at
+FROM t_request
+WHERE (applicant_id = 7 OR approver_id = 7);`,
+        },
+        {
+          type: "table",
+          headers: ["id", "title", "status", "`updated_at`"],
+          rows: [
+            ["11", "備品購入", "APPROVED", "2026-04-12 10:03:00"],
+            ["12", "交通費申請", "APPROVED", "2026-08-29 17:42:10"],
+            ["13", "休暇申請", "APPROVED", "2026-08-29 17:42:31"],
+            ["15", "出張旅費", "APPROVED", "2026-08-29 17:43:05"],
+          ],
+        },
+        {
+          type: "p",
+          text: "山田に関係する申請は 4 件あり、どれも `APPROVED` です。そのうち 3 件は、`updated_at` が 2026-08-29 の夕方の 1 分ほどのあいだに並んでいます。検証の担当者に聞くと、その日の動作確認でまとめて承認していました。",
+        },
+        {
+          type: "p",
+          text: "申請一覧は、未承認（`PENDING`）だけを出す画面です。検証用環境では山田に関係する申請がすべて承認済みなので、0 件はコードどおりの動きです。原因は、検証用環境のデータでした。一覧を確認するには、未承認の申請を新しく登録するなど、テスト用のデータを用意しましょう。",
         },
         {
           type: "h2",
@@ -839,7 +875,7 @@ WHERE (applicant_id = 7 OR approver_id = 7)
           items: [
             "GET が 200 で件数が違うなら、コード通読より先に、実行された SQL とその条件のレコードを見る",
             "同じ SQL を、アプリが接続している DB で実行し、画面と同じ 0 件なら、コードよりその DB のレコードを疑う",
-            "検証用環境とローカルで件数が違うときは、接続先の DB が同じかを確認する",
+            "WHERE の条件を 1 つずつ外して実行すると、どの条件で 0 件になっているかが分かる。0 件が仕様どおりのこともある",
           ],
         },
         {
@@ -852,7 +888,8 @@ WHERE (applicant_id = 7 OR approver_id = 7)
             "Network タブで、GET が 200 であることを確認",
             "実行された SQL とその条件を確認",
             "同じ条件で DB を検索し、レコードが 0 件であることを確認",
-            "ローカルの DB では同じ条件で 4 件あり、検証用環境とローカルで接続している DB が違うと分かる",
+            "ローカルの DB では同じ条件で 4 件あり、違いは各環境の DB のレコードだと分かる",
+            "検証用環境で `status` の条件を外すと、山田に関係する申請はすべて `APPROVED` で、2026-08-29 の動作確認でまとめて承認されていたと分かる",
           ],
         },
         { type: "quiz", id: "sc-db" },
@@ -1152,9 +1189,14 @@ public String history(
           code: `GET /shinsei/requests/16?from=history          200
 GET /shinsei/requests/history                   200`,
         },
+        // 教材用の意図（読者には表示されない）:
+        // - ここはブラウザが送ったクエリの話なので、フォームの name に合わせて `status=PENDING` と書く。
+        //   `requestStatus` は Controller の @RequestParam 側の名前で、リクエストには載らない。
+        // - name（status）と @RequestParam（requestStatus）の不一致は、シナリオ「申請履歴検索の結果が不正」用の
+        //   意図的なバグ（shinsei-kun/NOTES.md）。本文を requestStatus に戻したり、申請くん側の名前を揃えたりしない。
         {
           type: "p",
-          text: "検索したときのクエリ（`title=研修`、`requestStatus=PENDING`）が、戻ったときのリクエストに載っていません。フォームを再送信したわけではないので、次は「← 申請履歴」のリンク先をサーバがどう組み立てているかを追います。",
+          text: "検索したときのクエリ（`title=研修`、`status=PENDING`）が、戻ったときのリクエストに載っていません。フォームを再送信したわけではないので、次は「← 申請履歴」のリンク先をサーバがどう組み立てているかを追います。",
         },
         {
           type: "h2",
@@ -1265,7 +1307,7 @@ GET /shinsei/requests/history                   200`,
         {
           type: "investigation-flow",
           items: [
-            "Network で、戻ったあとの `GET /requests/history` にクエリパラメータが無いと分かる",
+            "Network で、戻ったあとの `GET /shinsei/requests/history` にクエリパラメータが無いと分かる",
             "戻るリンクの `href` が、モデルの `backTo` から来ていると分かる",
             "`backTo` が `buildHistoryBackUrl` の戻り値だと分かる",
             "`buildHistoryBackUrl` がセッションから読むキーが `historyCondition` だと分かる",
@@ -1286,7 +1328,7 @@ GET /shinsei/requests/history                   200`,
         },
         {
           type: "p",
-          text: "申請履歴でステータスを「承認済み」にして検索すると、レコードは正しい件数で出る。ただし、新しく追加された「承認日時」の列が、どのレコードも「-」のままになっている。",
+          text: "申請履歴を条件なしで表示すると、レコードは正しい件数で出る。ただし、新しく追加された「承認日時」の列が、承認済みの「備品購入」も含めて、どのレコードも「-」のままになっている。",
         },
         {
           type: "h2",
@@ -1295,9 +1337,9 @@ GET /shinsei/requests/history                   200`,
         {
           type: "ul",
           items: [
-            "山田（yamada）でログイン。検証用環境。申請履歴でステータス「承認済み」を検索した",
-            "該当するレコードは正しい件数で表示される",
-            "「承認日時」の列だけ、どのレコードも「-」になっている",
+            "山田（yamada）でログイン。検証用環境。申請履歴を、検索条件を入れずに表示した",
+            "山田に関係する申請が正しい件数で表示される。承認済み（APPROVED）の「備品購入」も出ている",
+            "「承認日時」の列だけ、承認済みのレコードも含めて、どれも「-」になっている",
             "画面にエラーは出ていない",
           ],
         },
@@ -1307,7 +1349,7 @@ GET /shinsei/requests/history                   200`,
         },
         {
           type: "p",
-          text: "Network タブを見ましょう。`GET /shinsei/requests/history` は 200 で、件数も検索条件どおりです。画面は HTML の応答なので、Network タブだけでは「承認日時」の中身までは分かりません。次はテンプレートとサーバ側です。",
+          text: "Network タブを見ましょう。`GET /shinsei/requests/history` は 200 で、件数も想定どおりです。画面は HTML の応答なので、Network タブだけでは「承認日時」の中身までは分かりません。次はテンプレートとサーバ側です。",
         },
         {
           type: "h2",
@@ -1362,9 +1404,9 @@ private LocalDateTime approvedAt;`,
           highlightLines: [1],
           code: `==>  Preparing: SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at, r.updated_at,
        a.display_name AS applicant_name, v.display_name AS approver_name
-       FROM t_request r ... WHERE ... AND r.status = ?
-==> Parameters: 7(Long), 7(Long), APPROVED(String)
-<==      Total: 1`,
+       FROM t_request r ... WHERE (r.applicant_id = ? OR r.approver_id = ?) ORDER BY r.created_at DESC
+==> Parameters: 7(Long), 7(Long)
+<==      Total: 5`,
         },
         {
           type: "p",
@@ -1417,7 +1459,7 @@ private LocalDateTime approvedAt;`,
         {
           type: "investigation-flow",
           items: [
-            "Network で `GET /requests/history` が 200 で、件数も条件どおりであることを確認",
+            "Network で `GET /shinsei/requests/history` が 200 で、件数も想定どおりであることを確認",
             "テンプレートが `item.approvedAt` を参照していると分かる",
             "DB に `updated_at` の値があることを確認",
             "MyBatis の DEBUG ログで、SELECT に `r.updated_at` が含まれていると分かる",
@@ -1478,11 +1520,11 @@ private LocalDateTime approvedAt;`,
           title: "操作時刻のサーバログ（申請くん・検証用環境）",
           lang: "text",
           highlightLines: [2, 4],
-          code: `04:12:03.105 DEBUG [nio-8080-exec-3] ...ServiceLoggingAspect : start RequestService.searchHistory(..)
-04:12:03.110 DEBUG [nio-8080-exec-3] ...RequestMapper.searchHistory : ==>  Preparing: SELECT ... FROM t_request r ... WHERE (r.applicant_id = ? OR r.approver_id = ?) ORDER BY r.created_at DESC
-04:12:03.112 DEBUG [nio-8080-exec-3] ...RequestMapper.searchHistory : ==> Parameters: 7(Long), 7(Long)
-04:12:08.890 DEBUG [nio-8080-exec-3] ...RequestMapper.searchHistory : <==      Total: 1204
-04:12:08.895 DEBUG [nio-8080-exec-3] ...ServiceLoggingAspect : end RequestService.searchHistory(..)`,
+          code: `04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : start RequestService.searchHistory(..)
+04:12:03.110 DEBUG [nio-8080-exec-3] j.c.e.s.m.R.searchHistory : ==>  Preparing: SELECT ... FROM t_request r ... WHERE (r.applicant_id = ? OR r.approver_id = ?) ORDER BY r.created_at DESC
+04:12:03.112 DEBUG [nio-8080-exec-3] j.c.e.s.m.R.searchHistory : ==> Parameters: 7(Long), 7(Long)
+04:12:08.890 DEBUG [nio-8080-exec-3] j.c.e.s.m.R.searchHistory : <==      Total: 1204
+04:12:08.895 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : end RequestService.searchHistory(..)`,
         },
         {
           type: "h3",
@@ -1554,7 +1596,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "`schema.sql` の `t_request` を見ます。`PRIMARY KEY` の `id` はあります。`INDEX` の定義はありません。",
+          text: "`schema.sql` の `t_request` を見ます。`PRIMARY KEY` の `id` はあります。`INDEX` の定義も、外部キー制約もありません。",
         },
         {
           type: "code",
@@ -1568,16 +1610,14 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
   approver_id BIGINT,
   applicant_email VARCHAR(255),
   created_at DATETIME NOT NULL,
-  updated_at DATETIME,
-  CONSTRAINT fk_request_applicant FOREIGN KEY (applicant_id) REFERENCES t_user (id),
-  CONSTRAINT fk_request_approver FOREIGN KEY (approver_id) REFERENCES t_user (id)
+  updated_at DATETIME
 );`,
         },
         {
           type: "callout",
           kind: "note",
           title: "外部キーとインデックス",
-          text: "MySQL では、外部キー制約があると参照側のカラムに自動でインデックスが付くことがあります。この教材の `EXPLAIN` は、説明のために `possible_keys` を `NULL` にした簡略な例です。実際の環境では、外部キーの自動インデックスが `possible_keys` の候補に挙がることもあります。それでも `OR` と `ORDER BY` が重なると、`type` が `ALL` のままフルスキャンになることがあります。",
+          text: "MySQL（InnoDB）では、外部キー制約を付けたカラムにインデックスが自動で作られます。`INDEX` の定義が無くても `possible_keys` に候補が出ることがあるのは、このためです。定義を見るときは、外部キー制約も確認しましょう。稼働中の DB なら `SHOW INDEX FROM t_request;` で、実際にあるインデックスを一覧できます。",
         },
         {
           type: "p",
@@ -1783,7 +1823,7 @@ Content-Type: text/html;charset=UTF-8`,
         {
           type: "ul",
           items: [
-            "検証用環境で申請一覧を開くと、20秒ほど待ってから画面にエラーが出る",
+            "検証用環境で申請一覧を開くと、30 秒ほど待ってから画面にエラーが出る",
             "Network タブでは、リクエストは出ているが、応答までかなり時間がかかったあと 500 になる",
             "ローカル環境では、同じ操作で問題なく開ける",
           ],
@@ -1806,17 +1846,27 @@ Content-Type: text/html;charset=UTF-8`,
         },
         {
           type: "code",
-          title: "操作時刻のサーバログ（申請くん・検証用環境）",
+          title: "操作時刻のサーバログ（申請くん・検証用環境・抜粋）",
           code: `04:12:03.512 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests
-04:12:23.518 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[/shinsei].[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] threw exception
-org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection
-Caused by: com.mysql.cj.jdbc.exceptions.CommunicationsException: Communications link failure
-
-The last packet sent successfully to the server was 0 milliseconds ago. The driver has not received any packets from the server.`,
+04:12:13.932 WARN  [nio-8080-exec-3] com.zaxxer.hikari.pool.PoolBase : HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@5b1c8b2b (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+04:12:24.342 WARN  [nio-8080-exec-3] com.zaxxer.hikari.pool.PoolBase : HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@578061b9 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+04:12:33.562 WARN  [nio-8080-exec-3] com.zaxxer.hikari.pool.PoolBase : HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@7ad68627 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
+04:12:33.570 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[.[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] in context with path [/shinsei] threw exception [Request processing failed; nested exception is org.mybatis.spring.MyBatisSystemException: nested exception is org.apache.ibatis.exceptions.PersistenceException:
+### Error querying database.  Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30052ms.
+### The error may exist in class path resource [mapper/RequestMapper.xml]
+### The error may involve jp.co.example.shinsei.mapper.RequestMapper.findMine
+### The error occurred while executing a query
+### Cause: org.springframework.jdbc.CannotGetJdbcConnectionException: Failed to obtain JDBC Connection; nested exception is java.sql.SQLTransientConnectionException: HikariPool-1 - Connection is not available, request timed out after 30052ms.] with root cause
+com.mysql.cj.exceptions.ConnectionIsClosedException: No operations allowed after connection closed.
+    （中略）`,
         },
         {
           type: "p",
-          text: "リクエストを受けてから例外まで20秒あります。`CommunicationsException` は、SQL の文法エラーではなく、DB との通信そのものが失敗したことを示します。まず、接続先の設定を確認しましょう。",
+          text: "リクエストを受けてから例外まで約 30 秒あります。ERROR 行の `CannotGetJdbcConnectionException` は、SQL の文法エラーではなく、DB への接続を取れなかったことを示します。`Connection is not available, request timed out after 30052ms` は、コネクションプール（HikariCP）から接続を借りようとして、約 30 秒待っても借りられなかったという意味です。その前の 3 行の WARN は、プールにあった接続を、使う前に確かめたところ、すでに使えなくなっていたことを示しています。DB との通信そのものがうまくいっていない疑いがあります。",
+        },
+        {
+          type: "p",
+          text: "いちばん下の原因（root cause）の `ConnectionIsClosedException` は、使えなくなった接続を扱おうとしたときの例外です。通信が止まった理由までは書かれていません。root cause の行だけで判断せず、ERROR 行のメッセージと WARN もあわせて読みましょう。まず、接続先の設定を確認しましょう。",
         },
         {
           type: "code",
@@ -1867,7 +1917,7 @@ traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packet
           type: "ul",
           items: [
             "応答はあるが時間がかかったあとの 5xx は、DB や外部 API など、通信先とのやり取りを疑う",
-            "設定ファイルの接続先が正しくても、そこへの経路が届くとは限らない",
+            "設定ファイルの接続先が正しくても、そこまでの経路が通っているとは限らない",
             "traceroute で止まった場所が分かっても、原因はそこにある機器の担当チームに確認する",
           ],
         },
@@ -1879,7 +1929,7 @@ traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packet
           type: "investigation-flow",
           items: [
             "検証用環境だけ、しばらく待ってから画面にエラーが出ることを確認",
-            "操作時刻のログで、DB との通信失敗を示す `CommunicationsException` を確認",
+            "操作時刻のログで、コネクションプールから接続を借りられなかったことを示す `CannotGetJdbcConnectionException` と、接続の検証に失敗した WARN を確認",
             "`application-stg.yml` の接続先（ホスト・ポート）に誤りが無いことを確認",
             "`nc -zv` で、3306 番ポートへの TCP 接続がタイムアウトすることを確認",
             "`traceroute -T -p 3306` を実行し、ファイアウォールの手前で止まっていることを確認",
@@ -1910,7 +1960,7 @@ traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packet
           type: "ul",
           items: [
             "デプロイ直後から画面が開けない。ブラウザは 502",
-            "直前に、運用担当者（`yamada`。他のシナリオに出てくる申請者の山田とは別人です）が SSH でログインし、ログの出力先ディレクトリを作り直していた",
+            "直前に、運用担当者（Linux のユーザ `opsuser`）が SSH でログインし、ログの出力先ディレクトリを作り直していた",
             "ローカル環境では、同じコード・同じ手順で問題なく起動する",
           ],
         },
@@ -1934,7 +1984,7 @@ traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packet
           type: "code",
           title: "例（検証用環境のサーバ上）",
           lang: "text",
-          code: `$ ps -ef -o user,pid,cmd | grep java | grep -v grep
+          code: `$ ps -eo user,pid,cmd | grep java | grep -v grep
 $`,
         },
         {
@@ -1958,17 +2008,17 @@ Exception in thread "main" java.io.FileNotFoundException: /var/log/shinsei-kun/a
           title: "例（ログの出力先ディレクトリ）",
           lang: "text",
           code: `$ ls -l /var/log/
-drwxr-xr-x 2 yamada yamada 4096 Aug 20 09:10 shinsei-kun`,
+drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
         },
         {
           type: "p",
-          text: "所有者もグループも `yamada`（直前に作業した運用担当者のユーザ）で、それ以外（other）には書き込み権限がありません。申請くんのプロセスは `appuser` というユーザで動く設定なので、所有者にもグループにも属さず、書き込めません。",
+          text: "所有者もグループも `opsuser`（直前に作業した運用担当者のユーザ）で、それ以外（other）には書き込み権限がありません。申請くんのプロセスは `appuser` というユーザで動く設定なので、所有者にもグループにも属さず、書き込めません。",
         },
         {
           type: "callout",
           kind: "trap",
           title: "SSH でログインできることと、アプリが動くことは別",
-          text: "yamada は SSH でログインでき、sudo で何でもできる強い権限を持っていました。それでも、ディレクトリを作った時点の所有者・グループがアプリの実行ユーザ（appuser）に合っていなければ、アプリはそこへ書き込めません。ディレクトリやファイルを作る作業では、所有者まで合わせる必要があります。",
+          text: "`opsuser` は SSH でログインでき、sudo で何でもできる強い権限を持っていました。それでも、ディレクトリを作った時点の所有者・グループがアプリの実行ユーザ（`appuser`）に合っていなければ、アプリはそこへ書き込めません。ディレクトリやファイルを作る作業では、所有者まで合わせる必要があります。",
         },
         {
           type: "p",
@@ -2004,7 +2054,7 @@ drwxr-xr-x 2 yamada yamada 4096 Aug 20 09:10 shinsei-kun`,
           type: "investigation-flow",
           items: [
             "ブラウザが 502 になることと、直前にログ出力先ディレクトリを作り直す作業があったことを確認",
-            "`ps -ef -o user,pid,cmd` で、申請くんのプロセスが起動していないことを確認",
+            "`ps -eo user,pid,cmd` で、申請くんのプロセスが起動していないことを確認",
             "`sudo -u appuser` で手動起動し、ログファイルへの書き込みで Permission denied が出ることを確認",
             "`ls -l` で、ログ出力先ディレクトリの所有者・グループが運用担当者のユーザのままだったことを確認",
             "`chown` で所有者・グループをアプリの実行ユーザに合わせ、起動と画面表示を確認",
@@ -2290,11 +2340,11 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "一覧・履歴・詳細の画面では、PENDING かどうかで色を分けています。",
+          text: "一覧・履歴・詳細の画面では、PENDING かどうかで色を分けています。一覧は未承認だけを出すので、`CANCELLED` が出るのは履歴と詳細です。",
         },
         {
           type: "code",
-          title: "list.html のステータス（申請くん）",
+          title: "history.html のステータス（申請くん）",
           lang: "html",
           highlightLines: [2],
           code: `<span class="status"
@@ -2378,7 +2428,7 @@ requestMapper.update(request);`,
             ["`RequestController.approve`", "PENDING 以外は承認できない", "不要"],
             ["`findMine`", "`status = 'PENDING'`", "不要"],
             ["`history.html` の select", "すべて / PENDING / APPROVED", "依頼者へ確認"],
-            ["一覧・履歴・詳細の見た目", "PENDING でなければ `is-approved`", "要修正"],
+            ["履歴・詳細の見た目", "PENDING でなければ `is-approved`", "要修正"],
             ["`RequestService` の create / approve", "新規は PENDING、承認は APPROVED", "不要"],
             ["`CANCELLED` にする処理", "メソッドが無い", "依頼者へ確認"],
             ["`schema.sql`", "`VARCHAR(32) NOT NULL`", "長さは不要。制約の追加は依頼者へ確認"],
@@ -2400,7 +2450,7 @@ requestMapper.update(request);`,
           items: [
             "既存の値名（`PENDING`）から逆引きすると漏れが減る",
             "動作に影響しない箇所でも、見た目が業務的な誤解を招くなら修正対象になる",
-            "新しい値をどう扱うかが依頼文に無い箇所（検索フォーム、更新処理、DB制約）は、依頼者へ確認する",
+            "新しい値をどう扱うかが依頼文に無い箇所（検索フォーム、更新処理、DB 制約）は、依頼者へ確認する",
           ],
         },
         {
@@ -2412,7 +2462,7 @@ requestMapper.update(request);`,
           items: [
             "`PENDING` で検索すると、承認の分岐・一覧の SQL・`INSERT`/`UPDATE` がヒットし、いずれも修正不要と分かる",
             "履歴の検索フォームは「すべて」で `CANCELLED` も表示されるため、扱いを依頼者へ確認する",
-            "一覧・履歴・詳細の見た目は、`CANCELLED` も承認済みと同じ表示になり、要修正と分かる",
+            "履歴・詳細の見た目は、`CANCELLED` も承認済みと同じ表示になり、要修正と分かる",
             "`CANCELLED` にする処理がまだ無いことを確認する",
             "JSON の応答（`RequestResponse`）は修正不要。`schema.sql` は長さの変更は不要だが、CHECK 制約を足すかは依頼者へ確認する",
           ],
@@ -2685,9 +2735,7 @@ CREATE TABLE IF NOT EXISTS t_request (
   approver_id BIGINT,
   applicant_email VARCHAR(255),
   created_at DATETIME NOT NULL,
-  updated_at DATETIME,
-  CONSTRAINT fk_request_applicant FOREIGN KEY (applicant_id) REFERENCES t_user (id),
-  CONSTRAINT fk_request_approver FOREIGN KEY (approver_id) REFERENCES t_user (id)
+  updated_at DATETIME
 );`,
         },
         {
@@ -2971,7 +3019,7 @@ CREATE TABLE IF NOT EXISTS t_request (
           type: "ul",
           items: [
             "Java の if だけを見て安心せず、その手前の SQL がすでに絞り込んでいないかを確認する",
-            "レコードの中身に基づく権限判定は、`SecurityConfig`（URL単位）ではなくビジネスロジック側の役目",
+            "レコードの中身に基づく権限判定は、`SecurityConfig`（URL 単位）ではなくビジネスロジック側の役目",
             "ロールを増やすときは、コードだけでなく DB の値（`data.sql` や既存レコード）も見る",
             "「誰が実際に承認したか」を記録したいなら、更新対象のカラム設計から見直しが要る",
             "依頼文にある言葉（部長職）が、既存のデータモデルに無い概念なら、範囲を依頼者へ確認する",
@@ -2988,7 +3036,7 @@ CREATE TABLE IF NOT EXISTS t_request (
             "その手前で `findById` の `WHERE` がすでに `applicant_id OR approver_id` で絞っており、部長職はレコードにすら届かないと気づく",
             "`findMine`（一覧）も同じ絞り込みで、承認対象を見つける画面にも影響すると分かる",
             "`LoginUser.role` はあるが、`data.sql` に部長職に当たる値が無いと分かる",
-            "`SecurityConfig` はURL単位の制御であり、レコード単位の判定には使えないと分かる",
+            "`SecurityConfig` は URL 単位の制御であり、レコード単位の判定には使えないと分かる",
             "`RequestController.approve` がロールを渡していないと分かる",
             "代理承認時に `approver_id` が更新されず、表示上の承認者が実態とずれると分かる",
             "部署による範囲は依頼文だけでは決まらず、依頼者へ確認する",
@@ -3110,7 +3158,7 @@ public class HistorySearchCondition {
         {
           type: "callout",
           kind: "trap",
-          title: "ここに足し忘れると、条件だけ検索結果に出て保存されない",
+          title: "足し忘れても検索は通るが、承認者名の条件は保存されない",
           text: "このクラスに `approverName` を足し忘れると、検索そのものは通っても、承認者名の条件だけがセッションに保存されません。似た症状の既存の不具合「申請履歴から詳細を開いて戻ると、検索条件が消える」は、セッションのキー文字列が保存側と読み出し側で食い違っていたのが原因で、今回とは原因が別です。ただし「検索条件を保存する仕組みに新しい項目を通し忘れる」という点は同じ種類の見落としなので、新しい項目を追加するときは、既存の仕組み全体に本当に通っているかを1つずつ確認しましょう。",
         },
         {
@@ -3164,7 +3212,7 @@ ORDER BY r.created_at DESC`,
           type: "callout",
           kind: "trap",
           title: "承認者が未定の申請は結果から消える",
-          text: "`v` は `LEFT JOIN` なので、承認者が未定の申請（`approver_id` が `NULL`）でも一覧には出ます。ただし `v.display_name LIKE ...` の条件を足すと、`display_name` が無い（`NULL` の）行は比較が真になりません。承認者名で絞り込んだ瞬間、承認者未定の申請は検索結果から見えなくなります。これが意図した挙動かは、依頼者へ確認しましょう。",
+          text: "`v` は `LEFT JOIN` なので、承認者が未定の申請（`approver_id` が `NULL`）でも一覧には出ます。ただし `v.display_name LIKE ...` の条件を足すと、`display_name` が無い（`NULL` の）レコードは比較が真になりません。承認者名で絞り込んだ瞬間、承認者未定の申請は検索結果から見えなくなります。これが意図した挙動かは、依頼者へ確認しましょう。",
         },
         {
           type: "h3",
@@ -3196,9 +3244,9 @@ ORDER BY r.created_at DESC`,
         {
           type: "ul",
           items: [
-            "既存の検索項目と同じ経路（フォーム → Controller → セッション → Service → 動的SQL）を、そのまま辿ればよい",
+            "既存の検索項目と同じ経路（フォーム → Controller → セッション → Service → 動的 SQL）を、そのまま辿ればよい",
             "検索条件を運ぶ経路は1つではない。セッション保存と、詳細から戻るときの URL 組み立て、両方に新項目を通す必要がある",
-            "`LEFT JOIN` した列に絞り込み条件を足すと、結合できなかった行が結果から消える",
+            "`LEFT JOIN` したカラムに絞り込み条件を足すと、結合できなかったレコードが結果から消える",
           ],
         },
         {
@@ -3211,7 +3259,7 @@ ORDER BY r.created_at DESC`,
             "既存の検索項目（件名）が辿る経路を確認する",
             "`history.html` → `RequestController.history` → `HistorySearchCondition` → `RequestService.searchHistory` → `RequestMapper.xml` の順に、同じ経路へ承認者名を追加する必要があると分かる",
             "`buildHistoryBackUrl` にも同じ4項目があり、ここへの追加漏れは詳細画面から戻ったときだけ症状が出ると気づく",
-            "`LEFT JOIN` した列への絞り込みで、承認者未定の申請が結果から消えると分かる",
+            "`LEFT JOIN` したカラムへの絞り込みで、承認者未定の申請が結果から消えると分かる",
           ],
         },
         { type: "quiz", id: "sc-impact-approver-search" },
@@ -3361,7 +3409,7 @@ public class SlackNotificationService {
         {
           type: "callout",
           kind: "trap",
-          title: "遅い外部呼び出しは、DB接続も長く占有する",
+          title: "遅い外部呼び出しは、DB 接続も長く占有する",
           text: "`@Transactional` のメソッドは、開始時に DB のコネクションを1つ借りたまま処理を進めます。その中で外部呼び出しが遅いと、DB との用事がとっくに終わっていても、コネクションを借りたまま待ち続けることになります。同時にアクセスが増えると、他のリクエストがコネクションプールの枯渇で待たされる可能性があります。Webhook の呼び出しには、必ず短いタイムアウトを設定しましょう。",
         },
         {
@@ -3376,7 +3424,7 @@ public class SlackNotificationService {
             ["`application.yml`", "Slack 関連の設定なし", "要追加。Webhook URL などの設定キー"],
             ["Slack 通知サービス（新規）", "存在しない", "新規作成。`RestTemplate` などで呼び出す"],
             ["失敗時の扱い", "（メールは）失敗を握りつぶす", "同じ方針でよいか依頼者へ確認"],
-            ["タイムアウトの設定", "（外部呼び出しの前例なし）", "要設定。無いとDBコネクションを長く占有する"],
+            ["タイムアウトの設定", "（外部呼び出しの前例なし）", "要設定。無いと DB コネクションを長く占有する"],
           ],
         },
         {
@@ -3405,7 +3453,7 @@ public class SlackNotificationService {
         {
           type: "investigation-flow",
           items: [
-            "`RequestService.approve` のメール通知の直後が、Slack通知の追加位置になると分かる",
+            "`RequestService.approve` のメール通知の直後が、Slack 通知の追加位置になると分かる",
             "Webhook URL の持たせ方として `@Value` が使えると分かる",
             "`MailService` の失敗時の扱い（ログのみ）を確認し、Slack も同じでよいか依頼者へ確認する",
             "`approve` が `@Transactional` であることから、外部呼び出しの遅延が DB コネクションを長く占有するリスクに気づく",

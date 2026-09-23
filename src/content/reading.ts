@@ -309,7 +309,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "永続化を担っているのは `requestMapper.update` です。呼び出し先のインターフェースを見ると、SQL の実行そのものは Mapper に任せていると分かります。",
+          text: "永続化を担っているのは `requestMapper.update` です。呼び出し先のインタフェースを見ると、SQL の実行そのものは Mapper に任せていると分かります。",
         },
         {
           type: "code",
@@ -399,7 +399,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "table",
-          headers: ["操作", "IntelliJ IDEA（日本語UI）", "Eclipse（日本語UI）"],
+          headers: ["操作", "IntelliJ IDEA（日本語 UI）", "Eclipse（日本語 UI）"],
           rows: [
             [
               "ファイル内検索",
@@ -781,7 +781,7 @@ requestService.approve(id, user.getId());`,
           type: "callout",
           kind: "note",
           title: "ソースに呼び出しが無いもの",
-          text: "Filter、Interceptor、AOP は、このメソッドのソースに呼び出しが無く、参照検索の一覧にも出ません。`@Transactional` や `@PreAuthorize` のように、アノテーションとして付いていることがあります。探し方は「Javaアプリの構成」の「Filter / Interceptor / AOP / @ControllerAdvice」です。",
+          text: "Filter、Interceptor、AOP は、このメソッドのソースに呼び出しが無く、参照検索の一覧にも出ません。`@Transactional` や `@PreAuthorize` のように、アノテーションとして付いていることがあります。探し方は「Java アプリの構成」の「Filter / Interceptor / AOP / @ControllerAdvice」です。",
         },
         {
           type: "p",
@@ -1091,7 +1091,7 @@ request.getApproverId().equals(userId); // NPE`,
         },
         {
           type: "h3",
-          text: "DB側で決まる値",
+          text: "DB 側で決まる値",
         },
         {
           type: "p",
@@ -1357,9 +1357,9 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "p",
-          text: "同じやり方で、申請詳細の承認ボタンは `js-approve-confirm` から `app.js` に着きます。シナリオ「承認すると、申請者に確認メールが2通届く」で辿ったのと同じ手順です。",
+          text: "同じやり方で、申請詳細の承認ボタンは `js-approve-confirm` から `app.js` に着きます。シナリオ「承認すると、申請者に確認メールが 2 通届く」で辿ったのと同じ手順です。",
           link: {
-            label: "承認すると、申請者に確認メールが2通届く",
+            label: "承認すると、申請者に確認メールが 2 通届く",
             to: "/tracks/scenario/duplicate-mail",
           },
         },

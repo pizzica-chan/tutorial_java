@@ -113,7 +113,7 @@ export const stackCases: StackCase[] = [
     lines: [
       {
         kind: "exception",
-        text: 'java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because the return value of "RequestEntity.getApproverId()" is null',
+        text: 'java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null',
         note: "例外の型とメッセージが本体です。`getApproverId()` の戻り値が null で、その null に `equals` を呼んだと読めます。",
       },
       {
@@ -123,28 +123,43 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "framework",
-        text: "    at jp.co.example.shinsei.service.RequestService$$EnhancerBySpringCGLIB$$8a1b2c.approve(<generated>)",
-        note: "パッケージ名は自作コードと同じでも、$$Enhancer は Spring が作った生成コードです。隣の .java 行に戻ります。",
+        text: "    at jp.co.example.shinsei.service.RequestService$$FastClassBySpringCGLIB$$a554d8ee.invoke(<generated>)",
+        note: "パッケージ名は自作コードと同じでも、`$$FastClassBySpringCGLIB$$` は Spring が作った生成コードです。`<generated>` の行は飛ばします。",
+      },
+      {
+        kind: "hint",
+        text: "    …（中略：Spring の AOP の行）",
+        note: "AOP プロキシが、本物の Service のメソッドを呼び出す行です。",
+      },
+      {
+        kind: "app",
+        text: "    at jp.co.example.shinsei.aspect.ServiceLoggingAspect.log(ServiceLoggingAspect.java:20)",
+        note: "自分たちが書いたコードですが、Service の前後でログを出す共通処理（AOP）です。業務の呼び出し元ではないので、ここは飛ばして次の自作行へ進みます。",
+      },
+      {
+        kind: "hint",
+        text: "    …（中略：JDK の反射と、@Transactional を含む Spring の AOP の行）",
+        note: "`@Transactional` のトランザクションを始める `TransactionInterceptor` の行も、この中にあります。",
       },
       {
         kind: "framework",
-        text: "    at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:792)",
-        note: "フレームワーク内部。原因箇所ではありません。",
+        text: "    at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:707)",
+        note: "AOP プロキシの入口です。",
+      },
+      {
+        kind: "framework",
+        text: "    at jp.co.example.shinsei.service.RequestService$$EnhancerBySpringCGLIB$$1b34f52.approve(<generated>)",
+        note: "Controller が実際に呼んでいるのは、この生成されたプロキシです。これも生成コードなので飛ばし、次の自作の .java 行へ進みます。",
       },
       {
         kind: "app",
         text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:102)",
-        note: "その下の自作クラスは呼び出し元。画面のどの操作から来たか（POST /requests/{id}/approve）を特定できます。",
+        note: "業務の呼び出し元は、この Controller の行です。画面のどの操作から来たか（POST /requests/{id}/approve）を特定できます。",
       },
       {
-        kind: "jdk",
-        text: "    at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)",
-        note: "JDK の反射呼び出しです。飛ばします。",
-      },
-      {
-        kind: "framework",
-        text: "    at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)",
-        note: "org.springframework はフレームワークです。長いクラス名で止まらないでください。",
+        kind: "hint",
+        text: "    …（中略：JDK の反射と Spring MVC の行）",
+        note: "Controller の Java メソッドを呼び出す、JDK と Spring MVC の行です。",
       },
       {
         kind: "framework",
@@ -152,9 +167,9 @@ export const stackCases: StackCase[] = [
         note: "リクエストを振り分ける枠組みです。直すファイルではありません。",
       },
       {
-        kind: "framework",
-        text: "    ... 42 more",
-        note: "Java は長いスタックの末尾を省略します。見る場所は、省略より上の自作行です。",
+        kind: "hint",
+        text: "    …（このあと Tomcat の行が続き、最後は Thread.run）",
+        note: "ここより下に自作の行はありません。",
       },
     ],
   },
@@ -185,7 +200,7 @@ export const stackCases: StackCase[] = [
       },
       {
         kind: "app",
-        text: "    at jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:20)",
+        text: "    at jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:21)",
         note: "呼び出し元の Service。SQL の中身は Mapper の XML（`findMine`）にあります。",
       },
       {

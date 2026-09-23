@@ -245,18 +245,21 @@ public class RequestJdbcRepository {
           type: "code",
           title: "RequestMapper.xml の searchHistory（申請くん・抜粋）",
           lang: "xml",
-          highlightLines: [2, 3, 4, 5, 6, 7],
+          highlightLines: [2, 3, 4, 5, 6, 7, 8, 9, 10],
           code: `WHERE (r.applicant_id = #{userId} OR r.approver_id = #{userId})
 <if test="title != null and title != ''">
   AND r.title LIKE CONCAT('%', #{title}, '%')
 </if>
 <if test="requestStatus != null and requestStatus != ''">
   AND r.status = #{requestStatus}
+</if>
+<if test="createdFrom != null and createdFrom != ''">
+  AND r.created_at &gt;= #{createdFrom}
 </if>`,
         },
         {
           type: "p",
-          text: "検索条件を title と status の両方で絞ったときのログには、`AND r.title LIKE ... AND r.status = ...` とまとめて出ますが、XML にはこの組み合わせのままの行はありません。ログの SQL を一字一句検索するのではなく、`<if>` に関係なく必ず残る部分（テーブル名や、固定の JOIN 条件）で探しましょう。",
+          text: "件名と申請日（開始）で絞ったときのログには、`AND r.title LIKE ... AND r.created_at >= ...` とまとめて出ますが、XML にはこの組み合わせのままの行はありません。ログの SQL を一字一句検索するのではなく、`<if>` に関係なく必ず残る部分（テーブル名や、固定の JOIN 条件）で探しましょう。",
         },
         {
           type: "callout",
@@ -275,10 +278,10 @@ public class RequestJdbcRepository {
         {
           type: "ul",
           items: [
-            "SELECT する列の組み合わせ（ログに出た列名をいくつかまとめて検索する）",
+            "SELECT するカラムの組み合わせ（ログに出たカラム名をいくつかまとめて検索する）",
             "JOIN しているテーブル名（ログにあれば、その組み合わせで検索する）",
             "WHERE の固定の条件値（`'PENDING'` のような、`<if>` の外にある文字列）",
-            "ORDER BY の列名",
+            "ORDER BY のカラム名",
           ],
         },
         { type: "quiz", id: "trace-not-found" },
@@ -320,7 +323,7 @@ public class RequestJdbcRepository {
       blocks: [
         {
           type: "p",
-          text: "ここまで「ソースの読み方」と「SQL からソースを探す」で見てきた読み方を、申請一覧を開く1つの操作を通してまとめて確認しましょう。下のタブの区間（Browser → Filter → Controller → Service → MyBatis → MySQL → Thymeleaf → HTTP応答）ごとに追います。障害調査は、この一本の線のどこで期待と違うかを特定する作業です。JSON を返す API なら Thymeleaf の区間が無く、`Content-Type` が `application/json` の応答で終わります。",
+          text: "ここまで「ソースの読み方」と「SQL からソースを探す」で見てきた読み方を、申請一覧を開く1つの操作を通してまとめて確認しましょう。下のタブの区間（Browser → Filter → Controller → Service → MyBatis → MySQL → Thymeleaf → HTTP 応答）ごとに追います。障害調査は、この一本の線のどこで期待と違うかを特定する作業です。JSON を返す API なら Thymeleaf の区間が無く、`Content-Type` が `application/json` の応答で終わります。",
         },
         { type: "widget", name: "flow" },
       ],

@@ -219,7 +219,7 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
           headers: ["項目", "意味", "分かること"],
           rows: [
             ["Modify（mtime）", "ファイルの中身が最後に変更された時刻。`ls -l` が出すのもこの時刻", "設定の中身がいつ書き換わったかが分かる"],
-            ["Change（ctime）", "パーミッションや所有者、中身などのメタデータが変わった時刻。ユーザー側からは直接指定できない", "コピーや配置でも更新されるので、Modify より配置のタイミングに近いことが多い"],
+            ["Change（ctime）", "パーミッションや所有者、中身などのメタデータが変わった時刻。`touch` などで任意の値に変えることはできない", "コピーや配置でも更新されるので、Modify より配置のタイミングに近いことが多い"],
           ],
         },
         {
@@ -332,8 +332,8 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
         {
           type: "ul",
           items: [
-            "docker exec -it コンテナ名 bash",
-            "kubectl exec -it Pod名 -- bash",
+            "`docker exec -it コンテナ名 bash`",
+            "`kubectl exec -it Pod名 -- bash`",
           ],
         },
         {
@@ -424,12 +424,12 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
           type: "code",
           title: "例（そのプロセスを動かしているユーザを見る）",
           lang: "text",
-          code: `$ ps -ef -o user,pid,cmd | grep java | grep -v grep
+          code: `$ ps -eo user,pid,cmd | grep java | grep -v grep
 appuser   1842  java -jar shinsei-kun.jar`,
         },
         {
           type: "p",
-          text: "`-o user,pid,cmd` は、ユーザ・PID・コマンドの順に出す指定です。左端の `appuser` が、そのプロセスを動かしているユーザです。うしろの `grep -v grep` は、`grep java` 自身が結果に混ざらないようにする指定です。",
+          text: "`-e` はすべてのプロセスを対象にする指定で、`-o user,pid,cmd` はユーザ・PID・コマンドの順に出す指定です。左端の `appuser` が、そのプロセスを動かしているユーザです。うしろの `grep -v grep` は、`grep java` 自身が結果に混ざらないようにする指定です。",
         },
         {
           type: "code",
@@ -740,13 +740,15 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
         { type: "diagram", name: "log-line", caption: "ログの名前は、原因のクラスとは限りません。原因は下の at 行で見ます。" },
         {
           type: "code",
-          title: "例外が出たとき（申請くん・ID 16）",
+          title: "例外が出たとき（申請くん・ID 16。抜粋）",
           highlightLines: [3],
           highlightKind: "error",
-          code: `04:12:03.512 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[/shinsei].[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] threw exception
+          code: `04:12:03.512 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[.[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] in context with path [/shinsei] threw exception [Request processing failed; nested exception is java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null] with root cause
 java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null
     at jp.co.example.shinsei.service.RequestService.approve(RequestService.java:48)
-    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:102)`,
+    （中略）
+    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:102)
+    （中略）`,
         },
         {
           type: "ol",
@@ -763,7 +765,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
         },
         {
           type: "p",
-          text: "角括弧 [ ] のなかの `nio-8080-exec-3` はスレッド名です。同じ操作の行を揃える手順は「アプリのログで処理を追う」です。",
+          text: "角括弧 [ ] のなかの `nio-8080-exec-3` はスレッド名です。申請くんのログは、スレッド名を後ろから 15 文字だけ出しています（Spring Boot の既定の書式と同じ）。スレッドダンプでは `http-nio-8080-exec-3` と出ます。同じ操作の行を揃える手順は「アプリのログで処理を追う」です。",
         },
         {
           type: "callout",
@@ -1048,7 +1050,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
             ["`Connection refused`", "その先までは届いたが、指定したポートで待ち受けが無い。そのポートを待ち受けるはずのプロセス（アプリや HTTP サーバ）が未起動、またはポート番号違いを疑う"],
             ["`Connection timed out`", "応答が返ってこない。FW やセキュリティグループで止められていることが多い"],
             ["`SSL certificate problem` / `SSL connect error`", "TLS 証明書や設定の問題。証明書の期限切れ、ホスト名不一致、社内 CA が信頼されていない、など"],
-            ["`Empty reply from server`", "TCP は繋がったが、HTTP の応答が無いまま切れた。別プロトコルが動いている、アプリが処理中に落ちた、など"],
+            ["`Empty reply from server`", "TCP はつながったが、HTTP の応答が無いまま切れた。別プロトコルが動いている、アプリが処理中に落ちた、など"],
           ],
         },
         {
@@ -1275,11 +1277,11 @@ tomcat9.service                            enabled`,
           type: "code",
           title: "同じスレッドの通過点（申請くん・MyBatis）",
           code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests
-04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : start RequestService.findMine(..)
+04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : start RequestService.findMine(..)
 04:12:03.110 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findMine : ==>  Preparing: SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at, a.display_name AS applicant_name, v.display_name AS approver_name FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.id = r.approver_id WHERE (r.applicant_id = ? OR r.approver_id = ?) AND r.status = 'PENDING' ORDER BY r.created_at DESC
 04:12:03.112 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findMine : ==> Parameters: 7(Long), 7(Long)
 04:12:03.115 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.findMine : <==      Total: 4
-04:12:03.118 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : end RequestService.findMine(..)`,
+04:12:03.118 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : end RequestService.findMine(..)`,
         },
         {
           type: "p",
@@ -1329,7 +1331,7 @@ tomcat9.service                            enabled`,
           type: "callout",
           kind: "trap",
           title: "スレッド名は使い回される",
-          text: "Tomcat の exec-3 は、前のリクエストが終わったあと、別のリクエストに使われます。スレッド名だけで日付を問わず拾うと、別操作が混ざります。時刻の幅を付けましょう。逆に、時刻が近いだけでは別ユーザーの操作と区別できません。userId や申請 ID などの識別子で、同じ操作かを確認しましょう。同じユーザーの次の操作が、別のスレッド名になることもあります。",
+          text: "Tomcat の exec-3 は、前のリクエストが終わったあと、別のリクエストに使われます。スレッド名だけで日付を問わず拾うと、別操作が混ざります。時刻の幅を付けましょう。逆に、時刻が近いだけでは別の利用者の操作と区別できません。userId や申請 ID などの識別子で、同じ操作かを確認しましょう。同じ利用者の次の操作が、別のスレッド名になることもあります。",
         },
         {
           type: "ul",
@@ -1449,20 +1451,46 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "code",
-          title: "例（申請くんの実ログではない）",
+          title: "例（申請くんの Web API に、件名を付けずに登録を送った場合。抜粋）",
           lang: "text",
-          highlightLines: [5],
-          code: `org.springframework.dao.DataIntegrityViolationException: PreparedStatementCallback; SQL [insert into t_request (title, applicant_id, approver_id, status) values (?, ?, ?, ?)]
-	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:239)
-	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:87)
-	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:432)
-Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or update a child row: a foreign key constraint fails (\`t_request\`, CONSTRAINT \`fk_request_applicant\`)
-	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:120)
-	at jp.co.example.shinsei.service.RequestService.create(RequestService.java:38)`,
+          highlightLines: [19, 23],
+          code: `org.springframework.dao.DataIntegrityViolationException:
+### Error updating database.  Cause: java.sql.SQLIntegrityConstraintViolationException: Column 'title' cannot be null
+### The error may exist in URL [jar:file:/app/app.jar!/BOOT-INF/classes!/mapper/RequestMapper.xml]
+### The error may involve jp.co.example.shinsei.mapper.RequestMapper.insert-Inline
+### The error occurred while setting parameters
+### SQL: INSERT INTO t_request (title, status, applicant_id, approver_id, applicant_email, created_at) VALUES (?, ?, ?, ?, (SELECT email FROM t_user WHERE id = ?), NOW())
+### Cause: java.sql.SQLIntegrityConstraintViolationException: Column 'title' cannot be null
+; Column 'title' cannot be null; nested exception is java.sql.SQLIntegrityConstraintViolationException: Column 'title' cannot be null
+	at org.springframework.jdbc.support.SQLErrorCodeSQLExceptionTranslator.doTranslate(SQLErrorCodeSQLExceptionTranslator.java:247)
+	at org.springframework.jdbc.support.AbstractFallbackSQLExceptionTranslator.translate(AbstractFallbackSQLExceptionTranslator.java:70)
+	at org.mybatis.spring.MyBatisExceptionTranslator.translateExceptionIfPossible(MyBatisExceptionTranslator.java:91)
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:441)
+	at jdk.proxy2/jdk.proxy2.$Proxy78.insert(Unknown Source)
+	at org.mybatis.spring.SqlSessionTemplate.insert(SqlSessionTemplate.java:272)
+	at org.apache.ibatis.binding.MapperMethod.execute(MapperMethod.java:62)
+	at org.apache.ibatis.binding.MapperProxy$PlainMethodInvoker.invoke(MapperProxy.java:145)
+	at org.apache.ibatis.binding.MapperProxy.invoke(MapperProxy.java:86)
+	at jdk.proxy2/jdk.proxy2.$Proxy84.insert(Unknown Source)
+	at jp.co.example.shinsei.service.RequestService.create(RequestService.java:38)
+	（中略。AOP プロキシなど）
+	at jp.co.example.shinsei.controller.RequestApiController.create(RequestApiController.java:38)
+	（中略）
+Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' cannot be null
+	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:117)
+	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:122)
+	at com.mysql.cj.jdbc.ClientPreparedStatement.executeInternal(ClientPreparedStatement.java:916)
+	（中略）
+	at org.mybatis.spring.SqlSessionTemplate$SqlSessionInterceptor.invoke(SqlSessionTemplate.java:427)
+	... 63 more`,
         },
         {
           type: "p",
-          text: "先頭の `DataIntegrityViolationException` は、Spring がラップした汎用的な例外で、これだけでは何が起きたか分かりません。読むのは `Caused by` の方です。`SQLIntegrityConstraintViolationException` のメッセージが、`fk_request_applicant` という外部キー制約への違反、つまり `t_request.applicant_id` が指すレコードが `t_user` に無いことを示しています。まず開くのは、その下の `at` 行にある `RequestService.java:38` です。",
+          text: "先頭の `DataIntegrityViolationException` は、Spring が包んだ例外です。何が起きたかは、`Caused by` の元の例外が示しています。`Column 'title' cannot be null` なので、`title` カラムに null を入れようとして、DB の `NOT NULL` で拒まれたと分かります。MyBatis では、先頭のメッセージにも `### SQL:` や `RequestMapper.insert` のように、失敗した SQL と Mapper の id が出ます。",
+        },
+        {
+          type: "p",
+          text: "この例では、自分たちが書いたコードの行は、`Caused by` の側ではなく、先頭の（包んだ側の）例外の at 行にあります。`Caused by` の側は、先頭の例外と共通する呼び出し元を `... 63 more` のようにまとめて省略するためです。先頭の例外の at 行で最初に出てくる自作の行は `RequestService.java:38` の `requestMapper.insert` で、その呼び出し元は `RequestApiController.create` です。Web API から件名の無い登録が来たと読めます。",
         },
         {
           type: "h2",
@@ -1490,7 +1518,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
       blocks: [
         {
           type: "p",
-          text: "同じ操作なのに、あるデータやあるユーザーだけ失敗する。そういうときは、うまくいくケースと失敗するケースを突き合わせるのが近道です。何が違うかが分かれば、原因の見当がつきます。",
+          text: "同じ操作なのに、あるデータやある利用者だけ失敗する。そういうときは、うまくいくケースと失敗するケースを突き合わせるのが近道です。何が違うかが分かれば、原因の見当がつきます。",
         },
         {
           type: "h2",
@@ -1790,7 +1818,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Cannot add or upda
             ],
             [
               "ファイルの読み書きだけ失敗する",
-              "アプリの実行ユーザ（`ps -ef -o user,pid,cmd`）と、対象ファイルの所有者（`ls -l`）",
+              "アプリの実行ユーザ（`ps -eo user,pid,cmd`）と、対象ファイルの所有者（`ls -l`）",
               "実行ユーザは環境で違う。自分で開けても、アプリが開けるとは限らない",
             ],
             [
@@ -1941,11 +1969,11 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
           lang: "text",
           highlightLines: [4, 5],
           code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests/history
-04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : start RequestService.searchByTitle(..)
-04:12:03.108 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.searchByTitle : ==>  Preparing: SELECT ... FROM t_request WHERE title LIKE ? ORDER BY created_at DESC
-04:12:03.109 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.searchByTitle : ==> Parameters: %申請%(String)
-04:12:08.410 DEBUG [nio-8080-exec-3] j.c.e.s.m.RequestMapper.searchByTitle : <==      Total: 36
-04:12:08.413 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : end RequestService.searchByTitle(..)`,
+04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : start RequestService.searchByTitle(..)
+04:12:03.108 DEBUG [nio-8080-exec-3] j.c.e.s.m.R.searchByTitle : ==>  Preparing: SELECT ... FROM t_request WHERE title LIKE ? ORDER BY created_at DESC
+04:12:03.109 DEBUG [nio-8080-exec-3] j.c.e.s.m.R.searchByTitle : ==> Parameters: %申請%(String)
+04:12:08.410 DEBUG [nio-8080-exec-3] j.c.e.s.m.R.searchByTitle : <==      Total: 36
+04:12:08.413 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : end RequestService.searchByTitle(..)`,
         },
         {
           type: "p",
@@ -1984,8 +2012,8 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
           lang: "text",
           highlightLines: [2, 3],
           code: `04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests/history
-04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : start RequestService.searchByTitle(..)
-04:12:08.413 DEBUG [nio-8080-exec-3] j.c.e.s.a.ServiceLoggingAspect : end RequestService.searchByTitle(..)`,
+04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : start RequestService.searchByTitle(..)
+04:12:08.413 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : end RequestService.searchByTitle(..)`,
         },
         {
           type: "p",
@@ -2057,17 +2085,17 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
           title: "例（申請くんの実ログではない）",
           lang: "text",
           highlightLines: [4, 5, 6, 7, 8, 9, 11],
-          code: `04:20:11.100 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findByApplicant : ==>  Preparing: SELECT id, title, status, applicant_id, approver_id FROM t_request WHERE applicant_id = ?
-04:20:11.101 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findByApplicant : ==> Parameters: 7(Long)
-04:20:11.102 DEBUG [nio-8080-exec-7] j.c.e.s.m.RequestMapper.findByApplicant : <==      Total: 1000
-04:20:11.103 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
-04:20:11.104 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : ==> Parameters: 3(Long)
-04:20:11.105 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : <==      Total: 1
-04:20:11.106 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
-04:20:11.107 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : ==> Parameters: 5(Long)
-04:20:11.108 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : <==      Total: 1
+          code: `04:20:11.100 DEBUG [nio-8080-exec-7] j.c.e.s.m.R.findByApplicant : ==>  Preparing: SELECT id, title, status, applicant_id, approver_id FROM t_request WHERE applicant_id = ?
+04:20:11.101 DEBUG [nio-8080-exec-7] j.c.e.s.m.R.findByApplicant : ==> Parameters: 7(Long)
+04:20:11.102 DEBUG [nio-8080-exec-7] j.c.e.s.m.R.findByApplicant : <==      Total: 1000
+04:20:11.103 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
+04:20:11.104 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 3(Long)
+04:20:11.105 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : <==      Total: 1
+04:20:11.106 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : ==>  Preparing: SELECT id, display_name FROM t_user WHERE id = ?
+04:20:11.107 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 5(Long)
+04:20:11.108 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : <==      Total: 1
 （同じ 3 行が、一覧の件数だけ繰り返す）
-04:20:14.102 DEBUG [nio-8080-exec-7] j.c.e.s.m.UserMapper.findById : <==      Total: 1`,
+04:20:14.102 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.UserMapper.findById : <==      Total: 1`,
         },
         {
           type: "p",

@@ -379,7 +379,7 @@ export const terms: TermDef[] = [
   {
     term: "property-placeholder",
     aliases: ["property-placeholder", "context:property-placeholder"],
-    body: "Spring の設定を XML で書いていたころの書き方で、`.properties` ファイルを読み込み、`${...}` や `@Value` に反映させます。`<context:property-placeholder location=\"...\"/>` のように書きます。`@PropertySource` の XML版にあたります。",
+    body: "Spring の設定を XML で書いていたころの書き方で、`.properties` ファイルを読み込み、`${...}` や `@Value` に反映させます。`<context:property-placeholder location=\"...\"/>` のように書きます。`@PropertySource` の XML 版にあたります。",
   },
   {
     term: "アノテーション",
@@ -911,8 +911,8 @@ export const terms: TermDef[] = [
     body: "Java の開発・実行環境。版が違うと起動できないことがあります。",
   },
   {
-    term: "APサーバ",
-    aliases: ["APサーバ"],
+    term: "AP サーバ",
+    aliases: ["AP サーバ", "APサーバ"],
     body: "アプリケーションサーバ。アプリを動かす実行基盤です。",
   },
   {
@@ -1005,13 +1005,13 @@ export const terms: TermDef[] = [
     body: "SVN で、ある時点までの変更のまとまりを指す番号です。Git の commit にあたります。`svn log` や `svn blame` の結果に出ます。",
   },
   {
-    term: "Networkタブ",
+    term: "Network タブ",
     aliases: ["Network タブ", "Networkタブ", "Network"],
     body: "ブラウザ開発者ツールの画面。実際に飛んだ HTTP リクエストを見られます。見られるのは、開発者ツールを開いているウィンドウの通信です。別ウィンドウで送ったリクエストは、元のウィンドウには出ません。",
   },
   {
-    term: "Elementsタブ",
-    aliases: ["Elements タブ", "Elements（要素）", "Elements"],
+    term: "Elements タブ",
+    aliases: ["Elements タブ", "Elementsタブ", "Elements（要素）", "Elements"],
     body: "ブラウザ開発者ツールの画面。現在のページにある HTML 要素と、適用されている CSS を確認できます。サーバが返した後に JavaScript が書き換えた内容も反映されます。",
   },
   {
@@ -1320,7 +1320,7 @@ export const terms: TermDef[] = [
     body: "Thymeleaf などの属性。送信先、リンク先、表示条件をテンプレート側に書きます。",
   },
   {
-    term: "name属性",
+    term: "name 属性",
     aliases: ["name 属性", "name属性"],
     body: "フォーム項目の名前。サーバの `@RequestParam` と対応づきます。名前が違うと null やバインドエラーになりやすいです。`required = false` なら必須ではありません。`@RequestParam` は Spring のアノテーションです。",
   },

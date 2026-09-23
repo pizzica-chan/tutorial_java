@@ -446,7 +446,7 @@ function StackOwn() {
 const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: string }[] = [
   {
     kind: "ex",
-    text: 'java.lang.NullPointerException: Cannot invoke "Long.equals(Object)" because the return value of "RequestEntity.getApproverId()" is null',
+    text: 'java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null',
   },
   {
     kind: "hit",
@@ -455,16 +455,30 @@ const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: stri
   },
   {
     kind: "dim",
-    text: "    at jp.co.example.shinsei.service.RequestService$$EnhancerBySpringCGLIB$$8a1b2c.approve(<generated>)",
+    text: "    at jp.co.example.shinsei.service.RequestService$$FastClassBySpringCGLIB$$a554d8ee.invoke(<generated>)",
     note: "生成コード。飛ばす",
   },
   {
     kind: "dim",
-    text: "    at org.springframework.aop.framework.CglibAopProxy$CglibMethodInvocation.invokeJoinpoint(CglibAopProxy.java:792)",
+    text: "    …（中略：Spring の AOP の行）",
+  },
+  {
+    kind: "own",
+    text: "    at jp.co.example.shinsei.aspect.ServiceLoggingAspect.log(ServiceLoggingAspect.java:20)",
+    note: "自作の共通処理（AOP）。呼び出し元ではない",
   },
   {
     kind: "dim",
-    text: "    at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163)",
+    text: "    …（中略：@Transactional を含む Spring の AOP の行）",
+  },
+  {
+    kind: "dim",
+    text: "    at org.springframework.aop.framework.CglibAopProxy$DynamicAdvisedInterceptor.intercept(CglibAopProxy.java:707)",
+  },
+  {
+    kind: "dim",
+    text: "    at jp.co.example.shinsei.service.RequestService$$EnhancerBySpringCGLIB$$1b34f52.approve(<generated>)",
+    note: "生成コード。飛ばす",
   },
   {
     kind: "own",
@@ -473,23 +487,7 @@ const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: stri
   },
   {
     kind: "dim",
-    text: "    at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77)",
-  },
-  {
-    kind: "dim",
-    text: "    at java.base/java.lang.reflect.Method.invoke(Method.java:568)",
-  },
-  {
-    kind: "dim",
-    text: "    at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:205)",
-  },
-  {
-    kind: "dim",
-    text: "    at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:117)",
-  },
-  {
-    kind: "dim",
-    text: "    at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:895)",
+    text: "    …（中略：JDK の反射と Spring MVC の行）",
   },
   {
     kind: "dim",
@@ -497,15 +495,7 @@ const stackDump: { text: string; kind: "ex" | "hit" | "own" | "dim"; note?: stri
   },
   {
     kind: "dim",
-    text: "    at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:965)",
-  },
-  {
-    kind: "dim",
-    text: "    at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:209)",
-  },
-  {
-    kind: "dim",
-    text: "    ... 42 more",
+    text: "    …（このあと Tomcat の行が続く）",
   },
 ];
 
@@ -788,7 +778,7 @@ function LogLine() {
           <em>ログの名前</em>
         </span>
         <span className="url-part query">
-          Servlet.service() threw exception
+          Servlet.service() … threw exception
           <em>メッセージ</em>
         </span>
       </div>

@@ -87,7 +87,7 @@ export const cheatSheet: CheatSection[] = [
           { cmd: "`ss -ltnp | grep ポート番号`", env: "Linux", desc: "同じことを `ss` で見る。`lsof` が無い環境向け" },
           { cmd: "`ss -tnp | grep pid=PID`", env: "Linux", desc: "そのプロセスの TCP 接続を一覧する（相手の IP とポート、状態）。待ち受けは出ない。`CLOSE_WAIT` など、閉じかけも含む" },
           { cmd: "`lsof app.log`", env: "Linux", desc: "そのファイルを開いているプロセスを見る" },
-          { cmd: "`ps -p PID -o pid,ppid,user,cmd`", env: "Linux", desc: "`lsof`/`ss` で見つけた PID が、実際にどのユーザーで何のコマンドとして動いているかを確認する" },
+          { cmd: "`ps -p PID -o pid,ppid,user,cmd`", env: "Linux", desc: "`lsof`/`ss` で見つけた PID が、実際にどの実行ユーザで何のコマンドとして動いているかを確認する" },
           { cmd: "`ps -p PID -o args=`", env: "Linux", desc: "起動コマンドをオプションごと出す。`-o args=` の `=` はヘッダを出さない指定。上の `cmd` は他の列と並ぶと途中で切れることがある" },
           { cmd: "`df -h`", env: "Linux", desc: "ディスクの空き容量を見る" },
           { cmd: "`free -h`", env: "Linux", desc: "メモリの空き容量を見る" },
@@ -123,8 +123,8 @@ export const cheatSheet: CheatSection[] = [
         rows: [
           { cmd: "`stat application.yml`", env: "Linux", desc: "ファイルの Modify（中身の変更） / Change（メタデータの変更）時刻を見る" },
           { cmd: "`docker inspect --format='{{.Created}}' コンテナ名`", env: "Docker", desc: "コンテナの作成時刻を見る" },
-          { cmd: "`find /opt/app -newer application.yml -type f`", env: "Linux", desc: "特定のファイルより後に更新された（＝配置された）ファイルだけを探す。デプロイで一括更新された範囲の当たりをつける" },
-          { cmd: "`find . -newermt \"2026-08-30 09:00\" ! -newermt \"2026-08-30 10:00\"`", env: "Linux", desc: "指定した時間帯だけに更新されたファイルを探す（GNU find の `-newermt`。日時を直接指定できる）" },
+          { cmd: "`find /opt/app -newer application.yml -type f`", env: "Linux", desc: "特定のファイルより後に中身が更新された（Modify が新しい）ファイルだけを探す。`rsync -a` のように元の Modify を保つ配置では、配置した時刻では絞れない" },
+          { cmd: "`find . -newerct \"2026-08-30 09:00\" ! -newerct \"2026-08-30 10:00\"`", env: "Linux", desc: "指定した時間帯に Change（配置やメタデータの変更）があったファイルを探す。元の Modify を保つ配置でも、配置した時刻で絞れる（GNU find の `-newerct`。日時を直接指定できる）" },
         ],
       },
       {
@@ -191,7 +191,7 @@ export const cheatSheet: CheatSection[] = [
         rows: [
           { cmd: "`EXPLAIN SELECT * FROM テーブル名 WHERE カラム名 = 値;`", env: "MySQL", desc: "その SQL の実行計画（DB がどう読むか）を見る" },
           { cmd: "`EXPLAIN ANALYZE SELECT * FROM テーブル名 WHERE カラム名 = 値;`", env: "MySQL", desc: "実行計画に、実際にかかった時間も添えて見る（MySQL 8.0.18 以降）" },
-          { cmd: "MyBatis の DEBUG ログ（`Preparing` / `Parameters` / `Total`）", env: "MyBatis", desc: "発行された SQL 文、バインド値、件数を見る" },
+          { cmd: "`grep 'searchHistory' app.log`", env: "Linux", desc: "Mapper のメソッド名で絞ると、MyBatis の DEBUG ログの `Preparing`（SQL 文）・`Parameters`（バインド値）・`Total`（件数）が並ぶ。ロガー名のクラス名は短縮されることがある（例: `j.c.e.s.m.R.searchHistory`）ので、メソッド名だけで探す" },
           { cmd: "`SELECT created_at, updated_at FROM テーブル名 WHERE id = 値;`", env: "MySQL", desc: "レコードの更新日時を直接確認する" },
         ],
       },
@@ -241,7 +241,7 @@ export const cheatSheet: CheatSection[] = [
           { cmd: "`ipconfig /all`", env: "Windows", desc: "NIC と IP アドレス、デフォルトゲートウェイ、DNS サーバをまとめて見る" },
           { cmd: "`ss -tnlp`", env: "Linux", desc: "このホストで今 `LISTEN` しているポートと、それを持つプロセスを一覧する" },
           { cmd: "`netstat -tnlp`", env: "Linux", desc: "同じことを、より古い `netstat` で見る（`ss` が無い環境向け）" },
-          { cmd: "`ip route`", env: "Linux", desc: "ルーティングテーブルを見る。宛先ごとに、どのゲートウェイ・インターフェースへ出ていくかが分かる" },
+          { cmd: "`ip route`", env: "Linux", desc: "ルーティングテーブルを見る。宛先ごとに、どのゲートウェイ・インタフェースへ出ていくかが分かる" },
           { cmd: "`route -n`", env: "Linux", desc: "同じルーティングテーブルを、より古い `route` コマンドで見る" },
           { cmd: "`route print`", env: "Windows", desc: "ルーティングテーブルを見る" },
           { cmd: "`iptables -L -n -v`", env: "Linux", desc: "現在のファイアウォールルール（許可・拒否）を見る（`iptables` を使っている環境）" },
@@ -251,7 +251,7 @@ export const cheatSheet: CheatSection[] = [
       },
       {
         title: "実際に流れているパケットを見る（tcpdump）",
-        note: "curl や nc の結果だけでは分からない、通信そのものの中身やタイミングを見たいときに使います。curl より一段低いレイヤーです。実行には root 権限が要ることが多く（`sudo` を付けるなど）、`-i any` は全インタフェースを対象にする指定です。特定の NIC に絞りたいときは、上の `ip addr` で名前（`eth0` や `ens5` など、環境によって違います）を確認してから置き換えましょう。",
+        note: "curl や nc の結果だけでは分からない、通信そのものの中身やタイミングを見たいときに使います。curl より一段低いレイヤです。実行には root 権限が要ることが多く（`sudo` を付けるなど）、`-i any` は全インタフェースを対象にする指定です。特定の NIC に絞りたいときは、上の `ip addr` で名前（`eth0` や `ens5` など、環境によって違います）を確認してから置き換えましょう。",
         rows: [
           { cmd: "`tcpdump -i any port ポート番号`", env: "Linux", desc: "そのポートに実際にパケットが届いているかを見る。`ss`/`netstat` は待ち受けの有無までで、通信そのものは見えない" },
           { cmd: "`tcpdump -i any host notify.example.internal`", env: "Linux", desc: "特定の相手先とのやり取りだけに絞る。外部 API への疎通確認と組み合わせる" },

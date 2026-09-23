@@ -13,7 +13,7 @@ import {
 export const javaMapTrack: Track = {
   id: "java-map",
   no: "03",
-  title: "Javaアプリの構成",
+  title: "Java アプリの構成",
   kicker: "STRUCTURE",
   description: "リポジトリを開いたとき、ファイルと層の役割に加え、設定ファイルやトランザクション、共通処理の仕組みまで見渡せるようにします。",
   accent: "#f5cf4d",
@@ -516,7 +516,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "ブラウザが JSON から画面を組む例は、Webの基礎の「Web API から JSON を受け取る」から順に説明します。",
+          text: "ブラウザが JSON から画面を組む例は、Web の基礎の「Web API から JSON を受け取る」から順に説明します。",
           link: {
             label: "Web API から JSON を受け取る",
             to: "/tracks/web/api-json",
@@ -641,23 +641,27 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "h2",
-          text: "「読んでから書く」処理は、分離レベルだけでは守れない",
+          text: "「読んでから書く」処理は、既定の分離レベルでは守れない",
         },
         {
           type: "p",
-          text: "承認処理を例にします。読んで判定し、それから更新する、という順番自体に隙があります。`findById` の SELECT は、`update` より前に終わっており、その後の `update` には状態の条件が付いていません。ほぼ同時刻に来た2つのリクエストは、どちらも同じ `PENDING` を読み、どちらも判定を通過してしまいます。",
+          text: "承認処理を例にします。読んで判定し、それから更新する、という順番自体に隙があります。`findById` の SELECT は、`update` より前に終わっており、その後の `update` には状態の条件が付いていません。ほぼ同時刻に来た 2 つのリクエストは、どちらも同じ `PENDING` を読み、どちらも判定を通過してしまいます。",
         },
         {
           type: "p",
-          text: "分離レベルを上げても、この隙は埋まりません。2つのリクエストは、それぞれ自分の SELECT の時点で正しく `PENDING` を読んでいるからです。実際にこれが起きた例は、「実務のシナリオ」の「承認すると、申請者に確認メールが2通届く」で扱います。",
+          text: "既定の `REPEATABLE READ` では、この隙は埋まりません。普通の SELECT はレコードをロックしないからです。あとから来た側の `update` は、先に来た側がまだ確定していなければ、確定するまで待たされます。ただし `WHERE` に状態の条件が無いので、待ったあとにそのまま更新します。実際にこれが起きた例は、「実務のシナリオ」の「承認すると、申請者に確認メールが 2 通届く」で扱います。",
           link: {
-            label: "承認すると、申請者に確認メールが2通届く",
+            label: "承認すると、申請者に確認メールが 2 通届く",
             to: "/tracks/scenario/duplicate-mail",
           },
         },
         {
+          type: "p",
+          text: "MySQL で `SERIALIZABLE` まで上げれば、二重の承認は防げます。ただし、片方がデッドロックで失敗したり、ほかの処理の待ちが増えたりします。この隙を埋めるためだけに分離レベルを上げるより、次の 2 つの書き方で守ることが多いです。",
+        },
+        {
           type: "h2",
-          text: "同時実行から守る2つの書き方",
+          text: "同時実行から守る 2 つの書き方",
         },
         {
           type: "h3",
@@ -665,7 +669,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "p",
-          text: "`UPDATE` の `WHERE` に、更新前提の状態を含める方法です。実際に更新できた件数（0件か1件か）で、他の処理が先に進んでいなかったかを判定します。DB 側で実際にレコードを専有するわけではないので「楽観」と呼びます。",
+          text: "`UPDATE` の `WHERE` に、更新前提の状態を含める方法です。実際に更新できた件数（0 件か 1 件か）で、他の処理が先に進んでいなかったかを判定します。DB 側で実際にレコードを専有するわけではないので「楽観」と呼びます。",
         },
         {
           type: "code",
@@ -689,7 +693,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "先に `update` した側だけが1件更新でき、あとから来た側は0件になります。0件なら、他の処理がすでに状態を変えていた、と分かります。",
+          text: "先に `update` した側だけが 1 件更新でき、あとから来た側は 0 件になります。0 件なら、他の処理がすでに状態を変えていたと分かります。",
         },
         {
           type: "h3",
@@ -949,7 +953,7 @@ if (updated == 0) {
         },
         {
           type: "code",
-          title: "書き方A: Model に載せて、テンプレート名を return（申請くん）",
+          title: "書き方 A: Model に載せて、テンプレート名を return（申請くん）",
           lang: "java",
           highlightLines: [9],
           code: `@Controller
@@ -967,7 +971,7 @@ public class RequestController {
         },
         {
           type: "code",
-          title: "書き方B: テンプレート名も値も ModelAndView に載せて return",
+          title: "書き方 B: テンプレート名も値も ModelAndView に載せて return",
           lang: "java",
           highlightLines: [4],
           code: `@GetMapping("/requests")
@@ -1198,7 +1202,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "申請くんの `findMine`・`findById`・`searchHistory` は、SELECT する列と FROM・JOIN が同じです。共通化されておらず、同じ書き方が3か所に散らばっています。1か所だけ直すと、残り2か所とずれることがあります。",
+          text: "申請くんの `findMine`・`findById`・`searchHistory` は、SELECT するカラムと FROM・JOIN が同じです。共通化されておらず、同じ書き方が3か所に散らばっています。1か所だけ直すと、残り2か所とずれることがあります。",
         },
         {
           type: "p",
@@ -1477,14 +1481,14 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "気をつけることは、上のどのパターンかで変わります。手前に Apache / nginx がある構成（パターン3）でだけ増える確認が多いです。",
+          text: "気をつけることは、上のどのパターンかで変わります。手前に Apache / nginx がある構成（パターン3）では、確認することが増えます。",
         },
         {
           type: "table",
           headers: ["パターン", "気をつけること"],
           rows: [
-            ["1: 内蔵だけ", "手前の HTTP サーバが無いので、パスのずれやコンテキストパスの重複は起きません。"],
-            ["2: 外部 WAR", "手前の HTTP サーバは無いので、パスのずれやコンテキストパスの重複は起きません。"],
+            ["1: 内蔵だけ", "手前の HTTP サーバが無いので、手前と後ろでパスがずれることはありません。コンテキストパスは `server.servlet.context-path` で決まります。"],
+            ["2: 外部 WAR", "手前の HTTP サーバが無いので、手前と後ろでパスがずれることはありません。ただし、コンテキストパスは WAR のファイル名や Tomcat の設定で決まり、`server.servlet.context-path` は効きません。`shinsei.war` なら `/shinsei` です。"],
             ["3: 手前に Apache / nginx", "静的ファイルの 404 は、手前のパス設定のことがあります。コンテキストパスが、手前と後ろの両方に付いていることもあります。"],
           ],
         },

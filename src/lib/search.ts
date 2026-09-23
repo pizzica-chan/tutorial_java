@@ -75,7 +75,7 @@ function blockText(block: Block): string {
     case "code":
       return [block.title, block.code].filter(Boolean).join("\n");
     case "callout":
-      return `${block.title}\n${block.text}`;
+      return [block.title, block.text].filter(Boolean).join("\n");
     case "quiz": {
       const quiz = getQuiz(block.id);
       if (!quiz) return "";
