@@ -372,7 +372,7 @@ public class RequestController {
 }
 ```
 
-スタックは例外が最上段、下へ行くほど呼び出し元。Service の AOP プロキシは、その Service の直下に置く。
+スタックは例外が最上段、下へ行くほど呼び出し元。
 
 Spring Security を使う POST フォームには CSRF 用 hidden を書く。`th:action` なら自動挿入が多い、と補足してよい。
 
