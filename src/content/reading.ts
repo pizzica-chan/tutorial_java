@@ -263,7 +263,7 @@ public class RequestApiController {
       blocks: [
         {
           type: "p",
-          text: "Controller の次に、ビジネスロジックを扱う Java メソッドを見ましょう。ここでは、枝分かれ（if / throw / 他クラス呼び出し）が分かりやすい例として、`list` ではなく承認（`approve`）の処理を見ます。Service のメソッドでよく出てくる処理は、次の4種類です。",
+          text: "Controller の次に、ビジネスロジックを扱う Java メソッドを見ましょう。ここでは、枝分かれ（if / throw / 他クラス呼び出し）が分かりやすい例として、`list` ではなく承認（`approve`）の処理を見ます。Service のメソッドでよく出てくる処理は、次の 4 種類です。",
         },
         {
           type: "ul",
@@ -470,7 +470,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "ここまでは、そのまま貼って使える組み合わせ済みのパターンでした。ここからは、その中の記号を1つずつ見ていきます。自分の探したいものに合わせてパターンを書き換えたいときに使います。",
+          text: "ここまでは、そのまま貼って使える組み合わせ済みのパターンでした。ここからは、その中の記号を 1 つずつ見ていきます。自分の探したいものに合わせてパターンを書き換えたいときに使います。",
         },
         {
           type: "h2",
@@ -494,7 +494,7 @@ mailService.notifyApplicant(request);`,
               "`request` のあとに `approve`",
               "「`requestService.approve`」— 同じ行ならヒットする",
             ],
-            ["`a.c`", "`.` は任意の1文字", "「`abc`」— ヒットする。「`a1c`」— ヒットする"],
+            ["`a.c`", "`.` は任意の 1 文字", "「`abc`」— ヒットする。「`a1c`」— ヒットする"],
             [
               "`request.*`",
               "`request` のあとなら何でもよい",
@@ -533,7 +533,7 @@ mailService.notifyApplicant(request);`,
             [
               "`approve\\(id, user\\.getId\\(\\)\\);\\s*$`",
               "行末まで含めて一致",
-              "「`requestService.approve(id, user.getId());`」— この1行だけに絞れる",
+              "「`requestService.approve(id, user.getId());`」— この 1 行だけに絞れる",
             ],
             [
               "`\\blist\\s*\\(`",
@@ -557,12 +557,12 @@ mailService.notifyApplicant(request);`,
             ],
             [
               "`\\s`",
-              "空白1つ分",
+              "空白 1 つ分",
               "「`public void`」— public と void のあいだの空白にヒットする",
             ],
             [
               "`\\d+`",
-              "数字が1つ以上",
+              "数字が 1 つ以上",
               "「`/requests/12/approve`」— 12 の部分にヒットする",
             ],
           ],
@@ -582,7 +582,7 @@ mailService.notifyApplicant(request);`,
             ],
             [
               "`[Ee]xception`",
-              "`[ ]` は、その中のどれか1文字",
+              "`[ ]` は、その中のどれか 1 文字",
               "「`Exception`」— ヒットする。「`exception`」— ヒットする",
             ],
           ],
@@ -723,7 +723,7 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "呼び出し元や呼び出し先が複数あるときは、呼び出し階層が使えます。今のメソッドを起点に、呼び出し元と呼び出し先が、まとめて階層（ツリー）になります。1段だけなら、参照検索と定義へジャンプで十分です。",
+          text: "呼び出し元や呼び出し先が複数あるときは、呼び出し階層が使えます。今のメソッドを起点に、呼び出し元と呼び出し先が、まとめて階層（ツリー）になります。1 段だけなら、参照検索と定義へジャンプで十分です。",
         },
         {
           type: "table",
@@ -879,7 +879,7 @@ diff --git a/RequestService.java b/RequestService.java
         },
         {
           type: "p",
-          text: "先頭が `-` の行は削除、`+` の行は追加です。1つのファイルだけに絞りたいときは `git show a1b2c3d4 -- RequestService.java` のように、`--` のあとにファイル名を指定します。",
+          text: "先頭が `-` の行は削除、`+` の行は追加です。1 つのファイルだけに絞りたいときは `git show a1b2c3d4 -- RequestService.java` のように、`--` のあとにファイル名を指定します。",
         },
         {
           type: "callout",
@@ -988,7 +988,7 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
         },
         {
           type: "p",
-          text: "まずは、1回のリクエストの中で完結する、基本のパターンを見ましょう。値は、呼び出し先へ引数として渡り、Setter で代入されます。",
+          text: "まずは、1 回のリクエストの中で完結する、基本のパターンを見ましょう。値は、呼び出し先へ引数として渡り、Setter で代入されます。",
         },
         {
           type: "code",
@@ -1059,7 +1059,7 @@ request.getApproverId().equals(userId); // NPE`,
         },
         {
           type: "p",
-          text: "変数への代入をソースで検索しても、呼び出し元が見つからないことがあります。よくある2パターンです。",
+          text: "変数への代入をソースで検索しても、呼び出し元が見つからないことがあります。よくある 2 パターンです。",
         },
         {
           type: "h3",
@@ -1067,7 +1067,7 @@ request.getApproverId().equals(userId); // NPE`,
         },
         {
           type: "p",
-          text: "Setter を参照検索しても、呼び出し元が1件も無いことがあります。",
+          text: "Setter を参照検索しても、呼び出し元が 1 件も無いことがあります。",
         },
         {
           type: "code",
@@ -1202,7 +1202,7 @@ if (!"PENDING".equals(request.getStatus())) {
             "処理の入口のメソッド（申請くんなら Controller の approve など）にブレークポイントを置く",
             "デバッグ実行でアプリを起動する",
             "ブラウザで、調べたい操作をする",
-            "止まったら引数と変数を見る。1行ずつ進める",
+            "止まったら引数と変数を見る。1 行ずつ進める",
           ],
         },
         {
@@ -1282,7 +1282,7 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "p",
-          text: "この項目では、次の4つを順に見ます。",
+          text: "この項目では、次の 4 つを順に見ます。",
         },
         {
           type: "ol",
@@ -1336,7 +1336,7 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "p",
-          text: "`<form>` には `stack` と `js-submit-confirm` の2つのクラスが付いています。`stack` は見た目のクラスです。`js-submit-confirm` の方は、この画面の JavaScript が目印にしている名前です。この名前で `static/js` を検索しましょう。",
+          text: "`<form>` には `stack` と `js-submit-confirm` の 2 つのクラスが付いています。`stack` は見た目のクラスです。`js-submit-confirm` の方は、この画面の JavaScript が目印にしている名前です。この名前で `static/js` を検索しましょう。",
         },
         {
           type: "code",
@@ -1469,7 +1469,7 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "p",
-          text: "申請くんの `app.js` は、書いたままの形で配布されています。プロジェクトによっては、フロント部分だけ webpack や vite でビルドしており、配布される JavaScript は1つの大きなファイルにバンドルされ、変数名も短く書き換えられています。",
+          text: "申請くんの `app.js` は、書いたままの形で配布されています。プロジェクトによっては、フロント部分だけ webpack や vite でビルドしており、配布される JavaScript は 1 つの大きなファイルにバンドルされ、変数名も短く書き換えられています。",
         },
         {
           type: "code",
@@ -1479,7 +1479,7 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "p",
-          text: "ファイル名にハッシュが付いている（`main.3f2a1c.js` など）、1行が異常に長い、変数名が1〜2文字ばかり、コメントが無い、といった見た目が目印です。",
+          text: "ファイル名にハッシュが付いている（`main.3f2a1c.js` など）、1 行が異常に長い、変数名が 1〜2 文字ばかり、コメントが無い、といった見た目が目印です。",
         },
         {
           type: "callout",

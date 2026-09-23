@@ -387,9 +387,9 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
           headers: ["部分", "意味"],
           rows: [
             ["`r` / `w` / `x`", "読み取り（read）/ 書き込み（write）/ 実行（execute）"],
-            ["先頭から2〜4文字目", "所有者（owner）の権限"],
-            ["5〜7文字目", "所有グループ（group）の権限"],
-            ["8〜10文字目", "それ以外（other）の権限"],
+            ["先頭から 2〜4 文字目", "所有者（owner）の権限"],
+            ["5〜7 文字目", "所有グループ（group）の権限"],
+            ["8〜10 文字目", "それ以外（other）の権限"],
           ],
         },
         {
@@ -841,7 +841,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
         },
         {
           type: "p",
-          text: "3行とも同じ接続元 IP・同じ時刻です。`/shinsei/css/app.css` への GET だけ 404 で、`/shinsei/requests` と `/shinsei/js/app.js` は 200 です。動的処理は Java に届いており、CSS だけ手前の設定がずれている、と切り分けできます。出力先と書式は環境次第です。",
+          text: "3 行とも同じ接続元 IP・同じ時刻です。`/shinsei/css/app.css` への GET だけ 404 で、`/shinsei/requests` と `/shinsei/js/app.js` は 200 です。動的処理は Java に届いており、CSS だけ手前の設定がずれている、と切り分けできます。出力先と書式は環境次第です。",
         },
         {
           type: "table",
@@ -1408,7 +1408,7 @@ ORDER BY r.created_at DESC
         },
         {
           type: "code",
-          title: "RequestService.java（申請くん・抜粋、42〜49行目）",
+          title: "RequestService.java（申請くん・抜粋、42〜49 行目）",
           lang: "java",
           highlightLines: [7],
           highlightKind: "error",
@@ -1545,8 +1545,8 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
         {
           type: "callout",
           kind: "note",
-          title: "差分を1つずつ戻す",
-          text: "違いが複数見つかったときは、1つずつ元に戻しながら試すと、どれが原因かを絞り込めます。全部を一度に変えると、直っても何が効いたか分かりません。",
+          title: "差分を 1 つずつ戻す",
+          text: "違いが複数見つかったときは、1 つずつ元に戻しながら試すと、どれが原因かを絞り込めます。全部を一度に変えると、直っても何が効いたか分かりません。",
         },
         { type: "quiz", id: "ts-compare-working" },
       ],

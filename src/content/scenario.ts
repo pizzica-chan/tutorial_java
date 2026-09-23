@@ -357,7 +357,7 @@ WHERE id = 16;`,
         },
         {
           type: "p",
-          text: "「この申請は承認できません」で全文検索すると、2箇所ヒットします。下の Controller の分岐と、`RequestService.approve` が投げる `throw new ConflictException(\"この申請は承認できません\")` です。`ConflictException` は 409 を返しますが、Network タブで見たのは 302 でした。302 を返しているのは、この Controller の分岐です。",
+          text: "「この申請は承認できません」で全文検索すると、2 箇所ヒットします。下の Controller の分岐と、`RequestService.approve` が投げる `throw new ConflictException(\"この申請は承認できません\")` です。`ConflictException` は 409 を返しますが、Network タブで見たのは 302 でした。302 を返しているのは、この Controller の分岐です。",
         },
         {
           type: "code",
@@ -402,7 +402,7 @@ requestService.approve(id, user.getId());`,
           items: [
             "Network タブで、POST が 302 であることを確認",
             "操作時刻のログに ERROR もスタックも無いことを確認",
-            "画面の文言でソースを検索すると2箇所ヒットし、409を返す `ConflictException` ではなく、302 と一致する Controller の分岐だと分かる",
+            "画面の文言でソースを検索すると 2 箇所ヒットし、409 を返す `ConflictException` ではなく、302 と一致する Controller の分岐だと分かる",
             "DB で申請 ID 11 の status が APPROVED であることを確認",
           ],
         },
@@ -678,7 +678,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "`catch (Exception e)` で例外を捕まえていますが、ログには `e` を渡していません。これでは、例外の種類もスタックトレースも残らず、`WARN` の1行だけが手がかりになります。原因を確かめるには、いったん `log.warn(\"...\", e)` のようにログへ `e` を渡すよう直し、もう一度承認を再現させましょう。デバッガでこの `catch` にブレークポイントを張っても、同じ変数を確認できます。",
+          text: "`catch (Exception e)` で例外を捕まえていますが、ログには `e` を渡していません。これでは、例外の種類もスタックトレースも残らず、`WARN` の 1 行だけが手がかりになります。原因を確かめるには、いったん `log.warn(\"...\", e)` のようにログへ `e` を渡すよう直し、もう一度承認を再現させましょう。デバッガでこの `catch` にブレークポイントを張っても、同じ変数を確認できます。",
         },
         {
           type: "code",
@@ -693,7 +693,7 @@ java.lang.StringIndexOutOfBoundsException: begin 0, end 10, length 4
         },
         {
           type: "p",
-          text: "`StringIndexOutOfBoundsException` です。原因は `request.getTitle().substring(0, 10)` でした。「休暇申請」は4文字しかなく、先頭10文字を切り出そうとして例外になっています。長い件名を短くするための処理ですが、10文字に満たない件名を考慮していません。",
+          text: "`StringIndexOutOfBoundsException` です。原因は `request.getTitle().substring(0, 10)` でした。「休暇申請」は 4 文字しかなく、先頭 10 文字を切り出そうとして例外になっています。長い件名を短くするための処理ですが、10 文字に満たない件名を考慮していません。",
         },
         {
           type: "callout",
@@ -710,7 +710,7 @@ java.lang.StringIndexOutOfBoundsException: begin 0, end 10, length 4
           items: [
             "画面にエラーが出ない不具合は、`catch` で例外が握りつぶされていないかを疑う",
             "`catch (Exception e)` は、想定していない種類の例外まで一緒に捕まえてしまう。ログに `e` を渡さないと、原因の手がかりが消える",
-            "件数やテストデータが偏っていると、境界値のバグ（今回は10文字未満の件名）に気づかないまま本番へ出ることがある",
+            "件数やテストデータが偏っていると、境界値のバグ（今回は 10 文字未満の件名）に気づかないまま本番へ出ることがある",
           ],
         },
         {
@@ -724,7 +724,7 @@ java.lang.StringIndexOutOfBoundsException: begin 0, end 10, length 4
             "アプリログで、DB 更新の直後に `MailService` の `WARN` があるが、例外の詳細が無いことを確認",
             "`catch (Exception e)` がログに `e` を渡していないと分かる",
             "ログに `e` を渡して再現させ、`StringIndexOutOfBoundsException` と分かる",
-            "`request.getTitle().substring(0, 10)` が原因で、10文字未満の件名で例外になることを特定",
+            "`request.getTitle().substring(0, 10)` が原因で、10 文字未満の件名で例外になることを特定",
           ],
         },
         { type: "quiz", id: "sc-mail-silent" },
@@ -1159,7 +1159,7 @@ public String history(
         },
         {
           type: "p",
-          text: "申請履歴で件名「研修」、ステータス「未承認」を検索すると1件だけ出る。その行から詳細を開き、「← 申請履歴」で一覧に戻ると、絞り込みが消えて全件が表示される。エラーメッセージは出ない。",
+          text: "申請履歴で件名「研修」、ステータス「未承認」を検索すると 1 件だけ出る。その行から詳細を開き、「← 申請履歴」で一覧に戻ると、絞り込みが消えて全件が表示される。エラーメッセージは出ない。",
         },
         {
           type: "h2",
@@ -1169,7 +1169,7 @@ public String history(
           type: "ul",
           items: [
             "山田（yamada）でログイン。検証用環境。",
-            "申請履歴で件名「研修」、ステータス「未承認」を検索すると、1件だけ表示される",
+            "申請履歴で件名「研修」、ステータス「未承認」を検索すると、1 件だけ表示される",
             "その行から詳細を開き、「← 申請履歴」で戻ると、絞り込みの無い全件が表示される",
             "画面にエラーは出ていない",
           ],
@@ -1286,7 +1286,7 @@ GET /shinsei/requests/history                   200`,
           type: "callout",
           kind: "trap",
           title: "セッションのキーは、ただの文字列",
-          text: "`setAttribute` と `getAttribute` のキーは、どちらも普通の `String` です。コンパイラは2つの文字列リテラルが一致しているかまでは検査しないので、`historySearchCondition` と `historyCondition` のような似た名前の食い違いは、実行するまで気づけません。疑うときは、保存している側と取り出している側のキーの文字列を並べて見比べましょう。",
+          text: "`setAttribute` と `getAttribute` のキーは、どちらも普通の `String` です。コンパイラは 2 つの文字列リテラルが一致しているかまでは検査しないので、`historySearchCondition` と `historyCondition` のような似た名前の食い違いは、実行するまで気づけません。疑うときは、保存している側と取り出している側のキーの文字列を並べて見比べましょう。",
         },
         {
           type: "h2",
@@ -2237,7 +2237,7 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
         },
         {
           type: "p",
-          text: "ここからは障害調査ではなく影響調査です。原因を1つ特定して直すのではなく、関係しそうな箇所を洗い出し、それぞれ直す必要があるかを1つずつ判断します。",
+          text: "ここからは障害調査ではなく影響調査です。原因を 1 つ特定して直すのではなく、関係しそうな箇所を洗い出し、それぞれ直す必要があるかを 1 つずつ判断します。",
         },
         {
           type: "h2",
@@ -2381,7 +2381,7 @@ requestMapper.update(request);`,
         },
         {
           type: "p",
-          text: "`CANCELLED` を追加しても、この2つの処理の修正は不要です。",
+          text: "`CANCELLED` を追加しても、この 2 つの処理の修正は不要です。",
         },
         {
           type: "h3",
@@ -2877,7 +2877,7 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "p",
-          text: "`ForbiddenException` の if だけを見ると、権限判定はここだけのように見えます。役割（ロール）はどちらの if でも見ていません。部長職なら誰でも、という条件を足すには、この2つの if に分岐を追加すればよさそうに思えます。",
+          text: "`ForbiddenException` の if だけを見ると、権限判定はここだけのように見えます。役割（ロール）はどちらの if でも見ていません。部長職なら誰でも、という条件を足すには、この 2 つの if に分岐を追加すればよさそうに思えます。",
         },
         {
           type: "h3",
@@ -2885,7 +2885,7 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "p",
-          text: "`requestMapper.findById` の中身を見ると、この2つの if に届く前に、SQL 自体がすでに絞り込んでいます。",
+          text: "`requestMapper.findById` の中身を見ると、この 2 つの if に届く前に、SQL 自体がすでに絞り込んでいます。",
         },
         {
           type: "code",
@@ -2922,13 +2922,13 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "p",
-          text: "`role` は `t_user.role` から来ています。ただし今の値は `ADMIN` と `USER` の2種類だけで、`data.sql` にも部長職に当たる値はありません。新しいロール（例えば `MANAGER`）を追加する DB の変更が要ります。",
+          text: "`role` は `t_user.role` から来ています。ただし今の値は `ADMIN` と `USER` の 2 種類だけで、`data.sql` にも部長職に当たる値はありません。新しいロール（例えば `MANAGER`）を追加する DB の変更が要ります。",
         },
         {
           type: "callout",
           kind: "trap",
           title: "SecurityConfig にロールを足しても解決しない",
-          text: "`SecurityConfig` の `.antMatchers(\"/admin/**\").hasRole(\"ADMIN\")` のような書き方は、URL ごとに一律で許可・拒否を決める仕組みです。「部長職なら、どの申請でも承認できる」という条件には使えますが、「この申請の承認者は誰か」という1件ごとのデータに基づく判定はできません。今回のような、レコードの中身を見て判定する権限チェックは、`SecurityConfig` ではなく `RequestService` 側に書くことになります。Filter / Interceptor / AOP がリクエストの受付を丸ごと制御するのに対し、業務データに基づく判定はビジネスロジックの役目です。",
+          text: "`SecurityConfig` の `.antMatchers(\"/admin/**\").hasRole(\"ADMIN\")` のような書き方は、URL ごとに一律で許可・拒否を決める仕組みです。「部長職なら、どの申請でも承認できる」という条件には使えますが、「この申請の承認者は誰か」という 1 件ごとのデータに基づく判定はできません。今回のような、レコードの中身を見て判定する権限チェックは、`SecurityConfig` ではなく `RequestService` 側に書くことになります。Filter / Interceptor / AOP がリクエストの受付を丸ごと制御するのに対し、業務データに基づく判定はビジネスロジックの役目です。",
         },
         {
           type: "h3",
@@ -3132,7 +3132,7 @@ public String history(
         },
         {
           type: "p",
-          text: "既存の4つの検索項目と同じ並びで `approverName` を `@RequestParam` に追加し、`requestService.searchHistory(...)` の呼び出しにも渡します。",
+          text: "既存の 4 つの検索項目と同じ並びで `approverName` を `@RequestParam` に追加し、`requestService.searchHistory(...)` の呼び出しにも渡します。",
         },
         {
           type: "h3",
@@ -3159,7 +3159,7 @@ public class HistorySearchCondition {
           type: "callout",
           kind: "trap",
           title: "足し忘れても検索は通るが、承認者名の条件は保存されない",
-          text: "このクラスに `approverName` を足し忘れると、検索そのものは通っても、承認者名の条件だけがセッションに保存されません。似た症状の既存の不具合「申請履歴から詳細を開いて戻ると、検索条件が消える」は、セッションのキー文字列が保存側と読み出し側で食い違っていたのが原因で、今回とは原因が別です。ただし「検索条件を保存する仕組みに新しい項目を通し忘れる」という点は同じ種類の見落としなので、新しい項目を追加するときは、既存の仕組み全体に本当に通っているかを1つずつ確認しましょう。",
+          text: "このクラスに `approverName` を足し忘れると、検索そのものは通っても、承認者名の条件だけがセッションに保存されません。似た症状の既存の不具合「申請履歴から詳細を開いて戻ると、検索条件が消える」は、セッションのキー文字列が保存側と読み出し側で食い違っていたのが原因で、今回とは原因が別です。ただし「検索条件を保存する仕組みに新しい項目を通し忘れる」という点は同じ種類の見落としなので、新しい項目を追加するときは、既存の仕組み全体に本当に通っているかを 1 つずつ確認しましょう。",
         },
         {
           type: "p",
@@ -3178,7 +3178,7 @@ public class HistorySearchCondition {
         },
         {
           type: "p",
-          text: "`HistorySearchCondition` に `approverName` を足しても、ここに `.queryParamIfPresent(\"approverName\", ...)` を足し忘れると、検索結果の詳細画面から「戻る」で一覧に戻ったときだけ、承認者名の条件が URL から抜け落ちます。セッションへの保存と、戻り URL の組み立て、2箇所とも直す必要があります。",
+          text: "`HistorySearchCondition` に `approverName` を足しても、ここに `.queryParamIfPresent(\"approverName\", ...)` を足し忘れると、検索結果の詳細画面から「戻る」で一覧に戻ったときだけ、承認者名の条件が URL から抜け落ちます。セッションへの保存と、戻り URL の組み立て、2 箇所とも直す必要があります。",
         },
         {
           type: "h3",
@@ -3223,10 +3223,10 @@ ORDER BY r.created_at DESC`,
           headers: ["箇所", "いま", "修正の要否"],
           rows: [
             ["`history.html` の検索フォーム", "件名・ステータス・申請日", "要修正。承認者名の入力欄を追加"],
-            ["`RequestController.history`", "4つの `@RequestParam`", "要修正。`approverName` を追加"],
-            ["`HistorySearchCondition`", "4つのフィールド", "要修正。足し忘れると条件がセッションに保存されない"],
-            ["`buildHistoryBackUrl`", "4つの `queryParamIfPresent`", "要修正。足し忘れると詳細から戻ったときだけ条件が消える"],
-            ["`RequestService.searchHistory`", "4つの引数を Mapper へ渡す", "要修正。引数を追加して渡す"],
+            ["`RequestController.history`", "4 つの `@RequestParam`", "要修正。`approverName` を追加"],
+            ["`HistorySearchCondition`", "4 つのフィールド", "要修正。足し忘れると条件がセッションに保存されない"],
+            ["`buildHistoryBackUrl`", "4 つの `queryParamIfPresent`", "要修正。足し忘れると詳細から戻ったときだけ条件が消える"],
+            ["`RequestService.searchHistory`", "4 つの引数を Mapper へ渡す", "要修正。引数を追加して渡す"],
             ["`RequestMapper.xml` の `searchHistory`", "件名などの `<if>`", "要修正。`v.display_name` への `<if>` を追加"],
             ["承認者未定の申請の扱い", "一覧には出る", "絞り込むと消える。意図どおりか依頼者へ確認"],
           ],
@@ -3245,7 +3245,7 @@ ORDER BY r.created_at DESC`,
           type: "ul",
           items: [
             "既存の検索項目と同じ経路（フォーム → Controller → セッション → Service → 動的 SQL）を、そのまま辿ればよい",
-            "検索条件を運ぶ経路は1つではない。セッション保存と、詳細から戻るときの URL 組み立て、両方に新項目を通す必要がある",
+            "検索条件を運ぶ経路は 1 つではない。セッション保存と、詳細から戻るときの URL 組み立て、両方に新項目を通す必要がある",
             "`LEFT JOIN` したカラムに絞り込み条件を足すと、結合できなかったレコードが結果から消える",
           ],
         },
@@ -3258,7 +3258,7 @@ ORDER BY r.created_at DESC`,
           items: [
             "既存の検索項目（件名）が辿る経路を確認する",
             "`history.html` → `RequestController.history` → `HistorySearchCondition` → `RequestService.searchHistory` → `RequestMapper.xml` の順に、同じ経路へ承認者名を追加する必要があると分かる",
-            "`buildHistoryBackUrl` にも同じ4項目があり、ここへの追加漏れは詳細画面から戻ったときだけ症状が出ると気づく",
+            "`buildHistoryBackUrl` にも同じ 4 項目があり、ここへの追加漏れは詳細画面から戻ったときだけ症状が出ると気づく",
             "`LEFT JOIN` したカラムへの絞り込みで、承認者未定の申請が結果から消えると分かる",
           ],
         },
@@ -3410,7 +3410,7 @@ public class SlackNotificationService {
           type: "callout",
           kind: "trap",
           title: "遅い外部呼び出しは、DB 接続も長く占有する",
-          text: "`@Transactional` のメソッドは、開始時に DB のコネクションを1つ借りたまま処理を進めます。その中で外部呼び出しが遅いと、DB との用事がとっくに終わっていても、コネクションを借りたまま待ち続けることになります。同時にアクセスが増えると、他のリクエストがコネクションプールの枯渇で待たされる可能性があります。Webhook の呼び出しには、必ず短いタイムアウトを設定しましょう。",
+          text: "`@Transactional` のメソッドは、開始時に DB のコネクションを 1 つ借りたまま処理を進めます。その中で外部呼び出しが遅いと、DB との用事がとっくに終わっていても、コネクションを借りたまま待ち続けることになります。同時にアクセスが増えると、他のリクエストがコネクションプールの枯渇で待たされる可能性があります。Webhook の呼び出しには、必ず短いタイムアウトを設定しましょう。",
         },
         {
           type: "h3",

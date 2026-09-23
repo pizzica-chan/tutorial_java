@@ -258,7 +258,7 @@ function SessionStore() {
       <Layer icon="server" accent>
         サーバが持つセッション
       </Layer>
-      <Arrow down label="ログイン中の利用者ごとに1件" />
+      <Arrow down label="ログイン中の利用者ごとに 1 件" />
       <div className="d-n1-rows">
         <Chip icon="key" accent>
           AB12CD34 → 山田太郎
@@ -411,7 +411,7 @@ function StackLine() {
       <div className="url-bar stack-bar">
         <span className="url-part host">
           at
-          <em>履歴の1行</em>
+          <em>履歴の 1 行</em>
         </span>
         <span className="url-part ctx">
           jp.co.example.shinsei.service.RequestService
@@ -818,7 +818,7 @@ function ArchPatterns() {
     <div>
       <div className="d-cols">
         <div className="d-col">
-          <h4>パターン1: 内蔵だけ</h4>
+          <h4>パターン 1: 内蔵だけ</h4>
           <div className="d-stack">
             <Layer icon="browser">ブラウザ</Layer>
             <Arrow down label="HTTP/HTTPS リクエスト" />
@@ -830,7 +830,7 @@ function ArchPatterns() {
           </div>
         </div>
         <div className="d-col">
-          <h4>パターン2: 外部 WAR</h4>
+          <h4>パターン 2: 外部 WAR</h4>
           <div className="d-stack">
             <Layer icon="browser">ブラウザ</Layer>
             <Arrow down label="HTTP/HTTPS リクエスト" />
@@ -842,7 +842,7 @@ function ArchPatterns() {
           </div>
         </div>
         <div className="d-col">
-          <h4>パターン3: 手前に HTTP サーバ</h4>
+          <h4>パターン 3: 手前に HTTP サーバ</h4>
           <div className="d-stack">
             <Layer icon="browser">ブラウザ</Layer>
             <Arrow down label="HTTP/HTTPS リクエスト" />
@@ -859,7 +859,7 @@ function ArchPatterns() {
         </div>
       </div>
       <p className="diagram-note">
-        <TextWithTerms text="コンテナ（Docker など）で動かしても、重ね方は上の3パターンに収まることが多いです。" />
+        <TextWithTerms text="コンテナ（Docker など）で動かしても、重ね方は上の 3 パターンに収まることが多いです。" />
       </p>
     </div>
   );

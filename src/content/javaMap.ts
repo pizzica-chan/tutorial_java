@@ -158,7 +158,7 @@ logging:
         },
         {
           type: "p",
-          text: "`application-dev.yml` は接続先とログの出力レベルを上書きしています。`application.yml` 側の `shinsei` と `application-dev.yml` 側の `shinsei_dev` を重ねると、後から読み込む方が勝つので、実際に接続する DB 名は `shinsei_dev` です。設定は複数ファイルに分かれることがあるので、1ファイルだけ見て判断しないようにしましょう。",
+          text: "`application-dev.yml` は接続先とログの出力レベルを上書きしています。`application.yml` 側の `shinsei` と `application-dev.yml` 側の `shinsei_dev` を重ねると、後から読み込む方が勝つので、実際に接続する DB 名は `shinsei_dev` です。設定は複数ファイルに分かれることがあるので、1 ファイルだけ見て判断しないようにしましょう。",
         },
         {
           type: "p",
@@ -185,7 +185,7 @@ logging:
         },
         {
           type: "p",
-          text: "ここまでの `spring.datasource` や `server.servlet.context-path` は、Spring Boot 自身が読んで使う設定です。プロジェクト独自の設定キーは、誰かが書いた Java コードが明示的に読み込んで初めて使われます。読み方は主に2つです。",
+          text: "ここまでの `spring.datasource` や `server.servlet.context-path` は、Spring Boot 自身が読んで使う設定です。プロジェクト独自の設定キーは、誰かが書いた Java コードが明示的に読み込んで初めて使われます。読み方は主に 2 つです。",
         },
         {
           type: "code",
@@ -198,7 +198,7 @@ logging:
         },
         {
           type: "code",
-          title: "@Value（1つの値を読む。例）",
+          title: "@Value（1 つの値を読む。例）",
           lang: "java",
           highlightLines: [3],
           code: `@Service
@@ -236,7 +236,7 @@ public class MailProperties {
           type: "callout",
           kind: "trap",
           title: "見つからないときの壊れ方が違う",
-          text: "`@Value(\"\${app.mail.from}\")` のように既定値を書かないと、対応するキーが1つも無い場合に起動時の例外で落ちます。設定漏れにすぐ気づけます（`\${app.mail.from:no-reply@example.com}` のように既定値を書けば落ちません）。一方 `@ConfigurationProperties` は、キーが無ければそのフィールドが `null` や初期値のままになるだけで、起動は失敗しません。設定を変えたのに反映されないときは、キー名の綴りや `prefix` のずれを疑いましょう。",
+          text: "`@Value(\"\${app.mail.from}\")` のように既定値を書かないと、対応するキーが 1 つも無い場合に起動時の例外で落ちます。設定漏れにすぐ気づけます（`\${app.mail.from:no-reply@example.com}` のように既定値を書けば落ちません）。一方 `@ConfigurationProperties` は、キーが無ければそのフィールドが `null` や初期値のままになるだけで、起動は失敗しません。設定を変えたのに反映されないときは、キー名の綴りや `prefix` のずれを疑いましょう。",
         },
         {
           type: "h2",
@@ -244,7 +244,7 @@ public class MailProperties {
         },
         {
           type: "p",
-          text: "設定は `application.yml`（や `.properties`）だけとは限りません。見慣れないキーで検索しても `application.yml` に無いときは、他の `.properties` / `.yml` ファイルも探しましょう。別ファイルを使う方法は主に4つです。",
+          text: "設定は `application.yml`（や `.properties`）だけとは限りません。見慣れないキーで検索しても `application.yml` に無いときは、他の `.properties` / `.yml` ファイルも探しましょう。別ファイルを使う方法は主に 4 つです。",
         },
         {
           type: "h3",
@@ -368,7 +368,7 @@ public class RegionInfo {
         },
         {
           type: "p",
-          text: "この4つは、値がどこから来るかが違うだけです。読み込んだあとの値を Java 側で使う方法は、どれも変わらず `@Value` か `@ConfigurationProperties` です。ただし `@ConfigurationProperties` は Spring Boot のアノテーションなので、Spring Boot を使わない XML だけのアプリでは登場せず、`@Value` だけのことが多いです。",
+          text: "この 4 つは、値がどこから来るかが違うだけです。読み込んだあとの値を Java 側で使う方法は、どれも変わらず `@Value` か `@ConfigurationProperties` です。ただし `@ConfigurationProperties` は Spring Boot のアノテーションなので、Spring Boot を使わない XML だけのアプリでは登場せず、`@Value` だけのことが多いです。",
         },
         {
           type: "h2",
@@ -456,7 +456,7 @@ public class RegionInfo {
         },
         {
           type: "code",
-          title: "パターン1: テンプレート名を返す（画面）",
+          title: "パターン 1: テンプレート名を返す（画面）",
           lang: "java",
           highlightLines: [9, 10],
           code: `@Controller
@@ -485,7 +485,7 @@ public class RequestController {
         },
         {
           type: "code",
-          title: "パターン2: オブジェクトを返す（Web API）",
+          title: "パターン 2: オブジェクトを返す（Web API）",
           lang: "java",
           highlightLines: [9, 10, 11],
           code: `@RestController
@@ -540,7 +540,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "`@Transactional` は、そのメソッドの中の複数の SQL を1つの単位にまとめる印です。途中で例外が起きれば、それまでの変更もすべて取り消されます（ロールバック）。ただし既定でロールバックされるのは `RuntimeException` や `Error` のような非検査例外だけです。検査例外は、`rollbackFor` を指定しない限りロールバックされません。",
+          text: "`@Transactional` は、そのメソッドの中の複数の SQL を 1 つの単位にまとめる印です。途中で例外が起きれば、それまでの変更もすべて取り消されます（ロールバック）。ただし既定でロールバックされるのは `RuntimeException` や `Error` のような非検査例外だけです。検査例外は、`rollbackFor` を指定しない限りロールバックされません。",
         },
         {
           type: "code",
@@ -563,7 +563,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "p",
-          text: "ここで保証されているのは「1つのリクエストの中の一貫性」だけです。別のリクエストが同時に来ることは、`@Transactional` の範囲外です。",
+          text: "ここで保証されているのは「1 つのリクエストの中の一貫性」だけです。別のリクエストが同時に来ることは、`@Transactional` の範囲外です。",
         },
         {
           type: "h2",
@@ -792,7 +792,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "`static/js` には `app.js` のほかに `list.js` と `form.js` もあります。今見た `app.js` の確認ダイアログは申請詳細画面の承認ボタン用で、一覧画面の承認ボタンを押したときに動く JavaScript は `list.js` の方です。1つの画面が複数の JS ファイルを読み込むことは珍しくありません。",
+          text: "`static/js` には `app.js` のほかに `list.js` と `form.js` もあります。今見た `app.js` の確認ダイアログは申請詳細画面の承認ボタン用で、一覧画面の承認ボタンを押したときに動く JavaScript は `list.js` の方です。1 つの画面が複数の JS ファイルを読み込むことは珍しくありません。",
         },
         {
           type: "p",
@@ -861,7 +861,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "フラグメントは、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。複数の画面で共通する HTML を、1か所にまとめて共有できます。",
+          text: "フラグメントは、テンプレートの一部に名前を付け、ほかのテンプレートから差し込んで使う仕組みです。複数の画面で共通する HTML を、1 か所にまとめて共有できます。",
         },
         {
           type: "p",
@@ -944,12 +944,12 @@ if (updated == 0) {
             ["`model.put(\"applications\", list)` と Map", "`${applications}`", "引数が Map のとき。Model と同じ役割"],
             ["`@ModelAttribute(\"form\") RequestForm form`", "`${form}`", "フォーム表示・送信の両方で使うことがある"],
             ["`@ModelAttribute` メソッド（Controller 内）", "メソッドが返すキー名", "全画面に共通の値を載せる。各メソッドの前に実行される"],
-            ["`redirectAttributes.addFlashAttribute(\"msg\", ...)`", "`${msg}`", "リダイレクト後の1回だけ。登録完了メッセージなど"],
+            ["`redirectAttributes.addFlashAttribute(\"msg\", ...)`", "`${msg}`", "リダイレクト後の 1 回だけ。登録完了メッセージなど"],
           ],
         },
         {
           type: "p",
-          text: "値は、リストやオブジェクト1件、文字列など何でも載せられます。テンプレートでは `${applications}` のようにキー名で取り出し、オブジェクトなら `${item.title}` のようにプロパティを辿ります。",
+          text: "値は、リストやオブジェクト 1 件、文字列など何でも載せられます。テンプレートでは `${applications}` のようにキー名で取り出し、オブジェクトなら `${item.title}` のようにプロパティを辿ります。",
         },
         {
           type: "code",
@@ -988,7 +988,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         {
           type: "callout",
           kind: "note",
-          title: "@ModelAttribute は向きが2つ",
+          title: "@ModelAttribute は向きが 2 つ",
           text: "`@ModelAttribute` は、書く場所で意味が変わります。\n① 引数に付けると、送られてきたフォームの値をオブジェクトへ詰め、その同じオブジェクトを画面にも渡します。\n② メソッド自体に付けると（引数ではなく）、そのメソッドの戻り値を、Controller 内のどのリクエストでも毎回 Model に足します。\n同じ名前でも別の仕組みなので、混同しないでください。テンプレートを読むときは `${...}` のキー名だけ見れば十分です。",
         },
         {
@@ -1130,7 +1130,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "`resultType=\"RequestEntity\"` と書くだけで、SELECT の各カラムが `RequestEntity` のフィールドへ自動で入ります。完全なパッケージ名を書かなくてよいことと、`applicant_id` が `applicantId` というフィールドに対応することには、それぞれ理由があります。さきほどの `application.yml` の2行がその答えです。",
+          text: "`resultType=\"RequestEntity\"` と書くだけで、SELECT の各カラムが `RequestEntity` のフィールドへ自動で入ります。完全なパッケージ名を書かなくてよいことと、`applicant_id` が `applicantId` というフィールドに対応することには、それぞれ理由があります。さきほどの `application.yml` の 2 行がその答えです。",
         },
         {
           type: "ul",
@@ -1202,11 +1202,11 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "申請くんの `findMine`・`findById`・`searchHistory` は、SELECT するカラムと FROM・JOIN が同じです。共通化されておらず、同じ書き方が3か所に散らばっています。1か所だけ直すと、残り2か所とずれることがあります。",
+          text: "申請くんの `findMine`・`findById`・`searchHistory` は、SELECT するカラムと FROM・JOIN が同じです。共通化されておらず、同じ書き方が 3 か所に散らばっています。1 か所だけ直すと、残り 2 か所とずれることがあります。",
         },
         {
           type: "p",
-          text: "この重複をまとめる書き方もあります。`<sql>` に1つだけ書き、各 `<select>` から `<include>` で差し込む方法です。テンプレートの共通部分を `th:fragment` にまとめたのと同じ考え方です。前の項目「テンプレートの読み方」で見ました。申請くんの実際の XML はこの形ではありませんが、まとめるとしたら次のようになります。",
+          text: "この重複をまとめる書き方もあります。`<sql>` に 1 つだけ書き、各 `<select>` から `<include>` で差し込む方法です。テンプレートの共通部分を `th:fragment` にまとめたのと同じ考え方です。前の項目「テンプレートの読み方」で見ました。申請くんの実際の XML はこの形ではありませんが、まとめるとしたら次のようになります。",
         },
         {
           type: "code",
@@ -1232,7 +1232,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "`<sql id=\"requestSelect\">` が断片の名前で、`<include refid=\"requestSelect\" />` はその中身をそのまま差し込む、という意味です。`findById` と `searchHistory` も同じ断片を `<include>` すれば、3か所の重複が無くなります。",
+          text: "`<sql id=\"requestSelect\">` が断片の名前で、`<include refid=\"requestSelect\" />` はその中身をそのまま差し込む、という意味です。`findById` と `searchHistory` も同じ断片を `<include>` すれば、3 か所の重複が無くなります。",
         },
         {
           type: "callout",
@@ -1275,7 +1275,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "callout",
           kind: "tip",
           title: "見逃さないために",
-          text: "実際の動きと、ソースから読める処理が食い違うときは、もっと深く探すのではなく、この4種類（Filter / Interceptor / AOP / `@ControllerAdvice`）のどれかを疑いましょう。",
+          text: "実際の動きと、ソースから読める処理が食い違うときは、もっと深く探すのではなく、この 4 種類（Filter / Interceptor / AOP / `@ControllerAdvice`）のどれかを疑いましょう。",
         },
         {
           type: "h2",
@@ -1455,7 +1455,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "よく見る重ね方は次の3つです。",
+          text: "よく見る重ね方は次の 3 つです。",
         },
         {
           type: "steps",
@@ -1481,7 +1481,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "気をつけることは、上のどのパターンかで変わります。手前に Apache / nginx がある構成（パターン3）では、確認することが増えます。",
+          text: "気をつけることは、上のどのパターンかで変わります。手前に Apache / nginx がある構成（パターン 3）では、確認することが増えます。",
         },
         {
           type: "table",
@@ -1506,7 +1506,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "上のどの重ね方でも、さらに手前にロードバランサや CDN、WAF が置かれることがあります。いずれも Java のコードより手前です。パターン3なら Apache / nginx の外側、パターン1・2なら Tomcat や Spring Boot の手前、という位置づけです。",
+          text: "上のどの重ね方でも、さらに手前にロードバランサや CDN、WAF が置かれることがあります。いずれも Java のコードより手前です。パターン 3 なら Apache / nginx の外側、パターン 1・2 なら Tomcat や Spring Boot の手前、という位置づけです。",
         },
         {
           type: "ul",

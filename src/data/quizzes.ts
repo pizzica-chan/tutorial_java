@@ -564,7 +564,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "WARN の1行だけでは、想定内の失敗なのかバグによる例外なのか区別できません。`catch (Exception e)` がログに `e` を渡していないと、種類やスタックトレースが残りません。ソースの catch ブロックを確認し、必要なら一時的に `e` をログへ渡して再現させましょう。",
+      "WARN の 1 行だけでは、想定内の失敗なのかバグによる例外なのか区別できません。`catch (Exception e)` がログに `e` を渡していないと、種類やスタックトレースが残りません。ソースの catch ブロックを確認し、必要なら一時的に `e` をログへ渡して再現させましょう。",
   },
   "sc-db": {
     id: "sc-db",
@@ -750,7 +750,7 @@ export const quizzes = {
       "`LoginUser`（ログインユーザの入れ物）",
     ],
     answer: 0,
-    explanation: "`SecurityConfig` の `hasRole` などは URL ごとに一律で許可・拒否を決める仕組みで、1件ごとのレコードを見た判定はできません。業務データに基づく権限判定は、Service 側の役目です。",
+    explanation: "`SecurityConfig` の `hasRole` などは URL ごとに一律で許可・拒否を決める仕組みで、1 件ごとのレコードを見た判定はできません。業務データに基づく権限判定は、Service 側の役目です。",
   },
   "sc-impact-approver-search": {
     id: "sc-impact-approver-search",

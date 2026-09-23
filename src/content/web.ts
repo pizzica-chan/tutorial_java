@@ -71,7 +71,7 @@ export const webTrack: Track = {
         { type: "widget", name: "http" },
         {
           type: "h2",
-          text: "1画面で複数のリクエスト",
+          text: "1 画面で複数のリクエスト",
         },
         {
           type: "p",
@@ -96,7 +96,7 @@ export const webTrack: Track = {
         { type: "diagram", name: "html-json", caption: "同じ HTTP の往復です。" },
         {
           type: "p",
-          text: "HTML は、見出しやボタンなど、画面の構成要素を含む形式です。案内文だけのページのように、データが1件も載っていないこともあります。JSON は、これらの構成要素を含まず、データだけを返す形式です。",
+          text: "HTML は、見出しやボタンなど、画面の構成要素を含む形式です。案内文だけのページのように、データが 1 件も載っていないこともあります。JSON は、これらの構成要素を含まず、データだけを返す形式です。",
         },
         {
           type: "p",
@@ -155,7 +155,7 @@ Content-Type: application/json
       blocks: [
         {
           type: "p",
-          text: "リクエストとレスポンスを読むときは、まず URL、HTTP メソッド、ステータスコードの3つを見ます。",
+          text: "リクエストとレスポンスを読むときは、まず URL、HTTP メソッド、ステータスコードの 3 つを見ます。",
         },
         {
           type: "h2",
@@ -172,7 +172,7 @@ Content-Type: application/json
           rows: [
             ["`http://`", "スキーム", "通信方式の種類。Web アプリでは `http` か `https` がほとんど"],
             ["`intranet.example.co.jp`", "ホスト", "どのサーバか"],
-            ["`:8080`", "ポート", "同じサーバ内でどのサービス・プロセスか。省略すると `http` は80、`https` は443番"],
+            ["`:8080`", "ポート", "同じサーバ内でどのサービス・プロセスか。省略すると `http` は 80、`https` は 443 番"],
             ["`/shinsei`", "コンテキストパス", "アプリの根っこ"],
             ["`/requests/history`", "アプリ内のパス", "申請履歴の検索画面"],
             ["`?status=PENDING`", "クエリ", "絞り込みなどの条件"],
@@ -210,7 +210,7 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "ステータスコードは、応答の結果を表す3桁の数字です。",
+          text: "ステータスコードは、応答の結果を表す 3 桁の数字です。",
         },
         { type: "diagram", name: "status-codes" },
         {
@@ -471,7 +471,7 @@ Cookie: JSESSIONID=AB12CD34`,
         {
           type: "diagram",
           name: "session-store",
-          caption: "サーバは、ログイン中の利用者の数だけセッションを持っています。上のコード例は、そのうちの `AB12CD34` の1件です。",
+          caption: "サーバは、ログイン中の利用者の数だけセッションを持っています。上のコード例は、そのうちの `AB12CD34` の 1 件です。",
         },
         {
           type: "p",
@@ -658,7 +658,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "画面の要素を探す JavaScript は、要素が読み込まれたあとに動く必要があります。申請くんには、そのための書き方が2つ出てきます。",
+          text: "画面の要素を探す JavaScript は、要素が読み込まれたあとに動く必要があります。申請くんには、そのための書き方が 2 つ出てきます。",
         },
         {
           type: "h3",
@@ -677,7 +677,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "もし `defer` が無ければ、`app.js` は `<head>` の位置で実行されます。その時点では申請詳細画面の承認フォームがまだ読み込まれていないので、`document.querySelectorAll(\"form.js-approve-confirm\")` は1件も見つけられません。",
+          text: "もし `defer` が無ければ、`app.js` は `<head>` の位置で実行されます。その時点では申請詳細画面の承認フォームがまだ読み込まれていないので、`document.querySelectorAll(\"form.js-approve-confirm\")` は 1 件も見つけられません。",
         },
         {
           type: "h3",
@@ -719,7 +719,7 @@ public String showCart(HttpSession session, Model model) {
           type: "callout",
           kind: "trap",
           title: "エラーが出ないこともある",
-          text: "要素が見つからないとき、`document.querySelectorAll` は0件を返すだけです。例外にならないので、コンソールにも何も出ません。イベントの処理が登録されず、ボタンを押しても何も起きない、という見え方になります。",
+          text: "要素が見つからないとき、`document.querySelectorAll` は 0 件を返すだけです。例外にならないので、コンソールにも何も出ません。イベントの処理が登録されず、ボタンを押しても何も起きない、という見え方になります。",
         },
         {
           type: "p",

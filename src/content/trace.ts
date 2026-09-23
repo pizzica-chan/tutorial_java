@@ -192,7 +192,7 @@ DEBUG o.s.jdbc.core.JdbcTemplate : Executing prepared SQL statement [SELECT id, 
         },
         {
           type: "p",
-          text: "MyBatis の `Preparing` / `Parameters` の2行組と違い、JdbcTemplate の SQL ログには、バインドした値そのものは出ません。`?` のままです。テーブル名 `t_request` で検索すると、この SQL を書いた Java クラスに直接ヒットします。",
+          text: "MyBatis の `Preparing` / `Parameters` の 2 行組と違い、JdbcTemplate の SQL ログには、バインドした値そのものは出ません。`?` のままです。テーブル名 `t_request` で検索すると、この SQL を書いた Java クラスに直接ヒットします。",
         },
         {
           type: "code",
@@ -213,13 +213,13 @@ public class RequestJdbcRepository {
         },
         {
           type: "p",
-          text: "MyBatis は別の XML、JPA はメソッド名や JPQL からの推測が必要でしたが、JdbcTemplate は Java のソースに SQL の文字列がそのままあるので、見つけたあとの1手が要りません。",
+          text: "MyBatis は別の XML、JPA はメソッド名や JPQL からの推測が必要でしたが、JdbcTemplate は Java のソースに SQL の文字列がそのままあるので、見つけたあとの 1 手が要りません。",
         },
         {
           type: "callout",
           kind: "trap",
           title: "バインドした値は、別のログに出る",
-          text: "SQL 文の `?` に入った実際の値は、`org.springframework.jdbc.core.StatementCreatorUtils` という別のクラスが TRACE レベルで出します（`Setting SQL statement parameter value: ... parameter value [7] ...` のような1行）。DEBUG のままだと値は分からないので、疑わしい値を確認したいときは、このロガーだけ TRACE まで上げましょう。",
+          text: "SQL 文の `?` に入った実際の値は、`org.springframework.jdbc.core.StatementCreatorUtils` という別のクラスが TRACE レベルで出します（`Setting SQL statement parameter value: ... parameter value [7] ...` のような 1 行）。DEBUG のままだと値は分からないので、疑わしい値を確認したいときは、このロガーだけ TRACE まで上げましょう。",
         },
         { type: "quiz", id: "trace-jdbc" },
       ],
@@ -231,7 +231,7 @@ public class RequestJdbcRepository {
       blocks: [
         {
           type: "p",
-          text: "ここまでの探し方は、検索すると1件だけヒットする前提でした。実際には、探しても見つからない、逆に何十件もヒットして絞れない、ということがあります。",
+          text: "ここまでの探し方は、検索すると 1 件だけヒットする前提でした。実際には、探しても見つからない、逆に何十件もヒットして絞れない、ということがあります。",
         },
         {
           type: "h2",
@@ -323,7 +323,7 @@ public class RequestJdbcRepository {
       blocks: [
         {
           type: "p",
-          text: "ここまで「ソースの読み方」と「SQL からソースを探す」で見てきた読み方を、申請一覧を開く1つの操作を通してまとめて確認しましょう。下のタブの区間（Browser → Filter → Controller → Service → MyBatis → MySQL → Thymeleaf → HTTP 応答）ごとに追います。障害調査は、この一本の線のどこで期待と違うかを特定する作業です。JSON を返す API なら Thymeleaf の区間が無く、`Content-Type` が `application/json` の応答で終わります。",
+          text: "ここまで「ソースの読み方」と「SQL からソースを探す」で見てきた読み方を、申請一覧を開く 1 つの操作を通してまとめて確認しましょう。下のタブの区間（Browser → Filter → Controller → Service → MyBatis → MySQL → Thymeleaf → HTTP 応答）ごとに追います。障害調査は、この一本の線のどこで期待と違うかを特定する作業です。JSON を返す API なら Thymeleaf の区間が無く、`Content-Type` が `application/json` の応答で終わります。",
         },
         { type: "widget", name: "flow" },
       ],
