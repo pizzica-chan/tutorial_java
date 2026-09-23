@@ -19,6 +19,8 @@ docker compose up --build
 
 止めるときは `docker compose down` です。DB の中身を消すときは `docker compose down -v` です。
 
+`schema.sql` は `CREATE TABLE IF NOT EXISTS` なので、テーブル定義を変えても、すでにある DB には反映されません。定義を変えたあとも `docker compose down -v` で作り直してください。たとえば `t_request` の外部キー制約を外した変更は、作り直すまで反映されません（理由は `NOTES.md` の「申請履歴の検索が遅いシナリオ」の項）。
+
 ## 起動（JDK 17 と Maven）
 
 MySQL だけ Docker で上げ、アプリは IDE や Maven から起動できます。デバッガを付けるとき向けです。

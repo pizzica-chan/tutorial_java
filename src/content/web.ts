@@ -821,7 +821,7 @@ public String showCart(HttpSession session, Model model) {
     {
       id: "api-json",
       title: "Web API から JSON を受け取る",
-      minutes: 6,
+      minutes: 8,
       blocks: [
         {
           type: "p",
@@ -900,6 +900,44 @@ public String showCart(HttpSession session, Model model) {
         {
           type: "p",
           text: "Web API は画面専用ではありません。同じデータを、ブラウザの画面、モバイルアプリ、ほかのサーバなどから利用できます。",
+        },
+        {
+          type: "h2",
+          text: "データを送るときは CSRF トークンも送る",
+        },
+        {
+          type: "p",
+          text: "ログイン中のセッション（Cookie）で呼ぶ Web API では、登録や更新の POST に CSRF トークンを求めるアプリがあります。申請くんもその 1 つで、トークンの無い POST は 403 になります。",
+        },
+        {
+          type: "p",
+          text: "申請くんでは、申請詳細などフォームのある画面の hidden（`_csrf`）にトークンが入っています。JavaScript からはそれを読み、`X-CSRF-TOKEN` ヘッダに付けて送ります。",
+        },
+        {
+          type: "code",
+          title: "新規申請を Web API で登録する（申請くん・例）",
+          lang: "javascript",
+          highlightLines: [1, 7],
+          code: `const token = document.querySelector("input[name='_csrf']").value;
+
+fetch("/shinsei/api/requests", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "X-CSRF-TOKEN": token,
+  },
+  body: JSON.stringify({ title: "休暇申請", approverId: 3 }),
+})
+  .then((res) => {
+    if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+    return res.json();
+  })
+  .then((data) => console.log(data))
+  .catch((error) => console.error(error));`,
+        },
+        {
+          type: "p",
+          text: "トークンの置き場所（hidden か `<meta>` か）とヘッダ名は、アプリによって違います。POST が 403 になったら、Network タブでこのヘッダが付いているかを確認しましょう。",
         },
         { type: "quiz", id: "web-api-json" },
       ],
