@@ -937,6 +937,10 @@ fetch("/shinsei/api/requests", {
         },
         {
           type: "p",
+          text: "フォームの無い画面で動かすと、`document.querySelector` が `null` を返し、1 行目で `TypeError` になります。この場合、POST は送られません。",
+        },
+        {
+          type: "p",
           text: "トークンの置き場所（hidden か `<meta>` か）とヘッダ名は、アプリによって違います。POST が 403 になったら、Network タブでこのヘッダが付いているかを確認しましょう。",
         },
         { type: "quiz", id: "web-api-json" },
