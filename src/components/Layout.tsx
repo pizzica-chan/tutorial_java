@@ -4,6 +4,7 @@ import { pageDescription, pageTitle, tracks } from "../data/curriculum";
 import { SiteSearch } from "./SiteSearch";
 import { Icon } from "./Icon";
 import { LessonTitle } from "./LessonTitle";
+import { TopbarSlotContext } from "./TopbarSlot";
 
 function focusableIn(root: HTMLElement) {
   return [...root.querySelectorAll<HTMLElement>("a[href], button:not([disabled]), input, select, textarea")].filter(
@@ -22,6 +23,7 @@ export function Layout() {
   );
   const navRef = useRef<HTMLElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const [topbarSlot, setTopbarSlot] = useState<HTMLDivElement | null>(null);
   const mobileDialogOpen = isMobile && open;
 
   useEffect(() => {
@@ -250,8 +252,11 @@ export function Layout() {
             目次
           </button>
           <SiteSearch />
+          <div className="topbar-slot" ref={setTopbarSlot} />
         </header>
-        <Outlet />
+        <TopbarSlotContext.Provider value={topbarSlot}>
+          <Outlet />
+        </TopbarSlotContext.Provider>
       </main>
     </div>
   );

@@ -770,6 +770,211 @@ h2,
   display: none;
 }
 
+.article-toc-label {
+  margin: 0 0 10px;
+  color: var(--quiet);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.article-toc ul {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-toc a {
+  display: block;
+  padding: 5px 0 5px 14px;
+  border-left: 2px solid transparent;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.article-toc .toc-level-3 a {
+  padding-left: 26px;
+  font-size: 12.5px;
+}
+
+.article-toc a:hover {
+  color: var(--text);
+}
+
+.article-toc a.active {
+  border-left-color: var(--amber);
+  color: var(--amber);
+  font-weight: 700;
+}
+
+.glossary-index ul {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.glossary-index a {
+  display: block;
+  padding: 3px 8px;
+  border: 1px solid var(--line);
+  border-left-width: 1px;
+  border-radius: 4px;
+  font-size: 12.5px;
+}
+
+.glossary-index a:hover {
+  border-color: var(--amber);
+}
+
+/* 狭い画面で右側の目次を開くボタン。トップバーの右端に Layout が置き場を用意する */
+.topbar-slot {
+  display: contents;
+}
+
+.toc-menu {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .toc-menu {
+    display: block;
+  }
+
+  .toc-toggle {
+    width: 44px;
+    height: 44px;
+    padding: 0;
+  }
+
+  .toc-panel:not([hidden]) {
+    display: block;
+    position: absolute;
+    z-index: 30;
+    top: calc(100% + 6px);
+    right: 18px;
+    width: min(340px, calc(100vw - 36px));
+    max-height: min(70vh, 560px);
+    overflow: auto;
+    padding: 16px 16px 12px;
+    border: 1px solid var(--line-strong);
+    border-radius: 14px;
+    background: var(--panel);
+    box-shadow: 0 24px 48px rgba(34, 52, 95, 0.22);
+  }
+
+  .toc-panel .article-toc-label {
+    color: var(--paper);
+    font-size: 12px;
+  }
+
+  .toc-panel.glossary-index a {
+    padding: 5px 10px;
+  }
+
+  /* 見出しを縦の線と丸でつなぎ、いま読んでいる見出しより前を塗って読み進み具合を出す */
+  .toc-panel:not(.glossary-index) ul {
+    gap: 0;
+  }
+
+  .toc-panel:not(.glossary-index) li {
+    position: relative;
+  }
+
+  .toc-panel:not(.glossary-index) li::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 9px;
+    width: 2px;
+    background: var(--line-strong);
+  }
+
+  .toc-panel:not(.glossary-index) li:first-child::before {
+    top: 50%;
+  }
+
+  .toc-panel:not(.glossary-index) li:last-child::before {
+    bottom: 50%;
+  }
+
+  .toc-panel:not(.glossary-index) li:has(~ li a.active)::before {
+    background: var(--amber);
+  }
+
+  .toc-panel:not(.glossary-index) li:has(a.active)::before {
+    background: linear-gradient(var(--amber) 50%, var(--line-strong) 50%);
+  }
+
+  .toc-panel:not(.glossary-index) li:first-child:has(a.active)::before {
+    background: var(--line-strong);
+  }
+
+  .toc-panel:not(.glossary-index) a {
+    position: relative;
+    padding: 9px 8px 9px 34px;
+    border-left: 0;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .toc-panel:not(.glossary-index) a::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 4px;
+    width: 12px;
+    height: 12px;
+    margin-top: -6px;
+    border: 2px solid var(--line-strong);
+    border-radius: 50%;
+    background: var(--panel);
+  }
+
+  .toc-panel:not(.glossary-index) .toc-level-3 a {
+    padding: 6px 8px 6px 46px;
+    font-size: 13px;
+  }
+
+  .toc-panel:not(.glossary-index) .toc-level-3 a::before {
+    left: 6px;
+    width: 8px;
+    height: 8px;
+    margin-top: -4px;
+  }
+
+  .toc-panel:not(.glossary-index) li:has(~ li a.active) a {
+    color: var(--paper-dim);
+  }
+
+  .toc-panel:not(.glossary-index) li:has(~ li a.active) a::before {
+    border-color: var(--amber);
+    background: var(--amber);
+  }
+
+  .toc-panel:not(.glossary-index) a.active {
+    color: var(--amber);
+    font-weight: 700;
+  }
+
+  .toc-panel:not(.glossary-index) a.active::before {
+    border-color: var(--amber);
+    box-shadow: 0 0 0 4px rgba(57, 92, 163, 0.18);
+  }
+}
+
+@media (max-width: 480px) {
+  .toc-panel:not([hidden]) {
+    right: 12px;
+    width: calc(100vw - 24px);
+  }
+}
+
 @media (min-width: 1440px) {
   .lesson-layout {
     display: grid;
@@ -793,67 +998,6 @@ h2,
     overflow: auto;
     padding: 18px 4px 18px 18px;
     border-left: 1px solid var(--line);
-  }
-
-  .article-toc-label {
-    margin: 0 0 10px;
-    color: var(--quiet);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-  }
-
-  .article-toc ul {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .article-toc a {
-    display: block;
-    padding: 5px 0 5px 14px;
-    border-left: 2px solid transparent;
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.5;
-    transition: color 0.15s ease, border-color 0.15s ease;
-  }
-
-  .article-toc .toc-level-3 a {
-    padding-left: 26px;
-    font-size: 12.5px;
-  }
-
-  .article-toc a:hover {
-    color: var(--text);
-  }
-
-  .article-toc a.active {
-    border-left-color: var(--amber);
-    color: var(--amber);
-    font-weight: 700;
-  }
-
-  .glossary-index ul {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
-
-  .glossary-index a {
-    display: block;
-    padding: 3px 8px;
-    border: 1px solid var(--line);
-    border-left-width: 1px;
-    border-radius: 4px;
-    font-size: 12.5px;
-  }
-
-  .glossary-index a:hover {
-    border-color: var(--amber);
   }
 }
 

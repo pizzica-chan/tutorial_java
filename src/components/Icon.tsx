@@ -38,7 +38,8 @@ export type IconName =
   | "image"
   | "lock"
   | "key"
-  | "code";
+  | "code"
+  | "list";
 
 const paths: Record<IconName, ReactNode> = {
   tip: (
@@ -253,6 +254,16 @@ const paths: Record<IconName, ReactNode> = {
       <path d="M7 7 2 12l5 5" />
       <path d="m17 7 5 5-5 5" />
       <path d="M14.5 4 9.5 20" />
+    </>
+  ),
+  list: (
+    <>
+      <path d="M9 6h11" />
+      <path d="M9 12h11" />
+      <path d="M9 18h11" />
+      <path d="M4 6h.01" />
+      <path d="M4 12h.01" />
+      <path d="M4 18h.01" />
     </>
   ),
 };

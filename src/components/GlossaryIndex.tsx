@@ -1,11 +1,11 @@
 import type { GlossaryGroup } from "../data/terms";
+import { PageToc } from "./PageToc";
 
 export function GlossaryIndex({ groups }: { groups: GlossaryGroup[] }) {
   if (groups.length === 0) return null;
 
   return (
-    <nav className="article-toc glossary-index" aria-label="用語集の索引">
-      <p className="article-toc-label">索引</p>
+    <PageToc label="索引" ariaLabel="用語集の索引" className="glossary-index">
       <ul>
         {groups.map((group) => (
           <li key={group.key}>
@@ -22,6 +22,6 @@ export function GlossaryIndex({ groups }: { groups: GlossaryGroup[] }) {
           </li>
         ))}
       </ul>
-    </nav>
+    </PageToc>
   );
 }
