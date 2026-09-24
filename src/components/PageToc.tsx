@@ -3,10 +3,11 @@ import { createPortal } from "react-dom";
 import { Icon } from "./Icon";
 import { useTopbarSlot } from "./TopbarSlot";
 
-const NARROW_QUERY = "(max-width: 900px)";
+// 右側の目次を本文の横に出さない幅。CSS の .toc-menu と合わせる
+const NARROW_QUERY = "(max-width: 1439px)";
 
 /**
- * 右側の目次。広い画面では本文の横に置き、狭い画面ではトップバー右端のボタンで開閉する。
+ * 右側の目次。1440px 以上では本文の横に置き、それより狭い画面ではトップバー右端のボタンで開閉する。
  * 同じリストを2か所に描くので、リンクの動きは children 側に持たせる。
  */
 export function PageToc({

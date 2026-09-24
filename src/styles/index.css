@@ -831,7 +831,7 @@ h2,
   border-color: var(--amber);
 }
 
-/* 狭い画面で右側の目次を開くボタン。トップバーの右端に Layout が置き場を用意する */
+/* 右側の目次が出ない幅（1439px 以下）で、目次を開くボタン。トップバーの右端に Layout が置き場を用意する */
 .topbar-slot {
   display: contents;
 }
@@ -840,7 +840,7 @@ h2,
   display: none;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1439px) {
   .toc-menu {
     display: block;
   }
@@ -856,8 +856,8 @@ h2,
     position: absolute;
     z-index: 30;
     top: calc(100% + 6px);
-    right: 18px;
-    width: min(340px, calc(100vw - 36px));
+    right: 32px;
+    width: 340px;
     max-height: min(70vh, 560px);
     overflow: auto;
     padding: 16px 16px 12px;
@@ -965,6 +965,13 @@ h2,
   .toc-panel:not(.glossary-index) a.active::before {
     border-color: var(--amber);
     box-shadow: 0 0 0 4px rgba(57, 92, 163, 0.18);
+  }
+}
+
+@media (max-width: 900px) {
+  .toc-panel:not([hidden]) {
+    right: 18px;
+    width: min(340px, calc(100vw - 36px));
   }
 }
 
