@@ -12,11 +12,12 @@ function topbarBottom() {
 }
 
 /**
- * 見出しを、トップバーの下端から少し空けた位置までスクロールする。
+ * 見出しなどを、トップバーの下端から少し空けた位置までスクロールする。
  * 画像は大きさを決めずに遅延読み込みしているので、スクロールの途中や後で上の高さが変わり、止まる位置がずれることがある。
  * Chrome はスクロール位置を自動で補正するが、補正しないブラウザもあるので、止まるたびに位置を確かめて合わせ直す。
+ * 戻り値を呼ぶと合わせ直しをやめる。ページを移るときに呼ぶ。
  */
-export function scrollToHeading(target: HTMLElement) {
+export function scrollBelowTopbar(target: HTMLElement, { smooth = true }: { smooth?: boolean } = {}) {
   cancelCurrent?.();
 
   const offset = () => topbarBottom() + GAP_BELOW_TOPBAR;
@@ -24,6 +25,10 @@ export function scrollToHeading(target: HTMLElement) {
 
   let settleTimer = 0;
   const realign = () => {
+    if (!target.isConnected) {
+      stop();
+      return;
+    }
     if (Math.abs(target.getBoundingClientRect().top - offset()) > 1) {
       window.scrollTo({ top: destination(), behavior: "auto" });
     }
@@ -49,5 +54,6 @@ export function scrollToHeading(target: HTMLElement) {
   resizeObserver.observe(document.body);
   cancelCurrent = stop;
 
-  window.scrollTo({ top: destination(), behavior: "smooth" });
+  window.scrollTo({ top: destination(), behavior: smooth ? "smooth" : "auto" });
+  return stop;
 }

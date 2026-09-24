@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { HeadingEntry } from "../lib/headings";
-import { scrollToHeading, USER_SCROLL_EVENTS } from "../lib/scrollToHeading";
+import { scrollBelowTopbar, USER_SCROLL_EVENTS } from "../lib/scrollBelowTopbar";
 import { PageToc } from "./PageToc";
 import { TextWithTerms } from "./TextWithTerms";
 
@@ -65,7 +65,7 @@ export function ArticleToc({ headings }: { headings: HeadingEntry[] }) {
                 if (!target) return;
                 pickedRef.current = true;
                 setActiveId(heading.id);
-                scrollToHeading(target);
+                scrollBelowTopbar(target);
                 history.replaceState(null, "", `#${heading.id}`);
               }}
             >

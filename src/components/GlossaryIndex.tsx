@@ -1,5 +1,5 @@
 import type { GlossaryGroup } from "../data/terms";
-import { scrollToHeading } from "../lib/scrollToHeading";
+import { scrollBelowTopbar } from "../lib/scrollBelowTopbar";
 import { PageToc } from "./PageToc";
 
 export function GlossaryIndex({ groups }: { groups: GlossaryGroup[] }) {
@@ -15,7 +15,7 @@ export function GlossaryIndex({ groups }: { groups: GlossaryGroup[] }) {
               onClick={(event) => {
                 event.preventDefault();
                 const target = document.getElementById(`idx-${group.key}`);
-                if (target) scrollToHeading(target);
+                if (target) scrollBelowTopbar(target);
                 history.replaceState(null, "", `#idx-${group.key}`);
               }}
             >

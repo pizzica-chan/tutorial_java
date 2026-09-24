@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { glossaryAnchor, glossaryGroups } from "../data/terms";
 import { TextWithTerms } from "../components/TextWithTerms";
 import { GlossaryIndex } from "../components/GlossaryIndex";
+import { scrollBelowTopbar } from "../lib/scrollBelowTopbar";
 
 export function GlossaryPage() {
   const location = useLocation();
@@ -13,7 +14,7 @@ export function GlossaryPage() {
     const item = document.getElementById(id);
     if (!item) return;
     item.focus({ preventScroll: true });
-    item.scrollIntoView({ block: "start" });
+    return scrollBelowTopbar(item, { smooth: false });
   }, [location.hash]);
 
   return (

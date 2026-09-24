@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import { scrollBelowTopbar } from "../lib/scrollBelowTopbar";
 
 const HIGHLIGHT_MS = 2400;
 
@@ -19,11 +20,12 @@ export function useHashTarget() {
 
     // フォーカスを受け取れる要素なら、読み上げの位置も合わせる
     if (target.hasAttribute("tabindex")) target.focus({ preventScroll: true });
-    target.scrollIntoView({ block: "start" });
+    const stopScroll = scrollBelowTopbar(target, { smooth: false });
     target.classList.add("is-hash-target");
     const timer = window.setTimeout(() => target.classList.remove("is-hash-target"), HIGHLIGHT_MS);
 
     return () => {
+      stopScroll();
       window.clearTimeout(timer);
       target.classList.remove("is-hash-target");
     };
