@@ -1,4 +1,5 @@
 import type { GlossaryGroup } from "../data/terms";
+import { scrollToHeading } from "../lib/scrollToHeading";
 import { PageToc } from "./PageToc";
 
 export function GlossaryIndex({ groups }: { groups: GlossaryGroup[] }) {
@@ -13,7 +14,8 @@ export function GlossaryIndex({ groups }: { groups: GlossaryGroup[] }) {
               href={`#idx-${group.key}`}
               onClick={(event) => {
                 event.preventDefault();
-                document.getElementById(`idx-${group.key}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                const target = document.getElementById(`idx-${group.key}`);
+                if (target) scrollToHeading(target);
                 history.replaceState(null, "", `#idx-${group.key}`);
               }}
             >

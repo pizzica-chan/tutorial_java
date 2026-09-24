@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { HeadingEntry } from "../lib/headings";
+import { scrollToHeading, USER_SCROLL_EVENTS } from "../lib/scrollToHeading";
 import { PageToc } from "./PageToc";
 import { TextWithTerms } from "./TextWithTerms";
 
 export function ArticleToc({ headings }: { headings: HeadingEntry[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
+  // 目次から選んだ見出しは、利用者が自分でスクロールし始めるまで選んだまま残す
+  const pickedRef = useRef(false);
 
   useEffect(() => {
     if (headings.length === 0) return;
@@ -18,6 +21,7 @@ export function ArticleToc({ headings }: { headings: HeadingEntry[] }) {
     let frame = 0;
     const update = () => {
       frame = 0;
+      if (pickedRef.current) return;
       const line = window.innerHeight * 0.3;
       const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
       let current: string | null = null;
@@ -30,13 +34,18 @@ export function ArticleToc({ headings }: { headings: HeadingEntry[] }) {
     const schedule = () => {
       if (!frame) frame = requestAnimationFrame(update);
     };
+    const release = () => {
+      pickedRef.current = false;
+    };
     update();
     window.addEventListener("scroll", schedule, { passive: true });
     window.addEventListener("resize", schedule);
+    USER_SCROLL_EVENTS.forEach((type) => window.addEventListener(type, release, { passive: true }));
     return () => {
       cancelAnimationFrame(frame);
       window.removeEventListener("scroll", schedule);
       window.removeEventListener("resize", schedule);
+      USER_SCROLL_EVENTS.forEach((type) => window.removeEventListener(type, release));
     };
   }, [headings]);
 
@@ -52,7 +61,11 @@ export function ArticleToc({ headings }: { headings: HeadingEntry[] }) {
               className={activeId === heading.id ? "active" : ""}
               onClick={(event) => {
                 event.preventDefault();
-                document.getElementById(heading.id)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                const target = document.getElementById(heading.id);
+                if (!target) return;
+                pickedRef.current = true;
+                setActiveId(heading.id);
+                scrollToHeading(target);
                 history.replaceState(null, "", `#${heading.id}`);
               }}
             >
