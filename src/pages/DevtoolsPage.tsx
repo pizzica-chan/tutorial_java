@@ -12,12 +12,16 @@ function devtoolsHeadings(anchors: ReturnType<typeof devtoolsAnchors>): HeadingE
     result.push({ id: anchors[sectionIndex].sectionId, text: section.title, level: 2 });
     section.groups.forEach((group, groupIndex) => {
       result.push({ id: anchors[sectionIndex].groupIds[groupIndex], text: group.title, level: 3 });
+      group.rows.forEach((row, rowIndex) => {
+        const text = "symptom" in row ? row.symptom : row.name;
+        result.push({ id: anchors[sectionIndex].rowIds[groupIndex][rowIndex], text, level: 4 });
+      });
     });
   });
   return result;
 }
 
-function LookupTable({ rows }: { rows: DevtoolsLookupRow[] }) {
+function LookupTable({ rows, rowIds }: { rows: DevtoolsLookupRow[]; rowIds: string[] }) {
   return (
     <div className="table-wrap">
       <table className="devtools-table">
@@ -30,7 +34,7 @@ function LookupTable({ rows }: { rows: DevtoolsLookupRow[] }) {
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={index}>
+            <tr key={index} id={rowIds[index]}>
               <td data-label="症状">
                 <TextWithTerms text={row.symptom} />
               </td>
@@ -63,7 +67,7 @@ function LookupTable({ rows }: { rows: DevtoolsLookupRow[] }) {
   );
 }
 
-function TipTable({ rows }: { rows: DevtoolsTipRow[] }) {
+function TipTable({ rows, rowIds }: { rows: DevtoolsTipRow[]; rowIds: string[] }) {
   return (
     <div className="table-wrap">
       <table className="devtools-table">
@@ -76,7 +80,7 @@ function TipTable({ rows }: { rows: DevtoolsTipRow[] }) {
         </thead>
         <tbody>
           {rows.map((row, index) => (
-            <tr key={index}>
+            <tr key={index} id={rowIds[index]}>
               <td data-label="機能">
                 <TextWithTerms text={row.name} />
               </td>
@@ -131,7 +135,7 @@ export function DevtoolsPage() {
                           <TextWithTerms text={group.note} />
                         </p>
                       ) : null}
-                      <LookupTable rows={group.rows} />
+                      <LookupTable rows={group.rows} rowIds={anchors[sectionIndex].rowIds[groupIndex]} />
                     </Fragment>
                   ))
                 : section.groups.map((group, groupIndex) => (
@@ -142,7 +146,7 @@ export function DevtoolsPage() {
                           <TextWithTerms text={group.note} />
                         </p>
                       ) : null}
-                      <TipTable rows={group.rows} />
+                      <TipTable rows={group.rows} rowIds={anchors[sectionIndex].rowIds[groupIndex]} />
                     </Fragment>
                   ))}
             </Fragment>

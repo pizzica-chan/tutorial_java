@@ -1,6 +1,6 @@
 import type { Block } from "../types";
 
-export type HeadingEntry = { id: string; text: string; level: 2 | 3 };
+export type HeadingEntry = { id: string; text: string; level: 2 | 3 | 4 };
 
 /** 記事内目次用に、h2/h3 ブロックへ通し番号の id を振る */
 export function extractHeadings(blocks: Block[]): HeadingEntry[] {
