@@ -12,7 +12,7 @@ export const readingTrack: Track = {
   lessons: [
     {
       id: "where-start",
-      title: "手がかりで読み方を選ぶ",
+      title: "この章の読み方",
       minutes: 5,
       blocks: [
         {
@@ -25,7 +25,7 @@ export const readingTrack: Track = {
           rows: [
             [
               "特定の画面や API の処理の流れを追いたい。URL やパスが分かる",
-              "処理の入口から読む",
+              "URL から処理の入口を探す",
             ],
             [
               "文言やログ名の出どころを知りたい。入口の場所はまだ分からない",
@@ -53,13 +53,13 @@ export const readingTrack: Track = {
           type: "callout",
           kind: "note",
           title: "入口の手順の中でも検索する",
-          text: "「処理の入口から読む」でも、ソース検索は使います。違うのは手がかりです。URL が分かっていればパスで入口を探しましょう。文言しかなければ「キーワードで探す」を使いましょう。",
+          text: "「URL から処理の入口を探す」でも、ソース検索は使います。違うのは手がかりです。URL が分かっていればパスで入口を探しましょう。文言しかなければ「キーワードで探す」を使いましょう。",
         },
       ],
     },
     {
       id: "dont-read-all",
-      title: "処理の入口から読む",
+      title: "URL から処理の入口を探す",
       minutes: 6,
       blocks: [
         {
@@ -336,7 +336,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "URL が分かっているときは、「処理の入口から読む」の方が早く見つかります。",
+          text: "URL が分かっているときは、「URL から処理の入口を探す」の方が早く見つかります。",
         },
         {
           type: "p",

@@ -9,7 +9,7 @@ export const requestListEntryPoint = {
   javaMethod: "list",
 };
 
-/** 教材「処理の入口から読む」用。URL マッピングと Service 呼び出しに注釈付き */
+/** 教材「URL から処理の入口を探す」用。URL マッピングと Service 呼び出しに注釈付き */
 export const requestListEntryPointReadingSnippet = `// 申請一覧: ブラウザは GET /shinsei/requests を送る（/shinsei は context-path）
 @Controller
 @RequestMapping("/requests")
