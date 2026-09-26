@@ -980,7 +980,7 @@ h2,
   }
 }
 
-/* スマホ幅でだけ、症状や機能名の1行も目次に出す */
+/* スマホ幅でだけ、症状や機能名の1行も目次に出す。ArticleToc の ROWS_QUERY と合わせる */
 @media (max-width: 640px) {
   .toc-panel:not(.glossary-index) .toc-level-4 {
     display: block;
