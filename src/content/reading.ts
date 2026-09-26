@@ -60,15 +60,19 @@ export const readingTrack: Track = {
     {
       id: "dont-read-all",
       title: "URL から処理の入口を探す",
-      minutes: 6,
+      minutes: 10,
       blocks: [
         {
           type: "p",
-          text: "リポジトリを上から読む必要はありません。操作が特定できているときは、画面と URL から処理の入口を探しましょう。",
+          text: "リポジトリを上から読む必要はありません。操作が特定できているときは、画面の URL から処理の入口を探しましょう。",
         },
         {
           type: "p",
           text: "処理の入口とは、サーバ側でその操作の処理が始まる場所です。画面なら URL と HTTP メソッドに対応する Controller の Java メソッドが多いです。",
+        },
+        {
+          type: "p",
+          text: "Spring では、どの URL をどの Java メソッドが受けるか（マッピング）を、アノテーションで書きます。このレッスンでは、URL からそのアノテーションを探して、処理の入口を決めます。",
         },
         {
           type: "h2",
@@ -77,19 +81,19 @@ export const readingTrack: Track = {
         {
           type: "ol",
           items: [
-            "対象の URL を確認する（画面ならアドレスバー、Web API なら Network タブの Fetch/XHR）",
-            "パス文字列（requests など）でソースを検索する",
-            "ヒットした Controller で、HTTP メソッドとパスが対象の操作に合うか確認する",
-            "一致した Java メソッドを、処理の入口として特定する",
+            "対象の URL と HTTP メソッドを確認する（画面を開いたときはアドレスバー、ボタンの送信や Web API は Network タブ）",
+            "URL の先頭のコンテキストパス（`/shinsei`）を除き、残りの特徴的な部分（`requests` など）でソースを検索する",
+            "ヒットした Controller で、クラスのパスと Java メソッドのパスをつなげ、URL と HTTP メソッドに合うか確認する",
+            "一致した Java メソッドを、処理の入口とする",
           ],
         },
         {
           type: "h2",
-          text: "申請くんの例",
+          text: "申請くんの例：一覧",
         },
         {
           type: "p",
-          text: "申請一覧を開くと `GET /shinsei/requests` が飛びます。処理の入口は `RequestController.list` です。",
+          text: "申請一覧を開くと、ブラウザは `GET /shinsei/requests` を送ります。",
         },
         {
           type: "figure",
@@ -99,14 +103,9 @@ export const readingTrack: Track = {
           caption: "申請一覧のアドレスバーは `/shinsei/requests` です。この URL を手がかりにします。",
         },
         {
-          type: "table",
-          headers: ["画面", "URL", "処理の入口"],
-          rows: [
-            ["申請一覧", "`GET /shinsei/requests`", "`RequestController.list`"],
-            ["承認ボタン", "`POST /shinsei/requests/12/approve`", "`RequestController.approve`"],
-          ],
+          type: "p",
+          text: "先頭の `/shinsei` はコンテキストパスです。コンテキストパスは省いて、`requests` で検索しましょう。",
         },
-        { type: "diagram", name: "read-entry", caption: "URL から Controller へ。ここが処理の入口です。" },
         {
           type: "code",
           title: "RequestController.java（抜粋）",
@@ -116,18 +115,137 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "ここでは入口の特定までです。次の項目からは、入口からどこを見るかを順に押さえます。",
+          text: "アドレスバーの `/shinsei/requests` から `/shinsei` を除くと、`/requests` が残ります。これはクラスの `@RequestMapping(\"/requests\")` と一致します。Java メソッドの `@GetMapping` にはパスが書かれていないので、クラスのパスがそのまま使われます。HTTP メソッドも GET で合うので、処理の入口は `RequestController.list` です。",
         },
         {
           type: "h2",
-          text: "後回しにするもの",
+          text: "申請くんの例：詳細",
         },
         {
-          type: "ul",
-          items: [
-            "処理の入口が決まるまで、Repository や Mapper から通読しない",
-            "生成コード、ライブラリ本体、圧縮された JS は後回し",
+          type: "p",
+          text: "一覧から申請を 1 件開くと、URL は `/shinsei/requests/12` になります。末尾の `12` は申請の ID です。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-detail.jpg",
+          alt: "申請くんの申請詳細画面（交通費申請）",
+          caption: "申請詳細。アドレスバーは `/shinsei/requests/12` です。",
+        },
+        {
+          type: "code",
+          title: "RequestController.java（詳細・抜粋）",
+          lang: "java",
+          highlightLines: [2, 4, 5],
+          code: `@Controller
+@RequestMapping("/requests")
+public class RequestController {
+  @GetMapping("/{id:[0-9]+}")
+  public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
+    model.addAttribute("requestItem", requestService.findById(id, user.getId()));
+    return "request/detail";
+  }
+}`,
+        },
+        {
+          type: "p",
+          text: "`{id:[0-9]+}` と書くと、URL の `/requests/` に続く部分を、`id` という名前の値として受け取れます。`:[0-9]+` は、受け取る値を数字だけに限る指定です。`/requests/12` の `12` は数字なので、この Java メソッドが受けます。",
+        },
+        { type: "diagram", name: "mapping", caption: "コンテキストパス、クラスのパス、Java メソッドのパスをつなげると、アドレスバーの URL になります。" },
+        {
+          type: "p",
+          text: "処理の入口は `RequestController.detail` です。一覧と同じクラスですが、受ける Java メソッドは別です。",
+        },
+        {
+          type: "p",
+          text: "申請履歴の `/shinsei/requests/history` も、パスの形は `/requests/12` と同じです。ただ、`history` は数字ではないので、`detail` の `{id:[0-9]+}` には当てはまりません。受けるのは `@GetMapping(\"/history\")` の `history` です。",
+        },
+        {
+          type: "h2",
+          text: "検索で Controller が 2 つヒットしたとき",
+        },
+        {
+          type: "p",
+          text: "`requests` で検索すると、`RequestController` のほかに `RequestApiController` もヒットします。API 用のクラスのパス `@RequestMapping(\"/api/requests\")` にも、`requests` が含まれているからです。どちらのクラスにも `list` という Java メソッドがあるので、名前では選べません。パスをつなげて確かめましょう。API 用は `/shinsei/api/requests` になり、アドレスバーの `/shinsei/requests` とは一致しません。",
+        },
+        {
+          type: "code",
+          title: "RequestApiController.java（抜粋）",
+          lang: "java",
+          highlightLines: [1, 2, 4, 5],
+          code: `@RestController
+@RequestMapping("/api/requests")
+public class RequestApiController {
+  @GetMapping
+  public List<RequestResponse> list(@AuthenticationPrincipal LoginUser user) {
+    return requestService.findMine(user.getId()).stream()
+        .map(RequestResponse::from)
+        .toList();
+  }
+}`,
+        },
+        {
+          type: "p",
+          text: "API 用の Controller は、返すものも画面用と違います。`@RestController` の Java メソッドは、戻り値をレスポンスの本文として返します。申請くんでは JSON です。画面のテンプレートは使いません。",
+        },
+        {
+          type: "h2",
+          text: "マッピングのほかの書き方",
+        },
+        {
+          type: "p",
+          text: "ほかのアプリでは、次のような書き方にも出会います。URL をそのまま検索しても見つからないことがあるので、書き方ごとの読み方を押さえておきましょう。表の URL の例は、クラスに `@RequestMapping(\"/requests\")` が付いている場合です。コンテキストパスは省いています。",
+        },
+        {
+          type: "table",
+          headers: ["書き方", "受ける URL の例", "読み方"],
+          rows: [
+            [
+              "`@RequestMapping(value = \"/{id}\", method = RequestMethod.GET)`",
+              "`GET /requests/12`",
+              "`@GetMapping(\"/{id}\")` と同じ。`@GetMapping` が無かった Spring 4.3 より前のコードに多い",
+            ],
+            [
+              "`@RequestMapping(\"/{id}\")`（Java メソッドに付けて、`method` を書かない）",
+              "`GET /requests/12`、`POST /requests/12` など",
+              "HTTP メソッドを限らないので、GET でも POST でも受ける",
+            ],
+            [
+              "`@PutMapping(\"/{id}\")`、`@DeleteMapping(\"/{id}\")`",
+              "`PUT /requests/12`、`DELETE /requests/12`",
+              "更新や削除をする Web API に多い。パスが同じでも、HTTP メソッドで Java メソッドが分かれる",
+            ],
+            [
+              "`@GetMapping(path = \"/{id}\", produces = \"application/json\")`",
+              "`GET /requests/12`",
+              "`path` は `value` と同じ意味。`produces` は返す形式の指定で、パスには関係しない",
+            ],
+            [
+              "`@GetMapping({\"/\", \"/list\"})`",
+              "`GET /requests/`、`GET /requests/list`",
+              "1 つの Java メソッドで、複数のパスを受ける",
+            ],
+            [
+              "`@GetMapping(\"/*\")`",
+              "`GET /requests/list`",
+              "`*` はワイルドカード（どんな値にも当てはまる記号）。当てはまるのは `/` で区切った 1 つ分だけで、`/requests/a/b` は受けない",
+            ],
+            [
+              "`@GetMapping(\"/files/**\")`",
+              "`GET /requests/files/2026/a.pdf`",
+              "`**` もワイルドカード。`/` をまたいで、その下のパスをまとめて受ける",
+            ],
+            [
+              "`@PostMapping(value = \"/{id}\", params = \"action=approve\")`",
+              "`POST /requests/12`（`action=approve` を送ったとき）",
+              "パスが同じでも、リクエストパラメータの値で Java メソッドが分かれる",
+            ],
           ],
+        },
+        { type: "diagram", name: "read-entry", caption: "URL から Controller へ。ここが処理の入口です。" },
+        {
+          type: "p",
+          text: "ここでは入口の特定までです。次の項目からは、入口からどこを見るかを順に押さえます。",
         },
         {
           type: "h2",
@@ -136,8 +254,8 @@ export const readingTrack: Track = {
         {
           type: "ul",
           items: [
-            "同じパスが二つヒットしたら、今の URL と HTTP メソッドに合う方を見る",
             "テストコードがあれば、呼び出し方の例として読む",
+            "Spring 以外のフレームワークでは、URL と処理の対応を設定ファイルに書くことがある（Struts の `struts-config.xml` など）",
           ],
         },
         { type: "quiz", id: "ori-goal" },
@@ -164,95 +282,7 @@ export const readingTrack: Track = {
         },
         {
           type: "p",
-          text: "次の項目「URL マッピング」と「Service から Mapper へ」では、この入口から、URL マッピング → Service の分岐という具体的な流れを、申請くんの例で辿ります。SQL と応答は、次章「SQL からソースを探す」で扱います。",
-        },
-      ],
-    },
-    {
-      id: "mapping",
-      title: "URL マッピング",
-      minutes: 8,
-      blocks: [
-        {
-          type: "p",
-          text: "Spring では、クラスの `@RequestMapping` に書いたパス（プレフィックス）と、メソッドの `@GetMapping` などに書いたパスをつなげると、URL のパス部分になります。",
-        },
-        {
-          type: "code",
-          title: "合成される URL",
-          lang: "java",
-          code: `@Controller
-@RequestMapping("/requests")
-public class RequestController {
-  @GetMapping
-  public String list(...) { ... }              // GET /requests
-
-  @GetMapping("/{id:[0-9]+}")
-  public String detail(...) { ... }            // GET /requests/12
-
-  @PostMapping("/{id}/approve")
-  public String approve(...) { ... }           // POST /requests/12/approve
-
-  @GetMapping("/history")
-  public String history(...) { ... }           // GET /requests/history
-}`,
-        },
-        { type: "diagram", name: "mapping" },
-        {
-          type: "callout",
-          kind: "tip",
-          title: "コンテキストパス",
-          text: "画面の URL は `/shinsei/requests` でした。先頭の `/shinsei` はコンテキストパスなので、Controller のマッピングは Spring の `@RequestMapping(\"/requests\")` だけの場合があります。入口を見直すときは、`requests` のように特徴的な部分で検索しましょう。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "`{id}` と固定のパスが重なるとき",
-          text: "`GET /requests/history` はパスの形だけ見ると `{id}` に当てはまりそうですが、`history` という固定のパスのマッピングが別にあるので、そちらに一致します。申請くんはさらに `{id:[0-9]+}` のように、`id` を数字だけに制限しています。こう書いておくと、`/requests/abc` のような URL では `detail` に一致しなくなります。",
-        },
-        {
-          type: "figure",
-          kind: "screen",
-          src: "/images/screen-detail.jpg",
-          alt: "申請くんの申請詳細画面（交通費申請）",
-          caption: "申請詳細。アドレスバーは `/shinsei/requests/12` です。`list` ではなく、パスに ID が付く `detail` です。",
-        },
-        {
-          type: "p",
-          text: "Java のメソッド名が `list` でも、今見ている画面の入口だとは限りません。HTTP メソッド（GET など）とパスの両方を確認しましょう。",
-        },
-        {
-          type: "p",
-          text: "JSON を返す Web API も、クラスのプレフィックスとメソッドのパスを足す点は同じです。出口がテンプレートではなく JSON なだけです。",
-        },
-        {
-          type: "code",
-          title: "RestController",
-          lang: "java",
-          code: `@RestController
-@RequestMapping("/api/requests")
-public class RequestApiController {
-  @GetMapping
-  public List<RequestResponse> list(...) { ... }     // GET /api/requests → JSON の配列
-
-  @GetMapping("/{id}")
-  public RequestResponse detail(...) { ... }         // GET /api/requests/12 → JSON 1件
-
-  @PostMapping("/{id}/approve")
-  public void approve(...) { ... }                   // POST /api/requests/12/approve
-}`,
-        },
-        {
-          type: "p",
-          text: "ここまでは Spring の例でした。最後に、URL マッピングの注意点をまとめます。",
-        },
-        {
-          type: "ul",
-          items: [
-            "RestController は JSON を返すことが多い。画面 HTML ではなく、templates は参照しない",
-            "複数の Controller が同じパスを持つと起動時に衝突する",
-            "Struts なら設定 XML や action 属性を見る",
-          ],
+          text: "次の項目「Service から Mapper へ」では、処理の入口の Controller から Service の分岐へ進む流れを、申請くんの例で辿ります。SQL と応答は、次章「SQL からソースを探す」で扱います。",
         },
       ],
     },

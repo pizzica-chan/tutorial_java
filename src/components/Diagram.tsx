@@ -366,12 +366,14 @@ function CrossCut() {
 function Mapping() {
   return (
     <div className="d-formula">
+      <Layer icon="server">/shinsei（コンテキストパス）</Layer>
+      <span className="d-plus">+</span>
       <Layer icon="file">@RequestMapping("/requests")</Layer>
       <span className="d-plus">+</span>
-      <Layer icon="link">{'@GetMapping("/{id}")'}</Layer>
+      <Layer icon="link">{'@GetMapping("/{id:[0-9]+}")'}</Layer>
       <span className="d-plus">=</span>
       <Layer icon="route" accent>
-        GET /requests/12
+        GET /shinsei/requests/12
       </Layer>
     </div>
   );
