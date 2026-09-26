@@ -41,7 +41,7 @@ public class RequestController {
     return "request/list";
   }
 
-  @GetMapping("/{id}")  // ← 処理の入口（詳細）
+  @GetMapping("/{id:[0-9]+}")  // ← 処理の入口（詳細）
   public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
     model.addAttribute("requestItem", requestService.findById(id, user.getId()));
     return "request/detail";
@@ -78,7 +78,7 @@ public class RequestController {
   }
 
   // 処理の入口: GET /shinsei/requests/12
-  @GetMapping("/{id}")
+  @GetMapping("/{id:[0-9]+}")
   public String detail(@PathVariable Long id, Model model, @AuthenticationPrincipal LoginUser user) {
     model.addAttribute("requestItem", requestService.findById(id, user.getId()));
     return "request/detail";
