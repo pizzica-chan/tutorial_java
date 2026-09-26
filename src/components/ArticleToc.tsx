@@ -4,14 +4,27 @@ import { scrollBelowTopbar, USER_SCROLL_EVENTS } from "../lib/scrollBelowTopbar"
 import { PageToc } from "./PageToc";
 import { TextWithTerms } from "./TextWithTerms";
 
+// level 4 の項目を目次に出す幅。CSS の .toc-level-4 と合わせる
+const ROWS_QUERY = "(max-width: 640px)";
+
 export function ArticleToc({ headings }: { headings: HeadingEntry[] }) {
   const [activeId, setActiveId] = useState<string | null>(null);
+  const [rowsShown, setRowsShown] = useState(() => window.matchMedia(ROWS_QUERY).matches);
   // 目次から選んだ見出しは、利用者が自分でスクロールし始めるまで選んだまま残す
   const pickedRef = useRef(false);
 
   useEffect(() => {
+    const query = window.matchMedia(ROWS_QUERY);
+    const onChange = () => setRowsShown(query.matches);
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  }, []);
+
+  useEffect(() => {
     if (headings.length === 0) return;
+    // 隠れている項目を追うと、見えている目次のどれも選ばれなくなる
     const elements = headings
+      .filter((h) => h.level < 4 || rowsShown)
       .map((h) => document.getElementById(h.id))
       .filter((el): el is HTMLElement => el !== null);
     if (elements.length === 0) return;
@@ -47,7 +60,7 @@ export function ArticleToc({ headings }: { headings: HeadingEntry[] }) {
       window.removeEventListener("resize", schedule);
       USER_SCROLL_EVENTS.forEach((type) => window.removeEventListener(type, release));
     };
-  }, [headings]);
+  }, [headings, rowsShown]);
 
   if (headings.length === 0) return null;
 
