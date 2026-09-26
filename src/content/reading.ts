@@ -999,7 +999,7 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
     },
     {
       id: "where-from",
-      title: "値の源流",
+      title: "値がどこで入ったかを辿る",
       minutes: 12,
       blocks: [
         {
