@@ -5,6 +5,7 @@ import { TrackPage } from "./pages/TrackPage";
 import { LessonPage } from "./pages/LessonPage";
 import { LabPage } from "./pages/LabPage";
 import { CheatSheetPage } from "./pages/CheatSheetPage";
+import { DevtoolsPage } from "./pages/DevtoolsPage";
 import { GlossaryPage } from "./pages/GlossaryPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="/tracks/:trackId/:lessonId" element={<LessonPage />} />
         <Route path="/lab" element={<LabPage />} />
         <Route path="/cheatsheet" element={<CheatSheetPage />} />
+        <Route path="/devtools" element={<DevtoolsPage />} />
         <Route path="/glossary" element={<GlossaryPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>

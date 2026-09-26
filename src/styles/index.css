@@ -1242,6 +1242,70 @@ td {
   margin: 4px 0 12px;
 }
 
+.table-wrap th.devtools-tool,
+.table-wrap td.devtools-tool {
+  min-width: 120px;
+  width: 18%;
+}
+
+.devtools-check {
+  margin: 0;
+  padding-left: 1.2em;
+}
+
+.devtools-check li + li {
+  margin-top: 4px;
+}
+
+.devtools-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.devtools-links a::before {
+  content: "→ ";
+}
+
+/* 狭い幅では、文の長い表を1件ずつ縦に並べる */
+@media (max-width: 640px) {
+  .table-wrap .devtools-table thead {
+    display: none;
+  }
+
+  .table-wrap .devtools-table,
+  .table-wrap .devtools-table tbody,
+  .table-wrap .devtools-table tr,
+  .table-wrap .devtools-table td {
+    display: block;
+    width: auto;
+    min-width: 0;
+  }
+
+  .table-wrap .devtools-table tr {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .table-wrap .devtools-table tr:last-child {
+    border-bottom: none;
+  }
+
+  .table-wrap .devtools-table td {
+    padding: 4px 12px;
+    border-bottom: none;
+  }
+
+  .table-wrap .devtools-table td::before {
+    content: attr(data-label);
+    display: block;
+    color: var(--amber-2);
+    font-size: 12px;
+  }
+}
+
 .cheat-placeholder {
   font-style: italic;
   font-weight: 600;

@@ -22,6 +22,14 @@ export const troubleshootTrack: Track = {
           type: "p",
           text: "ここに近い症状が無いときは「調査手順」を順に読みましょう。症状を一覧で見比べたいときは、そこにある表も見ましょう。",
         },
+        {
+          type: "p",
+          text: "当たりをつけたあと、Network タブや Console のどの機能で確かめるかは「開発者ツールの Tips」の逆引きにまとめています。",
+          link: {
+            label: "開発者ツールの Tips",
+            to: "/devtools",
+          },
+        },
       ],
     },
     {

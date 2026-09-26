@@ -6,6 +6,7 @@ import { projectFiles } from "../data/project";
 import { httpSample, requestFlow, stackCases } from "../data/labs";
 import { blockAnchorIds, lessonRowAnchor } from "./anchors";
 import { cheatSheet, cheatSheetAnchors } from "../data/cheatsheet";
+import { devtools, devtoolsAnchors, devtoolsRowText } from "../data/devtools";
 import { troubleshootMap } from "../data/troubleshootMap";
 
 export type SearchHit = {
@@ -130,6 +131,7 @@ function widgetText(name: WidgetName): string {
 }
 
 const cheatSheetSearchAnchors = cheatSheetAnchors();
+const devtoolsSearchAnchors = devtoolsAnchors();
 
 const documents: Doc[] = [
   toDoc(
@@ -213,6 +215,29 @@ const documents: Doc[] = [
         ...section.groups.map((group, groupIndex) => ({
           anchor: cheatSheetSearchAnchors[sectionIndex].groupIds[groupIndex],
           text: [group.title, group.note ?? "", ...group.rows.map((row) => `${row.cmd} ${row.env} ${row.desc}`)].join("\n"),
+        })),
+      ]),
+    ],
+  ),
+  toDoc(
+    "/devtools",
+    "開発者ツールの Tips",
+    "DEVTOOLS",
+    [
+      "開発者ツールの Tips DevTools 逆引き",
+      ...devtools.flatMap((section) => [
+        section.title,
+        ...section.groups.flatMap((group) => [group.title, group.note ?? "", ...group.rows.map(devtoolsRowText)]),
+      ]),
+    ].join("\n"),
+    "page",
+    [
+      { text: "開発者ツールの Tips DevTools 逆引き" },
+      ...devtools.flatMap((section, sectionIndex) => [
+        { anchor: devtoolsSearchAnchors[sectionIndex].sectionId, text: section.title },
+        ...section.groups.map((group, groupIndex) => ({
+          anchor: devtoolsSearchAnchors[sectionIndex].groupIds[groupIndex],
+          text: [group.title, group.note ?? "", ...group.rows.map(devtoolsRowText)].join("\n"),
         })),
       ]),
     ],
