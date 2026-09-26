@@ -76,7 +76,7 @@ export const devtools: DevtoolsSection[] = [
               "ヒットしたレスポンスを見ると、値が HTML に埋め込まれていたのか、Ajax で受け取った JSON にあったのかが分かります。",
               "画面に出すときに書式を変えていると（JSON では `1000`、画面では `1,000` など）、ヒットしないことがあります。",
             ],
-            links: [{ label: "値の源流", to: "/tracks/reading/where-from" }],
+            links: [{ label: "値がどこで入ったかを辿る", to: "/tracks/reading/where-from" }],
           },
           {
             symptom: "色やレイアウトが崩れている",
