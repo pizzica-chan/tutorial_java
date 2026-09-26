@@ -802,6 +802,11 @@ h2,
   font-size: 12.5px;
 }
 
+/* 症状や機能名の1行は詳しすぎるので、既定では隠す。スマホ幅の目次でだけ出す */
+.article-toc .toc-level-4 {
+  display: none;
+}
+
 .article-toc a:hover {
   color: var(--text);
 }
@@ -972,6 +977,25 @@ h2,
   .toc-panel:not([hidden]) {
     right: 18px;
     width: min(340px, calc(100vw - 36px));
+  }
+}
+
+/* スマホ幅でだけ、症状や機能名の1行も目次に出す */
+@media (max-width: 640px) {
+  .toc-panel:not(.glossary-index) .toc-level-4 {
+    display: block;
+  }
+
+  .toc-panel:not(.glossary-index) .toc-level-4 a {
+    padding: 5px 8px 5px 58px;
+    font-size: 12px;
+  }
+
+  .toc-panel:not(.glossary-index) .toc-level-4 a::before {
+    left: 8px;
+    width: 6px;
+    height: 6px;
+    margin-top: -3px;
   }
 }
 

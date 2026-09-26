@@ -412,6 +412,8 @@ export const devtools: DevtoolsSection[] = [
 export type DevtoolsAnchors = {
   sectionId: string;
   groupIds: string[];
+  /** 症状・機能名など、行ごとのジャンプ先。スマホ用の目次でだけ使う */
+  rowIds: string[][];
 };
 
 /** 見出しへの通し番号の id。ArticleToc・目次・検索のジャンプ先で共通して使う唯一の割り当て元 */
@@ -420,12 +422,20 @@ export function devtoolsAnchors(): DevtoolsAnchors[] {
   return devtools.map((section) => {
     const sectionId = `h-${index}`;
     index += 1;
-    const groupIds = section.groups.map(() => {
-      const id = `h-${index}`;
+    const groupIds: string[] = [];
+    const rowIds: string[][] = [];
+    section.groups.forEach((group) => {
+      groupIds.push(`h-${index}`);
       index += 1;
-      return id;
+      rowIds.push(
+        group.rows.map(() => {
+          const id = `h-${index}`;
+          index += 1;
+          return id;
+        }),
+      );
     });
-    return { sectionId, groupIds };
+    return { sectionId, groupIds, rowIds };
   });
 }
 
