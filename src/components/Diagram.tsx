@@ -586,9 +586,9 @@ function PageAssets() {
       </Layer>
       <Arrow down label="ブラウザが追加で取る" />
       <div className="d-n1-rows">
-        <Chip icon="file">CSS</Chip>
-        <Chip icon="braces">JS</Chip>
-        <Chip icon="image">画像</Chip>
+        <Chip icon="file">app.css</Chip>
+        <Chip icon="braces">app.js</Chip>
+        <Chip icon="braces">list.js</Chip>
       </div>
     </div>
   );
@@ -683,7 +683,7 @@ function TemplateFragment() {
             </thead>
             <tbody>
               <tr>
-                <td>交通費申請</td>
+                <td>研修参加</td>
                 <td>PENDING</td>
                 <td>承認</td>
               </tr>
@@ -709,21 +709,21 @@ function TemplateRendered() {
           <i />
           <i />
         </span>
-        <span className="d-browser-url">https://intranet.example.co.jp/shinsei/requests</span>
+        <span className="d-browser-url">http://intranet.example.co.jp:8080/shinsei/requests</span>
       </div>
       <div className="d-browser-page">
         <p className="d-browser-title">申請一覧</p>
         <table className="d-browser-table">
           <thead>
             <tr>
-              <th>タイトル</th>
+              <th>件名</th>
               <th>ステータス</th>
-              <th />
+              <th>操作</th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td>交通費申請</td>
+              <td>研修参加</td>
               <td>PENDING</td>
               <td>
                 <button type="button" className="d-browser-btn">

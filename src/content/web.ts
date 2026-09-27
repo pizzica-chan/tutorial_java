@@ -75,7 +75,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "ブラウザは、まず画面の HTML を取ります。HTML の中には、CSS や JS、画像などの URL が書いてあります。ブラウザはそれを見て、それぞれ別のリクエストを送ります。",
+          text: "ブラウザは、まず画面の HTML を取ります。HTML の中には、CSS や JS、画像などの URL が書いてあります。上のレスポンスでは、`<link>` の `href` と `<script>` の `src` がその URL です。ブラウザはそれを見て、それぞれ別のリクエストを送ります。",
         },
         {
           type: "p",
@@ -116,12 +116,19 @@ Content-Type: text/html;charset=UTF-8
 
 <!DOCTYPE html>
 <html>
+  <head>
+    <link rel="stylesheet" href="/shinsei/css/app.css" />
+    <script src="/shinsei/js/app.js" defer></script>
+  </head>
   <body>
     <h1>申請一覧</h1>
     <table>
       <tr><td>研修参加</td><td>PENDING</td></tr>
       <tr><td>休暇申請</td><td>PENDING</td></tr>
+      <tr><td>出張旅費</td><td>PENDING</td></tr>
+      <tr><td>交通費申請</td><td>PENDING</td></tr>
     </table>
+    <script src="/shinsei/js/list.js"></script>
   </body>
 </html>`,
         },
@@ -139,7 +146,9 @@ Content-Type: application/json
 
 [
   {"id": 16, "title": "研修参加", "status": "PENDING"},
-  {"id": 13, "title": "休暇申請", "status": "PENDING"}
+  {"id": 13, "title": "休暇申請", "status": "PENDING"},
+  {"id": 15, "title": "出張旅費", "status": "PENDING"},
+  {"id": 12, "title": "交通費申請", "status": "PENDING"}
 ]`,
         },
         {
@@ -333,8 +342,8 @@ Content-Type: application/json
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-approve-payload.jpg",
-          alt: "承認 POST の Payload。Form Data に _csrf だけがある",
-          caption: "承認 POST の Payload。Form Data には CSRF トークンだけが載り、申請 ID はここには出てきません。",
+          alt: "承認 POST の Payload。Form Data に同じ値の _csrf が 2 行ある",
+          caption: "承認 POST の Payload。Form Data には CSRF トークン（`_csrf`）だけが載り、申請 ID はここには出てきません。`_csrf` が 2 行あるのは、テンプレートに書いた hidden と、Spring Security が自動で足す hidden の両方が送られているためです。値が同じなので、CSRF の確認は通ります。",
           size: "small",
         },
         {
@@ -440,7 +449,7 @@ Set-Cookie: JSESSIONID=AB12CD34; Path=/shinsei; HttpOnly`,
           title: "続く一覧のリクエスト（例）",
           highlightLines: [3],
           code: `GET /shinsei/requests HTTP/1.1
-Host: intranet.example.co.jp
+Host: intranet.example.co.jp:8080
 Cookie: JSESSIONID=AB12CD34`,
         },
         {
@@ -448,7 +457,7 @@ Cookie: JSESSIONID=AB12CD34`,
           kind: "screen",
           src: "/images/screen-application-cookies.jpg",
           alt: "開発者ツールの Application タブで見た JSESSIONID の Cookie",
-          caption: "上のログイン後、ブラウザの開発者ツール（Application タブ → Cookies）で見た `JSESSIONID` です。値だけが入っており、ログインユーザの情報はここには含まれません。",
+          caption: "上のログイン後、ブラウザの開発者ツール（Application タブ → Cookies）で見た `JSESSIONID` です。値だけが入っており、ログインユーザの情報はここには含まれません。値が上の例と違うのは、ログインのたびに新しい値になるためです。",
         },
         {
           type: "p",

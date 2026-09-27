@@ -6,61 +6,74 @@
   <title>申請一覧 | 申請くん</title>
 </head>
 <body>
-  <header>
-    <strong>申請くん</strong>
-    申請一覧
-    申請履歴
-    新規申請
-    山田太郎
+  <header class="app-header">
+    <div class="app-header-inner">
+      <a class="app-logo" href="#">申請くん</a>
+      <nav class="app-nav">
+        <a href="#">申請一覧</a>
+        <a href="#">申請履歴</a>
+        <a href="#">新規申請</a>
+      </nav>
+      <div class="app-user">
+        <span class="app-user-name">山田太郎</span>
+        <form action="#" method="post" onsubmit="return false;">
+          <button type="submit" class="btn-text">ログアウト</button>
+        </form>
+      </div>
+    </div>
   </header>
-  <h1>申請一覧</h1>
-  <p>未承認の申請です。承認と新規申請は、この画面から行います。</p>
-  <p><a href="#">新規申請</a></p>
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>件名</th>
-        <th>申請者</th>
-        <th>承認者</th>
-        <th>ステータス</th>
-        <th>操作</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>16</td>
-        <td><a href="#">研修参加</a></td>
-        <td>山田太郎</td>
-        <td>未設定</td>
-        <td>PENDING</td>
-        <td><button type="button">承認</button></td>
-      </tr>
-      <tr>
-        <td>13</td>
-        <td><a href="#">休暇申請</a></td>
-        <td>山田太郎</td>
-        <td>佐藤花子</td>
-        <td>PENDING</td>
-        <td><button type="button">承認</button></td>
-      </tr>
-      <tr>
-        <td>15</td>
-        <td><a href="#">出張旅費</a></td>
-        <td>佐藤花子</td>
-        <td>山田太郎</td>
-        <td>PENDING</td>
-        <td><button type="button">承認</button></td>
-      </tr>
-      <tr>
-        <td>12</td>
-        <td><a href="#">交通費申請</a></td>
-        <td>山田太郎</td>
-        <td>佐藤花子</td>
-        <td>PENDING</td>
-        <td><button type="button">承認</button></td>
-      </tr>
-    </tbody>
-  </table>
+  <main class="app-main">
+    <div class="page-head">
+      <h1>申請一覧</h1>
+      <a class="btn" href="#">新規申請</a>
+    </div>
+    <p class="lead">未承認の申請です。承認と新規申請は、この画面から行います。</p>
+    <table class="data">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>件名</th>
+          <th>申請者</th>
+          <th>承認者</th>
+          <th>ステータス</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>16</td>
+          <td><a href="#">研修参加</a></td>
+          <td>山田太郎</td>
+          <td>未設定</td>
+          <td>PENDING</td>
+          <td><button type="button" class="btn-approve">承認</button></td>
+        </tr>
+        <tr>
+          <td>13</td>
+          <td><a href="#">休暇申請</a></td>
+          <td>山田太郎</td>
+          <td>佐藤花子</td>
+          <td>PENDING</td>
+          <td><button type="button" class="btn-approve">承認</button></td>
+        </tr>
+        <tr>
+          <td>15</td>
+          <td><a href="#">出張旅費</a></td>
+          <td>佐藤花子</td>
+          <td>山田太郎</td>
+          <td>PENDING</td>
+          <td><button type="button" class="btn-approve">承認</button></td>
+        </tr>
+        <tr>
+          <td>12</td>
+          <td><a href="#">交通費申請</a></td>
+          <td>山田太郎</td>
+          <td>佐藤花子</td>
+          <td>PENDING</td>
+          <td><button type="button" class="btn-approve">承認</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
 </body>
 </html>
