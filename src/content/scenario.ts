@@ -1847,6 +1847,7 @@ Content-Type: text/html;charset=UTF-8`,
         {
           type: "code",
           title: "操作時刻のサーバログ（申請くん・検証用環境・抜粋）",
+          lang: "text",
           code: `04:12:03.512 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests
 04:12:13.932 WARN  [nio-8080-exec-3] com.zaxxer.hikari.pool.PoolBase : HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@5b1c8b2b (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
 04:12:24.342 WARN  [nio-8080-exec-3] com.zaxxer.hikari.pool.PoolBase : HikariPool-1 - Failed to validate connection com.mysql.cj.jdbc.ConnectionImpl@578061b9 (No operations allowed after connection closed.). Possibly consider using a shorter maxLifetime value.
