@@ -13,7 +13,7 @@ export const requestFlow: FlowStep[] = [
     title: "一覧を開く",
     detail: "利用者が `/shinsei/requests` にアクセスします。ブラウザは Cookie に入っているセッション ID も一緒に送ります。この ID は次のフィルタで、サーバ側のセッションを取り出すキーになります。",
     code: `GET /shinsei/requests HTTP/1.1
-Host: intranet.example.co.jp
+Host: intranet.example.co.jp:8080
 Cookie: JSESSIONID=AB12CD34
 Accept: text/html`,
   },
@@ -241,7 +241,7 @@ export const stackCases: StackCase[] = [
 
 export const httpSample = {
   request: `GET /shinsei/requests HTTP/1.1
-Host: intranet.example.co.jp
+Host: intranet.example.co.jp:8080
 Cookie: JSESSIONID=AB12CD34
 Accept: text/html`,
   response: `HTTP/1.1 200 OK
@@ -249,12 +249,19 @@ Content-Type: text/html;charset=UTF-8
 
 <!DOCTYPE html>
 <html>
+  <head>
+    <link rel="stylesheet" href="/shinsei/css/app.css" />
+    <script src="/shinsei/js/app.js" defer></script>
+  </head>
   <body>
     <h1>申請一覧</h1>
     <table>
       <tr><td>研修参加</td><td>PENDING</td></tr>
       <tr><td>休暇申請</td><td>PENDING</td></tr>
+      <tr><td>出張旅費</td><td>PENDING</td></tr>
+      <tr><td>交通費申請</td><td>PENDING</td></tr>
     </table>
+    <script src="/shinsei/js/list.js"></script>
   </body>
 </html>`,
   notes: [

@@ -75,7 +75,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "ブラウザは、まず画面の HTML を取ります。HTML の中には、CSS や JS、画像などの URL が書いてあります。ブラウザはそれを見て、それぞれ別のリクエストを送ります。",
+          text: "ブラウザは、まず画面の HTML を取ります。HTML の中には、CSS や JS、画像などの URL が書いてあります。上のレスポンスでは、`<link>` の `href` と `<script>` の `src` がその URL です。ブラウザはそれを見て、それぞれ別のリクエストを送ります。",
         },
         {
           type: "p",
@@ -116,12 +116,19 @@ Content-Type: text/html;charset=UTF-8
 
 <!DOCTYPE html>
 <html>
+  <head>
+    <link rel="stylesheet" href="/shinsei/css/app.css" />
+    <script src="/shinsei/js/app.js" defer></script>
+  </head>
   <body>
     <h1>申請一覧</h1>
     <table>
       <tr><td>研修参加</td><td>PENDING</td></tr>
       <tr><td>休暇申請</td><td>PENDING</td></tr>
+      <tr><td>出張旅費</td><td>PENDING</td></tr>
+      <tr><td>交通費申請</td><td>PENDING</td></tr>
     </table>
+    <script src="/shinsei/js/list.js"></script>
   </body>
 </html>`,
         },
@@ -139,7 +146,9 @@ Content-Type: application/json
 
 [
   {"id": 16, "title": "研修参加", "status": "PENDING"},
-  {"id": 13, "title": "休暇申請", "status": "PENDING"}
+  {"id": 13, "title": "休暇申請", "status": "PENDING"},
+  {"id": 15, "title": "出張旅費", "status": "PENDING"},
+  {"id": 12, "title": "交通費申請", "status": "PENDING"}
 ]`,
         },
         {
@@ -440,7 +449,7 @@ Set-Cookie: JSESSIONID=AB12CD34; Path=/shinsei; HttpOnly`,
           title: "続く一覧のリクエスト（例）",
           highlightLines: [3],
           code: `GET /shinsei/requests HTTP/1.1
-Host: intranet.example.co.jp
+Host: intranet.example.co.jp:8080
 Cookie: JSESSIONID=AB12CD34`,
         },
         {
