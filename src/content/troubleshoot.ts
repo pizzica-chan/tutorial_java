@@ -749,6 +749,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
         {
           type: "code",
           title: "例外が出たとき（申請くん・ID 16。抜粋）",
+          lang: "text",
           highlightLines: [3],
           highlightKind: "error",
           code: `04:12:03.512 ERROR [nio-8080-exec-3] o.a.c.c.C.[.[.[.[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] in context with path [/shinsei] threw exception [Request processing failed; nested exception is java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" because the return value of "jp.co.example.shinsei.entity.RequestEntity.getApproverId()" is null] with root cause
