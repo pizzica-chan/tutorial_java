@@ -1726,9 +1726,9 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
           lang: "text",
           code: `PS> ping intranet.example.co.jp
 
-Pinging intranet.example.co.jp [10.20.30.40] with 32 bytes of data:
-Reply from 10.20.30.40: bytes=32 time=2ms TTL=58
-Reply from 10.20.30.40: bytes=32 time=1ms TTL=58
+intranet.example.co.jp [10.20.30.40]に ping を送信しています 32 バイトのデータ:
+10.20.30.40 からの応答: バイト数 =32 時間 =2ms TTL=58
+10.20.30.40 からの応答: バイト数 =32 時間 =1ms TTL=58
 
 PS> Test-NetConnection -ComputerName intranet.example.co.jp -Port 8080
 
