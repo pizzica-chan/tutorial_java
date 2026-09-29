@@ -1086,10 +1086,14 @@ TcpTestSucceeded       : False`,
 Connection to intranet.example.co.jp (10.20.30.40) 8080 port [tcp/http-alt] succeeded!
 
 # 接続拒否
-nc: connect to intranet.example.co.jp port 8080 (tcp) failed: Connection refused
+nc: connect to intranet.example.co.jp (10.20.30.40) port 8080 (tcp) failed: Connection refused
 
 # タイムアウト
-nc: connect to intranet.example.co.jp port 8080 (tcp) failed: Connection timed out`,
+nc: connect to intranet.example.co.jp (10.20.30.40) port 8080 (tcp) failed: Connection timed out`,
+        },
+        {
+          type: "p",
+          text: "これは Ubuntu などに入っている nc の表示です。RHEL 系の Linux では、`nc` と打つと中身は ncat で、表示が違います。成功なら `Ncat: Connected to 10.20.30.40:8080.`、接続拒否なら `Ncat: Connection refused.`、タイムアウトなら `Ncat: TIMEOUT.` と出ます。",
         },
         {
           type: "ul",

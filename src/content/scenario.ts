@@ -1888,7 +1888,7 @@ com.mysql.cj.exceptions.ConnectionIsClosedException: No operations allowed after
           title: "例（検証用環境のアプリサーバから）",
           lang: "text",
           code: `$ nc -zv stg-db.example.internal 3306
-nc: connect to stg-db.example.internal port 3306 (tcp) failed: Connection timed out`,
+nc: connect to stg-db.example.internal (10.30.40.50) port 3306 (tcp) failed: Connection timed out`,
         },
         {
           type: "p",
