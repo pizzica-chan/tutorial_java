@@ -948,12 +948,37 @@ ping intranet.example.co.jp
 ping -c 4 intranet.example.co.jp`,
         },
         {
+          type: "code",
+          title: "結果の例（Windows の日本語表示。統計の行は省略）",
+          lang: "text",
+          code: `# 応答がある
+intranet.example.co.jp [10.20.30.40]に ping を送信しています 32 バイトのデータ:
+10.20.30.40 からの応答: バイト数 =32 時間 =2ms TTL=58
+10.20.30.40 からの応答: バイト数 =32 時間 =1ms TTL=58
+10.20.30.40 からの応答: バイト数 =32 時間 =1ms TTL=58
+10.20.30.40 からの応答: バイト数 =32 時間 =1ms TTL=58
+
+# 要求がタイムアウト
+intranet.example.co.jp [10.20.30.40]に ping を送信しています 32 バイトのデータ:
+要求がタイムアウトしました。
+要求がタイムアウトしました。
+要求がタイムアウトしました。
+要求がタイムアウトしました。
+
+# 名前解決できない
+ping 要求ではホスト intranet.example.co.jp が見つかりませんでした。ホスト名を確認してもう一度実行してください。`,
+        },
+        {
           type: "ul",
           items: [
             "応答がある … 名前解決でき、ホスト自体には届いている（ICMP が許可されている）",
             "要求がタイムアウト … ホストダウン、経路の遮断、ICMP が FW で拒否、など",
             "名前解決できない … DNS の設定や向き先を疑う",
           ],
+        },
+        {
+          type: "p",
+          text: "タイムアウトの例でも、1 行目に IP アドレス（10.20.30.40）が出ています。名前解決まではできていて、その先で応答が返っていないと分かります。",
         },
         {
           type: "p",
@@ -979,8 +1004,25 @@ traceroute -I intranet.example.co.jp
 traceroute -T -p 8080 intranet.example.co.jp`,
         },
         {
+          type: "code",
+          title: "結果の例（Windows の日本語表示。途中で止まる場合）",
+          lang: "text",
+          code: `intranet.example.co.jp [10.20.30.40] へのルートをトレースしています
+経由するホップ数は最大 30 です:
+
+  1    <1 ms    <1 ms    <1 ms  192.168.10.1
+  2     2 ms     1 ms     1 ms  10.10.0.1
+  3     *        *        *     要求がタイムアウトしました。
+  4     *        *        *     要求がタイムアウトしました。
+  5     *        *        *     要求がタイムアウトしました。`,
+        },
+        {
           type: "p",
-          text: "途中のホップが表示され、どこで * やタイムアウトが続くかを見ましょう。社内のどの境界で止まっているかの手がかりになります。",
+          text: "途中のホップが表示され、どこで * やタイムアウトが続くかを見ましょう。社内のどの境界で止まっているかの手がかりになります。この例では、2 つ目のホップ（10.10.0.1）までは応答があり、3 つ目から先が返っていません。",
+        },
+        {
+          type: "p",
+          text: "途中の 1 ホップだけが * でも、そのあとのホップや宛先（10.20.30.40）から応答があれば、その機器が応答を返さない設定なだけで、通信は先へ進んでいます。",
         },
         {
           type: "p",
@@ -1005,7 +1047,6 @@ traceroute -T -p 8080 intranet.example.co.jp`,
           title: "例（ポート 8080）",
           code: `# Windows（PowerShell）
 Test-NetConnection -ComputerName intranet.example.co.jp -Port 8080
-# TcpTestSucceeded : True なら TCP 接続できた
 
 # Linux（nc が入っている環境）
 nc -zv intranet.example.co.jp 8080
@@ -1014,12 +1055,53 @@ nc -zv intranet.example.co.jp 8080
 telnet intranet.example.co.jp 8080`,
         },
         {
+          type: "code",
+          title: "結果の例（Test-NetConnection）",
+          lang: "text",
+          code: `# TCP 接続成功
+ComputerName     : intranet.example.co.jp
+RemoteAddress    : 10.20.30.40
+RemotePort       : 8080
+InterfaceAlias   : イーサネット
+SourceAddress    : 192.168.10.23
+TcpTestSucceeded : True
+
+# TCP 接続失敗（ping は通っている）
+警告: TCP connect to (10.20.30.40 : 8080) failed
+
+ComputerName           : intranet.example.co.jp
+RemoteAddress          : 10.20.30.40
+RemotePort             : 8080
+InterfaceAlias         : イーサネット
+SourceAddress          : 192.168.10.23
+PingSucceeded          : True
+PingReplyDetails (RTT) : 1 ms
+TcpTestSucceeded       : False`,
+        },
+        {
+          type: "code",
+          title: "結果の例（nc）",
+          lang: "text",
+          code: `# TCP 接続成功
+Connection to intranet.example.co.jp (10.20.30.40) 8080 port [tcp/http-alt] succeeded!
+
+# 接続拒否
+nc: connect to intranet.example.co.jp port 8080 (tcp) failed: Connection refused
+
+# タイムアウト
+nc: connect to intranet.example.co.jp port 8080 (tcp) failed: Connection timed out`,
+        },
+        {
           type: "ul",
           items: [
             "TCP 接続成功 … そのポートで何かが待ち受けている。アプリ未起動ならすぐ切れることもある",
             "接続拒否（connection refused）… ホストまでは届いたが、そのポートで待ち受けが無い",
             "タイムアウト … FW、ルータ、セキュリティグループ、経路のどこかで止まっていることが多い",
           ],
+        },
+        {
+          type: "p",
+          text: "Test-NetConnection は、接続拒否でもタイムアウトでも `TcpTestSucceeded : False` になります。拒否ならすぐに、タイムアウトなら数十秒待ってから結果が出るので、待ち時間で見分けましょう。nc なら、拒否とタイムアウトがメッセージで分かれます。",
         },
         {
           type: "h2",
@@ -1033,10 +1115,32 @@ telnet intranet.example.co.jp 8080`,
           type: "code",
           title: "例（申請一覧）",
           code: `# ヘッダだけ見る（本文は捨てる）
+# Windows PowerShell では curl.exe と打つ（curl だけだと Invoke-WebRequest の別名になる）
 curl -I http://intranet.example.co.jp:8080/shinsei/requests
 
 # 詳細（TLS 証明書の検証を緩める例。社内検証のみ）
 curl -vk https://intranet.example.co.jp/shinsei/requests`,
+        },
+        {
+          type: "code",
+          title: "結果の例（curl -I。ヘッダは抜粋）",
+          lang: "text",
+          code: `# 申請一覧（ログインしていないので、ログイン画面へ 302）
+$ curl -I http://intranet.example.co.jp:8080/shinsei/requests
+HTTP/1.1 302
+Set-Cookie: JSESSIONID=3F2A9C1E7B4D8A05C6E1F0B29D7A4C18; Path=/shinsei; HttpOnly
+Location: http://intranet.example.co.jp:8080/shinsei/login
+Content-Length: 0
+
+# コンテキストパスの打ち間違い（shinse）
+$ curl -I http://intranet.example.co.jp:8080/shinse/requests
+HTTP/1.1 404
+Content-Type: text/html;charset=utf-8
+Content-Language: en`,
+        },
+        {
+          type: "p",
+          text: "1 行目のステータスコードで、HTTP まで届いたかが分かります。申請くんでは、ログインしていないと 302 でログイン画面へ転送されます。302 が返れば、アプリまでは届いています。",
         },
         {
           type: "ul",
