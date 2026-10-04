@@ -43,7 +43,7 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     id: "service",
     layer: "Service",
     title: "RequestService#findMine",
-    detail: "渡された userId は、Cookie から辿ったログインユーザの ID です。自分に関係する申請だけ返す、といった判定は Service に置かれることが多いです。Controller に寄っている構成もあります。",
+    detail: "渡された userId は、Cookie から辿ったログインユーザの ID です。自分に関係する申請だけ返す、といった判定は Service に置かれることが多いです。Controller に書かれている構成もあります。",
     code: `public List<RequestEntity> findMine(Long userId) {
   return requestMapper.findMine(userId);
 }`,

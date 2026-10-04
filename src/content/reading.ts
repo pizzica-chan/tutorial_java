@@ -389,7 +389,7 @@ mailService.notifyApplicant(request);`,
           type: "callout",
           kind: "note",
           title: "ソースが検索に出てこないとき",
-          text: "画面の文言やログのクラス名で検索しても、プロジェクト内に無いことがあります。自作ライブラリを jar で取り込んでいると、IDE の検索対象にそのソースが含まれないことがあります。`pom.xml` や `build.gradle` の依存を見て、社内ライブラリかどうかを確認しましょう。ライブラリ側のソースが手元に無ければ、呼び出し元とスタックトレースを追い、必要なら別リポジトリや担当者を当たりましょう。",
+          text: "画面の文言やログのクラス名で検索しても、プロジェクト内に無いことがあります。自作ライブラリを jar で取り込んでいると、IDE の検索対象にそのソースが含まれないことがあります。`pom.xml` や `build.gradle` の依存を見て、社内ライブラリかどうかを確認しましょう。ライブラリ側のソースが手元に無ければ、呼び出し元とスタックトレースを追い、必要なら別リポジトリを探すか、担当者に確認しましょう。",
         },
         {
           type: "p",
@@ -1140,7 +1140,7 @@ request.getApproverId().equals(userId); // NPE`,
         },
         {
           type: "p",
-          text: "申請くんの `created_at` は、`schema.sql` に `DEFAULT` が無く、この INSERT 文の `NOW()` で入っています。Java のソースにも `schema.sql` の `DEFAULT` にも当たらないときは、`TRIGGER` や、実行される SQL 文自体（`NOW()` などの関数呼び出し）も見ましょう。",
+          text: "申請くんの `created_at` は、`schema.sql` に `DEFAULT` が無く、この INSERT 文の `NOW()` で入っています。Java のソースにも `schema.sql` の `DEFAULT` にも見つからないときは、`TRIGGER` や、実行される SQL 文自体（`NOW()` などの関数呼び出し）も見ましょう。",
         },
         {
           type: "p",
@@ -1291,8 +1291,8 @@ if (!"PENDING".equals(request.getStatus())) {
         {
           type: "callout",
           kind: "warn",
-          title: "止めると待つ",
-          text: "デバッガで止めたスレッドは待ちます。外部 API のタイムアウトや、検証用環境の他の利用者に影響することがあります。",
+          title: "止めているあいだは処理が進まない",
+          text: "デバッガで止めたスレッドは、再開するまで先へ進みません。外部 API のタイムアウトや、検証用環境の他の利用者に影響することがあります。",
         },
         { type: "quiz", id: "read-debug" },
       ],
@@ -1514,7 +1514,7 @@ if (!"PENDING".equals(request.getStatus())) {
         {
           type: "callout",
           kind: "trap",
-          title: "関数名での検索は効かなくなる",
+          title: "関数名で検索してもヒットしない",
           text: "`confirmAction` のような関数名は、ビルド時に `n` のような短い名前へ書き換えられます。もとの名前で検索しても、この JavaScript の中にはヒットしません。一方、`.js-submit-confirm` のような HTML の `class` や `id` は、実行時に実際の DOM と一致させる必要があるため、文字列としてそのまま残ります。名前がヒットしないときは、関数名ではなくクラス名や `id`、画面の文言で検索し直しましょう。",
         },
         {
