@@ -182,7 +182,7 @@ Content-Type: application/json
             ["`http://`", "スキーム", "通信方式の種類。Web アプリでは `http` か `https` がほとんど"],
             ["`intranet.example.co.jp`", "ホスト", "どのサーバか"],
             ["`:8080`", "ポート", "同じサーバ内でどのサービス・プロセスか。省略すると `http` は 80、`https` は 443 番"],
-            ["`/shinsei`", "コンテキストパス", "アプリの根っこ"],
+            ["`/shinsei`", "コンテキストパス", "アプリを区別する、パスの先頭部分"],
             ["`/requests/history`", "アプリ内のパス", "申請履歴の検索画面"],
             ["`?status=PENDING`", "クエリ", "絞り込みなどの条件"],
           ],
@@ -254,7 +254,7 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "値が届かない、想定と違うときは、Network タブで「どこに何が載っているか」を先に確認しましょう。",
+          text: "値が届かないときや、想定と違う値が届くときは、Network タブで「どこに何が載っているか」を先に確認しましょう。",
         },
         {
           type: "diagram",
@@ -423,7 +423,7 @@ Content-Type: application/json
       blocks: [
         {
           type: "p",
-          text: "HTTP は、前のリクエストを覚えていません。たとえば、ログイン済みかどうかも次のリクエストには引き継がれません。そこでサーバはセッションを作り、ログイン情報はサーバ側に置いたまま、そのセッションを指す ID だけを Cookie としてブラウザに渡します。",
+          text: "HTTP では、1 回ごとのリクエストが独立しています。たとえば、ログイン済みかどうかも次のリクエストには引き継がれません。そこでサーバはセッションを作り、ログイン情報はサーバ側に置いたまま、そのセッションを指す ID だけを Cookie としてブラウザに渡します。",
         },
         { type: "diagram", name: "session", caption: "ブラウザが持つのはキーだけです。中身はサーバ側にあります。" },
         {
@@ -601,7 +601,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "件数や中身は DB にあります。どのレコードが対象かは、実行された SQL の WHERE で決まります。コードが正しくても、その条件のレコードが無い、マスタが違う、別の DB を見ていると、画面には何も出ない、または古い値が残ります。",
+          text: "件数や中身は DB にあります。どのレコードが対象かは、実行された SQL の WHERE で決まります。コードが正しくても、画面に何も出なかったり、古い値が出たりすることがあります。その条件のレコードが無い、マスタが違う、別の DB に接続している、といった場合です。",
         },
         { type: "quiz", id: "web-front-back" },
       ],
@@ -655,7 +655,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "途中で `<link>` や `<script>` に当たると、その CSS や JavaScript を別のリクエストで取りに行きます。",
+          text: "途中で `<link>` や `<script>` まで読むと、その CSS や JavaScript を別のリクエストで取りに行きます。",
         },
         {
           type: "p",
@@ -728,7 +728,7 @@ public String showCart(HttpSession session, Model model) {
           type: "callout",
           kind: "trap",
           title: "エラーが出ないこともある",
-          text: "要素が見つからないとき、`document.querySelectorAll` は 0 件を返すだけです。例外にならないので、コンソールにも何も出ません。イベントの処理が登録されず、ボタンを押しても何も起きない、という見え方になります。",
+          text: "要素が見つからないとき、`document.querySelectorAll` は 0 件を返すだけです。例外にならないので、Console にも何も出ません。イベントの処理が登録されず、ボタンを押しても何も起きない、という見え方になります。",
         },
         {
           type: "p",

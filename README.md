@@ -42,7 +42,7 @@ npm run deploy
 
 `wrangler.jsonc` は Worker スクリプトなしの静的配信です。SPA のため、存在しないパスは `index.html` にフォールバックします。
 
-Cloudflare Pages を使う場合は、ビルドコマンド `npm run build`、出力ディレクトリ `dist` を指定してください。`wrangler.jsonc` の `not_found_handling` は Workers 静的アセット専用で Pages には効かないので、Pages 側で `/tracks/web/letter` のような個別 URL を直接開くと 404 になります。SPA として使うなら、`dist/` に `_redirects`（`/* /index.html 200`）を別途追加してください。このファイルをリポジトリの `public/` に置くと、Workers 経由の `npm run deploy` 側で `not_found_handling` と衝突し、デプロイに失敗します。そのため、リポジトリには含めていません。
+Cloudflare Pages を使う場合は、ビルドコマンド `npm run build`、出力ディレクトリ `dist` を指定してください。`wrangler.jsonc` の `not_found_handling` は Workers 静的アセット専用で Pages では使われないので、Pages 側で `/tracks/web/letter` のような個別 URL を直接開くと 404 になります。SPA として使うなら、`dist/` に `_redirects`（`/* /index.html 200`）を別途追加してください。このファイルをリポジトリの `public/` に置くと、Workers 経由の `npm run deploy` 側で `not_found_handling` と衝突し、デプロイに失敗します。そのため、リポジトリには含めていません。
 
 アカウントなしで一時公開するなら、ビルド後の `dist/` を [Cloudflare Drop](https://cloudflare.com/drop) にアップロードする方法もあります。
 
@@ -56,7 +56,7 @@ Cloudflare Pages を使う場合は、ビルドコマンド `npm run build`、�
 | ソースの読み方 | 画面と URL を手がかりに処理の入口を特定し、キーワード検索や呼び出しの追跡、変更履歴、デバッガなどでコードを読み解きます |
 | SQL からソースを探す | 実行された SQL から、発行したアプリのソースを見つけ、DB の中身と突き合わせます |
 | トラブルシューティング手法 | いきなりソースを読まず、リクエストがどこまで届いたかと症状から当たりをつけます |
-| 実務のシナリオ | シナリオを想定し、より実践的な調査の進め方を学びます |
+| 実務のシナリオ | 障害調査と影響調査の例を、原因や結論が出るまで順に追います |
 | ラボ | HTTP、ソース、リクエストの区間、スタックトレース |
 | チートシート | 本文で使った Linux・Git・SQL・HTTP の調査コマンドの早見表 |
 | 開発者ツールの Tips | 症状から使う機能を引く逆引きと、Copy as cURL などタブごとの便利な機能 |

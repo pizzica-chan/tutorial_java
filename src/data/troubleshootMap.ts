@@ -100,7 +100,7 @@ export const troubleshootMap: ObservableGroup[] = [
     label: "画面は出るが内容がおかしい",
     leaves: [
       {
-        symptom: "見た目だけおかしい（色やレイアウトが当たっていない）",
+        symptom: "見た目だけおかしい（色やレイアウトが反映されていない）",
         keywords: ["CSS崩れ", "レイアウト崩れ", "デザイン崩れ", "スタイルが当たらない", "画像が出ない"],
         cause: ["サーバ"],
         check: "HTML とは別の CSS / JS のリクエストが 404 になっていないか、Network タブで確認しましょう。",
@@ -127,7 +127,7 @@ export const troubleshootMap: ObservableGroup[] = [
         keywords: ["検索条件が効かない", "フィルタが効かない", "絞り込みできない", "クエリパラメータ"],
         cause: ["サーバ"],
         check: "Network タブで、指定した条件がクエリに入っているかを確認しましょう。入っていれば、アプリのログの SQL とバインドした値を見ましょう。",
-        tells: "クエリに条件が無ければ、画面から送れていません。送れているのに SQL のバインド値に無ければ、受け取りから SQL までのどこかで条件が落ちています。",
+        tells: "クエリに条件が無ければ、画面から送れていません。送れているのに SQL のバインド値に無ければ、受け取りから SQL までのどこかで条件が抜けています。",
         links: [
           { label: "[障害調査] 申請履歴検索の結果が不正", to: "/tracks/scenario/history" },
           { label: "[障害調査] 申請履歴から詳細を開いて戻ると、検索条件が消える", to: "/tracks/scenario/history-back" },
@@ -187,11 +187,11 @@ export const troubleshootMap: ObservableGroup[] = [
         ],
       },
       {
-        symptom: "アプリが急に落ちる、または重くなる。エラーログに `OutOfMemoryError` や `Full GC` の記録がある",
+        symptom: "アプリのプロセスが急に終了する、または重くなる。エラーログに `OutOfMemoryError` や `Full GC` の記録がある",
         keywords: ["メモリ不足", "OOM", "クラッシュ", "ダウンする", "GC", "503", "service unavailable"],
         cause: ["サーバ"],
         check: "エラーログに `OutOfMemoryError` が無いかを確認しましょう。あればメッセージの種類を、無ければ GC の記録があるかを見ましょう。",
-        tells: "`OutOfMemoryError` はメッセージによって疑う場所が変わります。`Full GC` が繰り返されているだけなら、まだ落ちてはいませんが、その間処理が止まって遅くなります。",
+        tells: "`OutOfMemoryError` はメッセージによって疑う場所が変わります。`Full GC` が繰り返されているだけなら、プロセスはまだ終了していませんが、その間処理が止まって遅くなります。",
         links: [{ label: "トラブル例：メモリ不足・GC の当たりをつける", to: "/tracks/troubleshoot/p-memory" }],
       },
       {

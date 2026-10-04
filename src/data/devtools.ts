@@ -343,7 +343,7 @@ export const devtools: DevtoolsSection[] = [
           {
             name: "Styles / Computed",
             how: "右側の Styles と Computed",
-            desc: "その要素に当たっている CSS と、それが書かれたファイル・行番号。Computed では最終的に効いている値（`display` など）が分かる",
+            desc: "その要素に適用されている CSS と、それが書かれたファイル・行番号。Computed では最終的に適用される値（`display` など）が分かる",
           },
           {
             name: "hidden の値",

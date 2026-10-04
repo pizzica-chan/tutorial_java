@@ -5,7 +5,7 @@ export const scenarioTrack: Track = {
   no: "07",
   title: "実務のシナリオ",
   kicker: "SCENARIO",
-  description: "シナリオを想定し、より実践的な調査の進め方を学びます。",
+  description: "障害調査と影響調査の例を、原因や結論が出るまで順に追います。",
   accent: "#4fb0a5",
   lessons: [
     {
@@ -71,10 +71,10 @@ export const scenarioTrack: Track = {
         },
         {
           type: "table",
-          headers: ["Network タブ / コンソール", "分かること", "次に確認すること"],
+          headers: ["Network タブ / Console", "分かること", "次に確認すること"],
           rows: [
-            ["新しいリクエストが無い", "サーバはまだ関係ない。フォームか JS", "コンソール、フォーム、一覧の JS"],
-            ["コンソールに JS エラー", "リクエスト送信の手前で止まっている", "エラーのファイルと行"],
+            ["新しいリクエストが無い", "サーバはまだ関係ない。フォームか JS", "Console、フォーム、一覧の JS"],
+            ["Console に JS エラー", "リクエスト送信の手前で止まっている", "エラーのファイルと行"],
             ["リクエストがあり 200 / 302 / 500", "リクエスト送信は終わっている。サーバの応答とログを見る", "レスポンス、操作時刻のサーバ側のエラーログ"],
           ],
         },
@@ -84,7 +84,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "このシナリオでは新しいリクエストが無く、コンソールに Uncaught TypeError: Cannot read properties of null (reading 'value') がありました。コンソールのエラーをクリックして、エラーが発生したファイルを開きましょう。",
+          text: "このシナリオでは新しいリクエストが無く、Console に Uncaught TypeError: Cannot read properties of null (reading 'value') がありました。Console のエラーをクリックして、エラーが発生したファイルを開きましょう。",
         },
         {
           type: "code",
@@ -110,7 +110,7 @@ export const scenarioTrack: Track = {
           items: [
             "`event.preventDefault();` のあと、`const tokenEl = document.getElementById(\"csrfToken\");` で id が `csrfToken` の要素を探し、結果を tokenEl に入れる",
             "その次の行 `const token = tokenEl.value;` で `tokenEl.value` を読もうとしてエラーになる",
-            "エラー内容は「null の value を読んだ」となっているので、読もうとした tokenEl が null だとわかる",
+            "エラー内容は「null の value を読んだ」となっているので、読もうとした tokenEl が null だと分かる",
             "tokenEl は 1 行上の `document.getElementById(\"csrfToken\")` の戻り値なので、HTML に `id=\"csrfToken\"` の要素が無かった、と考えられる",
           ],
         },
@@ -143,8 +143,8 @@ export const scenarioTrack: Track = {
           type: "ul",
           items: [
             "ボタンを押しても反応が無いときは、まず Network タブで新しいリクエストが出たかを見る",
-            "リクエストが無くコンソールに JS エラーがあるなら、サーバより先にフロントを疑う",
-            "コンソールのエラーメッセージと、指しているファイル・行を見て、何を読もうとして失敗したかをたどる",
+            "リクエストが無く Console に JS エラーがあるなら、サーバより先にフロントを疑う",
+            "Console のエラーメッセージと、指しているファイル・行を見て、何を読もうとして失敗したかを辿る",
           ],
         },
         {
@@ -155,7 +155,7 @@ export const scenarioTrack: Track = {
           type: "investigation-flow",
           items: [
             "Network タブで、リクエストが飛んでいないことを確認",
-            "コンソールで、JS の null 参照エラーを確認",
+            "Console で、JS の null 参照エラーを確認",
             "HTML に `id=\"csrfToken\"` の要素が無く、`tokenEl` が null になっていることを確認",
           ],
         },
@@ -410,7 +410,7 @@ requestService.approve(id, user.getId());`,
           type: "callout",
           kind: "note",
           title: "ソースに無い文言",
-          text: "画面の文が、コードにもプロパティファイルにも無いときは、Java が直書きしていません。メッセージ用のテーブル、ワークフローや認証サーバの応答 JSON を、Network タブと DB で見ましょう。応答の message をそのまま出していることがあります。",
+          text: "画面の文が、コードにもプロパティファイルにも無いときは、Java のソースに直接書かれていません。メッセージ用のテーブル、ワークフローや認証サーバの応答 JSON を、Network タブと DB で見ましょう。応答の message をそのまま出していることがあります。",
         },
         { type: "quiz", id: "sc-message" },
       ],
@@ -1116,7 +1116,7 @@ public String history(
         },
         {
           type: "p",
-          text: "フォームの `name` は `status`、サーバ側の識別子は `requestStatus` です。名前が違うので値は渡らず、DB 検索の条件に `status` が乗りません。件名の `name` は `title` で、`@RequestParam` の `title` と一致しているので、件名の「申請」は効いています。",
+          text: "フォームの `name` は `status`、サーバ側の識別子は `requestStatus` です。名前が違うので値は渡らず、SQL の条件に `status` が入りません。件名の `name` は `title` で、`@RequestParam` の `title` と一致しているので、件名の「申請」は SQL の条件に入っています。",
         },
         {
           type: "h2",
@@ -1439,7 +1439,7 @@ private LocalDateTime approvedAt;`,
         },
         {
           type: "p",
-          text: "`updatedAt` という名前のフィールドは `RequestEntity` にありません。MyBatis は、対応するフィールドが無いカラムをエラーにはせず、黙って無視します。そのため `approvedAt` は常に `null` のままです。",
+          text: "`updatedAt` という名前のフィールドは `RequestEntity` にありません。MyBatis は、対応するフィールドが無いカラムの値を捨てます。エラーもログも出ません。そのため `approvedAt` は常に `null` のままです。",
         },
         {
           type: "h2",
@@ -1714,7 +1714,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "社内ネットワークから、検証用環境のサーバへの経路を確認します。ブラウザがサーバまで届いていなければ、アプリは何も記録しません。",
+          text: "社内ネットワークから、検証用環境のサーバへの経路を確認します。ブラウザからのリクエストがサーバまで届いていなければ、アプリは何も記録しません。",
         },
         {
           type: "p",
@@ -2075,13 +2075,13 @@ drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
         },
         {
           type: "p",
-          text: "申請一覧画面は開くが、表の罫線も色も当たっていない。文字だけが並ぶ。",
+          text: "申請一覧画面は開くが、表の罫線も色も付いていない。文字だけが並ぶ。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-list-unstyled.jpg",
-          alt: "スタイルが当たっていない申請一覧",
+          alt: "CSS が適用されていない申請一覧",
           caption: "文字は出ています。Network タブで CSS の行が 404 になっていないかを見ましょう。",
         },
         {
@@ -2100,7 +2100,7 @@ drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
           items: [
             "画面の HTML は 200",
             "`app.css` は 404。Request URL は `/shinsei/css/app.css`",
-            "開発者ツールのコンソールに、CSS の 404 のエラーが出ている",
+            "開発者ツールの Console に、CSS の 404 のエラーが出ている",
             "Java のログに、一覧の INFO は出ている",
             "見た目がおかしい以外のエラーは画面に無い",
           ],
@@ -2120,7 +2120,7 @@ drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
         },
         {
           type: "p",
-          text: "Network タブの 404 は `/shinsei/css/app.css` でした。一覧の HTML は Java まで届いています。この検証用環境は、申請くんを WAR にして Tomcat へ載せる構成です（配布している Docker 版は jar 起動で、構成が異なります）。WAR を展開した先に `app.css` があるかを、サーバ上で見ます。WAR では static が `WEB-INF/classes/static` に入ります。",
+          text: "Network タブの 404 は `/shinsei/css/app.css` でした。一覧の HTML のリクエストは Java まで届いています。この検証用環境は、申請くんを WAR にして Tomcat へ載せる構成です（配布している Docker 版は jar 起動で、構成が異なります）。WAR を展開した先に `app.css` があるかを、サーバ上で見ます。WAR では static が `WEB-INF/classes/static` に入ります。",
         },
         {
           type: "ul",
@@ -2137,7 +2137,7 @@ drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
         },
         {
           type: "p",
-          text: "ファイルはあります。Java まで届いていれば 200 になるはずなので、Java より手前に何か挟まっていないか疑いましょう。この検証用環境では、手前に nginx が動いています。nginx の設定を見ます。",
+          text: "ファイルはあります。CSS のリクエストも Java まで届いていれば 200 になるはずなので、Java より手前に何か挟まっていないか疑いましょう。この検証用環境では、手前に nginx が動いています。nginx の設定を見ます。",
         },
         {
           type: "code",
@@ -2333,7 +2333,7 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "「すべて」なら、`CANCELLED` のレコードも SQL に載ります。`CANCELLED` だけに絞る選択肢はありません。取り下げ済みを履歴検索画面でどう扱うかは依頼文に無いので、依頼者へ確認します。",
+          text: "「すべて」なら、`CANCELLED` のレコードも SQL の結果に含まれます。`CANCELLED` だけに絞る選択肢はありません。取り下げ済みを履歴検索画面でどう扱うかは依頼文に無いので、依頼者へ確認します。",
         },
         {
           type: "h3",
@@ -2898,7 +2898,7 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "p",
-          text: "部長職の利用者が、自分が申請者でも今の承認者でもない申請を承認しようとすると、この `WHERE` に一致せず `findById` は `null` を返します。その結果、`ForbiddenException` の分岐にはたどり着かず、その手前の `NotFoundException`（「指定した申請は無い、または見る権限がありません」）になります。`RequestService.approve` の if にロール分岐を足しても、SQL がレコードをそもそも渡してくれなければ意味がありません。この `WHERE` 句自体を、ロールに応じて緩めるか、SQL の絞り込みをやめて Java 側だけで判定する形に見直す必要があります。",
+          text: "部長職の利用者が、自分が申請者でも今の承認者でもない申請を承認しようとすると、この `WHERE` に一致せず `findById` は `null` を返します。その結果、`ForbiddenException` の分岐には辿り着かず、その手前の `NotFoundException`（「指定した申請は無い、または見る権限がありません」）になります。`RequestService.approve` の if にロール分岐を足しても、SQL がレコードを返さなければ、その分岐まで処理が進みません。この `WHERE` 句自体を、ロールに応じて緩めるか、SQL の絞り込みをやめて Java 側だけで判定する形に見直す必要があります。",
         },
         {
           type: "p",
@@ -2996,7 +2996,7 @@ CREATE TABLE IF NOT EXISTS t_request (
           type: "table",
           headers: ["箇所", "いま", "修正の要否"],
           rows: [
-            ["`RequestMapper.xml` の `findById`", "`applicant_id OR approver_id` でしか取れない", "要修正。SQL の絞り込み自体を見直さないと、部長職はレコードにすら届かない"],
+            ["`RequestMapper.xml` の `findById`", "`applicant_id OR approver_id` でしか取れない", "要修正。SQL の絞り込み自体を見直さないと、部長職ではレコードを取得できない"],
             ["`RequestMapper.xml` の `findMine`", "同上。一覧にも出ない", "要修正しないと、承認する対象を部長職が見つけられない"],
             ["`RequestService.approve` の権限判定", "`approver_id` と完全一致のみ", "要修正。ロールによる分岐を追加"],
             ["`t_user.role` / `data.sql`", "`ADMIN` / `USER` のみ", "要修正。部長職に当たるロールの追加が必要"],
@@ -3034,7 +3034,7 @@ CREATE TABLE IF NOT EXISTS t_request (
           type: "investigation-flow",
           items: [
             "`RequestService.approve` の if だけを見ると、`approver_id` の完全一致とロール未対応が分かる",
-            "その手前で `findById` の `WHERE` がすでに `applicant_id OR approver_id` で絞っており、部長職はレコードにすら届かないと気づく",
+            "その手前で `findById` の `WHERE` がすでに `applicant_id OR approver_id` で絞っており、部長職ではレコードを取得できないと気づく",
             "`findMine`（一覧）も同じ絞り込みで、承認対象を見つける画面にも影響すると分かる",
             "`LoginUser.role` はあるが、`data.sql` に部長職に当たる値が無いと分かる",
             "`SecurityConfig` は URL 単位の制御であり、レコード単位の判定には使えないと分かる",
@@ -3076,7 +3076,7 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "p",
-          text: "処理の入口は `GET /shinsei/requests/history` です。`RequestController.history` から `RequestService.searchHistory`、`RequestMapper.xml` の `searchHistory` へと呼び出しを辿り、既存の検索条件（件名・ステータス・申請日）がどこを通っているかを確認しましょう。承認者名も同じ経路をたどるはずです。",
+          text: "処理の入口は `GET /shinsei/requests/history` です。`RequestController.history` から `RequestService.searchHistory`、`RequestMapper.xml` の `searchHistory` へと呼び出しを辿り、既存の検索条件（件名・ステータス・申請日）がどこを通っているかを確認しましょう。承認者名も同じ経路を辿るはずです。",
         },
         {
           type: "h2",
@@ -3411,7 +3411,7 @@ public class SlackNotificationService {
           type: "callout",
           kind: "trap",
           title: "遅い外部呼び出しは、DB 接続も長く占有する",
-          text: "`@Transactional` のメソッドは、開始時に DB のコネクションを 1 つ借りたまま処理を進めます。その中で外部呼び出しが遅いと、DB との用事がとっくに終わっていても、コネクションを借りたまま待ち続けることになります。同時にアクセスが増えると、他のリクエストがコネクションプールの枯渇で待たされる可能性があります。Webhook の呼び出しには、必ず短いタイムアウトを設定しましょう。",
+          text: "`@Transactional` のメソッドは、開始時に DB のコネクションを 1 つ借りたまま処理を進めます。その中で外部呼び出しが遅いと、DB への SQL がすでに終わっていても、コネクションを借りたまま待ち続けることになります。同時にアクセスが増えると、他のリクエストがコネクションプールの枯渇で待たされる可能性があります。Webhook の呼び出しには、必ず短いタイムアウトを設定しましょう。",
         },
         {
           type: "h3",

@@ -81,7 +81,7 @@ export const terms: TermDef[] = [
   {
     term: "セッション",
     aliases: ["セッションタイムアウト", "セッション ID", "セッションID", "JSESSIONID", "セッション"],
-    body: "サーバ側に置く「この人の状態」。ブラウザは Cookie で ID だけ持ち、サーバがその ID でログインユーザなどを思い出します。",
+    body: "サーバ側に置く「この人の状態」。ブラウザは Cookie で ID だけ持ち、サーバはその ID で、ログインユーザなどの情報を取り出します。",
   },
   {
     term: "HttpSession",
@@ -96,7 +96,7 @@ export const terms: TermDef[] = [
   {
     term: "コンテキストパス",
     aliases: ["コンテキストパス", "context-path"],
-    body: "アプリの根っこの URL。例: `/shinsei`。Controller のパスの手前に付きます。Spring Boot では `server.servlet.context-path` に書きます。",
+    body: "アプリを区別する、パスの先頭部分。例: `/shinsei`。Controller のパスの手前に付きます。Spring Boot では `server.servlet.context-path` に書きます。",
   },
   {
     term: "クエリ",
@@ -364,17 +364,17 @@ export const terms: TermDef[] = [
   {
     term: "@Value",
     aliases: ["@Value"],
-    body: "設定ファイルの値を 1 つ、フィールドや引数に読み込む印です。`@Value(\"${app.mail.from}\")` のようにキー名を書きます。対応するキーが無いと、既定値（`:` のあとの値）を書いていない限り起動時に落ちます。Spring のアノテーションです。",
+    body: "設定ファイルの値を 1 つ、フィールドや引数に読み込む印です。`@Value(\"${app.mail.from}\")` のようにキー名を書きます。対応するキーが無いと、既定値（`:` のあとの値）を書いていない限り起動に失敗します。Spring のアノテーションです。",
   },
   {
     term: "@ConfigurationProperties",
     aliases: ["@ConfigurationProperties"],
-    body: "`prefix` に続くキーをまとめてクラスのフィールドへ読み込む印です。ハイフン区切りのキー（`retry-count`）は、キャメルケースのフィールド名（`retryCount`）に対応します。`@Value` と違い、キーが無くても起動時には落ちません。Spring Boot のアノテーションです。",
+    body: "`prefix` に続くキーをまとめてクラスのフィールドへ読み込む印です。ハイフン区切りのキー（`retry-count`）は、キャメルケースのフィールド名（`retryCount`）に対応します。`@Value` と違い、キーが無くても起動には失敗しません。Spring Boot のアノテーションです。",
   },
   {
     term: "@PropertySource",
     aliases: ["@PropertySource"],
-    body: "`application.yml` とは別の `.properties` ファイルを、追加の設定として読み込む印です。クラスに付けます。標準では `.yml` に対応しておらず、エラーにもならず失敗します。Spring のアノテーションです。",
+    body: "`application.yml` とは別の `.properties` ファイルを、追加の設定として読み込む印です。クラスに付けます。標準では `.yml` に対応しておらず、読み込んでもエラーにはならず、値が入らないだけです。Spring のアノテーションです。",
   },
   {
     term: "property-placeholder",
@@ -545,7 +545,7 @@ export const terms: TermDef[] = [
     term: "証明書",
     kana: "しょうめいしょ",
     aliases: ["証明書"],
-    body: "SSL / TLS で使う、サーバの身元を保証するファイルです。期限切れや設定ミスがあると、SSL 終端の手前でエラーになり、アプリまで届きません。",
+    body: "SSL / TLS で使う、サーバの身元を保証するファイルです。期限切れや設定ミスがあると、ブラウザと SSL 終端のあいだの接続でエラーになり、リクエストはアプリまで届きません。",
   },
   {
     term: "NAT",
@@ -761,7 +761,7 @@ export const terms: TermDef[] = [
   {
     term: "ミドルウェア",
     aliases: ["ミドルウェア"],
-    body: "アプリと OS の間で動く、共通の土台になるソフトウェアです。DB、メッセージキュー、外部の Tomcat や HTTP サーバなどが含まれます。アプリのコードに問題が無くても、ミドルウェア自体が落ちていたり詰まっていたりすると、同じような症状になります。",
+    body: "アプリと OS の間で動く、共通の土台になるソフトウェアです。DB、メッセージキュー、外部の Tomcat や HTTP サーバなどが含まれます。アプリのコードに問題が無くても、ミドルウェア自体が停止していたり、処理が詰まっていたりすると、同じような症状になります。",
   },
   {
     term: "access.log",
@@ -1162,7 +1162,7 @@ export const terms: TermDef[] = [
   {
     term: "defer",
     aliases: ["defer"],
-    body: "`<script>` に付ける属性です。付けると、HTML を最後まで読み終えてから JavaScript を実行します。`src` で外部ファイルを読み込む `<script>` のときだけ効きます。似た属性の `async` は、読み込みが終わり次第に実行されるので、順番が決まりません。",
+    body: "`<script>` に付ける属性です。付けると、HTML を最後まで読み終えてから JavaScript を実行します。`src` で外部ファイルを読み込む `<script>` のときだけ有効です。似た属性の `async` は、読み込みが終わり次第に実行されるので、順番が決まりません。",
   },
   {
     term: "DOMContentLoaded",
@@ -1282,7 +1282,7 @@ export const terms: TermDef[] = [
   {
     term: "Secure",
     aliases: ["Secure"],
-    body: "Cookie の属性。HTTPS のときだけブラウザが付けます。http で開くと、ログインが切れて見えることがあります。",
+    body: "Cookie の属性。HTTPS で通信するときだけ、ブラウザがその Cookie を送ります。http で開くと、ログインが切れて見えることがあります。",
   },
   {
     term: "Expires / Max-Age",
@@ -1292,7 +1292,7 @@ export const terms: TermDef[] = [
   {
     term: "ドメイン",
     aliases: ["ドメイン"],
-    body: "example.co.jp のようなサイトの範囲。Cookie の届く先もここで決まります。",
+    body: "example.co.jp のようなサイトの範囲。ブラウザが Cookie を送る先も、ここで決まります。",
   },
   {
     term: "ドメイン知識",
@@ -1589,7 +1589,7 @@ export const terms: TermDef[] = [
   {
     term: "フレームワーク",
     aliases: ["フレームワーク"],
-    body: "アプリの土台になる枠組み。Spring Framework など。スタックトレースの FW 行は、だいたいここです。",
+    body: "アプリの土台になる枠組み。Spring Framework など。スタックトレースのフレームワークの行は、だいたいここです。",
   },
   {
     term: "プロキシ",

@@ -45,7 +45,7 @@ export const javaMapTrack: Track = {
         },
         {
           type: "p",
-          text: "プロジェクトによって、多くは Maven か Gradle のどちらかに決まっています。",
+          text: "多くのプロジェクトは、Maven か Gradle のどちらかを使っています。",
         },
         {
           type: "p",
@@ -158,7 +158,7 @@ logging:
         },
         {
           type: "p",
-          text: "`application-dev.yml` は接続先とログの出力レベルを上書きしています。`application.yml` 側の `shinsei` と `application-dev.yml` 側の `shinsei_dev` を重ねると、後から読み込む方が勝つので、実際に接続する DB 名は `shinsei_dev` です。設定は複数ファイルに分かれることがあるので、1 ファイルだけ見て判断しないようにしましょう。",
+          text: "`application-dev.yml` は接続先とログの出力レベルを上書きしています。`application.yml` 側の `shinsei` と `application-dev.yml` 側の `shinsei_dev` を重ねると、後から読み込む方の値が使われるので、実際に接続する DB 名は `shinsei_dev` です。設定は複数ファイルに分かれることがあるので、1 ファイルだけ見て判断しないようにしましょう。",
         },
         {
           type: "p",
@@ -235,8 +235,8 @@ public class MailProperties {
         {
           type: "callout",
           kind: "trap",
-          title: "見つからないときの壊れ方が違う",
-          text: "`@Value(\"\${app.mail.from}\")` のように既定値を書かないと、対応するキーが 1 つも無い場合に起動時の例外で落ちます。設定漏れにすぐ気づけます（`\${app.mail.from:no-reply@example.com}` のように既定値を書けば落ちません）。一方 `@ConfigurationProperties` は、キーが無ければそのフィールドが `null` や初期値のままになるだけで、起動は失敗しません。設定を変えたのに反映されないときは、キー名の綴りや `prefix` のずれを疑いましょう。",
+          title: "キーが無いときの動きが違う",
+          text: "`@Value(\"\${app.mail.from}\")` のように既定値を書かないと、対応するキーが 1 つも無い場合に、起動時に例外になり、アプリが起動しません。設定漏れにすぐ気づけます（`\${app.mail.from:no-reply@example.com}` のように既定値を書けば起動できます）。一方 `@ConfigurationProperties` は、キーが無ければそのフィールドが `null` や初期値のままになるだけで、起動は失敗しません。設定を変えたのに反映されないときは、キー名の綴りや `prefix` のずれを疑いましょう。",
         },
         {
           type: "h2",
@@ -252,7 +252,7 @@ public class MailProperties {
         },
         {
           type: "p",
-          text: "クラスに付けると、指定したファイルを追加の設定として読み込みます。ファイル名が分かれば、`@PropertySource` の引数に同じファイル名がそのまま書かれているので、それで検索すると読み込んでいる Java クラスが見つかります。標準では `.properties` 用で、`.yml` は対応していません（エラーにもならず、値が入らないまま失敗します）。`.yml` を読みたいときは、専用の `PropertySourceFactory` を自作する必要があります。",
+          text: "クラスに付けると、指定したファイルを追加の設定として読み込みます。ファイル名が分かれば、`@PropertySource` の引数に同じファイル名がそのまま書かれているので、それで検索すると読み込んでいる Java クラスが見つかります。標準では `.properties` 用で、`.yml` は対応していません（読み込んでもエラーにはならず、値が入らないだけです）。`.yml` を読みたいときは、専用の `PropertySourceFactory` を自作する必要があります。",
         },
         {
           type: "code",
@@ -363,7 +363,7 @@ public class RegionInfo {
         {
           type: "callout",
           kind: "trap",
-          title: "annotation-config が無いと @Value が効かない",
+          title: "annotation-config が無いと @Value に値が入らない",
           text: "`<context:property-placeholder>` は `${...}` をファイルの値に置き換える仕組みを登録するだけで、`@Value` アノテーション自体を読む仕組みは別です。XML だけの設定で `<context:annotation-config/>`（または `<context:component-scan>`）が無いと、`@Value` を付けても値は入らず、フィールドは `null` のままになります。",
         },
         {
@@ -415,7 +415,7 @@ public class RegionInfo {
         },
         {
           type: "h2",
-          text: "層の役割とたどり方",
+          text: "層の役割と辿り方",
         },
         {
           type: "p",
@@ -512,7 +512,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "同じ RequestService を呼んでも、出口が HTML か JSON かで、クライアントが受け取るものが変わります。たどる順番は同じです。最後に見る場所だけ切り替えましょう。",
+          text: "同じ RequestService を呼んでも、出口が HTML か JSON かで、クライアントが受け取るものが変わります。辿る順番は同じです。最後に見る場所だけ切り替えましょう。",
         },
         {
           type: "p",
@@ -711,7 +711,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "待たされたトランザクションは、先の変更が確定したあとに読むことになるので、`status` がもう `PENDING` ではないと気づけます。待ちが増える分、ロックする範囲と時間は短くしましょう。",
+          text: "待たされたトランザクションは、先の変更が確定したあとに読むことになるので、`status` がもう `PENDING` ではないと判定できます。待ちが増える分、ロックする範囲と時間は短くしましょう。",
         },
         {
           type: "callout",
@@ -826,7 +826,7 @@ if (updated == 0) {
           type: "callout",
           kind: "trap",
           title: "見た目だけ壊れる",
-          text: "画面は出るのにスタイルだけ当たらないときは、Network タブで `/shinsei/css/app.css` が 404 になっていないかを見ましょう。ファイルの有無と URL のずれが多いです。崩れた画面の例は、シナリオ章の「一覧は出るが、画面だけ崩れている」にあります。",
+          text: "画面は出るのに CSS だけ適用されないときは、Network タブで `/shinsei/css/app.css` が 404 になっていないかを見ましょう。ファイルの有無と URL のずれが多いです。崩れた画面の例は、シナリオ章の「一覧は出るが、画面だけ崩れている」にあります。",
         },
         {
           type: "p",
@@ -1407,7 +1407,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "`@ControllerAdvice` や `HandlerExceptionResolver` は、throw したあとの応答を別クラスが決めます。業務例外を投げたメソッドの return を追っても、画面メッセージや JSON の形はここにあります。",
+          text: "`@ControllerAdvice` や `HandlerExceptionResolver` があると、throw したあとの応答はこれらのクラスが決めます。業務例外を投げたメソッドの return を追っても、画面メッセージや JSON の形は見つかりません。",
         },
         {
           type: "ul",
@@ -1488,7 +1488,7 @@ public void addInterceptors(InterceptorRegistry registry) {
           headers: ["パターン", "気をつけること"],
           rows: [
             ["1: 内蔵だけ", "手前の HTTP サーバが無いので、手前と後ろでパスがずれることはありません。コンテキストパスは `server.servlet.context-path` で決まります。"],
-            ["2: 外部 WAR", "手前の HTTP サーバが無いので、手前と後ろでパスがずれることはありません。ただし、コンテキストパスは WAR のファイル名や Tomcat の設定で決まり、`server.servlet.context-path` は効きません。`shinsei.war` なら `/shinsei` です。"],
+            ["2: 外部 WAR", "手前の HTTP サーバが無いので、手前と後ろでパスがずれることはありません。ただし、コンテキストパスは WAR のファイル名や Tomcat の設定で決まり、`server.servlet.context-path` は使われません。`shinsei.war` なら `/shinsei` です。"],
             ["3: 手前に Apache / nginx", "静的ファイルの 404 は、手前のパス設定のことがあります。コンテキストパスが、手前と後ろの両方に付いていることもあります。"],
           ],
         },

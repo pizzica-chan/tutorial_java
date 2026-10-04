@@ -31,7 +31,7 @@ export const quizzes = {
     choices: [
       "CSS ファイルが 404 になっていないか、Network タブで確認する",
       "開発者ツールの Elements タブで、ボタンの要素があるかを確認する",
-      "JavaScript のコンソールにエラーが出ていないか確認する",
+      "JavaScript の Console にエラーが出ていないか確認する",
       "サーバを再起動する",
     ],
     answer: 1,
@@ -135,7 +135,7 @@ export const quizzes = {
     choices: [
       "動きは変わらない。書き方の好みの違いだけ",
       "PreparedStatement へのバインドではなく、値がそのまま SQL の文字列に埋め込まれるようになる。利用者からの入力を渡すと SQL インジェクションの危険がある",
-      "`resultType` の自動変換が効かなくなる",
+      "`resultType` の自動変換が行われなくなる",
       "Java のメソッド名と XML の `id` の対応が外れる",
     ],
     answer: 1,
@@ -233,7 +233,7 @@ export const quizzes = {
       "Controller の戻り値をログに出して確認する",
     ],
     answer: 1,
-    explanation: "サーバは PENDING を返しています。画面の文言はフロント側です。Java のデバッガを止めても、正しい応答を返す処理に届くだけです。",
+    explanation: "サーバは PENDING を返しています。画面の文言はフロント側です。Java のデバッガを止めても、正しい応答を返す処理で止まるだけです。",
   },
   "read-js": {
     id: "read-js",
@@ -384,7 +384,7 @@ export const quizzes = {
   },
   "ts-env": {
     id: "ts-env",
-    question: "ローカルでは動き、検証用環境では落ちる。仮説として弱いのは？",
+    question: "ローカルでは動き、検証用環境では失敗する。仮説として弱いのは？",
     choices: [
       "`application.yml`（または .properties）の接続先が違う",
       "検証用環境だけデータ件数が桁違い",
@@ -507,7 +507,7 @@ export const quizzes = {
     question: "承認ボタンを押しても何も起きない。Network タブに新しいリクエストが無い。次は？",
     choices: [
       "RequestService の SQL を読む",
-      "サーバに届いていないので、フォームか JS、コンソールのエラーを見る",
+      "サーバに届いていないので、フォームか JS、Console のエラーを見る",
       "サーバのアプリログで、その時刻の ERROR が無いか確認する",
       "ブラウザを再起動してもう一度試す",
     ],
@@ -614,7 +614,7 @@ export const quizzes = {
     ],
     answer: 1,
     explanation:
-      "SQL も DB の値も正しいので、疑うのは `resultType` の自動変換です。`map-underscore-to-camel-case` により `updated_at` は `updatedAt` に変換されますが、`RequestEntity` のフィールド名は `approvedAt` です。名前が一致しないカラムは、MyBatis が黙って無視します。",
+      "SQL も DB の値も正しいので、疑うのは `resultType` の自動変換です。`map-underscore-to-camel-case` により `updated_at` は `updatedAt` に変換されますが、`RequestEntity` のフィールド名は `approvedAt` です。名前が一致しないカラムの値は、MyBatis がエラーを出さずに捨てます。",
   },
   "sc-history-slow": {
     id: "sc-history-slow",
@@ -662,7 +662,7 @@ export const quizzes = {
       "Thymeleaf の `th:if`",
       "書き込み先ディレクトリの `ls -l` で、所有者・グループがアプリの実行ユーザに合っているか",
       "MySQL の `EXPLAIN`",
-      "ブラウザのコンソールの `TypeError`",
+      "ブラウザの Console の `TypeError`",
     ],
     answer: 1,
     explanation:
@@ -670,7 +670,7 @@ export const quizzes = {
   },
   "sc-http": {
     id: "sc-http",
-    question: "一覧の HTML は 200。表のスタイルだけ当たっていない。次は？",
+    question: "一覧の HTML は 200。表の CSS だけ適用されていない。次は？",
     choices: [
       "RequestService の null チェック",
       "Network タブで CSS / JS のステータスコードを確認する。404 ならパスか手前の HTTP サーバを疑う",
@@ -759,7 +759,7 @@ export const quizzes = {
       "承認者名で絞り込むと、検索結果から消える",
       "承認者名が「未設定」として表示され、検索でもヒットする",
       "影響は無く、常に一覧に出続ける",
-      "検索条件を指定すると、アプリがエラーで落ちる",
+      "検索条件を指定すると、アプリがエラーになる",
     ],
     answer: 0,
     explanation: "`v` は `LEFT JOIN` なので一覧には出ますが、`v.display_name LIKE ...` の条件を足すと、`display_name` が無いレコードは比較が真にならず、絞り込んだ瞬間に結果から消えます。",
