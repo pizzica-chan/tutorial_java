@@ -1,5 +1,4 @@
 import type { ReactElement, ReactNode } from "react";
-import { PageAssets, Layers, Filters, ArchRoles, NPlusOne } from "./TeachingDiagrams";
 import type { DiagramName } from "../types";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon, type IconName } from "./Icon";
@@ -243,58 +242,12 @@ function RequestParams() {
 
 function SessionCookie() {
   return (
-    <div className="session-flow">
-      <p className="session-flow-intro">セッションでログイン状態を保つ例</p>
-      <div className="session-flow-head" aria-hidden="true">
-        <span><Icon name="browser" size={24} />ブラウザ</span>
-        <span><Icon name="server" size={24} />サーバ</span>
+    <div className="d-split">
+      <IconNode icon="key" kicker="BROWSER" title="Cookie" sub="キーだけ持つ" size={28} />
+      <div className="d-arrows">
+        <Arrow label="ID だけ往復する" />
       </div>
-      <ol className="session-flow-steps">
-        <li>
-          <div className="session-flow-step"><b>1</b><strong>ログイン成功後、ID を渡す</strong></div>
-          <div className="session-flow-row">
-            <div className="session-flow-card">
-              <span className="session-flow-label">ブラウザに保存</span>
-              <strong><Icon name="key" size={18} />Cookie</strong>
-              <code>JSESSIONID=AB12CD34</code>
-            </div>
-            <div className="session-flow-transfer is-response">
-              <span>サーバ → ブラウザ</span>
-              <strong>レスポンス</strong>
-              <code>Set-Cookie</code>
-              <i aria-hidden="true" />
-            </div>
-            <div className="session-flow-card is-server">
-              <span className="session-flow-label">サーバに保存</span>
-              <strong><Icon name="box" size={18} />セッション</strong>
-              <code>AB12CD34</code>
-              <span className="session-flow-user"><Icon name="user" size={16} />山田太郎のログイン情報</span>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div className="session-flow-step"><b>2</b><strong>次のリクエストで、同じ ID を送る</strong></div>
-          <div className="session-flow-row">
-            <div className="session-flow-card">
-              <span className="session-flow-label">ブラウザから送信</span>
-              <strong><Icon name="key" size={18} />保存した ID</strong>
-              <code>JSESSIONID=AB12CD34</code>
-            </div>
-            <div className="session-flow-transfer">
-              <span>ブラウザ → サーバ</span>
-              <strong>リクエスト</strong>
-              <code>Cookie</code>
-              <i aria-hidden="true" />
-            </div>
-            <div className="session-flow-card is-server">
-              <span className="session-flow-label">サーバで照合</span>
-              <strong><Icon name="search" size={18} />ID で取り出す</strong>
-              <code>AB12CD34</code>
-              <span className="session-flow-user"><Icon name="user" size={16} />山田太郎のログイン情報</span>
-            </div>
-          </div>
-        </li>
-      </ol>
+      <IconNode icon="box" kicker="SERVER" title="セッション" sub="中身はこちら" size={28} />
     </div>
   );
 }
@@ -314,6 +267,46 @@ function SessionStore() {
         <Chip icon="key">5D3A80B1 → 鈴木一郎</Chip>
         <Chip icon="key">…</Chip>
       </div>
+    </div>
+  );
+}
+
+function Layers() {
+  return (
+    <div className="d-stack">
+      <Layer icon="browser">画面 / URL</Layer>
+      <Arrow down label="受け口" />
+      <Layer icon="inbox" accent>
+        Controller
+      </Layer>
+      <Arrow down label="ビジネスロジック" />
+      <Layer icon="cog" accent>
+        Service
+      </Layer>
+      <Arrow down label="永続化" />
+      <Layer icon="file" accent>
+        Repository / Mapper
+      </Layer>
+      <Arrow down label="SQL" />
+      <Layer icon="database">DB</Layer>
+    </div>
+  );
+}
+
+function Filters() {
+  return (
+    <div className="d-stack">
+      <Layer icon="globe">リクエスト</Layer>
+      <Arrow down label="Security の Filter Chain" />
+      <Layer icon="shield" accent>
+        CSRF
+      </Layer>
+      <Arrow down label="例: トークン不正ならここで止まる" />
+      <Layer icon="lock" accent>
+        ログイン / 権限
+      </Layer>
+      <Arrow down label="例: 未ログインならここで止まる" />
+      <Layer icon="inbox">Controller</Layer>
     </div>
   );
 }
@@ -585,6 +578,22 @@ function HtmlJson() {
   );
 }
 
+function PageAssets() {
+  return (
+    <div className="d-n1">
+      <Layer icon="browser" accent>
+        GET /shinsei/requests → HTML
+      </Layer>
+      <Arrow down label="ブラウザが追加で取る" />
+      <div className="d-n1-rows">
+        <Chip icon="file">app.css</Chip>
+        <Chip icon="braces">app.js</Chip>
+        <Chip icon="braces">list.js</Chip>
+      </div>
+    </div>
+  );
+}
+
 function CallChain() {
   return (
     <div className="d-row wrap">
@@ -788,6 +797,24 @@ function Layer({ icon, children, accent }: { icon: IconName; children: string; a
   );
 }
 
+function ArchRoles() {
+  return (
+    <div className="d-stack">
+      <Layer icon="browser">ブラウザ</Layer>
+      <Arrow down label="HTTP/HTTPS リクエスト" />
+      <Layer icon="server" accent>
+        HTTP サーバ（任意）Apache / nginx
+      </Layer>
+      <Arrow down label="中継" />
+      <Layer icon="box" accent>
+        サーブレットコンテナ Tomcat / Jetty
+      </Layer>
+      <Arrow down label="Java" />
+      <Layer icon="inbox">アプリ（Controller 以降）</Layer>
+    </div>
+  );
+}
+
 function ArchPatterns() {
   return (
     <div>
@@ -836,6 +863,22 @@ function ArchPatterns() {
       <p className="diagram-note">
         <TextWithTerms text="コンテナ（Docker など）で動かしても、重ね方は上の 3 パターンに収まることが多いです。" />
       </p>
+    </div>
+  );
+}
+
+function NPlusOne() {
+  return (
+    <div className="d-n1">
+      <Layer icon="database">一覧 1 回 SELECT（1000 件）</Layer>
+      <Arrow down label="各レコードで追加" />
+      <div className="d-n1-rows">
+        <Chip icon="terminal">SELECT #1</Chip>
+        <Chip icon="terminal">SELECT #2</Chip>
+        <Chip icon="terminal">…</Chip>
+        <Chip icon="terminal">SELECT #1000</Chip>
+      </div>
+      <p className="diagram-note">件数だけ SQL が増えるのが N+1。</p>
     </div>
   );
 }
