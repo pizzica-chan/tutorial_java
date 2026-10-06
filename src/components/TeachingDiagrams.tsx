@@ -14,32 +14,8 @@ function Connector({ children }: { children: ReactNode }) {
   return <div className="td-connector"><span aria-hidden="true">↓</span>{children}</div>;
 }
 
-export function Mapping() {
-  const parts = [
-    { label: "コンテキストパス", value: "/shinsei", source: "server.servlet.context-path=/shinsei", note: "アプリの設定", icon: "server" as const },
-    { label: "クラスのパス", value: "/requests", source: '@RequestMapping("/requests")', note: "RequestController", icon: "file" as const },
-    { label: "Java メソッドのパス", value: "/12", source: '@GetMapping("/{id:[0-9]+}")', note: "detail：数字の部分を id で受け取る", icon: "code" as const },
-  ];
-  return <div className="teaching-diagram">
-    <p className="td-heading">URL のどの部分を、どこで決めるか</p>
-    <div className="td-url"><span className="td-method">GET</span>{parts.map((part, index) =>
-      <code key={part.value} className={`td-part td-part-${index}`}>{part.value}<small>{index + 1}</small></code>
-    )}</div>
-    <div className="td-mapping-grid">{parts.map((part, index) =>
-      <div className={`td-mapping-part td-part-${index}`} key={part.value}>
-        <span className="td-mapping-link" aria-hidden="true">↑</span>
-        <Card icon={part.icon} title={`${index + 1}　${part.label}`}>
-          <code>{part.source}</code><small>{part.note}</small>
-        </Card>
-      </div>
-    )}</div>
-    <div className="td-result"><Icon name="inbox" size={20} /><span>このリクエストの処理の入口：<code>RequestController.detail</code></span></div>
-  </div>;
-}
-
 export function PageAssets() {
   return <div className="teaching-diagram">
-    <p className="td-heading">1 つの画面でも、ファイルごとに HTTP の往復がある</p>
     <Card icon="browser" title="1　最初に HTML を取得する">
       <code>GET /shinsei/requests</code>
       <span className="td-inline-result"><Icon name="file" size={18} />レスポンス：HTML</span>
@@ -50,31 +26,31 @@ export function PageAssets() {
       { file: "app.js", role: "共通の JavaScript", icon: "braces" as const },
       { file: "list.js", role: "一覧の JavaScript", icon: "braces" as const },
     ].map((asset) => <Card key={asset.file} icon={asset.icon} title={asset.file} tone="green">
-      <span>追加のリクエスト → ファイルを受信</span><small>{asset.role}</small>
+      <small>{asset.role}</small>
     </Card>)}</div>
     <p className="td-footnote">申請一覧の例。キャッシュなどにより、毎回すべてを取得するとは限りません。</p>
   </div>;
 }
 
 export function Layers() {
-  const layers: { icon: IconName; name: string; role: string; example: string }[] = [
-    { icon: "inbox", name: "Controller", role: "リクエストを受ける", example: "URL に対応する Java メソッド" },
-    { icon: "cog", name: "Service", role: "業務の処理を行う", example: "呼ばれた Java メソッドの中身" },
-    { icon: "file", name: "Repository / Mapper", role: "DB とやり取りする", example: "SQL と、渡している値" },
-    { icon: "database", name: "DB", role: "データを取得・更新する", example: "対象のテーブルとレコード" },
+  const layers: { icon: IconName; name: string; role: string }[] = [
+    { icon: "inbox", name: "Controller", role: "受け口" },
+    { icon: "cog", name: "Service", role: "ビジネスロジック" },
+    { icon: "file", name: "Repository / Mapper", role: "永続化" },
+    { icon: "database", name: "DB", role: "SQL" },
   ];
   return <div className="teaching-diagram">
-    <p className="td-heading">画面の URL から、呼び出し先を順に辿る例</p>
-    <div className="td-start"><Icon name="browser" size={20} />画面の URL・HTTP メソッド</div>
-    <Connector>対応する処理を探す</Connector>
-    <ol className="td-timeline">{layers.map((layer, index) => <li key={layer.name}>
+    <ol className="td-timeline">
+      <li>
+        <span className="td-number td-origin-marker" aria-hidden="true" />
+        <Card icon="browser" title="画面 / URL" />
+      </li>
+      {layers.map((layer, index) => <li key={layer.name}>
       <span className="td-number">{index + 1}</span>
       <Card icon={layer.icon} title={layer.name} tone={index === 3 ? "green" : "blue"}>
         <span>{layer.role}</span>
       </Card>
-      <div className="td-check"><span>確認するもの</span><strong>{layer.example}</strong></div>
     </li>)}</ol>
-    <p className="td-footnote">層の分け方はアプリによって違います。実際の呼び出し先を辿りましょう。</p>
   </div>;
 }
 
@@ -126,10 +102,10 @@ export function NPlusOne() {
   return <div className="teaching-diagram">
     <p className="td-heading">1 回の一覧取得から、1,000 回の追加 SQL が発生する例</p>
     <Card icon="database" title="一覧を取得する SELECT：1 回"><span>1,000 件の申請レコードを取得</span></Card>
-    <Connector>各申請の承認者を、1 件ずつ追加で取得</Connector>
+    <Connector>関連する利用者の情報を、1 件ずつ追加で取得</Connector>
     <div className="td-repeat">{["1 件目", "2 件目", "…", "1,000 件目"].map((label) =>
       label === "…" ? <span className="td-ellipsis" key={label} aria-label="途中を省略">…</span> :
-      <div className="td-repeat-item" key={label}><span>{label}の申請</span><span aria-hidden="true">↓</span><code>SELECT</code><small>承認者を取得</small></div>
+      <div className="td-repeat-item" key={label}><span>{label}の申請</span><span aria-hidden="true">↓</span><code>SELECT</code><small>利用者情報を取得</small></div>
     )}</div>
     <div className="td-equation"><span><b>1</b>一覧取得</span><i>＋</i><span><b>1,000</b>追加取得（N 回）</span><i>＝</i><span className="td-total"><b>1,001 回</b>SQL の実行</span></div>
     <p className="td-footnote">SQL ログでは、同じ形の SELECT がパラメータを変えて繰り返されます。</p>

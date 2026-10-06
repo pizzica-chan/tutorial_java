@@ -1,5 +1,5 @@
 import type { ReactElement, ReactNode } from "react";
-import { Mapping, PageAssets, Layers, Filters, ArchRoles, NPlusOne } from "./TeachingDiagrams";
+import { PageAssets, Layers, Filters, ArchRoles, NPlusOne } from "./TeachingDiagrams";
 import type { DiagramName } from "../types";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon, type IconName } from "./Icon";
@@ -366,6 +366,22 @@ function CrossCut() {
       </Layer>
       <Arrow down label="実体" />
       <Layer icon="cog">Service</Layer>
+    </div>
+  );
+}
+
+function Mapping() {
+  return (
+    <div className="d-formula">
+      <Layer icon="server">/shinsei（コンテキストパス）</Layer>
+      <span className="d-plus">+</span>
+      <Layer icon="file">@RequestMapping("/requests")</Layer>
+      <span className="d-plus">+</span>
+      <Layer icon="link">{'@GetMapping("/{id:[0-9]+}")'}</Layer>
+      <span className="d-plus">=</span>
+      <Layer icon="route" accent>
+        GET /shinsei/requests/12
+      </Layer>
     </div>
   );
 }
