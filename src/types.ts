@@ -49,7 +49,8 @@ export type InvestigationFlowItem = string | { tracks: InvestigationFlowTrack[] 
 
 export type Block =
   | { type: "p"; text: string; link?: { label: string; to: string } }
-  | { type: "h2"; text: string }
+  // aside: "hands-on" の h2 から次の h2 までは、教材の利用者が申請くんを動かす手順として枠で囲む
+  | { type: "h2"; text: string; aside?: "hands-on" }
   | { type: "h3"; text: string }
   | { type: "ul"; items: string[] }
   | { type: "ol"; items: string[] }
