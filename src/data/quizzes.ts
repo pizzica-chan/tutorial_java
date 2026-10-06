@@ -776,6 +776,34 @@ export const quizzes = {
     answer: 0,
     explanation: "`@Transactional` のメソッドは開始時に借りた DB コネクションを処理中ずっと保持します。中で行う外部呼び出しが遅いと、その分コネクションを長く占有し、同時アクセスが増えるとコネクションプールの枯渇につながります。",
   },
+  "sc-shared-state": {
+    id: "sc-shared-state",
+    question: "Service の引数は「休暇」なのに SQL には「交通費」が渡った。二つのリクエストが同じ searchTitle フィールドを使っていた。原因に対応する修正は？",
+    choices: ["検索条件をフィールドに保存せず、引数のまま Mapper へ渡す", "フィールドを volatile にするだけ", "SQL のインデックスを追加する", "フォームの name を変える"],
+    answer: 0,
+    explanation: "共有フィールドが別のリクエストで上書きされたことが原因です。リクエストごとの引数を直接渡せば、この上書きを避けられます。volatile は利用者ごとに値を分ける指定ではありません。",
+  },
+  "sc-self-invocation": {
+    id: "sc-self-invocation",
+    question: "トランザクションの無い submitBatch から、同じインスタンスの @Transactional 付き saveBatch を呼んだ。transactionActive=false だった理由は？",
+    choices: ["IllegalArgumentException はロールバック対象にならないから", "内部呼び出しがトランザクションを開始するプロキシを通らなかったから", "INSERT はトランザクションで取り消せないから", "一括処理には @Transactional を付けられないから"],
+    answer: 1,
+    explanation: "このプロキシ方式では、同じインスタンス内の呼び出しにアノテーションの処理は挟まれません。IllegalArgumentException は実行時例外で、既定ではロールバック対象なので、選択肢 1 は理由になりません。呼び出し元にもトランザクションが無いため、処理全体を取り消す範囲がありませんでした。",
+  },
+  "sc-list-n-plus-one": {
+    id: "sc-list-n-plus-one",
+    question: "一覧取得が 1 回、名前取得が 300 回実行された。名前取得の繰り返しが今回の遅さの原因か、さらに確認するには？",
+    choices: ["名前取得の SQL だけの実行計画を見る", "ブラウザの CSS を調べる", "ログの時刻差で、名前取得が処理全体の時間をどれだけ占めるか確認する", "SQL が 301 回なので、時間を確認せず原因と断定する"],
+    answer: 2,
+    explanation: "回数とループから N+1 は特定できますが、今回の遅さにつながっているかは時刻差も確認します。本文のログ例では、約 600 ミリ秒の処理のうち約 579 ミリ秒が名前取得で、待ち時間の大半を占めていました。",
+  },
+  "sc-validation-paths": {
+    id: "sc-validation-paths",
+    question: "フォームの POST は空の件名を拒否し、API は登録した。両方が呼ぶ Service に入力チェックは無かった。原因は？",
+    choices: ["NOT NULL は空文字も拒否するから", "API は必ず入力チェックを省略するから", "CSRF トークンが入力内容を検証しないから", "件名必須の判定が、フォーム側の入口にしか無かったから"],
+    answer: 3,
+    explanation: "共通処理に合流する前のフォーム側だけで判定していました。空文字は NULL ではなく、NOT NULL でも登録できます。共通の業務条件をどの経路で保証するか確認しましょう。",
+  },
 } satisfies Record<string, Quiz>;
 
 export type QuizId = keyof typeof quizzes;

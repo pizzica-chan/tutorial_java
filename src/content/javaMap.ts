@@ -1384,6 +1384,14 @@ public void addInterceptors(InterceptorRegistry registry) {
           text: "これらは、アノテーションが付いているだけで処理が動きます。読み飛ばさず確認しましょう。",
         },
         {
+          type: "p",
+          text: "同じクラスの中で別の Java メソッドを呼ぶ場合は、プロキシを通りません。そのメソッドの `@Transactional` は効かないことがあります。実例は、実務のシナリオ「一括登録が失敗したのに、最初の申請だけ残る」で扱います。",
+          link: {
+            label: "一括登録が失敗したのに、最初の申請だけ残る",
+            to: "/tracks/scenario/self-invocation",
+          },
+        },
+        {
           type: "code",
           title: "Controller に書かれている呼び出し",
           lang: "java",

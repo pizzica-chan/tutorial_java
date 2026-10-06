@@ -3,12 +3,7 @@ description: 説明図は CSS とアイコン。雰囲気のフリー写真は�
 alwaysApply: true
 ---
 
-# 説明用の画像
+プロジェクトルートの `AGENTS.md` を読み、各見出しの適用対象に従う。
+このルールに対応する項目は「説明用の画像」。本文の管理元は `AGENTS.md` とし、変更はそちらに行う。
 
-ラベル付きの構造説明（URL 分解、スタックの 1 行、マッピング、Cookie とセッション、層、切り分け）は、CSS 図と `src/components/Icon.tsx` のアイコンにする。
-
-申請くんの画面と Network タブだけ、写真を `public/images/screen-*.jpg` に置く。手順は `textbook-screenshots`。雰囲気のフリー素材（ノート PC、机、南京錠、サーバ室）は置かない。
-
-`src/` や CSS から参照するファイルは、必ず `public/images/` に実体を置く。出典表に無いファイル、参照の無いファイルは置かない。追加・削除のあと `npm run check` で参照と出典の一致を確認する。
-
-装飾のために全ページへ貼らない。
+@AGENTS.md

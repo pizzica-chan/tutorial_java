@@ -4,6 +4,27 @@
 
 ## 意図している動き
 
+- **追加のソース追跡シナリオは `investigation` プロファイルで動く。** `InvestigationController` と `InvestigationService` は通常起動では登録されません。`/shinsei/investigation` の画面から検索、名前付き一覧、フォーム登録へ進めます。通常の一覧・承認の処理は変更していません。教材のログは観測例であり、時刻や件数は再現時に確認します。
+- **調査用検索は、件名を Service の共有フィールドへ保存する。** 同時実行で `searchTitle` が上書きされる原因を残しています。ログインユーザの ID は引数で渡すため、検索条件が混ざっても参照権限の条件は維持します。`beforeSearch` はデバッガで現在のスレッドだけ止める場所です。単独操作では再現しません。
+- **調査用一括登録は内部呼び出しで `@Transactional` を通らない。** `submitBatch` から同じインスタンスの `saveBatch` を呼びます。`RequestService.create` にもトランザクション指定は無いため、2 件目の件名チェックで例外になると 1 件目が残ります。承認処理を変更する例ではありません。トランザクション開始の有無は `transactionActive` のログに出します。
+- **調査用一覧は申請ごとに申請者名を取得する。** `findMineWithoutNames` のあとで `UserMapper.findById` を繰り返す N+1 の例です。通常の `findMine` は JOIN のままです。初期データでも回数は確認できますが、遅さを体感するには件数や DB との通信時間が必要です。
+- **N+1 の時刻付きログは説明用の例。** 300 件の一覧について、一覧検索と名前取得の時間を比較する流れを示しています。配布環境の実測値ではありません。実際の所要時間はデータと環境に依存するため、SQL の回数だけで今回の遅さの原因と断定しません。各シナリオから、本文の「手元で再現するには」へリンクしています。
+- **調査用のフォームと API で件名の検証が違う。** `/investigation/form` は空白を拒否し、`/investigation/api` は共通の `create` へそのまま渡します。NOT NULL は空文字を拒否しません。CSRF とログインは通常どおり有効です。これらは原因を読むための不具合なので、共通チェックを足して消さないでください。
+
+### 追加シナリオの起動
+
+`shinsei-kun` で実行します。通常の app が起動していたら先に `docker compose stop app` を実行します。
+
+```bash
+docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investigation app
+```
+
+山田の ID は 7、佐藤の ID は 3 です。`/shinsei/investigation` を開きます。POST の Console 例は教材本文にあります。一括登録や空文字の登録を再実行するとレコードが増えるため、レスポンスや SQL で ID を記録してください。
+
+デバッガを使う場合は、run のオプションに `-e "JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" -p 127.0.0.1:5005:5005` を追加します。IDE から localhost:5005 に接続します。
+
+以下は通常の教材用の動きです。
+
 - **申請一覧は未承認だけ出す。** `findMine` は `status = 'PENDING'` です。承認と新規申請は一覧から行います。承認済みの備品購入は一覧に出ず、申請履歴で探します。
 - **申請履歴は検索用。** 件名・ステータス・申請日で絞ります。未承認も承認済みも出ます。承認ボタンはありません。
 - **申請者（山田）にも承認ボタンが出る。** 教材の一覧抜粋と同じです。一覧で押しても POST しません（下の `list.js`）。詳細で押すと POST します。山田が詳細で押すと「権限がありません」になり、`ForbiddenException` の画面が撮れます。佐藤が詳細で承認すると通ります。

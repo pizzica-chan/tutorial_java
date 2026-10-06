@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title='調査用の申請', content=~{::main})">
+<main>
+  <h1>調査用の申請</h1>
+  <p>この画面は investigation プロファイルでだけ表示されます。</p>
+  <form th:action="@{/investigation/search}" method="get">
+    <label>件名 <input name="title" value="申請" /></label>
+    <button>検索</button>
+  </form>
+  <p><a th:href="@{/investigation/list}">申請者名付きの一覧（JSON）</a></p>
+  <form th:action="@{/investigation/form}" method="post">
+    <label>件名 <input name="title" required /></label>
+    <label>承認者 ID <input name="approverId" type="number" value="3" required /></label>
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button>提出</button>
+  </form>
+  <p>一括登録と JSON API の操作は教材本文の Console の例を使ってください。</p>
+</main>
+</html>
