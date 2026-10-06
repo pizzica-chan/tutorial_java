@@ -12,7 +12,7 @@ export const sourceScenarios: Lesson[] = [
       },
       {
         type: "p",
-        text: "調査用の検索画面で、山田が件名に「休暇」を指定したのに、「交通費」の申請が表示された。ちょうど同じ時刻に、佐藤が「交通費」を検索していた。山田が参照できる申請の範囲は変わらず、件名の条件だけが変わっている。",
+        text: "申請の検索で、山田が件名に「休暇」を指定したのに、「交通費」の申請が表示された。ちょうど同じ時刻に、佐藤が「交通費」を検索していた。山田が参照できる申請の範囲は変わらず、件名の条件だけが変わっている。",
       },
       {
         type: "h2",
@@ -37,7 +37,7 @@ export const sourceScenarios: Lesson[] = [
       },
       {
         type: "p",
-        text: "手元で再現する場合は、このシナリオの末尾にある「手元で再現するには」を確認しましょう。",
+        text: "このシナリオの不具合は、申請くんに再現用として足した画面で再現できます。通常の起動では使えないので、手元で試す場合は、このシナリオの末尾にある「手元で再現するには」の手順で起動しましょう。",
         link: {
           label: "手元で再現するには",
           to: "/tracks/scenario/shared-state#h-8",
@@ -57,7 +57,7 @@ export const sourceScenarios: Lesson[] = [
       },
       {
         type: "code",
-        title: "操作が重なったときのサーバログ（申請くん・調査用の機能を有効にした起動・抜粋）",
+        title: "操作が重なったときのサーバログ（申請くん・再現用の機能を有効にした起動・抜粋）",
         code: `04:12:03.100 DEBUG [nio-8080-exec-1] j.c.e.s.service.InvestigationService : search user=7 title=休暇
 04:12:03.200 DEBUG [nio-8080-exec-2] j.c.e.s.service.InvestigationService : search user=3 title=交通費
 04:12:03.300 DEBUG [nio-8080-exec-1] j.c.e.s.m.R.searchHistory : ==> Parameters: 7(Long), 7(Long), 交通費(String)`,
@@ -129,7 +129,7 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "この章のシナリオで使う調査用の機能は、通常の起動では有効になりません。プロファイルは、起動時に使う設定や部品を選ぶ名前です。ここでは通常の設定である `dev` に加えて、調査用の部品を有効にする `investigation` を指定します。四つのシナリオで共通の手順です。",
+        text: "再現用の画面と処理は、通常の起動では有効になりません。有効にするには、起動するときにプロファイルを指定します。プロファイルは、起動時に使う設定や部品を選ぶ名前です。ここでは通常の設定である `dev` に加えて、再現用の部品を有効にする `investigation` を指定します。",
       },
       {
         type: "p",
@@ -137,17 +137,17 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "code",
-        title: "調査用の機能を有効にして起動する",
+        title: "再現用の機能を有効にして起動する",
         lang: "bash",
         code: `docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investigation app`,
       },
       {
         type: "p",
-        text: "ブラウザで `http://localhost:8080/shinsei/login` を開き、山田（`yamada`）でログインしましょう。パスワードは `password` です。ログイン後に `http://localhost:8080/shinsei/investigation` を開くと、調査用の検索と登録フォームが表示されます。佐藤は `sato`、パスワードは同じです。山田の ID は 7、佐藤の ID は 3 です。",
+        text: "ブラウザで `http://localhost:8080/shinsei/login` を開き、山田（`yamada`）でログインしましょう。パスワードは `password` です。ログイン後に `http://localhost:8080/shinsei/investigation` を開くと、再現用の画面が表示されます。佐藤は `sato`、パスワードは同じです。山田の ID は 7、佐藤の ID は 3 です。",
       },
       {
         type: "p",
-        text: "同時検索のシナリオでは、二つの検索を重ねる必要があります。別の Chrome プロファイルで佐藤をログインさせ、Cookie を分けましょう。同じプロファイルのタブを増やすだけでは、ログイン状態を分けられません。手動では、二つの検索が重なる瞬間を偶然にしか作れません。確実に再現するには、デバッガを使います。",
+        text: "このシナリオでは、二つの検索を重ねる必要があります。別の Chrome プロファイルで佐藤をログインさせ、Cookie を分けましょう。同じプロファイルのタブを増やすだけでは、ログイン状態を分けられません。手動では、二つの検索が重なる瞬間を偶然にしか作れません。確実に再現するには、デバッガを使います。",
       },
       {
         type: "p",
@@ -189,7 +189,7 @@ public List<RequestEntity> search(Long userId, String title) {
           "Network タブの応答はエラー。ただし最初の INSERT は実行済み",
           "DB に件名「一括調査用」のレコードが 1 件残っている（取り消されていない）",
           "保存する Java メソッドには `@Transactional` が付いている",
-          "手元で、調査用の機能を有効にして起動している。ログは DEBUG",
+          "手元で、再現用の機能を有効にして起動している。ログは DEBUG",
         ],
       },
       {
@@ -198,19 +198,19 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "例外が出たのに INSERT が残るのは、取り消しの仕組みであるトランザクションが働いていないときです。`@Transactional` が付いていても、トランザクションが実際に開始されたとは限りません。調査用の Service は、開始されたかをログに出しているので、確かめましょう。",
+        text: "例外が出たのに INSERT が残るのは、取り消しの仕組みであるトランザクションが働いていないときです。`@Transactional` が付いていても、トランザクションが実際に開始されたとは限りません。この Service は、開始されたかをログに出しているので、確かめましょう。",
       },
       {
         type: "p",
-        text: "手元で再現する場合は、「同時に検索すると、別の利用者の検索条件で結果が出る」の末尾にある「手元で再現するには」を確認しましょう。",
+        text: "このシナリオの不具合は、申請くんに再現用として足した画面で再現できます。通常の起動では使えないので、手元で試す場合は、このシナリオの末尾にある「手元で再現するには」の手順で起動しましょう。",
         link: {
           label: "手元で再現するには",
-          to: "/tracks/scenario/shared-state#h-8",
+          to: "/tracks/scenario/self-invocation#h-8",
         },
       },
       {
         type: "p",
-        text: "山田で `/shinsei/investigation` を開き、Console で次を実行しましょう。画面の CSRF トークンを使うため、ログインした調査用画面で操作します。",
+        text: "山田で `/shinsei/investigation` を開き、Console で次を実行しましょう。画面の CSRF トークンを使うため、ログインした状態の再現用の画面で操作します。",
       },
       {
         type: "code",
@@ -244,7 +244,7 @@ WHERE title = '一括調査用' ORDER BY id;`,
       },
       {
         type: "code",
-        title: "サーバログ（申請くん・調査用の機能を有効にした起動・抜粋）",
+        title: "サーバログ（申請くん・再現用の機能を有効にした起動・抜粋）",
         code: `j.c.e.s.service.InvestigationService : batch transactionActive=false
 j.c.e.s.mapper.RequestMapper.insert : ==>  Preparing: INSERT INTO t_request ...
 java.lang.IllegalArgumentException: 件名は必須です`,
@@ -318,6 +318,28 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
         ],
       },
       { type: "quiz", id: "sc-self-invocation" },
+      {
+        type: "h2",
+        text: "手元で再現するには",
+      },
+      {
+        type: "p",
+        text: "再現用の画面と処理は、通常の起動では有効になりません。有効にするには、起動するときにプロファイルを指定します。プロファイルは、起動時に使う設定や部品を選ぶ名前です。ここでは通常の設定である `dev` に加えて、再現用の部品を有効にする `investigation` を指定します。",
+      },
+      {
+        type: "p",
+        text: "Docker を起動し、端末で `shinsei-kun` ディレクトリへ移動しましょう。通常の app コンテナが起動している場合は、先に `docker compose stop app` で 8080 番ポートを空けます。そのあと次を実行します。DB は Compose が起動します。",
+      },
+      {
+        type: "code",
+        title: "再現用の機能を有効にして起動する",
+        lang: "bash",
+        code: `docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investigation app`,
+      },
+      {
+        type: "p",
+        text: "ブラウザで `http://localhost:8080/shinsei/login` を開き、山田（`yamada`）でログインしましょう。パスワードは `password` です。ログイン後に `http://localhost:8080/shinsei/investigation` を開くと、再現用の画面が表示されます。Console の例で承認者に指定している ID 3 は、佐藤です。",
+      },
     ],
   },
   {
@@ -331,7 +353,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "p",
-        text: "申請の多い利用者から、「一覧表示だけ遅い」と相談があった。対象は、調査用の申請者名付き一覧 `/shinsei/investigation/list` である。画面にエラーは出ていない。",
+        text: "申請の多い利用者から、「一覧表示だけ遅い」と相談があった。対象は、申請者名付きの一覧 `/shinsei/investigation/list` である。画面にエラーは出ていない。",
       },
       {
         type: "h2",
@@ -356,10 +378,10 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "p",
-        text: "手元で再現する場合は、「同時に検索すると、別の利用者の検索条件で結果が出る」の末尾にある「手元で再現するには」を確認しましょう。一覧は、調査用画面の「申請者名付きの一覧」から開けます。",
+        text: "このシナリオの不具合は、申請くんに再現用として足した画面で再現できます。通常の起動では使えないので、手元で試す場合は、このシナリオの末尾にある「手元で再現するには」の手順で起動しましょう。",
         link: {
           label: "手元で再現するには",
-          to: "/tracks/scenario/shared-state#h-8",
+          to: "/tracks/scenario/list-n-plus-one#h-9",
         },
       },
       {
@@ -376,7 +398,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "code",
-        title: "操作時刻の SQL ログ（申請くん・調査用の機能を有効にした起動・抜粋）",
+        title: "操作時刻の SQL ログ（申請くん・再現用の機能を有効にした起動・抜粋）",
         code: `j.c.e.s.m.R.findMineWithoutNames : ==>  Preparing: SELECT id, title, ... FROM t_request ...
 j.c.e.s.m.R.findMineWithoutNames : <==      Total: 4
 j.c.e.s.mapper.UserMapper.findById : ==>  Preparing: SELECT id, username, ... FROM t_user WHERE id = ?
@@ -429,7 +451,7 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
         type: "callout",
         kind: "note",
         title: "Mapper の呼び出し回数と SQL の実行回数は同じとは限らない",
-        text: "取得結果を再利用するキャッシュがあれば、Mapper を呼んでも SQL は実行されないことがあります。MyBatis にも同じ SqlSession（DB 操作をまとめるオブジェクト）内で結果を再利用する仕組みがあります。この調査用処理にはトランザクションが無いので、ループの 1 回ごとに SqlSession が変わり、結果は再利用されません。実際の SQL の回数は、呼び出し元だけでなく `Preparing` のログでも確認しましょう。",
+        text: "取得結果を再利用するキャッシュがあれば、Mapper を呼んでも SQL は実行されないことがあります。MyBatis にも同じ SqlSession（DB 操作をまとめるオブジェクト）内で結果を再利用する仕組みがあります。この処理にはトランザクションが無いので、ループの 1 回ごとに SqlSession が変わり、結果は再利用されません。実際の SQL の回数は、呼び出し元だけでなく `Preparing` のログでも確認しましょう。",
       },
       {
         type: "h3",
@@ -483,6 +505,28 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
         ],
       },
       { type: "quiz", id: "sc-list-n-plus-one" },
+      {
+        type: "h2",
+        text: "手元で再現するには",
+      },
+      {
+        type: "p",
+        text: "再現用の画面と処理は、通常の起動では有効になりません。有効にするには、起動するときにプロファイルを指定します。プロファイルは、起動時に使う設定や部品を選ぶ名前です。ここでは通常の設定である `dev` に加えて、再現用の部品を有効にする `investigation` を指定します。",
+      },
+      {
+        type: "p",
+        text: "Docker を起動し、端末で `shinsei-kun` ディレクトリへ移動しましょう。通常の app コンテナが起動している場合は、先に `docker compose stop app` で 8080 番ポートを空けます。そのあと次を実行します。DB は Compose が起動します。",
+      },
+      {
+        type: "code",
+        title: "再現用の機能を有効にして起動する",
+        lang: "bash",
+        code: `docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investigation app`,
+      },
+      {
+        type: "p",
+        text: "ブラウザで `http://localhost:8080/shinsei/login` を開き、山田（`yamada`）でログインしましょう。パスワードは `password` です。ログイン後に `http://localhost:8080/shinsei/investigation` を開くと、再現用の画面が表示されます。一覧は、再現用の画面の「申請者名付きの一覧」から開けます。",
+      },
     ],
   },
   {
@@ -496,7 +540,7 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
       },
       {
         type: "p",
-        text: "申請者の山田から、「件名を空にしたのに申請できてしまった」と連絡があった。申請には件名が必須で、調査用画面のフォームでは空のまま提出できない。しかし、JSON API から送ると、空の件名の申請が作られた。",
+        text: "申請者の山田から、「件名を空にしたのに申請できてしまった」と連絡があった。申請には件名が必須で、画面のフォームでは空のまま提出できない。しかし、JSON API から送ると、空の件名の申請が作られた。",
       },
       {
         type: "h2",
@@ -509,7 +553,7 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
           "フォームの POST は、空の件名を拒否する",
           "API の POST は、空文字を受け付けて DB にレコードが残る",
           "`t_request` の `title` は NOT NULL。ただし、空文字のレコードが増えている",
-          "手元で、調査用の機能を有効にして起動している。ログは DEBUG",
+          "手元で、再現用の機能を有効にして起動している。ログは DEBUG",
         ],
       },
       {
@@ -522,10 +566,10 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
       },
       {
         type: "p",
-        text: "手元で再現する場合は、「同時に検索すると、別の利用者の検索条件で結果が出る」の末尾にある「手元で再現するには」を確認しましょう。",
+        text: "このシナリオの不具合は、申請くんに再現用として足した画面で再現できます。通常の起動では使えないので、手元で試す場合は、このシナリオの末尾にある「手元で再現するには」の手順で起動しましょう。",
         link: {
           label: "手元で再現するには",
-          to: "/tracks/scenario/shared-state#h-8",
+          to: "/tracks/scenario/validation-paths#h-7",
         },
       },
       {
@@ -550,7 +594,7 @@ console.log(formResult.status, apiResult.status);`,
       },
       {
         type: "p",
-        text: "この調査用実装では、フォームの応答は 400、API の応答は 200 です。API のレスポンスの ID で DB を確認すると、`title` が空文字のレコードがあります。SQL が成功したことと、業務上正しい入力であることは別です。",
+        text: "この再現用の実装では、フォームの応答は 400、API の応答は 200 です。API のレスポンスの ID で DB を確認すると、`title` が空文字のレコードがあります。SQL が成功したことと、業務上正しい入力であることは別です。",
       },
       {
         type: "h2",
@@ -628,6 +672,28 @@ public RequestResponse api(@RequestBody NewRequest body,
         ],
       },
       { type: "quiz", id: "sc-validation-paths" },
+      {
+        type: "h2",
+        text: "手元で再現するには",
+      },
+      {
+        type: "p",
+        text: "再現用の画面と処理は、通常の起動では有効になりません。有効にするには、起動するときにプロファイルを指定します。プロファイルは、起動時に使う設定や部品を選ぶ名前です。ここでは通常の設定である `dev` に加えて、再現用の部品を有効にする `investigation` を指定します。",
+      },
+      {
+        type: "p",
+        text: "Docker を起動し、端末で `shinsei-kun` ディレクトリへ移動しましょう。通常の app コンテナが起動している場合は、先に `docker compose stop app` で 8080 番ポートを空けます。そのあと次を実行します。DB は Compose が起動します。",
+      },
+      {
+        type: "code",
+        title: "再現用の機能を有効にして起動する",
+        lang: "bash",
+        code: `docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investigation app`,
+      },
+      {
+        type: "p",
+        text: "ブラウザで `http://localhost:8080/shinsei/login` を開き、山田（`yamada`）でログインしましょう。パスワードは `password` です。ログイン後に `http://localhost:8080/shinsei/investigation` を開くと、再現用の画面が表示されます。Console の例で承認者に指定している ID 3 は、佐藤です。",
+      },
     ],
   },
 ];
