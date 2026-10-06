@@ -34,12 +34,35 @@ export function Article({ blocks }: { blocks: Block[] }) {
     return { block, key: `${content}:${occurrence}`, anchorId: anchorIds[index] };
   });
 
+  // aside の h2 から次の h2 までを 1 つの枠にまとめる
+  type Keyed = (typeof keyedBlocks)[number];
+  const groups: { aside?: "hands-on"; items: Keyed[] }[] = [];
+  for (const item of keyedBlocks) {
+    const { block } = item;
+    const current = groups[groups.length - 1];
+    if (block.type === "h2" && (block.aside || current?.aside)) groups.push({ aside: block.aside, items: [item] });
+    else if (current) current.items.push(item);
+    else groups.push({ items: [item] });
+  }
+
   return (
     <TermHighlightScope>
       <div className="article">
-        {keyedBlocks.map(({ block, key, anchorId }) => (
-          <BlockView key={key} block={block} anchorId={anchorId} />
-        ))}
+        {groups.map((group) => {
+          const views = group.items.map(({ block, key, anchorId }) => (
+            <BlockView key={key} block={block} anchorId={anchorId} />
+          ));
+          if (!group.aside) return <Fragment key={group.items[0].key}>{views}</Fragment>;
+          return (
+            <section key={group.items[0].key} className="hands-on">
+              <p className="hands-on-kicker">
+                <Icon name="terminal" size={16} />
+                申請くんで試すには
+              </p>
+              {views}
+            </section>
+          );
+        })}
       </div>
     </TermHighlightScope>
   );

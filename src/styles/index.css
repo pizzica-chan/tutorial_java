@@ -1054,6 +1054,37 @@ h2,
   padding-left: 1.2em;
 }
 
+.hands-on {
+  margin: 40px 0 20px;
+  padding: 4px 22px 18px;
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius);
+  background: var(--panel-2);
+}
+
+.hands-on-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 18px 0 0;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--paper-dim);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+
+.hands-on > h2 {
+  margin-top: 8px;
+}
+
+@media (max-width: 640px) {
+  .hands-on {
+    padding: 4px 14px 14px;
+  }
+}
+
 .callout {
   display: grid;
   grid-template-columns: 88px 1fr;
