@@ -184,6 +184,7 @@ export const troubleshootMap: ObservableGroup[] = [
         links: [
           { label: "トラブル例：遅い", to: "/tracks/troubleshoot/p-slow" },
           { label: "[障害調査] 申請履歴の検索が遅い", to: "/tracks/scenario/history-slow" },
+          { label: "[障害調査] 申請が多い利用者だけ、一覧表示が遅い", to: "/tracks/scenario/list-n-plus-one" },
         ],
       },
       {

@@ -2223,6 +2223,14 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
           text: "JOIN や IN 句でまとめて取得するなど、SQL を 1 回にまとめると減らせます。",
         },
         {
+          type: "p",
+          text: "ログの回数と Java のループを突き合わせて原因を特定する流れは、実務のシナリオ「申請が多い利用者だけ、一覧表示が遅い」で追えます。",
+          link: {
+            label: "申請が多い利用者だけ、一覧表示が遅い",
+            to: "/tracks/scenario/list-n-plus-one",
+          },
+        },
+        {
           type: "h3",
           text: "1 回の SQL が遅い（EXPLAIN）",
         },

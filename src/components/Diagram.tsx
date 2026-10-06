@@ -1,4 +1,5 @@
 import type { ReactElement, ReactNode } from "react";
+import { Mapping, PageAssets, Layers, Filters, ArchRoles, NPlusOne } from "./TeachingDiagrams";
 import type { DiagramName } from "../types";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon, type IconName } from "./Icon";
@@ -317,46 +318,6 @@ function SessionStore() {
   );
 }
 
-function Layers() {
-  return (
-    <div className="d-stack">
-      <Layer icon="browser">画面 / URL</Layer>
-      <Arrow down label="受け口" />
-      <Layer icon="inbox" accent>
-        Controller
-      </Layer>
-      <Arrow down label="ビジネスロジック" />
-      <Layer icon="cog" accent>
-        Service
-      </Layer>
-      <Arrow down label="永続化" />
-      <Layer icon="file" accent>
-        Repository / Mapper
-      </Layer>
-      <Arrow down label="SQL" />
-      <Layer icon="database">DB</Layer>
-    </div>
-  );
-}
-
-function Filters() {
-  return (
-    <div className="d-stack">
-      <Layer icon="globe">リクエスト</Layer>
-      <Arrow down label="Security の Filter Chain" />
-      <Layer icon="shield" accent>
-        CSRF
-      </Layer>
-      <Arrow down label="例: トークン不正ならここで止まる" />
-      <Layer icon="lock" accent>
-        ログイン / 権限
-      </Layer>
-      <Arrow down label="例: 未ログインならここで止まる" />
-      <Layer icon="inbox">Controller</Layer>
-    </div>
-  );
-}
-
 function ProtocolStack() {
   return (
     <div className="d-stack d-protocol-stack">
@@ -405,22 +366,6 @@ function CrossCut() {
       </Layer>
       <Arrow down label="実体" />
       <Layer icon="cog">Service</Layer>
-    </div>
-  );
-}
-
-function Mapping() {
-  return (
-    <div className="d-formula">
-      <Layer icon="server">/shinsei（コンテキストパス）</Layer>
-      <span className="d-plus">+</span>
-      <Layer icon="file">@RequestMapping("/requests")</Layer>
-      <span className="d-plus">+</span>
-      <Layer icon="link">{'@GetMapping("/{id:[0-9]+}")'}</Layer>
-      <span className="d-plus">=</span>
-      <Layer icon="route" accent>
-        GET /shinsei/requests/12
-      </Layer>
     </div>
   );
 }
@@ -620,22 +565,6 @@ function HtmlJson() {
       <ColCard icon="braces" title="JSON（データ）">
         JS や他システムが読む。Web API ではこの形が多い
       </ColCard>
-    </div>
-  );
-}
-
-function PageAssets() {
-  return (
-    <div className="d-n1">
-      <Layer icon="browser" accent>
-        GET /shinsei/requests → HTML
-      </Layer>
-      <Arrow down label="ブラウザが追加で取る" />
-      <div className="d-n1-rows">
-        <Chip icon="file">app.css</Chip>
-        <Chip icon="braces">app.js</Chip>
-        <Chip icon="braces">list.js</Chip>
-      </div>
     </div>
   );
 }
@@ -843,24 +772,6 @@ function Layer({ icon, children, accent }: { icon: IconName; children: string; a
   );
 }
 
-function ArchRoles() {
-  return (
-    <div className="d-stack">
-      <Layer icon="browser">ブラウザ</Layer>
-      <Arrow down label="HTTP/HTTPS リクエスト" />
-      <Layer icon="server" accent>
-        HTTP サーバ（任意）Apache / nginx
-      </Layer>
-      <Arrow down label="中継" />
-      <Layer icon="box" accent>
-        サーブレットコンテナ Tomcat / Jetty
-      </Layer>
-      <Arrow down label="Java" />
-      <Layer icon="inbox">アプリ（Controller 以降）</Layer>
-    </div>
-  );
-}
-
 function ArchPatterns() {
   return (
     <div>
@@ -909,22 +820,6 @@ function ArchPatterns() {
       <p className="diagram-note">
         <TextWithTerms text="コンテナ（Docker など）で動かしても、重ね方は上の 3 パターンに収まることが多いです。" />
       </p>
-    </div>
-  );
-}
-
-function NPlusOne() {
-  return (
-    <div className="d-n1">
-      <Layer icon="database">一覧 1 回 SELECT（1000 件）</Layer>
-      <Arrow down label="各レコードで追加" />
-      <div className="d-n1-rows">
-        <Chip icon="terminal">SELECT #1</Chip>
-        <Chip icon="terminal">SELECT #2</Chip>
-        <Chip icon="terminal">…</Chip>
-        <Chip icon="terminal">SELECT #1000</Chip>
-      </div>
-      <p className="diagram-note">件数だけ SQL が増えるのが N+1。</p>
     </div>
   );
 }
