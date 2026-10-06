@@ -36,7 +36,7 @@ class InvestigationHttpTest {
     assertTrue(signedIn.uri().getPath().endsWith("/requests"), signedIn.uri().toString());
     var page = get(client, "/investigation");
     assertEquals(200, page.statusCode());
-    assertTrue(page.body().contains("調査用の申請"));
+    assertTrue(page.body().contains("再現用の申請"));
     token = csrf(page.body());
     var list = get(client, "/investigation/list");
     assertEquals(200, list.statusCode());
