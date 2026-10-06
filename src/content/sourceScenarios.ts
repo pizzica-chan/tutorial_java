@@ -57,7 +57,7 @@ export const sourceScenarios: Lesson[] = [
       },
       {
         type: "code",
-        title: "操作が重なったときのサーバログ（申請くん・調査用の起動・抜粋）",
+        title: "操作が重なったときのサーバログ（申請くん・調査用の機能を有効にした起動・抜粋）",
         code: `04:12:03.100 DEBUG [nio-8080-exec-1] j.c.e.s.service.InvestigationService : search user=7 title=休暇
 04:12:03.200 DEBUG [nio-8080-exec-2] j.c.e.s.service.InvestigationService : search user=3 title=交通費
 04:12:03.300 DEBUG [nio-8080-exec-1] j.c.e.s.m.R.searchHistory : ==> Parameters: 7(Long), 7(Long), 交通費(String)`,
@@ -147,7 +147,7 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "同時検索のシナリオは、二つの検索を重ねる必要があります。別の Chrome プロファイルで佐藤をログインさせ、Cookie を分けましょう。同じプロファイルのタブを増やすだけでは、ログイン状態を分けられません。手動では、二つの検索が重なる瞬間を偶然にしか作れません。確実に再現するには、デバッガを使います。",
+        text: "同時検索のシナリオでは、二つの検索を重ねる必要があります。別の Chrome プロファイルで佐藤をログインさせ、Cookie を分けましょう。同じプロファイルのタブを増やすだけでは、ログイン状態を分けられません。手動では、二つの検索が重なる瞬間を偶然にしか作れません。確実に再現するには、デバッガを使います。",
       },
       {
         type: "p",
@@ -161,7 +161,7 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "山田は「休暇」、佐藤は「交通費」を検索フォームに入力しましょう。`beforeSearch` にブレークポイントを置き、停止する範囲は現在のスレッドだけにしましょう。山田の検索を止めたあと、ブレークポイントを一時的に無効にして佐藤の検索を実行します。佐藤の応答が返ってから山田を再開すると、山田の結果にも「交通費」の条件が使われます。",
+        text: "山田は「休暇」、佐藤は「交通費」を検索フォームに入力しましょう。`beforeSearch` にブレークポイントを置き、停止する範囲は現在のスレッドだけにしましょう。山田の検索を止めたあと、ブレークポイントを一時的に無効にして佐藤の検索を実行します。佐藤の応答が返ってから山田の検索を再開すると、山田の結果にも「交通費」の条件が使われます。",
       },
     ],
   },
@@ -176,7 +176,7 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "申請担当の山田から、「一括登録がエラーになったのに、最初の申請だけ登録されている」と報告があった。一括登録は、すべての申請を登録するか、失敗したら全部取り消す仕様である。件名「一括調査用」と空の件名を送ると、件名のチェックでエラーになるが、最初の申請は DB に残った。",
+        text: "申請者の山田から、「一括登録がエラーになったのに、最初の申請だけ登録されている」と報告があった。一括登録は、すべての申請を登録するか、失敗したら全部取り消す仕様である。件名「一括調査用」と空の件名を送ると、件名のチェックでエラーになるが、最初の申請は DB に残った。",
       },
       {
         type: "h2",
@@ -186,10 +186,10 @@ public List<RequestEntity> search(Long userId, String title) {
         type: "ul",
         items: [
           "POST はサーバへ届き、2 件目の空の件名で `IllegalArgumentException` が発生している",
-          "Network の応答はエラー。ただし最初の INSERT は実行済み",
+          "Network タブの応答はエラー。ただし最初の INSERT は実行済み",
           "DB に件名「一括調査用」のレコードが 1 件残っている（取り消されていない）",
           "保存する Java メソッドには `@Transactional` が付いている",
-          "ローカルの調査用の起動。ログは DEBUG",
+          "手元で、調査用の機能を有効にして起動している。ログは DEBUG",
         ],
       },
       {
@@ -198,7 +198,7 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "例外が出たのに INSERT が残るのは、取り消しの仕組みであるトランザクションが働いていないときです。`@Transactional` が付いていても、実際に開始されたかは別に確認します。調査用の Service は、開始されたかをログに出しています。",
+        text: "例外が出たのに INSERT が残るのは、取り消しの仕組みであるトランザクションが働いていないときです。`@Transactional` が付いていても、トランザクションが実際に開始されたとは限りません。調査用の Service は、開始されたかをログに出しているので、確かめましょう。",
       },
       {
         type: "p",
@@ -225,7 +225,7 @@ await fetch('/shinsei/investigation/batch', {
       },
       {
         type: "p",
-        text: "Network の応答とサーバログを確認し、DB で件名を検索しましょう。再試行すると最初の申請が追加されます。毎回、ID と件数を記録して区別します。",
+        text: "Network タブの応答とサーバログを確認し、DB で件名を検索しましょう。再試行すると最初の申請が追加されます。毎回、ID と件数を記録して区別します。",
       },
       {
         type: "code",
@@ -244,14 +244,14 @@ WHERE title = '一括調査用' ORDER BY id;`,
       },
       {
         type: "code",
-        title: "サーバログ（申請くん・調査用の起動・抜粋）",
+        title: "サーバログ（申請くん・調査用の機能を有効にした起動・抜粋）",
         code: `j.c.e.s.service.InvestigationService : batch transactionActive=false
 j.c.e.s.mapper.RequestMapper.insert : ==>  Preparing: INSERT INTO t_request ...
 java.lang.IllegalArgumentException: 件名は必須です`,
       },
       {
         type: "p",
-        text: "例外が握りつぶされているのではありません。`transactionActive=false` は、この処理で Spring が管理するトランザクションが開始されていないことを示します。`IllegalArgumentException` は実行時例外なので、既定ではロールバックの対象です。ロールバックの条件を調べる前に、入口から呼び出しを辿りましょう。",
+        text: "`transactionActive=false` は、この処理で Spring が管理するトランザクションが開始されていないことを示します。`IllegalArgumentException` は実行時例外なので、既定ではロールバックの対象です。ロールバックの条件を調べる前に、入口から呼び出しを辿りましょう。",
       },
       {
         type: "code",
@@ -279,7 +279,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "p",
-        text: "Controller が呼ぶのは、アノテーションの無い `submitBatch` です。そこから `saveBatch` を同じインスタンス内で呼んでいます。Spring の通常のプロキシ方式では、別の Bean などからプロキシを通った呼び出しにトランザクション処理を挟みます。この内部呼び出しはプロキシを通らず、`saveBatch` のアノテーションによるトランザクションは開始されません。",
+        text: "Controller が呼ぶのは、アノテーションの無い `submitBatch` です。そこから `saveBatch` を同じインスタンス内で呼んでいます。Spring は、Bean の外からの呼び出しをプロキシで受け、そこでトランザクションを開始します。この内部呼び出しはプロキシを通らず、`saveBatch` のアノテーションによるトランザクションは開始されません。",
       },
       {
         type: "p",
@@ -289,7 +289,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
         type: "callout",
         kind: "trap",
         title: "内部呼び出しでも、既に始まったトランザクションは続く",
-        text: "呼び出し元にトランザクションがあれば、その中で内部の Java メソッドも動きます。「内部呼び出しは常にトランザクションの外」ではありません。この例は、入口にも呼び出し元にもトランザクションが無いことまで確認しています。",
+        text: "呼び出し元にトランザクションがあれば、その中で内部の Java メソッドも動きます。「内部呼び出しは常にトランザクションの外」ではありません。この例では、入口の `submitBatch` にもトランザクションが無いことを確認しました。",
       },
       {
         type: "h2",
@@ -309,7 +309,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       {
         type: "investigation-flow",
         items: [
-          "Network の応答と DB で、例外が出たのに最初の申請が残っていることを確認",
+          "Network タブの応答と DB で、例外が出たのに最初の申請が残っていることを確認",
           "サーバログで、`transactionActive=false`、つまりトランザクションが開始されていないことを確認",
           "Controller が呼ぶ `submitBatch` に、`@Transactional` が付いていないことを確認",
           "`submitBatch` から、同じインスタンスの `saveBatch` を呼んでいることを確認",
@@ -356,7 +356,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "p",
-        text: "手元で再現する場合は、「同時に検索すると、別の利用者の検索条件で結果が出る」の末尾にある「手元で再現するには」を確認しましょう。調査用画面の「申請者名付きの一覧」から開けます。",
+        text: "手元で再現する場合は、「同時に検索すると、別の利用者の検索条件で結果が出る」の末尾にある「手元で再現するには」を確認しましょう。一覧は、調査用画面の「申請者名付きの一覧」から開けます。",
         link: {
           label: "手元で再現するには",
           to: "/tracks/scenario/shared-state#h-8",
@@ -376,7 +376,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "code",
-        title: "操作時刻の SQL ログ（申請くん・調査用の起動・抜粋）",
+        title: "操作時刻の SQL ログ（申請くん・調査用の機能を有効にした起動・抜粋）",
         code: `j.c.e.s.m.R.findMineWithoutNames : ==>  Preparing: SELECT id, title, ... FROM t_request ...
 j.c.e.s.m.R.findMineWithoutNames : <==      Total: 4
 j.c.e.s.mapper.UserMapper.findById : ==>  Preparing: SELECT id, username, ... FROM t_user WHERE id = ?
@@ -429,11 +429,11 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
         type: "callout",
         kind: "note",
         title: "Mapper の呼び出し回数と SQL の実行回数は同じとは限らない",
-        text: "取得結果を再利用するキャッシュがあれば、Mapper を呼んでも SQL は実行されないことがあります。MyBatis にも同じ SqlSession（DB 操作をまとめるオブジェクト）内で結果を再利用する仕組みがあります。この調査用処理には、その範囲をループ全体で共有するトランザクションを付けていません。実際の SQL の回数は、呼び出し元だけでなく `Preparing` のログでも確認しましょう。",
+        text: "取得結果を再利用するキャッシュがあれば、Mapper を呼んでも SQL は実行されないことがあります。MyBatis にも同じ SqlSession（DB 操作をまとめるオブジェクト）内で結果を再利用する仕組みがあります。この調査用処理にはトランザクションが無いので、ループの 1 回ごとに SqlSession が変わり、結果は再利用されません。実際の SQL の回数は、呼び出し元だけでなく `Preparing` のログでも確認しましょう。",
       },
       {
         type: "h3",
-        text: "応答時間のどこを占めるか確認する",
+        text: "名前取得が応答時間のどれだけを占めるか確認する",
       },
       {
         type: "p",
@@ -509,7 +509,7 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
           "フォームの POST は、空の件名を拒否する",
           "API の POST は、空文字を受け付けて DB にレコードが残る",
           "`t_request` の `title` は NOT NULL。ただし、空文字のレコードが増えている",
-          "ローカルの調査用の起動。ログは DEBUG",
+          "手元で、調査用の機能を有効にして起動している。ログは DEBUG",
         ],
       },
       {
@@ -530,7 +530,7 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
       },
       {
         type: "p",
-        text: "山田で `/shinsei/investigation` を開き、Console から二つの POST を送りましょう。空のフォームを送ろうとしたとき、Network に POST が無ければ、ブラウザで止まっています。",
+        text: "山田で `/shinsei/investigation` を開き、Console から二つの POST を送りましょう。空のフォームを送ろうとしたとき、Network タブに POST が無ければ、ブラウザで止まっています。",
       },
       {
         type: "code",
@@ -599,7 +599,7 @@ public RequestResponse api(@RequestBody NewRequest body,
       },
       {
         type: "p",
-        text: "共通の登録処理は、受け取った件名をそのまま保存しています。`schema.sql` の `title` は NOT NULL ですが、空文字は NULL ではないため、この制約では拒否されません。フォーム側だけの入力チェックを通らない経路が、空文字を DB へ渡していたと分かります。",
+        text: "共通の登録処理は、受け取った件名をそのまま保存しています。`schema.sql` の `title` は NOT NULL ですが、空文字は NULL ではないため、この制約では拒否されません。入力チェックはフォーム側にしか無く、API から送った空文字はそのまま DB に保存されたと分かります。",
       },
       {
         type: "h2",
@@ -608,7 +608,7 @@ public RequestResponse api(@RequestBody NewRequest body,
       {
         type: "ul",
         items: [
-          "ブラウザの `required` は、API の入力を検証しない。入力チェックが入口ごとに違うと、通る経路から不正な値が入る",
+          "ブラウザの `required` は、API の入力を検証しない。入力チェックが入口ごとに違うと、チェックの無い入口から不正な値が入る",
           "NOT NULL は空文字を拒否しない。件名必須のような業務上の条件は、共通の Service で保証し、各入口で適切な応答に変換する",
         ],
       },
