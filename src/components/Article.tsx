@@ -57,7 +57,7 @@ export function Article({ blocks }: { blocks: Block[] }) {
             <section key={group.items[0].key} className="hands-on">
               <p className="hands-on-kicker">
                 <Icon name="terminal" size={16} />
-                教材の申請くんで試す
+                申請くんで試すには
               </p>
               {views}
             </section>
