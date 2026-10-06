@@ -104,6 +104,11 @@ export const terms: TermDef[] = [
     body: "URL の ? 以降。同じ資源の見え方や検索条件を渡すのに使います。",
   },
   {
+    term: "Query String Parameters",
+    aliases: ["Query String Parameters"],
+    body: "ブラウザの開発者ツールで、URL の `?` 以降にあるクエリパラメータを表示する欄です。Network タブの Payload で、送信したパラメータの名前と値を確認できます。",
+  },
+  {
     term: "CSRF",
     aliases: ["CSRFトークン", "CSRF"],
     body: "Cross-Site Request Forgery。ログイン中の利用者に、別サイトから意図しない POST をさせる攻撃。トークンで防ぎます。",
@@ -290,6 +295,16 @@ export const terms: TermDef[] = [
     body: "null の参照に対してメソッドやフィールドにアクセスしたときに出る例外です。",
   },
   {
+    term: "IllegalArgumentException",
+    aliases: ["IllegalArgumentException"],
+    body: "Java メソッドへ渡された引数が、不正または適切でないことを示す例外です。実行時例外の一種です。どの値を不正と判断したかは、例外メッセージと、例外を投げたコードで確認します。",
+  },
+  {
+    term: "ResponseStatusException",
+    aliases: ["ResponseStatusException"],
+    body: "HTTP のステータスコードと理由を指定できる、Spring の例外です。Spring MVC は、この例外に指定されたステータスコードを応答に使います。理由が画面やレスポンス本文にどう出るかは、アプリの設定や例外処理によって違います。",
+  },
+  {
     term: "SQLException",
     aliases: ["SQLException", "BadSqlGrammarException", "SQLSyntaxErrorException"],
     body: "SQL の失敗や、DB 接続の失敗で出る例外です。",
@@ -433,6 +448,11 @@ export const terms: TermDef[] = [
     body: "URL のクエリやフォームの `name` を、Java メソッドの引数に取り出す印です。Spring のアノテーションです。",
   },
   {
+    term: "@RequestBody",
+    aliases: ["@RequestBody"],
+    body: "HTTP リクエストの本文を、Java メソッドの引数として受け取る印です。Spring MVC では、JSON などの本文を対応する Java のオブジェクトに変換します。この印だけで、件名必須などの業務上の入力チェックが行われるわけではありません。",
+  },
+  {
     term: "マッピング",
     aliases: ["URLマッピング", "マッピング"],
     body: "どの URL と HTTP メソッド（GET など）を、どの Java メソッドが処理するかの対応づけです。Spring では `@GetMapping` などで書きます。",
@@ -493,6 +513,17 @@ export const terms: TermDef[] = [
     kana: "ろんりさくじょ",
     aliases: ["論理削除"],
     body: "レコードを物理的に消さず、削除フラグで「無いもの」として扱う方式です。",
+  },
+  {
+    term: "NOT NULL",
+    aliases: ["NOT NULL"],
+    body: "DB のカラムに NULL（値が無いことを表すもの）を保存できないようにする制約です。MySQL では、空文字は NULL と異なるため、NOT NULL だけでは拒否されません。",
+  },
+  {
+    term: "主キー",
+    kana: "しゅキー",
+    aliases: ["主キー", "PRIMARY KEY"],
+    body: "テーブル内で、それぞれのレコードを一意に識別するカラム、または複数のカラムの組み合わせです。値は重複できず、NULL にもできません。",
   },
   {
     term: "DDL",
@@ -1191,6 +1222,11 @@ export const terms: TermDef[] = [
     body: "同じ種類のものが集まっているときの、その 1 つ 1 つを指す言葉です。HTML では `<button>` や `<div>` のようなタグのまとまりを、配列やリストでは、その中の 1 件のデータを指します。",
   },
   {
+    term: "required（HTML）",
+    aliases: ["required"],
+    body: "HTML のフォームで、その入力欄を必須にする属性です。対応する入力欄に付けると、ブラウザは値が無い状態での通常のフォーム送信を止めます。サーバ側の入力チェックや、API への直接送信を制限するものではありません。",
+  },
+  {
     term: "getElementById",
     aliases: ["getElementById"],
     body: "id 属性が一致する HTML 要素を返す JavaScript の関数です。見つからないと null です。",
@@ -1438,6 +1474,17 @@ export const terms: TermDef[] = [
     body: "実行時に、クラスやメソッドの名前を文字列などから調べて操作する仕組みです。Setter の名前を対応づけて呼ぶ、といったことができます。フレームワークが裏側でよく使い、ソースには呼び出しの行が現れません。",
   },
   {
+    term: "空文字",
+    kana: "からもじ",
+    aliases: ["空文字", "空文字列"],
+    body: "文字が一つも無い、長さ 0 の文字列です。Java や JavaScript では `\"\"` と書きます。スペースを含む文字列とは異なります。文字列の値そのものが無い null とも異なります。",
+  },
+  {
+    term: "isBlank",
+    aliases: ["isBlank"],
+    body: "Java の String のメソッドです。文字列が空文字か、スペースや改行などの空白文字だけなら true を返します。Java 11 以降で使えます。null に対して呼ぶと、NullPointerException になります。",
+  },
+  {
     term: "null",
     aliases: ["null"],
     body: "値が無いことです。null の参照でメソッドを呼ぶと、Java では NullPointerException になります。",
@@ -1560,6 +1607,11 @@ export const terms: TermDef[] = [
     term: "INFO",
     aliases: ["INFO"],
     body: "処理の通過点。そこにリクエストが届いたかの確認に使います。",
+  },
+  {
+    term: "Preparing / Parameters / Total",
+    aliases: ["Preparing", "Parameters", "Total"],
+    body: "MyBatis の SQL ログに出る表示です。Preparing は準備する SQL 文、Parameters は SQL に渡す値と型、Total は検索で取得したレコードの件数を示します。Total は、テーブル全体の件数ではありません。",
   },
   {
     term: "DEBUG",

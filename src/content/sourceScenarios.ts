@@ -635,6 +635,10 @@ public RequestResponse api(@RequestBody NewRequest body,
         text: "フォーム側には `title.isBlank()` の判定があります。API 側にはありません。両方が呼ぶ `RequestService.create` に進み、同じ判定があるか確認しましょう。",
       },
       {
+        type: "p",
+        text: "フォーム側の `ResponseStatusException` は、応答に使うステータスコードを指定する例外です。このコードは 400 を指定しています。API 側の `@RequestBody` は、JSON の本文を Java のオブジェクトとして受け取る印です。JSON を受け取るだけでは、件名が空かどうかはチェックされません。",
+      },
+      {
         type: "code",
         title: "RequestService.create（申請くん）",
         lang: "java",
