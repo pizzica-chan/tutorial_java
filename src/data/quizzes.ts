@@ -781,14 +781,14 @@ export const quizzes = {
     question: "Service の引数は「休暇」なのに SQL には「交通費」が渡った。二つのリクエストが同じ searchTitle フィールドを使っていた。原因に対応する修正は？",
     choices: ["検索条件をフィールドに保存せず、引数のまま Mapper へ渡す", "フィールドを volatile にするだけ", "SQL のインデックスを追加する", "フォームの name を変える"],
     answer: 0,
-    explanation: "共有フィールドが別のリクエストで上書きされたことが原因です。リクエストごとの引数を直接渡せば、この上書きを避けられます。volatile は利用者ごとに値を分ける指定ではありません。",
+    explanation: "共有フィールドが別のリクエストで上書きされたことが原因です。リクエストごとの引数を直接渡せば、この上書きを避けられます。volatile はリクエストごとに値を分ける指定ではありません。",
   },
   "sc-self-invocation": {
     id: "sc-self-invocation",
     question: "トランザクションの無い submitBatch から、同じインスタンスの @Transactional 付き saveBatch を呼んだ。transactionActive=false だった理由は？",
     choices: ["IllegalArgumentException はロールバック対象にならないから", "内部呼び出しがトランザクションを開始するプロキシを通らなかったから", "INSERT はトランザクションで取り消せないから", "一括処理には @Transactional を付けられないから"],
     answer: 1,
-    explanation: "このプロキシ方式では、同じインスタンス内の呼び出しにアノテーションの処理は挟まれません。IllegalArgumentException は実行時例外で、既定ではロールバック対象なので、選択肢 1 は理由になりません。呼び出し元にもトランザクションが無いため、処理全体を取り消す範囲がありませんでした。",
+    explanation: "このプロキシ方式では、同じインスタンス内の呼び出しにアノテーションの処理は挟まれません。呼び出し元にもトランザクションが無いため、処理全体を取り消す範囲がありませんでした。IllegalArgumentException は実行時例外で、既定ではロールバック対象なので、「ロールバック対象にならない」という選択肢は誤りです。",
   },
   "sc-list-n-plus-one": {
     id: "sc-list-n-plus-one",
