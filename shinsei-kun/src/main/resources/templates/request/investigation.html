@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title='調査用の申請', content=~{::main})">
+<html xmlns:th="http://www.thymeleaf.org" th:replace="fragments/layout :: layout(title='再現用の申請', content=~{::main})">
 <main>
-  <h1>調査用の申請</h1>
+  <h1>再現用の申請</h1>
   <p>この画面は investigation プロファイルでだけ表示されます。</p>
   <form th:action="@{/investigation/search}" method="get">
     <label>件名 <input name="title" value="申請" /></label>

@@ -108,15 +108,24 @@ for (const [, rawText, rawLabel] of linkPairs) {
   }
 }
 
-const startupAnchor = sourceText.match(/to:\s*"\/tracks\/scenario\/shared-state#h-(\d+)"/);
-if (startupAnchor) {
-  const lessonStart = sourceText.indexOf('id: "shared-state"');
-  const lessonEnd = sourceText.indexOf('id: "self-invocation"', lessonStart);
+// 見出しへの link は、label と同じ文言の見出しを指しているかを確認する
+const lessonHead = /\n\s*id: "([^"]+)",\s*\n\s*title:/g;
+const lessonStarts = [...sourceText.matchAll(lessonHead)].map((match) => ({ id: match[1], index: match.index }));
+const anchorLinks = sourceText.matchAll(
+  /label:\s*"((?:[^"\\]|\\.)*)",\s*to:\s*"\/tracks\/[\w-]+\/([\w-]+)#h-(\d+)"/g,
+);
+for (const [, label, lessonId, number] of anchorLinks) {
+  const startIndex = lessonStarts.findIndex((lesson) => lesson.id === lessonId);
+  if (startIndex < 0) {
+    errors.push(`link の先のレッスンが無い: ${lessonId}#h-${number}`);
+    continue;
+  }
+  const end = lessonStarts[startIndex + 1]?.index ?? sourceText.length;
   const headingTexts = [
-    ...sourceText.slice(lessonStart, lessonEnd).matchAll(/type:\s*"h[23]",\s*text:\s*"([^"]*)"/g),
+    ...sourceText.slice(lessonStarts[startIndex].index, end).matchAll(/type:\s*"h[23]",\s*text:\s*"([^"]*)"/g),
   ].map((match) => match[1]);
-  if (headingTexts[Number(startupAnchor[1])] !== "手元で再現するには") {
-    errors.push(`再現手順への link のアンカー h-${startupAnchor[1]} が「手元で再現するには」の見出しを指していません`);
+  if (headingTexts[Number(number)] !== label) {
+    errors.push(`link のアンカー ${lessonId}#h-${number} が「${label}」の見出しを指していません`);
   }
 }
 

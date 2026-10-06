@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 import java.util.List;
 
-/** 調査用の不具合を残す。通常の画面とは別の入口で実行する。 */
+/** 教材のシナリオを再現する不具合を残す。通常の画面とは別の入口で実行する。 */
 @Service
 @Profile("investigation")
 @RequiredArgsConstructor
