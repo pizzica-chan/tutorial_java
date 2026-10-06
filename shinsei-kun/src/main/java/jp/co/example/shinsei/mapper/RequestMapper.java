@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface RequestMapper {
+  List<RequestEntity> findMineWithoutNames(@Param("userId") Long userId);
   List<RequestEntity> findMine(@Param("userId") Long userId);
 
   List<RequestEntity> searchHistory(

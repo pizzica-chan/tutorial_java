@@ -1,4 +1,5 @@
 import type { Track } from "../types";
+import { sourceScenarios } from "./sourceScenarios";
 
 export const scenarioTrack: Track = {
   id: "scenario",
@@ -2223,6 +2224,7 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
         { type: "quiz", id: "sc-http" },
       ],
     },
+    ...sourceScenarios,
     {
       id: "impact-status",
       title: "[影響調査] 申請ステータスに CANCELLED を追加したい",

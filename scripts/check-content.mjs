@@ -97,7 +97,7 @@ for (const name of onDisk) {
 }
 
 const linkPairs = [
-  ...sourceText.matchAll(/text:\s*"((?:[^"\\]|\\.)*)",\s*\n\s*link:\s*\{\s*\n\s*label:\s*"((?:[^"\\]|\\.)*)"/g),
+  ...sourceText.matchAll(/text:\s*"((?:[^"\\]|\\.)*)",\s*link:\s*\{\s*label:\s*"((?:[^"\\]|\\.)*)"/g),
 ];
 for (const [, rawText, rawLabel] of linkPairs) {
   const unescape = (value) => value.replace(/\\"/g, '"').replace(/\\n/g, "\n");
@@ -105,6 +105,18 @@ for (const [, rawText, rawLabel] of linkPairs) {
   const label = unescape(rawLabel);
   if (!text.includes(label)) {
     errors.push(`本文に無い link.label: "${label}"（本文: "${text.slice(0, 40)}..."）`);
+  }
+}
+
+const startupAnchor = sourceText.match(/to:\s*"\/tracks\/scenario\/shared-state#h-(\d+)"/);
+if (startupAnchor) {
+  const lessonStart = sourceText.indexOf('id: "shared-state"');
+  const lessonEnd = sourceText.indexOf('id: "self-invocation"', lessonStart);
+  const headingTexts = [
+    ...sourceText.slice(lessonStart, lessonEnd).matchAll(/type:\s*"h[23]",\s*text:\s*"([^"]*)"/g),
+  ].map((match) => match[1]);
+  if (headingTexts[Number(startupAnchor[1])] !== "手元で再現するには") {
+    errors.push(`再現手順への link のアンカー h-${startupAnchor[1]} が「手元で再現するには」の見出しを指していません`);
   }
 }
 
