@@ -242,12 +242,58 @@ function RequestParams() {
 
 function SessionCookie() {
   return (
-    <div className="d-split">
-      <IconNode icon="key" kicker="BROWSER" title="Cookie" sub="キーだけ持つ" size={28} />
-      <div className="d-arrows">
-        <Arrow label="ID だけ往復する" />
+    <div className="session-flow">
+      <p className="session-flow-intro">セッションでログイン状態を保つ例</p>
+      <div className="session-flow-head" aria-hidden="true">
+        <span><Icon name="browser" size={24} />ブラウザ</span>
+        <span><Icon name="server" size={24} />サーバ</span>
       </div>
-      <IconNode icon="box" kicker="SERVER" title="セッション" sub="中身はこちら" size={28} />
+      <ol className="session-flow-steps">
+        <li>
+          <div className="session-flow-step"><b>1</b><strong>ログイン成功後、ID を渡す</strong></div>
+          <div className="session-flow-row">
+            <div className="session-flow-card">
+              <span className="session-flow-label">ブラウザに保存</span>
+              <strong><Icon name="key" size={18} />Cookie</strong>
+              <code>JSESSIONID=AB12CD34</code>
+            </div>
+            <div className="session-flow-transfer is-response">
+              <span>サーバ → ブラウザ</span>
+              <strong>レスポンス</strong>
+              <code>Set-Cookie</code>
+              <i aria-hidden="true" />
+            </div>
+            <div className="session-flow-card is-server">
+              <span className="session-flow-label">サーバに保存</span>
+              <strong><Icon name="box" size={18} />セッション</strong>
+              <code>AB12CD34</code>
+              <span className="session-flow-user"><Icon name="user" size={16} />山田太郎のログイン情報</span>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div className="session-flow-step"><b>2</b><strong>次のリクエストで、同じ ID を送る</strong></div>
+          <div className="session-flow-row">
+            <div className="session-flow-card">
+              <span className="session-flow-label">ブラウザから送信</span>
+              <strong><Icon name="key" size={18} />保存した ID</strong>
+              <code>JSESSIONID=AB12CD34</code>
+            </div>
+            <div className="session-flow-transfer">
+              <span>ブラウザ → サーバ</span>
+              <strong>リクエスト</strong>
+              <code>Cookie</code>
+              <i aria-hidden="true" />
+            </div>
+            <div className="session-flow-card is-server">
+              <span className="session-flow-label">サーバで照合</span>
+              <strong><Icon name="search" size={18} />ID で取り出す</strong>
+              <code>AB12CD34</code>
+              <span className="session-flow-user"><Icon name="user" size={16} />山田太郎のログイン情報</span>
+            </div>
+          </div>
+        </li>
+      </ol>
     </div>
   );
 }

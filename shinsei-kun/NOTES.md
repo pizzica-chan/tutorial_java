@@ -21,7 +21,7 @@ docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investi
 
 山田の ID は 7、佐藤の ID は 3 です。`/shinsei/investigation` を開きます。POST の Console 例は教材本文にあります。一括登録や空文字の登録を再実行するとレコードが増えるため、レスポンスや SQL で ID を記録してください。
 
-デバッガを使う場合は、run のオプションに `-e JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -p 127.0.0.1:5005:5005` を追加します。IDE から localhost:5005 に接続します。
+デバッガを使う場合は、run のオプションに `-e "JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" -p 127.0.0.1:5005:5005` を追加します。IDE から localhost:5005 に接続します。
 
 以下は通常の教材用の動きです。
 

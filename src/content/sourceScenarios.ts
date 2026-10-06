@@ -157,7 +157,7 @@ public List<RequestEntity> search(Long userId, String title) {
         type: "code",
         title: "デバッガから接続できる状態で起動する",
         lang: "bash",
-        code: `docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investigation -e JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005 -p 127.0.0.1:5005:5005 app`,
+        code: `docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investigation -e "JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" -p 127.0.0.1:5005:5005 app`,
       },
       {
         type: "p",
@@ -251,7 +251,7 @@ java.lang.IllegalArgumentException: 件名は必須です`,
       },
       {
         type: "p",
-        text: "例外が握りつぶされているのではありません。`transactionActive=false` は、この処理で Spring が管理するトランザクションが開始されていないことを示します。チェック例外のロールバック条件を調べる前に、入口から呼び出しを辿りましょう。",
+        text: "例外が握りつぶされているのではありません。`transactionActive=false` は、この処理で Spring が管理するトランザクションが開始されていないことを示します。`IllegalArgumentException` は実行時例外なので、既定ではロールバックの対象です。ロールバックの条件を調べる前に、入口から呼び出しを辿りましょう。",
       },
       {
         type: "code",
@@ -352,7 +352,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "p",
-        text: "一覧が遅い原因は、一つの SQL が遅いか、SQL の回数が多いかのどちらかです。Network タブで GET の所要時間を確認し、操作時刻の MyBatis の DEBUG ログで、SQL の文と実行回数を確認しましょう。",
+        text: "一覧が遅い原因は、Java の処理や JSON への変換などにもあります。DB が原因なら、一つの SQL が遅いのか、SQL の回数が多いのかを切り分けます。Network タブで GET の所要時間を確認し、操作時刻の MyBatis の DEBUG ログで、SQL の文と実行回数を確認しましょう。",
       },
       {
         type: "p",

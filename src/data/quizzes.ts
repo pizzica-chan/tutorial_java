@@ -788,7 +788,7 @@ export const quizzes = {
     question: "トランザクションの無い submitBatch から、同じインスタンスの @Transactional 付き saveBatch を呼んだ。transactionActive=false だった理由は？",
     choices: ["IllegalArgumentException はロールバック対象にならないから", "内部呼び出しがトランザクションを開始するプロキシを通らなかったから", "INSERT はトランザクションで取り消せないから", "一括処理には @Transactional を付けられないから"],
     answer: 1,
-    explanation: "このプロキシ方式では、同じインスタンス内の呼び出しにアノテーションの処理は挟まれません。呼び出し元にもトランザクションが無いため、処理全体を取り消す範囲がありませんでした。",
+    explanation: "このプロキシ方式では、同じインスタンス内の呼び出しにアノテーションの処理は挟まれません。IllegalArgumentException は実行時例外で、既定ではロールバック対象なので、選択肢 1 は理由になりません。呼び出し元にもトランザクションが無いため、処理全体を取り消す範囲がありませんでした。",
   },
   "sc-list-n-plus-one": {
     id: "sc-list-n-plus-one",
