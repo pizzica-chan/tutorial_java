@@ -104,6 +104,11 @@ export const terms: TermDef[] = [
     body: "URL の ? 以降。同じ資源の見え方や検索条件を渡すのに使います。",
   },
   {
+    term: "Query String Parameters",
+    aliases: ["Query String Parameters"],
+    body: "ブラウザの開発者ツールで、URL の `?` 以降にあるクエリパラメータを表示する欄です。Network タブの Payload で、送信したパラメータの名前と値を確認できます。",
+  },
+  {
     term: "CSRF",
     aliases: ["CSRFトークン", "CSRF"],
     body: "Cross-Site Request Forgery。ログイン中の利用者に、別サイトから意図しない POST をさせる攻撃。トークンで防ぎます。",
@@ -173,6 +178,21 @@ export const terms: TermDef[] = [
     term: "Spring Boot",
     aliases: ["Spring Boot"],
     body: "Java の Web アプリを作るための土台。設定や内蔵サーバがまとまっています。",
+  },
+  {
+    term: "Bean（Spring）",
+    aliases: ["Spring Bean", "Bean"],
+    body: "Spring のコンテナが生成・管理するオブジェクトです。`@Service` などを付けたクラスや、`@Bean` を付けた Java メソッドの戻り値を登録します。JavaBeans とは別の概念です。JavaBeans は、getter・setter によるプロパティの読み書きなど、Java の部品を扱うための規約です。Spring の Bean は、その規約に従う必要はありません。",
+  },
+  {
+    term: "シングルトン",
+    aliases: ["シングルトン", "singleton"],
+    body: "一つのインスタンスを共有して使う形です。Spring の singleton は既定のスコープで、同じ Spring のコンテナ内では、Bean の定義ごとに一つのインスタンスを使います。リクエストごとに作られるわけではなく、複数のスレッドから同時に使われることがあります。シングルトンであるだけでは、スレッドセーフにはなりません。",
+  },
+  {
+    term: "スコープ（Spring）",
+    aliases: ["スコープ"],
+    body: "Spring で、Bean のインスタンスをどの範囲で共有し、いつまで使うかを決める設定です。singleton は同じコンテナの同じ Bean 定義で共有し、request は HTTP リクエストごと、session はセッションごとにインスタンスを分けます。",
   },
   {
     term: "Spring MVC",
@@ -275,6 +295,16 @@ export const terms: TermDef[] = [
     body: "null の参照に対してメソッドやフィールドにアクセスしたときに出る例外です。",
   },
   {
+    term: "IllegalArgumentException",
+    aliases: ["IllegalArgumentException"],
+    body: "Java メソッドへ渡された引数が、不正または適切でないことを示す例外です。実行時例外の一種です。どの値を不正と判断したかは、例外メッセージと、例外を投げたコードで確認します。",
+  },
+  {
+    term: "ResponseStatusException",
+    aliases: ["ResponseStatusException"],
+    body: "HTTP のステータスコードと理由を指定できる、Spring の例外です。Spring MVC は、この例外に指定されたステータスコードを応答に使います。理由が画面やレスポンス本文にどう出るかは、アプリの設定や例外処理によって違います。",
+  },
+  {
     term: "SQLException",
     aliases: ["SQLException", "BadSqlGrammarException", "SQLSyntaxErrorException"],
     body: "SQL の失敗や、DB 接続の失敗で出る例外です。",
@@ -290,6 +320,17 @@ export const terms: TermDef[] = [
     kana: "けんされいがい",
     aliases: ["検査例外", "非検査例外", "チェック例外", "非チェック例外"],
     body: "`throws` 宣言か `try-catch` を書かないとコンパイルが通らない例外を検査例外（チェック例外）と呼びます。`RuntimeException` と `Error`、およびそのサブクラスは非検査例外（非チェック例外）で、この強制がありません。`@Transactional` が既定でロールバックするのは非検査例外だけです。",
+  },
+  {
+    term: "実行時例外",
+    kana: "じっこうじれいがい",
+    aliases: ["実行時例外", "RuntimeException"],
+    body: "Java の `RuntimeException` と、そのサブクラスの例外です。`IllegalArgumentException` や `NullPointerException` などがあります。非検査例外の一種で、呼び出し元に `throws` 宣言や `try-catch` を強制しません。実行中に発生する例外すべてを指す言葉ではありません。",
+  },
+  {
+    term: "SqlSession",
+    aliases: ["SqlSession"],
+    body: "MyBatis で、SQL の実行や取得結果の管理を行うオブジェクトです。同じ SqlSession 内で、一度取得した結果をキャッシュして再利用する仕組みがあります。",
   },
   {
     term: "N+1",
@@ -407,6 +448,11 @@ export const terms: TermDef[] = [
     body: "URL のクエリやフォームの `name` を、Java メソッドの引数に取り出す印です。Spring のアノテーションです。",
   },
   {
+    term: "@RequestBody",
+    aliases: ["@RequestBody"],
+    body: "HTTP リクエストの本文を、Java メソッドの引数として受け取る印です。Spring MVC では、JSON などの本文を対応する Java のオブジェクトに変換します。この印だけで、件名必須などの業務上の入力チェックが行われるわけではありません。",
+  },
+  {
     term: "マッピング",
     aliases: ["URLマッピング", "マッピング"],
     body: "どの URL と HTTP メソッド（GET など）を、どの Java メソッドが処理するかの対応づけです。Spring では `@GetMapping` などで書きます。",
@@ -467,6 +513,17 @@ export const terms: TermDef[] = [
     kana: "ろんりさくじょ",
     aliases: ["論理削除"],
     body: "レコードを物理的に消さず、削除フラグで「無いもの」として扱う方式です。",
+  },
+  {
+    term: "NOT NULL",
+    aliases: ["NOT NULL"],
+    body: "DB のカラムに NULL（値が無いことを表すもの）を保存できないようにする制約です。MySQL では、空文字は NULL と異なるため、NOT NULL だけでは拒否されません。",
+  },
+  {
+    term: "主キー",
+    kana: "しゅキー",
+    aliases: ["主キー", "PRIMARY KEY"],
+    body: "テーブル内で、それぞれのレコードを一意に識別するカラム、または複数のカラムの組み合わせです。値は重複できず、NULL にもできません。",
   },
   {
     term: "DDL",
@@ -931,6 +988,26 @@ export const terms: TermDef[] = [
     body: "同時に動く処理の単位。Tomcat ならログの [nio-8080-exec-3] が名前です。同じリクエストの行を揃える手がかりですが、使い回されます。",
   },
   {
+    term: "スレッドセーフ",
+    aliases: ["スレッドセーフ", "thread-safe"],
+    body: "複数のスレッドから同時に使われても、処理の順序によってデータの整合性や処理の正しさが失われない性質です。共有する値を書き換えない設計や、読み書きする範囲を同期する方法などで実現します。",
+  },
+  {
+    term: "フィールド",
+    aliases: ["フィールド"],
+    body: "Java で、クラスに宣言する変数です。インスタンスのフィールドは、そのインスタンスが持つ値です。同じインスタンスを複数のスレッドが使うと、その値も共有します。`static` フィールドはクラスに属し、インスタンスごとには分かれません。",
+  },
+  {
+    term: "ローカル変数",
+    aliases: ["ローカル変数"],
+    body: "Java メソッドやブロックの中で宣言する変数です。Java メソッドの呼び出しごとに分かれ、変数そのものは他の呼び出しと共有しません。ただし、変数が参照するオブジェクトは、他のスレッドと共有している場合があります。",
+  },
+  {
+    term: "volatile",
+    aliases: ["volatile"],
+    body: "Java のフィールドに付ける修飾子です。あるスレッドが書いた値を、他のスレッドが読み取れるようにする保証があります。値をスレッドごとに分けたり、代入から読み取りまでの間に他のスレッドが書き換えることを防いだりする指定ではありません。",
+  },
+  {
     term: "ThreadLocal",
     aliases: ["ThreadLocal"],
     body: "スレッドごとに値を持つ入れ物。フィルタでセットし、後段で読む使い方があります。",
@@ -1143,6 +1220,11 @@ export const terms: TermDef[] = [
     kana: "ようそ",
     aliases: ["要素"],
     body: "同じ種類のものが集まっているときの、その 1 つ 1 つを指す言葉です。HTML では `<button>` や `<div>` のようなタグのまとまりを、配列やリストでは、その中の 1 件のデータを指します。",
+  },
+  {
+    term: "required（HTML）",
+    aliases: ["required"],
+    body: "HTML のフォームで、その入力欄を必須にする属性です。対応する入力欄に付けると、ブラウザは値が無い状態での通常のフォーム送信を止めます。サーバ側の入力チェックや、API への直接送信を制限するものではありません。",
   },
   {
     term: "getElementById",
@@ -1392,6 +1474,17 @@ export const terms: TermDef[] = [
     body: "実行時に、クラスやメソッドの名前を文字列などから調べて操作する仕組みです。Setter の名前を対応づけて呼ぶ、といったことができます。フレームワークが裏側でよく使い、ソースには呼び出しの行が現れません。",
   },
   {
+    term: "空文字",
+    kana: "からもじ",
+    aliases: ["空文字", "空文字列"],
+    body: "文字が一つも無い、長さ 0 の文字列です。Java や JavaScript では `\"\"` と書きます。スペースを含む文字列とは異なります。文字列の値そのものが無い null とも異なります。",
+  },
+  {
+    term: "isBlank",
+    aliases: ["isBlank"],
+    body: "Java の String のメソッドです。文字列が空文字か、スペースや改行などの空白文字だけなら true を返します。Java 11 以降で使えます。null に対して呼ぶと、NullPointerException になります。",
+  },
+  {
     term: "null",
     aliases: ["null"],
     body: "値が無いことです。null の参照でメソッドを呼ぶと、Java では NullPointerException になります。",
@@ -1514,6 +1607,11 @@ export const terms: TermDef[] = [
     term: "INFO",
     aliases: ["INFO"],
     body: "処理の通過点。そこにリクエストが届いたかの確認に使います。",
+  },
+  {
+    term: "Preparing / Parameters / Total",
+    aliases: ["Preparing", "Parameters", "Total"],
+    body: "MyBatis の SQL ログに出る表示です。Preparing は準備する SQL 文、Parameters は SQL に渡す値と型、Total は検索で取得したレコードの件数を示します。Total は、テーブル全体の件数ではありません。",
   },
   {
     term: "DEBUG",

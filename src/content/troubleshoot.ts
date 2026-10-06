@@ -856,7 +856,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
           type: "table",
           headers: ["部分", "意味"],
           rows: [
-            ["`192.0.2.10`", "接続元 IP（先頭のフィールド）"],
+            ["`192.0.2.10`", "接続元 IP（先頭の項目）"],
             ["`[16/Aug/2026:04:12:03 +0900]`", "リクエストを受けた日時"],
             ["`\"GET /shinsei/css/app.css HTTP/1.1\"`", "HTTP メソッド・URL のパス・バージョン"],
             ["`404`", "ステータスコード"],

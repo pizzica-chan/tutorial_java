@@ -51,7 +51,7 @@ export const cheatSheet: CheatSection[] = [
       },
       {
         title: "access.log を集計する（combined 形式）",
-        note: "「HTTP サーバのログを見る」の combined 形式（`IP - - [日時] \"メソッド パス バージョン\" ステータス サイズ`）が前提です。空白区切りのフィールド番号は、この形式の並びに合わせています。",
+        note: "「HTTP サーバのログを見る」の combined 形式（`IP - - [日時] \"メソッド パス バージョン\" ステータス サイズ`）が前提です。空白で区切った項目の番号は、この形式の並びに合わせています。",
         rows: [
           { cmd: "`awk '{print $9}' access.log | sort | uniq -c | sort -rn`", env: "Linux", desc: "ステータスコード別の件数を、多い順に集計する" },
           { cmd: "`awk '$9 == 500 {print $7}' access.log | sort | uniq -c | sort -rn`", env: "Linux", desc: "500 が出ているパスだけを、多い順に集計する" },

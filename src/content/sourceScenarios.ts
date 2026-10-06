@@ -83,7 +83,11 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "`searchTitle` は Java メソッド内の変数ではなく、インスタンスのフィールドです。Bean は Spring が生成・管理するオブジェクトです。この Service は既定のスコープである singleton で登録され、同じ Bean のインスタンスを複数のリクエストが使います。山田が代入したあと、佐藤が同じフィールドを上書きすると、山田の SQL に佐藤の条件が渡ります。`userId` は引数のままなので、参照できる申請の範囲は変わりません。",
+        text: "`searchTitle` は Java メソッド内の変数ではなく、インスタンスのフィールドです。Bean は Spring が生成・管理するオブジェクトです。この Service は既定のスコープであるシングルトン（singleton）で登録され、同じ Bean のインスタンスを複数のリクエストが使います。",
+      },
+      {
+        type: "p",
+        text: "山田が代入したあと、佐藤が同じフィールドを上書きすると、山田の SQL に佐藤の条件が渡ります。`userId` は引数のままなので、参照できる申請の範囲は変わりません。",
       },
       {
         type: "table",
@@ -95,6 +99,14 @@ public List<RequestEntity> search(Long userId, String title) {
         ],
       },
       {
+        type: "p",
+        text: "複数のスレッドから同時に使われても、処理の順序によって値が混ざったり、結果が壊れたりせず、正しく動く性質をスレッドセーフと呼びます。この検索処理は、山田と佐藤の処理が重なると別の検索条件を使ってしまうので、スレッドセーフではありません。",
+      },
+      {
+        type: "p",
+        text: "シングルトンであること自体が問題なのではありません。問題は、リクエストごとの検索条件を、複数のスレッドが読み書きするフィールドに保存していることです。この処理では、引数の `title` をそのまま Mapper へ渡せば、共有フィールドを経由せず、それぞれの検索条件を使えます。",
+      },
+      {
         type: "h2",
         text: "このシナリオの要点",
       },
@@ -102,7 +114,7 @@ public List<RequestEntity> search(Long userId, String title) {
         type: "ul",
         items: [
           "リクエストごとの検索条件を、singleton の Service のフィールドへ保存すると、同時に動く別のリクエストの値で上書きされる",
-          "修正するなら、フィールドを使わず、引数の `title` をそのまま Mapper へ渡す。`volatile` にしても、リクエストごとの値は分けられない",
+          "修正するなら、フィールドを使わず、引数の `title` をそのまま Mapper へ渡すか、ローカル変数に入れて渡す。`volatile` にしても、リクエストごとの値は分けられない",
         ],
       },
       {
@@ -621,6 +633,10 @@ public RequestResponse api(@RequestBody NewRequest body,
       {
         type: "p",
         text: "フォーム側には `title.isBlank()` の判定があります。API 側にはありません。両方が呼ぶ `RequestService.create` に進み、同じ判定があるか確認しましょう。",
+      },
+      {
+        type: "p",
+        text: "フォーム側の `ResponseStatusException` は、応答に使うステータスコードを指定する例外です。このコードは 400 を指定しています。API 側の `@RequestBody` は、JSON の本文を Java のオブジェクトとして受け取る印です。JSON を受け取るだけでは、件名が空かどうかはチェックされません。",
       },
       {
         type: "code",
