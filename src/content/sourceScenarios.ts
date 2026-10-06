@@ -279,7 +279,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "p",
-        text: "Controller が呼ぶのは、アノテーションの無い `submitBatch` です。そこから `saveBatch` を同じインスタンス内で呼んでいます。Spring は、Bean の外からの呼び出しをプロキシで受け、そこでトランザクションを開始します。この内部呼び出しはプロキシを通らず、`saveBatch` のアノテーションによるトランザクションは開始されません。",
+        text: "Controller が呼ぶのは、アノテーションの無い `submitBatch` です。そこから `saveBatch` を同じインスタンス内で呼んでいます。Spring の通常のプロキシ方式では、`@Transactional` の付いた Java メソッドを Bean の外から呼んだときに、プロキシがトランザクションを開始します。この内部呼び出しはプロキシを通らず、`saveBatch` のアノテーションによるトランザクションは開始されません。",
       },
       {
         type: "p",
