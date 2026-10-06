@@ -175,6 +175,21 @@ export const terms: TermDef[] = [
     body: "Java の Web アプリを作るための土台。設定や内蔵サーバがまとまっています。",
   },
   {
+    term: "Bean（Spring）",
+    aliases: ["Spring Bean", "Bean"],
+    body: "Spring のコンテナが生成・管理するオブジェクトです。`@Service` などを付けたクラスや、`@Bean` を付けた Java メソッドの戻り値を登録します。JavaBeans とは別の概念です。JavaBeans は、getter・setter によるプロパティの読み書きなど、Java の部品を扱うための規約です。Spring の Bean は、その規約に従う必要はありません。",
+  },
+  {
+    term: "シングルトン",
+    aliases: ["シングルトン", "singleton"],
+    body: "一つのインスタンスを共有して使う形です。Spring の singleton は既定のスコープで、同じ Spring のコンテナ内では、Bean の定義ごとに一つのインスタンスを使います。リクエストごとに作られるわけではなく、複数のスレッドから同時に使われることがあります。シングルトンであるだけでは、スレッドセーフにはなりません。",
+  },
+  {
+    term: "スコープ（Spring）",
+    aliases: ["スコープ"],
+    body: "Spring で、Bean のインスタンスをどの範囲で共有し、いつまで使うかを決める設定です。singleton は同じコンテナの同じ Bean 定義で共有し、request は HTTP リクエストごと、session はセッションごとにインスタンスを分けます。",
+  },
+  {
     term: "Spring MVC",
     aliases: ["Spring MVC"],
     body: "URL と Controller を結びつける、Spring の Web の仕組みです。",
@@ -290,6 +305,17 @@ export const terms: TermDef[] = [
     kana: "けんされいがい",
     aliases: ["検査例外", "非検査例外", "チェック例外", "非チェック例外"],
     body: "`throws` 宣言か `try-catch` を書かないとコンパイルが通らない例外を検査例外（チェック例外）と呼びます。`RuntimeException` と `Error`、およびそのサブクラスは非検査例外（非チェック例外）で、この強制がありません。`@Transactional` が既定でロールバックするのは非検査例外だけです。",
+  },
+  {
+    term: "実行時例外",
+    kana: "じっこうじれいがい",
+    aliases: ["実行時例外", "RuntimeException"],
+    body: "Java の `RuntimeException` と、そのサブクラスの例外です。`IllegalArgumentException` や `NullPointerException` などがあります。非検査例外の一種で、呼び出し元に `throws` 宣言や `try-catch` を強制しません。実行中に発生する例外すべてを指す言葉ではありません。",
+  },
+  {
+    term: "SqlSession",
+    aliases: ["SqlSession"],
+    body: "MyBatis で、SQL の実行や取得結果の管理を行うオブジェクトです。同じ SqlSession 内で、一度取得した結果をキャッシュして再利用する仕組みがあります。",
   },
   {
     term: "N+1",
@@ -929,6 +955,26 @@ export const terms: TermDef[] = [
     term: "スレッド",
     aliases: ["スレッド名", "スレッド"],
     body: "同時に動く処理の単位。Tomcat ならログの [nio-8080-exec-3] が名前です。同じリクエストの行を揃える手がかりですが、使い回されます。",
+  },
+  {
+    term: "スレッドセーフ",
+    aliases: ["スレッドセーフ", "thread-safe"],
+    body: "複数のスレッドから同時に使われても、処理の順序によってデータの整合性や処理の正しさが失われない性質です。共有する値を書き換えない設計や、読み書きする範囲を同期する方法などで実現します。",
+  },
+  {
+    term: "フィールド",
+    aliases: ["フィールド"],
+    body: "Java で、クラスに宣言する変数です。インスタンスのフィールドは、そのインスタンスが持つ値です。同じインスタンスを複数のスレッドが使うと、その値も共有します。`static` フィールドはクラスに属し、インスタンスごとには分かれません。",
+  },
+  {
+    term: "ローカル変数",
+    aliases: ["ローカル変数"],
+    body: "Java メソッドやブロックの中で宣言する変数です。Java メソッドの呼び出しごとに分かれ、変数そのものは他の呼び出しと共有しません。ただし、変数が参照するオブジェクトは、他のスレッドと共有している場合があります。",
+  },
+  {
+    term: "volatile",
+    aliases: ["volatile"],
+    body: "Java のフィールドに付ける修飾子です。あるスレッドが書いた値を、他のスレッドが読み取れるようにする保証があります。値をスレッドごとに分けたり、代入から読み取りまでの間に他のスレッドが書き換えることを防いだりする指定ではありません。",
   },
   {
     term: "ThreadLocal",
