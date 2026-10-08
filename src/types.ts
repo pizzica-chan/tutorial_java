@@ -19,6 +19,7 @@ export type DiagramName =
   | "thread-pool"
   | "shared-field"
   | "thread-reuse"
+  | "db-transaction"
   | "filters"
   | "mapping"
   | "read-entry"
