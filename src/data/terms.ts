@@ -1656,6 +1656,36 @@ export const terms: TermDef[] = [
     body: "コンテナを動かす仕組みのひとつです。コンテナそのものではありません。ログはコンテナの標準出力に出ることが多く、docker logs で見ることがあります。",
   },
   {
+    term: "docker ps",
+    aliases: ["docker ps", "docker container ls", "docker container ps", "docker container list"],
+    body: "Docker が管理するコンテナの一覧を表示するコマンドです。既定では稼働中のコンテナだけを表示し、`docker ps -a` では停止中のものも表示します。名前、状態、使っているイメージ、ポートなどを確認できます。",
+  },
+  {
+    term: "docker inspect",
+    aliases: ["docker inspect", "docker container inspect"],
+    body: "コンテナやイメージなど、Docker が管理する対象の詳細情報を表示するコマンドです。`docker inspect コンテナ名` では、状態、環境変数、マウント、ネットワークなどの情報を JSON 形式で表示します。`--format` で必要な項目だけを取り出せます。",
+  },
+  {
+    term: "docker logs",
+    aliases: ["docker logs", "docker container logs"],
+    body: "コンテナの標準出力と標準エラー出力に出たログを読むコマンドです。`docker logs コンテナ名` の形で使います。`--tail` で末尾の行数を指定し、`-f` で新しい出力を表示し続けられます。読めるログは、Docker のログ保存設定によって異なります。",
+  },
+  {
+    term: "docker restart",
+    aliases: ["docker restart", "docker container restart"],
+    body: "コンテナを再起動するコマンドです。同じコンテナを停止して起動するため、イメージから作り直す操作とは異なります。コンテナ内に書き込んだファイルの変更も残ります。",
+  },
+  {
+    term: "docker stop",
+    aliases: ["docker stop", "docker container stop"],
+    body: "コンテナの主なプロセスに終了を促すシグナルを送り、コンテナを停止するコマンドです。指定された待ち時間を過ぎても終了しない場合は、強制停止します。コンテナ自体は削除しません。",
+  },
+  {
+    term: "docker kill",
+    aliases: ["docker kill", "docker container kill"],
+    body: "コンテナの主なプロセスにシグナルを送るコマンドです。既定では SIGKILL を送り、強制停止します。`--signal` で送るシグナルを変更できます。",
+  },
+  {
     term: "docker exec",
     aliases: ["docker exec", "docker container exec"],
     body: "稼働中のコンテナ内で、新しいコマンドを実行する Docker のコマンドです。`docker exec コンテナ名 コマンド` の形で使います。`docker exec -it コンテナ名 bash` では、コンテナ内でシェルを起動し、対話的に操作できます。実行するコマンドは、コンテナ内に用意されている必要があります。",
@@ -1679,6 +1709,26 @@ export const terms: TermDef[] = [
     term: "Docker Compose",
     aliases: ["Docker Compose", "docker-compose", "docker compose"],
     body: "複数のコンテナの構成を `docker-compose.yml` などのファイルに書き、まとめて起動する仕組みです。既定では、各サービスのコンテナが同じネットワークに参加します。共通のネットワークに参加しているコンテナどうしは、サービス名で相手につながります。",
+  },
+  {
+    term: "docker compose up",
+    aliases: ["docker compose up", "docker-compose up"],
+    body: "Compose の設定に従って、サービスのコンテナを作成・起動するコマンドです。すでにあるコンテナは、設定やイメージの変更に応じて作り直されます。`--build` は起動前にイメージをビルドする指定です。",
+  },
+  {
+    term: "docker compose logs",
+    aliases: ["docker compose logs", "docker-compose logs"],
+    body: "Compose で管理するサービスのログを表示するコマンドです。`docker compose logs サービス名` で対象を絞り込めます。`-f` を付けると、新しい出力を表示し続けます。",
+  },
+  {
+    term: "docker compose stop",
+    aliases: ["docker compose stop", "docker-compose stop"],
+    body: "Compose で管理するサービスのコンテナを、削除せずに停止するコマンドです。`docker compose stop サービス名` で対象を指定できます。",
+  },
+  {
+    term: "docker compose run",
+    aliases: ["docker compose run", "docker-compose run"],
+    body: "Compose のサービス設定を使い、一度の実行のために新しいコンテナを作って動かすコマンドです。稼働中のコンテナにコマンドを追加する操作とは異なります。既定ではサービスに設定したポートを公開せず、`--service-ports` を付けると公開します。",
   },
   {
     term: "Unix ソケット",
@@ -1711,6 +1761,26 @@ export const terms: TermDef[] = [
     term: "Docker context",
     aliases: ["Docker context", "docker context"],
     body: "Docker コマンドの接続先や接続に必要な情報をまとめた設定です。切り替えることで、手元の Docker とサーバの Docker を使い分けられます。環境変数やコマンドのオプションで、接続先を上書きすることもできます。",
+  },
+  {
+    term: "docker context show",
+    aliases: ["docker context show"],
+    body: "現在選択されている Docker context の名前を表示するコマンドです。接続先の URL そのものを表示するコマンドではありません。",
+  },
+  {
+    term: "docker context inspect",
+    aliases: ["docker context inspect"],
+    body: "Docker context の接続先などの詳細情報を JSON 形式で表示するコマンドです。context 名を指定しない場合は、現在選択されているものを表示します。",
+  },
+  {
+    term: "DOCKER_HOST",
+    aliases: ["DOCKER_HOST"],
+    body: "Docker コマンドの接続先を指定する環境変数です。手元の Docker だけでなく、サーバ上の Docker に接続する場合にも使われます。`DOCKER_CONTEXT` やコマンドのオプションによって、別の接続先が優先されることがあります。",
+  },
+  {
+    term: "DOCKER_CONTEXT",
+    aliases: ["DOCKER_CONTEXT"],
+    body: "Docker コマンドで使う context の名前を指定する環境変数です。保存されている現在の context の選択と、`DOCKER_HOST` による接続先の指定より優先されます。コマンドの `--context` で上書きできます。",
   },
   {
     term: "マウント",
@@ -1751,6 +1821,36 @@ export const terms: TermDef[] = [
     term: "kubectl",
     aliases: ["kubectl"],
     body: "Kubernetes を操作するコマンドです。クラスタに接続し、Pod の状態を調べたり、ログを読んだりできます。操作対象は、接続先の設定やコマンドのオプションで決まります。",
+  },
+  {
+    term: "kubectl get pods",
+    aliases: ["kubectl get pods"],
+    body: "対象の名前空間にある Pod の一覧を表示する Kubernetes のコマンドです。Pod の名前や状態、コンテナの再起動回数などを確認できます。`--namespace 名前空間名` で名前空間を指定できます。",
+  },
+  {
+    term: "kubectl logs",
+    aliases: ["kubectl logs"],
+    body: "Pod 内のコンテナの標準出力と標準エラー出力に出たログを読む Kubernetes のコマンドです。`kubectl logs Pod名` の形で使い、`-c コンテナ名` でコンテナを指定できます。コンテナが再起動した場合、既定では再起動後のログを表示します。",
+  },
+  {
+    term: "kubectl exec",
+    aliases: ["kubectl exec"],
+    body: "Pod 内の稼働中のコンテナでコマンドを実行する Kubernetes のコマンドです。`kubectl exec Pod名 -- コマンド` の形で使います。`-c コンテナ名` でコンテナを指定し、`-it` を付けるとシェルなどを対話的に操作できます。",
+  },
+  {
+    term: "Kubernetes context",
+    aliases: ["Kubernetes context", "Kubernetes の context"],
+    body: "Kubernetes に接続するためのクラスタ、認証に使う設定、既定の名前空間をまとめた設定です。kubectl は、既定では現在選択されている context を使います。Docker context とは別の設定です。",
+  },
+  {
+    term: "kubectl config current-context",
+    aliases: ["kubectl config current-context"],
+    body: "現在選択されている Kubernetes context の名前を表示するコマンドです。クラスタの接続先 URL や名前空間そのものを表示するコマンドではありません。",
+  },
+  {
+    term: "kubectl config view",
+    aliases: ["kubectl config view"],
+    body: "kubectl が使う、クラスタや認証などの接続設定を表示するコマンドです。`--minify` を付けると、現在選択されている context に関係する情報だけを表示します。",
   },
   {
     term: "クラスタ",
