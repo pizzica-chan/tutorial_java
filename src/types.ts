@@ -15,6 +15,7 @@ export type DiagramName =
   | "session"
   | "session-store"
   | "layers"
+  | "process-threads"
   | "filters"
   | "mapping"
   | "read-entry"
