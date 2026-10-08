@@ -1,5 +1,5 @@
 import type { ReactElement, ReactNode } from "react";
-import { PageAssets, Layers, Filters, ArchRoles, NPlusOne, ProcessThreads } from "./TeachingDiagrams";
+import { PageAssets, Layers, Filters, ArchRoles, NPlusOne, ProcessThreads, ThreadPool, SharedField, ThreadReuse } from "./TeachingDiagrams";
 import type { DiagramName } from "../types";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon, type IconName } from "./Icon";
@@ -30,6 +30,9 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "session-store": SessionStore,
   layers: Layers,
   "process-threads": ProcessThreads,
+  "thread-pool": ThreadPool,
+  "shared-field": SharedField,
+  "thread-reuse": ThreadReuse,
   filters: Filters,
   mapping: Mapping,
   "read-entry": ReadEntry,
@@ -242,6 +245,26 @@ function RequestParams() {
   );
 }
 
+const sessionLoginUser = [
+  ["id", "7"],
+  ["username", "yamada"],
+  ["displayName", "山田太郎"],
+  ["role", "USER"],
+];
+
+function SessionLoginUser() {
+  return (
+    <dl className="session-flow-values">
+      {sessionLoginUser.map(([key, value]) => (
+        <div key={key}>
+          <dt>{key}</dt>
+          <dd>{value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
 function SessionCookie() {
   return (
     <div className="session-flow">
@@ -270,6 +293,7 @@ function SessionCookie() {
               <strong><Icon name="box" size={18} />セッション</strong>
               <code>AB12CD34</code>
               <span className="session-flow-user"><Icon name="user" size={16} />山田太郎のログイン情報</span>
+              <SessionLoginUser />
             </div>
           </div>
         </li>
@@ -292,6 +316,7 @@ function SessionCookie() {
               <strong><Icon name="search" size={18} />ID で取り出す</strong>
               <code>AB12CD34</code>
               <span className="session-flow-user"><Icon name="user" size={16} />山田太郎のログイン情報</span>
+              <SessionLoginUser />
             </div>
           </div>
         </li>

@@ -73,6 +73,72 @@ export function ProcessThreads() {
   </div>;
 }
 
+export function ThreadPool() {
+  const threads = [
+    { name: "nio-8080-exec-1", work: "山田の一覧表示" },
+    { name: "nio-8080-exec-2", work: "佐藤の申請登録" },
+    { name: "nio-8080-exec-3", work: "鈴木の詳細表示" },
+  ];
+  return <div className="teaching-diagram">
+    <p className="td-heading">リクエストを処理するスレッドが、すべて使用中の例</p>
+    <div className="td-boundary">
+      <span className="td-boundary-label"><Icon name="server" size={18} />Tomcat のリクエスト処理スレッド（3 つに減らした例）</span>
+      <ul className="td-thread-list">{threads.map((thread) => <li key={thread.name}>
+        <code>{thread.name}</code>
+        <span>{thread.work}</span>
+        <small>処理中</small>
+      </li>)}</ul>
+    </div>
+    <Connector>どれかのスレッドが空くまで</Connector>
+    <div className="td-wait"><Icon name="clock" size={20} /><span>新しく届いたリクエストは待たされる</span></div>
+  </div>;
+}
+
+export function SharedField() {
+  const steps: { thread: string; text: ReactNode; bad?: boolean }[] = [
+    { thread: "exec-1（山田）", text: <>フィールド <code>searchTitle</code> に「休暇」を入れる</>, bad: true },
+    { thread: "exec-2（佐藤）", text: <>同じ <code>searchTitle</code> を「交通費」で上書きする</> },
+    { thread: "exec-1（山田）", text: <><code>searchTitle</code> を読んで SQL に渡す → 条件は「交通費」</> },
+  ];
+  return <div className="teaching-diagram">
+    <p className="td-heading"><span className="td-bad-label">悪い例</span>リクエストごとの値をフィールドに保存すると、別のスレッドに上書きされる</p>
+    <div className="td-branch-grid td-two">
+      <Card icon="route" title="スレッド exec-1（山田）">
+        <span>引数 <code>title</code> = 休暇</span>
+      </Card>
+      <Card icon="route" title="スレッド exec-2（佐藤）">
+        <span>引数 <code>title</code> = 交通費</span>
+      </Card>
+    </div>
+    <Connector>どちらも同じインスタンスを使う</Connector>
+    <Card icon="cog" title="InvestigationService（インスタンスは 1 つ）" tone="green">
+      <div className="td-bad-point">
+        <span className="td-bad-label">悪い点</span>
+        <span>リクエストごとの値（検索条件）を、フィールド <code>searchTitle</code> に保存している</span>
+      </div>
+      <small>引数 <code>title</code> をそのまま Mapper へ渡せば、ほかのスレッドに上書きされない</small>
+    </Card>
+    <ol className="td-timeline td-shared-steps">{steps.map((step, index) => <li key={index}>
+      <span className={step.bad ? "td-number td-number-bad" : "td-number"}>{index + 1}</span>
+      <div><small>{step.thread}</small><span>{step.text}</span></div>
+    </li>)}</ol>
+  </div>;
+}
+
+export function ThreadReuse() {
+  return <div className="teaching-diagram">
+    <p className="td-heading">同じスレッドが、続けて別のリクエストを処理する例</p>
+    <div className="td-boundary td-lane">
+      <span className="td-lane-name"><Icon name="route" size={18} />スレッド <code>nio-8080-exec-3</code></span>
+      <div className="td-lane-track">
+        <div className="td-lane-task"><small>04:12:03</small><strong>山田の検索</strong><code>user=7</code></div>
+        <span className="td-lane-gap">終わったら次へ</span>
+        <div className="td-lane-task"><small>04:12:05</small><strong>佐藤の検索</strong><code>user=3</code></div>
+      </div>
+    </div>
+  </div>;
+}
+
 export function Filters() {
   return <div className="teaching-diagram">
     <p className="td-heading">Controller より手前で処理が止まることがある</p>
