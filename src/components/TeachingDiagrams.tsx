@@ -142,7 +142,7 @@ export function ThreadReuse() {
 export function DbTransaction() {
   return <div className="teaching-diagram">
     <Card icon="database" title="処理前の DB">
-      <span>申請の状態：承認待ち</span>
+      <span>申請の状態：未承認</span>
       <span>承認履歴：無い</span>
     </Card>
     <Connector>同じ状態から、2 つの場合を比べる</Connector>
@@ -152,7 +152,7 @@ export function DbTransaction() {
         <div className="td-boundary">
           <span className="td-boundary-label">1 つのトランザクション</span>
           <Card icon="database" title="① 申請の状態を更新する">
-            <span>承認待ち → 承認済み</span>
+            <span>未承認 → 承認済み</span>
             <small>この時点では、まだ確定していない</small>
           </Card>
           <Connector>次の SQL も成功</Connector>
@@ -172,7 +172,7 @@ export function DbTransaction() {
         <div className="td-boundary">
           <span className="td-boundary-label">1 つのトランザクション</span>
           <Card icon="database" title="① 申請の状態を更新する">
-            <span>承認待ち → 承認済み</span>
+            <span>未承認 → 承認済み</span>
             <small>この時点では、まだ確定していない</small>
           </Card>
           <Connector>次の SQL が失敗</Connector>
@@ -183,7 +183,7 @@ export function DbTransaction() {
         </div>
         <Connector>DB に残る結果</Connector>
         <Card icon="database" title="処理前の状態に戻る">
-          <span>申請の状態：承認待ち</span>
+          <span>申請の状態：未承認</span>
           <span>承認履歴：無い</span>
         </Card>
       </div>
