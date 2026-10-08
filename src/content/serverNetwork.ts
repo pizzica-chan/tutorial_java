@@ -248,7 +248,7 @@ export const serverNetworkTrack: Track = {
         },
         {
           type: "p",
-          text: "調査で確認する場所も変わります。Docker で直接動かしているなら対象のコンテナ、Kubernetes なら Pod の状態やログ、サーバレスならサービスの管理画面やログを確認します。後半で、環境に応じた確認方法を見ていきましょう。",
+          text: "調査で確認する場所も変わります。Docker で直接動かしているならコンテナの状態やログ、Kubernetes なら Pod の状態やログを確認しましょう。サーバレスなら、サービスの管理画面で設定やログを確認しましょう。後半で、環境に応じた確認方法を見ていきましょう。",
         },
         {
           type: "h2",
@@ -439,11 +439,15 @@ SPRING_DATASOURCE_USERNAME=app`,
         },
         {
           type: "p",
-          text: "Kubernetes の名前空間は、Pod などをまとめて区別する範囲です。前半で説明した Linux の名前空間とは別の仕組みです。調査では、どのクラスタの、どの名前空間にある Pod を調べるかを確認します。",
+          text: "Kubernetes の名前空間は、Pod などをまとめて区別する範囲です。前半で説明した Linux の名前空間とは別の仕組みです。調査では、どのクラスタのどの名前空間にある Pod を調べるかを確認しましょう。",
         },
         {
           type: "p",
-          text: "`kubectl` は、自分の PC からサーバ側のクラスタも操作できます。まず `kubectl config current-context` で選択中の context を確認しましょう。そのあと、対象の名前空間を指定して Pod の状態とログを確認しましょう。",
+          text: "`kubectl` は、自分の PC からサーバ側のクラスタも操作できます。Kubernetes の context は、接続先のクラスタ、認証に使う設定、既定の名前空間をまとめた設定です。Docker context とは別の設定です。",
+        },
+        {
+          type: "p",
+          text: "まず `kubectl config current-context` で、選択中の context の名前を確認しましょう。名前だけでは接続先が分からない場合は、`kubectl config view --minify` で、その context に関係する設定を表示できます。出力の `contexts` にある `cluster` でクラスタ名、`clusters` にある `server` で接続先の URL を確かめましょう。そのあと、対象の名前空間を指定して Pod の状態とログを確認しましょう。",
         },
         {
           type: "code",
