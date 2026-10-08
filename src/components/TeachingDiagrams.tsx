@@ -54,6 +54,25 @@ export function Layers() {
   </div>;
 }
 
+export function ProcessThreads() {
+  return <div className="teaching-diagram">
+    <div className="td-boundary">
+      <span className="td-boundary-label"><Icon name="server" size={18} />1 つの Java プロセス（例）</span>
+      <div className="td-branch-grid td-two">
+        <Card icon="route" title="スレッド A">
+          <span>山田の一覧表示</span>
+          <span>Controller → Service → Mapper</span>
+        </Card>
+        <Card icon="route" title="スレッド B" tone="green">
+          <span>佐藤の申請登録</span>
+          <span>Controller → Service → Mapper</span>
+        </Card>
+      </div>
+      <p className="td-heading">同じ Controller や Service のインスタンスを使うことがある</p>
+    </div>
+  </div>;
+}
+
 export function Filters() {
   return <div className="teaching-diagram">
     <p className="td-heading">Controller より手前で処理が止まることがある</p>
