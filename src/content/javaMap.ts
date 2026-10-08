@@ -346,7 +346,7 @@ public class RegionInfo {
         },
         {
           type: "p",
-          text: "Spring の設定を XML で書いていたころのアプリでは、`<context:property-placeholder>` で `.properties` ファイルを読み込み、`${...}` や `@Value` に反映させる書き方をします。「トランザクションと同時実行」で見た `applicationContext.xml` は Bean の配線先でしたが、同じファイルに、この書き方で値の読み込みも混ざっていることがあります。",
+          text: "Spring の設定を XML で書いていたころのアプリでは、`<context:property-placeholder>` で `.properties` ファイルを読み込み、`${...}` や `@Value` に反映させる書き方をします。`applicationContext.xml` には、Bean の配線と設定値の読み込みの両方を書くことがあります。Bean の配線の例は、後の項目「トランザクションと同時実行」で扱います。",
           link: {
             label: "トランザクションと同時実行",
             to: "/tracks/java-map/transaction",
@@ -830,7 +830,11 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "`@RestController` は templates を使いません。JSON を返す Web API では、前の項目のとおり出口が JSON になることが多いです。",
+          text: "`@RestController` は templates を使いません。「Controller / Service / Repository / Mapper」で説明したように、JSON を返す Web API では出口が JSON になることが多いです。",
+          link: {
+            label: "Controller / Service / Repository / Mapper",
+            to: "/tracks/java-map/layers",
+          },
         },
       ],
     },
@@ -983,7 +987,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "ここでは Service を飛ばして Mapper を直接呼んでいます。前の項目「Controller / Service / Repository / Mapper」で触れた「並びがずれる」例です。",
+          text: "ここでは Service を飛ばして Mapper を直接呼んでいます。「Controller / Service / Repository / Mapper」で触れた「並びがずれる」例です。",
         },
         {
           type: "callout",
@@ -1427,108 +1431,6 @@ public void addInterceptors(InterceptorRegistry registry) {
           ],
         },
         { type: "quiz", id: "java-crosscut" },
-      ],
-    },
-    {
-      id: "arch",
-      title: "HTTP サーバとサーブレットコンテナ",
-      minutes: 10,
-      blocks: [
-        {
-          type: "p",
-          text: "ここまでは、自分たちが書くソースの話です。ここからは、その外側でリクエストが通るプログラムの話です。ブラウザからのリクエストは、HTTP サーバやサーブレットコンテナを通ってから Controller に届きます。",
-        },
-        {
-          type: "h2",
-          text: "役割の違い",
-        },
-        {
-          type: "table",
-          headers: ["種類", "例", "すること"],
-          rows: [
-            ["HTTP サーバ", "Apache、nginx", "手前で受ける。ブラウザとの HTTPS をここで解き、静的ファイルを配信し、後ろへ中継する"],
-            ["サーブレットコンテナ", "Tomcat、Jetty", "Java の画面や API を動かす"],
-          ],
-        },
-        { type: "diagram", name: "arch-roles", caption: "手前の HTTP サーバは無いこともあります。Java は、どれかのサーブレットコンテナで動きます。" },
-        {
-          type: "callout",
-          kind: "trap",
-          title: "Apache と Tomcat",
-          text: "Apache（httpd）は HTTP サーバ、Tomcat はサーブレットコンテナです。Tomcat の正式名は Apache Tomcat で、同じ Apache という名前が付きますが、別物です。",
-        },
-        {
-          type: "h2",
-          text: "重ね方のパターン",
-        },
-        {
-          type: "p",
-          text: "よく見る重ね方は次の 3 つです。",
-        },
-        {
-          type: "steps",
-          items: [
-            {
-              title: "内蔵だけ",
-              text: "Spring Boot を IDE や java -jar で起動すると、同じプロセスの中で Tomcat や Jetty が動きます。別途 Tomcat を入れる必要はありません。",
-            },
-            {
-              title: "外部に WAR",
-              text: "アプリを WAR にして、すでに動いている Tomcat や Jetty に載せます。",
-            },
-            {
-              title: "手前に Apache / nginx",
-              text: "ブラウザからの HTTP リクエストは、まず Apache か nginx が受けます。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです（SSL オフロード）。静的ファイルの配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろは内蔵でも外部 WAR でも構いません。",
-            },
-          ],
-        },
-        { type: "diagram", name: "arch-patterns" },
-        {
-          type: "h2",
-          text: "重ね方で変わる切り分け",
-        },
-        {
-          type: "p",
-          text: "気をつけることは、上のどのパターンかで変わります。手前に Apache / nginx がある構成（パターン 3）では、確認することが増えます。",
-        },
-        {
-          type: "table",
-          headers: ["パターン", "気をつけること"],
-          rows: [
-            ["1: 内蔵だけ", "手前の HTTP サーバが無いので、手前と後ろでパスがずれることはありません。コンテキストパスは `server.servlet.context-path` で決まります。"],
-            ["2: 外部 WAR", "手前の HTTP サーバが無いので、手前と後ろでパスがずれることはありません。ただし、コンテキストパスは WAR のファイル名や Tomcat の設定で決まり、`server.servlet.context-path` は使われません。`shinsei.war` なら `/shinsei` です。"],
-            ["3: 手前に Apache / nginx", "静的ファイルの 404 は、手前のパス設定のことがあります。コンテキストパスが、手前と後ろの両方に付いていることもあります。"],
-          ],
-        },
-        {
-          type: "p",
-          text: "アプリのログがどこに出るかは、重ね方だけでなく logback などの設定次第です。見分け方は「アプリログの場所と読み方」で扱います。",
-          link: {
-            label: "アプリログの場所と読み方",
-            to: "/tracks/troubleshoot/logs",
-          },
-        },
-        {
-          type: "h2",
-          text: "さらに手前",
-        },
-        {
-          type: "p",
-          text: "上のどの重ね方でも、さらに手前にロードバランサや CDN、WAF が置かれることがあります。いずれも Java のコードより手前です。パターン 3 なら Apache / nginx の外側、パターン 1・2 なら Tomcat や Spring Boot の手前、という位置づけです。",
-        },
-        {
-          type: "ul",
-          items: [
-            "ロードバランサ（LB）… 複数台へ振り分け。SSL 終端をここで行うこともある",
-            "CDN … 静的ファイルを近い拠点から配る。キャッシュや SSL 終端を担うこともある",
-            "WAF … HTTP リクエストを検査し、攻撃と判定したものを遮断する",
-          ],
-        },
-        {
-          type: "p",
-          text: "ログの出る場所や、ブロックされたときの応答は環境次第です。実務では「アプリに届いたか」を先に確認しましょう。",
-        },
-        { type: "quiz", id: "java-arch" },
       ],
     },
   ],

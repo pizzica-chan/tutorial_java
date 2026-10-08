@@ -3,7 +3,7 @@ import { sourceScenarios } from "./sourceScenarios";
 
 export const scenarioTrack: Track = {
   id: "scenario",
-  no: "07",
+  no: "08",
   title: "実務のシナリオ",
   kicker: "SCENARIO",
   description: "障害調査と影響調査の例を、原因や結論が出るまで順に追います。",
@@ -20,7 +20,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "検証用環境のデータは、シナリオごとの例です。前のシナリオで見たデータと食い違っていても、間違いではありません。",
+          text: "検証用環境のデータは、シナリオごとの例です。ほかのシナリオのデータと食い違っていても、間違いではありません。",
         },
         {
           type: "h2",
@@ -1697,7 +1697,11 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "アプリに届いていなければ、Controller も SQL もまだ関係ありません。次を見ましょう。ping や curl の打ち方は、トラブルシューティング手法の「ネットワークの疎通確認」です。",
+          text: "アプリに届いていなければ、Controller も SQL もまだ関係ありません。次を見ましょう。ping や curl の打ち方は、「サーバ＆ネットワーク」の「ネットワークの疎通確認」にあります。",
+          link: {
+            label: "ネットワークの疎通確認",
+            to: "/tracks/server-network/net-check",
+          },
         },
         {
           type: "ul",
@@ -1972,7 +1976,11 @@ traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packet
         },
         {
           type: "p",
-          text: "502 は、手前の HTTP サーバから後ろのアプリに届いていないときに出ることが多いステータスコードです。まず、申請くんのプロセスが起動しているかどうかを見ましょう。ps コマンドの使い方は、トラブルシューティング手法の「Linux の基本操作」です。",
+          text: "502 は、手前の HTTP サーバから後ろのアプリに届いていないときに出ることが多いステータスコードです。まず、申請くんのプロセスが起動しているかどうかを見ましょう。`ps` コマンドの使い方は、「サーバ＆ネットワーク」の「Linux の基本操作」にあります。",
+          link: {
+            label: "Linux の基本操作",
+            to: "/tracks/server-network/linux-basics",
+          },
         },
         {
           type: "h2",
@@ -3368,7 +3376,7 @@ public class SlackNotificationService {
           text: "「設定値を読む Java コード」で見た `@Value` が、ここでも使えます。環境ごとに Webhook の URL を変えたいなら、`application-dev.yml` のように環境別のファイルに分けるか、`spring.config.import` で別ファイルに切り出す構成も選べます。",
           link: {
             label: "設定値を読む Java コード",
-            to: "/tracks/java-map/yml",
+            to: "/tracks/java-map/yml#h-1",
           },
         },
         {

@@ -2,7 +2,7 @@ import type { Track } from "../types";
 
 export const traceTrack: Track = {
   id: "trace",
-  no: "05",
+  no: "06",
   title: "SQL からソースを探す",
   kicker: "SQL",
   description: "実行された SQL から、発行したアプリのソースを見つけ、DB の中身と突き合わせます。",

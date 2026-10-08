@@ -305,6 +305,7 @@ export function trackIcon(id: TrackId): IconName {
   if (id === "intro") return "book";
   if (id === "web") return "globe";
   if (id === "java-map") return "folder";
+  if (id === "server-network") return "server";
   if (id === "reading") return "route";
   if (id === "trace") return "database";
   if (id === "scenario") return "flag";

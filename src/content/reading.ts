@@ -4,7 +4,7 @@ import { requestServiceSample, shinseiAppJsSnippet, shinseiFormJsSnippet } from 
 
 export const readingTrack: Track = {
   id: "reading",
-  no: "04",
+  no: "05",
   title: "ソースの読み方",
   kicker: "READING",
   description: "画面と URL を手がかりに処理の入口を特定し、キーワード検索や呼び出しの追跡、変更履歴、デバッガなどでコードを読み解きます。",
@@ -718,7 +718,7 @@ public class RequestController {
         },
         {
           type: "p",
-          text: "今のメソッドを誰が呼んでいるかを知るときは、参照検索です。前のレッスンの文字列検索とは別です。",
+          text: "今のメソッドを誰が呼んでいるかを知るときは、参照検索です。「キーワードで探す」で使った文字列検索とは別です。",
         },
         {
           type: "ol",
