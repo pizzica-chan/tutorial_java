@@ -627,19 +627,36 @@ public class RequestApiController {
     {
       id: "transaction",
       title: "トランザクションと同時実行",
-      minutes: 12,
+      minutes: 13,
       blocks: [
         {
           type: "p",
-          text: "Service のメソッドに付いている `@Transactional` や、DB の分離レベルが、具体的に何を保証していて、何を保証していないかを見ます。",
+          text: "トランザクションの基本を押さえたうえで、Service のメソッドに付いている `@Transactional` や、DB の分離レベルが、具体的に何を保証していて、何を保証していないかを見ます。",
         },
+        {
+          type: "h2",
+          text: "トランザクションとは",
+        },
+        {
+          type: "p",
+          text: "DB のトランザクションは、複数の SQL による変更をひとまとまりとして扱う仕組みです。ひとまとまりにした変更は、すべて DB に反映されるか、1 つも反映されないかのどちらかになります。途中の SQL まで反映された状態のまま残ることはありません。",
+        },
+        {
+          type: "p",
+          text: "すべての変更を確定することをコミットと呼びます。途中で失敗したときなどに、そのトランザクションで行った変更をすべて取り消すことをロールバックと呼びます。申請の状態更新と承認履歴の追加を、同じトランザクションで行う例を見ましょう。",
+        },
+        { type: "diagram", name: "db-transaction" },
         {
           type: "h2",
           text: "@Transactional が保証すること",
         },
         {
           type: "p",
-          text: "`@Transactional` は、そのメソッドの中の複数の SQL を 1 つの単位にまとめる印です。途中で例外が起きれば、それまでの変更もすべて取り消されます（ロールバック）。ただし既定でロールバックされるのは `RuntimeException` や `Error` のような非検査例外だけです。検査例外は、`rollbackFor` を指定しない限りロールバックされません。",
+          text: "`@Transactional` は、そのメソッドの処理を 1 つのトランザクションにする印です。途中で例外が起きれば、ロールバックされます。ただし既定でロールバックされるのは `RuntimeException` や `Error` のような非検査例外だけです。検査例外は、`rollbackFor` を指定しない限りロールバックされません。",
+        },
+        {
+          type: "p",
+          text: "次のコードは、図とは別の例です。申請の状態を更新したあとに、申請者へメールを送ります。",
         },
         {
           type: "code",
@@ -658,7 +675,7 @@ public void approve(Long requestId, Long approverId) {
           type: "callout",
           kind: "note",
           title: "DB 以外は取り消せない",
-          text: "`update` のあとで例外が起きれば、その `update` も取り消されます。ただし、メール送信のような DB 以外への操作は、`@Transactional` の対象外です。取り消しても、送ってしまったメールは戻りません。",
+          text: "メール送信のような DB 以外への操作は、`@Transactional` の対象外です。ロールバックしても、送ってしまったメールは戻りません。",
         },
         {
           type: "p",

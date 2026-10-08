@@ -1,5 +1,5 @@
 import type { ReactElement, ReactNode } from "react";
-import { PageAssets, Layers, Filters, ArchRoles, NPlusOne, ProcessThreads, ThreadPool, SharedField, ThreadReuse } from "./TeachingDiagrams";
+import { PageAssets, Layers, Filters, ArchRoles, NPlusOne, ProcessThreads, ThreadPool, SharedField, ThreadReuse, DbTransaction } from "./TeachingDiagrams";
 import type { DiagramName } from "../types";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon, type IconName } from "./Icon";
@@ -33,6 +33,7 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "thread-pool": ThreadPool,
   "shared-field": SharedField,
   "thread-reuse": ThreadReuse,
+  "db-transaction": DbTransaction,
   filters: Filters,
   mapping: Mapping,
   "read-entry": ReadEntry,

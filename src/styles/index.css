@@ -3299,6 +3299,26 @@ th {
   font-weight: 700;
 }
 
+.td-tx-case {
+  display: flex;
+  flex-direction: column;
+}
+
+.td-tx-case > .td-boundary {
+  flex: 1;
+  align-content: start;
+}
+
+.td-case-label {
+  margin: 0 0 10px;
+  color: var(--paper);
+  font-weight: 700;
+}
+
+.td-tx-case + .td-tx-case .td-case-label {
+  color: var(--rose);
+}
+
 .td-bad-label {
   display: inline-block;
   margin-right: 10px;
@@ -3404,6 +3424,7 @@ th {
 }
 
 @container (max-width: 560px) {
+  .td-tx-case + .td-tx-case { margin-top: 20px; }
   .td-lane-track {
     grid-template-columns: minmax(0, 1fr);
   }

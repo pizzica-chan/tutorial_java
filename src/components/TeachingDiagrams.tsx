@@ -139,6 +139,58 @@ export function ThreadReuse() {
   </div>;
 }
 
+export function DbTransaction() {
+  return <div className="teaching-diagram">
+    <Card icon="database" title="処理前の DB">
+      <span>申請の状態：未承認</span>
+      <span>承認履歴：無い</span>
+    </Card>
+    <Connector>同じ状態から、2 つの場合を比べる</Connector>
+    <div className="td-branch-grid td-two">
+      <div className="td-tx-case">
+        <p className="td-case-label">SQL がすべて成功した場合</p>
+        <div className="td-boundary">
+          <span className="td-boundary-label">1 つのトランザクション</span>
+          <Card icon="database" title="① 申請の状態を更新する">
+            <span>未承認 → 承認済み</span>
+            <small>この時点では、まだ確定していない</small>
+          </Card>
+          <Connector>次の SQL も成功</Connector>
+          <Card icon="file" title="② 承認履歴を追加する">
+            <span>履歴のレコードを 1 件追加</span>
+          </Card>
+          <Connector>コミット：両方の変更を確定</Connector>
+        </div>
+        <Connector>DB に残る結果</Connector>
+        <Card icon="check" title="両方の変更が残る" tone="green">
+          <span>申請の状態：承認済み</span>
+          <span>承認履歴：1 件ある</span>
+        </Card>
+      </div>
+      <div className="td-tx-case">
+        <p className="td-case-label">途中の SQL が失敗した場合</p>
+        <div className="td-boundary">
+          <span className="td-boundary-label">1 つのトランザクション</span>
+          <Card icon="database" title="① 申請の状態を更新する">
+            <span>未承認 → 承認済み</span>
+            <small>この時点では、まだ確定していない</small>
+          </Card>
+          <Connector>次の SQL が失敗</Connector>
+          <Card icon="warn" title="② 承認履歴を追加できない">
+            <span>例外が起きて、処理を中止</span>
+          </Card>
+          <Connector>ロールバック：① の変更も取り消す</Connector>
+        </div>
+        <Connector>DB に残る結果</Connector>
+        <Card icon="database" title="処理前の状態に戻る">
+          <span>申請の状態：未承認</span>
+          <span>承認履歴：無い</span>
+        </Card>
+      </div>
+    </div>
+  </div>;
+}
+
 export function Filters() {
   return <div className="teaching-diagram">
     <p className="td-heading">Controller より手前で処理が止まることがある</p>
