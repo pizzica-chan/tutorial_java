@@ -276,7 +276,23 @@ ENTRYPOINT ["java", "-Duser.timezone=Asia/Tokyo", "-jar", "app.jar"]`,
         },
         {
           type: "p",
-          text: "db の `\"3306:3306\"` も同じ指定です。ホスト OS の MySQL クライアントは `localhost:3306` で db に接続できます。app コンテナ内では `localhost` が指す先が違うため、`db:3306` を使います。",
+          text: "db の `\"3306:3306\"` も同じ指定です。ホスト OS から TCP で `127.0.0.1:3306` に接続すると、この公開ポートを通って db に届きます。app コンテナ内では `localhost` や `127.0.0.1` が app 自身を指すため、`db:3306` を使います。",
+        },
+        {
+          type: "code",
+          title: "例（ホスト OS から MySQL に TCP で接続する）",
+          lang: "text",
+          code: `mysql --host=127.0.0.1 --port=3306 --user=app --password`,
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "mysql コマンドの localhost は、接続方法も変えることがある",
+          text: "Unix 系の OS で `mysql --host=localhost` を実行すると、既定では TCP ではなく Unix ソケットを使い、ポート指定も無視されます。公開ポートへ接続するときは、上の例のように `127.0.0.1` を指定するか、`--protocol=TCP` を付けましょう。",
+        },
+        {
+          type: "p",
+          text: "ここまでの例は、手元の PC で申請くんを動かす場合です。サーバで動かしているアプリをブラウザから開くときは、`http://intranet.example.co.jp:8080/shinsei/login` のように対象サーバのホスト名を使います。",
         },
         {
           type: "h2",
@@ -303,7 +319,7 @@ shinsei-app`,
         },
         {
           type: "p",
-          text: "`--format '{{.Names}}'` はコンテナ名だけを出す指定です。`docker ps` の `NAMES` でも名前を確認できます。この例では、各マシンの Docker に接続しています。ブラウザからサーバのアプリを開くときも、`http://intranet.example.co.jp:8080/shinsei/login` のように対象サーバのホスト名を使います。",
+          text: "`--format '{{.Names}}'` はコンテナ名だけを出す指定です。指定しない場合は、`docker ps` の `NAMES` で名前を確認しましょう。この例では、手元の Docker に app と db があり、サーバの Docker には `shinsei-app` があります。",
         },
         {
           type: "callout",
@@ -388,7 +404,7 @@ SPRING_DATASOURCE_USERNAME=app`,
         },
         {
           type: "p",
-          text: "申請くんは `/app/logs/shinsei.log` にもログを書きます。このディレクトリはホスト OS の `shinsei-kun/logs` にマウントしているので、ホスト OS からも同じログファイルを開けます。ログの出力先を調べる方法は「アプリログの場所と読み方」で扱います。",
+          text: "申請くんは `/app/logs/shinsei.log` にもログを書きます。ホスト OS の `shinsei-kun/logs` をコンテナ内の `/app/logs` にマウントしているので、ホスト OS からも同じログファイルを開けます。ログの出力先を調べる方法は「アプリログの場所と読み方」で扱います。",
           link: {
             label: "アプリログの場所と読み方",
             to: "/tracks/troubleshoot/logs",

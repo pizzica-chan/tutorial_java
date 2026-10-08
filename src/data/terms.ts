@@ -1673,7 +1673,12 @@ export const terms: TermDef[] = [
   {
     term: "Docker Compose",
     aliases: ["Docker Compose", "docker-compose", "docker compose"],
-    body: "複数のコンテナの構成を `docker-compose.yml` などのファイルに書き、まとめて起動する仕組みです。同じ構成で起動したコンテナどうしは、サービス名で相手につながります。",
+    body: "複数のコンテナの構成を `docker-compose.yml` などのファイルに書き、まとめて起動する仕組みです。既定では、各サービスのコンテナが同じネットワークに参加します。共通のネットワークに参加しているコンテナどうしは、サービス名で相手につながります。",
+  },
+  {
+    term: "Unix ソケット",
+    aliases: ["Unix ソケット", "Unixソケット"],
+    body: "同じ OS 上のプロセスどうしが通信するための仕組みです。TCP の IP アドレスやポートを使う接続とは異なります。MySQL では、ソケットファイルのパスを使ってサーバに接続する方法があります。",
   },
   {
     term: "Dockerfile",
