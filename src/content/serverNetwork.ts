@@ -113,7 +113,7 @@ export const serverNetworkTrack: Track = {
     {
       id: "container",
       title: "コンテナで動くアプリ",
-      minutes: 17,
+      minutes: 19,
       blocks: [
         {
           type: "p",
@@ -223,6 +223,35 @@ export const serverNetworkTrack: Track = {
         },
         {
           type: "h2",
+          text: "Kubernetes とサーバレスの位置づけ",
+        },
+        {
+          type: "p",
+          text: "ここまで説明したのは、コンテナで環境を分け、作り直せるようにする考え方です。実務では、そのコンテナの稼働を Kubernetes で管理したり、クラウドのサーバレスサービスに任せたりすることもあります。役割を分けて確認しましょう。",
+        },
+        {
+          type: "table",
+          headers: ["用語", "主な役割"],
+          rows: [
+            ["コンテナ", "アプリが使うファイルや実行環境をまとめ、ほかの環境から分けて動かす"],
+            ["Kubernetes（K8s）", "指定した構成に近づくように、コンテナの配置や稼働状態を管理する"],
+            ["サーバレス", "サーバの用意や管理をクラウド事業者に任せて、アプリを動かす"],
+          ],
+        },
+        {
+          type: "p",
+          text: "Kubernetes では、コンテナを Pod という単位で動かします。たとえば、アプリを動かす Pod を 3 つ維持する構成を指定すると、Pod が失われた場合には新しい Pod を作り、指定した数に近づけます。宣言的な構成と、作り直せる実行環境という考え方が、ここでも使われます。",
+        },
+        {
+          type: "p",
+          text: "サーバレスでも、アプリを動かすサーバは存在します。その用意や管理をクラウド事業者が担います。コンテナと両立し、Cloud Run のようにコンテナでアプリを動かすサービスもあります。サーバレスサービスには、関数単位のコードを渡すものなどもあり、すべてが同じ実行方法ではありません。",
+        },
+        {
+          type: "p",
+          text: "調査で確認する場所も変わります。Docker で直接動かしているなら対象のコンテナ、Kubernetes なら Pod の状態やログ、サーバレスならサービスの管理画面やログを確認します。後半で、環境に応じた確認方法を見ていきましょう。",
+        },
+        {
+          type: "h2",
           text: "申請くんのイメージと接続設定を読む",
         },
         {
@@ -300,7 +329,7 @@ ENTRYPOINT ["java", "-Duser.timezone=Asia/Tokyo", "-jar", "app.jar"]`,
         },
         {
           type: "p",
-          text: "いま分かっているのは、申請くんが app と db に分かれ、ファイルや接続先はコンテナごとに異なることです。調査では、まず対象の Docker に接続しているかを確認し、そのあと必要なコンテナのファイルやログを確認しましょう。",
+          text: "調査するときは、まず調べるアプリが動いているコンテナを確認しましょう。自分の PC とサーバのどちらのコンテナなのかを確かめてから、そのコンテナのファイルやログを確認しましょう。",
         },
         {
           type: "p",
@@ -326,12 +355,6 @@ shinsei-app`,
           kind: "note",
           title: "コマンドを打った場所だけでは、操作対象は決まらない",
           text: "Docker context には接続先などが保存されています。`docker context show` と `docker context inspect` で選択中の設定を確認しましょう。`DOCKER_HOST`・`DOCKER_CONTEXT` や、`--host`・`--context` で接続先を変えている場合は、その指定も確認しましょう。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "Kubernetes を使う環境では",
-          text: "`kubectl` も、接続先の設定で操作するクラスタが決まります。自分の PC からサーバ側を操作できます。`kubectl config current-context` で選択中の context を確認しましょう。",
         },
         {
           type: "h3",
@@ -409,6 +432,33 @@ SPRING_DATASOURCE_USERNAME=app`,
             label: "アプリログの場所と読み方",
             to: "/tracks/troubleshoot/logs",
           },
+        },
+        {
+          type: "h3",
+          text: "Kubernetes やサーバレスの環境で確認する",
+        },
+        {
+          type: "p",
+          text: "Kubernetes の名前空間は、Pod などをまとめて区別する範囲です。前半で説明した Linux の名前空間とは別の仕組みです。調査では、どのクラスタの、どの名前空間にある Pod を調べるかを確認します。",
+        },
+        {
+          type: "p",
+          text: "`kubectl` は、自分の PC からサーバ側のクラスタも操作できます。まず `kubectl config current-context` で選択中の context を確認しましょう。そのあと、対象の名前空間を指定して Pod の状態とログを確認しましょう。",
+        },
+        {
+          type: "code",
+          title: "例（Kubernetes の対象の名前空間で Pod の状態とログを確認する）",
+          lang: "text",
+          code: `kubectl get pods --namespace 名前空間名
+kubectl logs --namespace 名前空間名 Pod名`,
+        },
+        {
+          type: "p",
+          text: "コード例の `名前空間名` と `Pod名` は、調べる環境の値に置き換えましょう。Pod に複数のコンテナがある場合は、ログを読むコマンドに `-c コンテナ名` も指定しましょう。Pod が交換されると名前が変わることがあるため、調査対象の Pod と、問題が起きた時刻を確かめましょう。",
+        },
+        {
+          type: "p",
+          text: "クラウドのサーバレスでは、ホスト OS に SSH で入ることを前提にせず、サービスの管理画面やログから確認を始めましょう。対象のアプリやサービス、設定、問題が起きた時刻のログを確認する点は共通です。サービスごとに確認方法が違うため、その環境で案内されている管理画面やコマンドを使いましょう。",
         },
         {
           type: "quiz",
