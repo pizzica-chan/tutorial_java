@@ -96,27 +96,27 @@ export function ThreadPool() {
 
 export function SharedField() {
   const steps: { thread: string; text: ReactNode; bad?: boolean }[] = [
-    { thread: "exec-1（山田）", text: <>フィールド <code>searchTitle</code> に「休暇」を入れる</>, bad: true },
-    { thread: "exec-2（佐藤）", text: <>同じ <code>searchTitle</code> を「交通費」で上書きする</> },
-    { thread: "exec-1（山田）", text: <><code>searchTitle</code> を読んで SQL に渡す → 条件は「交通費」</> },
+    { thread: "exec-1（山田）", text: <>フィールド <code>currentKeyword</code> に「出張」を入れる</>, bad: true },
+    { thread: "exec-2（佐藤）", text: <>同じ <code>currentKeyword</code> を「備品」で上書きする</> },
+    { thread: "exec-1（山田）", text: <><code>currentKeyword</code> を読んで SQL に渡す → 条件は「備品」</> },
   ];
   return <div className="teaching-diagram">
     <p className="td-heading"><span className="td-bad-label">悪い例</span>リクエストごとの値をフィールドに保存すると、別のスレッドに上書きされる</p>
     <div className="td-branch-grid td-two">
       <Card icon="route" title="スレッド exec-1（山田）">
-        <span>引数 <code>title</code> = 休暇</span>
+        <span>引数 <code>keyword</code> = 出張</span>
       </Card>
       <Card icon="route" title="スレッド exec-2（佐藤）">
-        <span>引数 <code>title</code> = 交通費</span>
+        <span>引数 <code>keyword</code> = 備品</span>
       </Card>
     </div>
     <Connector>どちらも同じインスタンスを使う</Connector>
-    <Card icon="cog" title="InvestigationService（インスタンスは 1 つ）" tone="green">
+    <Card icon="cog" title="SearchService（インスタンスは 1 つ）" tone="green">
       <div className="td-bad-point">
         <span className="td-bad-label">悪い点</span>
-        <span>リクエストごとの値（検索条件）を、フィールド <code>searchTitle</code> に保存している</span>
+        <span>リクエストごとの値（検索条件）を、フィールド <code>currentKeyword</code> に保存している</span>
       </div>
-      <small>引数 <code>title</code> をそのまま Mapper へ渡せば、ほかのスレッドに上書きされない</small>
+      <small>引数 <code>keyword</code> をそのまま Mapper へ渡せば、ほかのスレッドに上書きされない</small>
     </Card>
     <ol className="td-timeline td-shared-steps">{steps.map((step, index) => <li key={index}>
       <span className={step.bad ? "td-number td-number-bad" : "td-number"}>{index + 1}</span>

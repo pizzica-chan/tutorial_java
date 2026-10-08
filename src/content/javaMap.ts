@@ -586,7 +586,7 @@ public class RequestApiController {
         {
           type: "diagram",
           name: "shared-field",
-          caption: "後のシナリオで扱う `InvestigationService.search` の例です。山田の処理の途中で、佐藤の処理がフィールドを上書きします。",
+          caption: "山田の処理の途中で、佐藤の処理がフィールドを上書きする例です。クラス名やフィールド名は説明用です。",
         },
         {
           type: "p",
