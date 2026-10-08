@@ -490,6 +490,20 @@ export const quizzes = {
     answer: 1,
     explanation: "DB に直接つながるなら DB 自体は動いています。アプリから待たされるときは、アプリ側のコネクションプールが枯渇していないかを疑いましょう。",
   },
+  "server-container": {
+    id: "server-container",
+    question:
+      "申請くんの `docker-compose.yml` は、db に `ports: \"3306:3306\"` を指定している。app コンテナの中の Java から `jdbc:mysql://localhost:3306/shinsei_dev` でつなごうとすると、どうなる？",
+    choices: [
+      "ホスト OS の 3306 番を経由して、db コンテナにつながる",
+      "app コンテナ自身の 3306 番を指すので、DB にはつながらない",
+      "ports で公開しているので、どのコンテナからも localhost で db につながる",
+      "Docker Compose が、localhost を db に自動で読み替えてつなぐ",
+    ],
+    answer: 1,
+    explanation:
+      "コンテナの中の localhost は、そのコンテナ自身です。app コンテナの中では MySQL が動いていないので、3306 番にはつながりません。ports の \"3306:3306\" は、ホスト OS の 3306 番を db コンテナへつなぐ指定で、ホスト OS から使うためのものです。app コンテナから db コンテナへは、サービス名の db でつなぎます。",
+  },
   "java-arch": {
     id: "java-arch",
     question: "Apache と Tomcat の違いは？",

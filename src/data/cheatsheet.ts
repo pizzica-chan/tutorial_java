@@ -27,6 +27,8 @@ export const cheatSheet: CheatSection[] = [
         rows: [
           { cmd: "`ssh ユーザ名@ホスト名`", env: "Linux", desc: "サーバのターミナルに入る" },
           { cmd: "`docker exec -it コンテナ名 bash`", env: "Docker", desc: "コンテナに入る" },
+          { cmd: "`docker logs --tail 100 -f コンテナ名`", env: "Docker", desc: "コンテナの標準出力に出たログの末尾 100 行を見て、続きも表示し続ける" },
+          { cmd: "`docker exec コンテナ名 env`", env: "Docker", desc: "コンテナに渡した環境変数を見る" },
           { cmd: "`kubectl exec -it Pod名 -- bash`", env: "Kubernetes", desc: "Pod に入る" },
           { cmd: "`ls -l`", env: "Linux", desc: "ファイル一覧と、パーミッション・所有者を見る" },
         ],

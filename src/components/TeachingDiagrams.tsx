@@ -191,6 +191,30 @@ export function DbTransaction() {
   </div>;
 }
 
+export function ContainerNetwork() {
+  return <div className="teaching-diagram">
+    <p className="td-heading">申請くんの例：ホスト OS と 2 つのコンテナ</p>
+    <div className="td-boundary">
+      <span className="td-boundary-label"><Icon name="server" size={18} />ホスト OS（この例では自分の PC）</span>
+      <Card icon="browser" title="ブラウザ">
+        <code>http://localhost:8080/shinsei/login</code>
+      </Card>
+      <Connector><code>ports: "8080:8080"</code>ホスト OS の 8080 番 → app コンテナの 8080 番</Connector>
+      <div className="td-boundary td-container">
+        <span className="td-boundary-label">Docker Compose で起動したコンテナ</span>
+        <Card icon="box" title="app コンテナ">
+          <span>申請くん（Java）が 8080 番で待つ</span>
+          <small>この中の <code>localhost</code> は app コンテナ自身</small>
+        </Card>
+        <Connector><code>db:3306</code>サービス名の db でつなぐ</Connector>
+        <Card icon="database" title="db コンテナ" tone="green">
+          <span>MySQL が 3306 番で待つ</span>
+        </Card>
+      </div>
+    </div>
+  </div>;
+}
+
 export function Filters() {
   return <div className="teaching-diagram">
     <p className="td-heading">Controller より手前で処理が止まることがある</p>
