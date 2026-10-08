@@ -191,6 +191,90 @@ export function DbTransaction() {
   </div>;
 }
 
+export function ContainerIsolation() {
+  return <div className="teaching-diagram">
+    <p className="td-heading">Linux 上の例：見える範囲は別、カーネルは共通</p>
+    <div className="td-boundary">
+      <span className="td-boundary-label"><Icon name="server" size={18} />ホスト OS（Linux）</span>
+      <div className="td-branch-grid td-two">
+        <div className="td-boundary td-container">
+          <span className="td-boundary-label">app コンテナ</span>
+          <Card icon="box" title="Java プロセス">
+            <span>app 用の名前空間で見える範囲</span>
+            <small>プロセスの一覧・ネットワーク・マウント</small>
+            <code>localhost → app 自身</code>
+          </Card>
+        </div>
+        <div className="td-boundary td-container">
+          <span className="td-boundary-label">db コンテナ</span>
+          <Card icon="database" title="MySQL プロセス" tone="green">
+            <span>db 用の名前空間で見える範囲</span>
+            <small>プロセスの一覧・ネットワーク・マウント</small>
+            <code>localhost → db 自身</code>
+          </Card>
+        </div>
+      </div>
+      <Connector>両方のプロセスを、同じカーネルが動かす</Connector>
+      <Card icon="server" title="共有する Linux カーネル">
+        <span>名前空間で範囲を分けながら、プロセスを実行する</span>
+      </Card>
+    </div>
+  </div>;
+}
+
+export function ContainerRecreate() {
+  return <div className="teaching-diagram">
+    <p className="td-heading">申請くんの例：db コンテナを交換し、データを引き継ぐ</p>
+    <Card icon="box" title="MySQL のイメージ">
+      <span>コンテナを作る元になるファイルと起動コマンド</span>
+    </Card>
+    <Connector>イメージと起動時の設定から作る</Connector>
+    <div className="td-branch-grid td-two">
+      <Card icon="database" title="交換前の db コンテナ">
+        <span>MySQL のプロセスが動く</span>
+        <small>停止・削除する</small>
+        <code>/var/lib/mysql</code>
+      </Card>
+      <Card icon="database" title="交換後の db コンテナ" tone="green">
+        <span>新しい MySQL のプロセスが動く</span>
+        <small>新しく作成・起動する</small>
+        <code>/var/lib/mysql</code>
+      </Card>
+    </div>
+    <Connector>交換前も交換後も、同じボリュームをマウントする</Connector>
+    <div className="td-boundary">
+      <span className="td-boundary-label">コンテナの外に保存するデータ</span>
+      <Card icon="database" title="ボリューム shinsei-mysql" tone="green">
+        <span>申請などの DB のデータが残る</span>
+      </Card>
+    </div>
+  </div>;
+}
+
+export function ContainerNetwork() {
+  return <div className="teaching-diagram">
+    <p className="td-heading">申請くんの例：ホスト OS と 2 つのコンテナ</p>
+    <div className="td-boundary">
+      <span className="td-boundary-label"><Icon name="server" size={18} />ホスト OS（この例では自分の PC）</span>
+      <Card icon="browser" title="ブラウザ">
+        <code>http://localhost:8080/shinsei/login</code>
+      </Card>
+      <Connector><code>ports: "8080:8080"</code>ホスト OS の 8080 番 → app コンテナの 8080 番</Connector>
+      <div className="td-boundary td-container">
+        <span className="td-boundary-label">Docker Compose で起動したコンテナ</span>
+        <Card icon="box" title="app コンテナ">
+          <span>申請くん（Java）が 8080 番で待つ</span>
+          <small>この中の <code>localhost</code> は app コンテナ自身</small>
+        </Card>
+        <Connector><code>db:3306</code>サービス名の db でつなぐ</Connector>
+        <Card icon="database" title="db コンテナ" tone="green">
+          <span>MySQL が 3306 番で待つ</span>
+        </Card>
+      </div>
+    </div>
+  </div>;
+}
+
 export function Filters() {
   return <div className="teaching-diagram">
     <p className="td-heading">Controller より手前で処理が止まることがある</p>
