@@ -1656,6 +1656,11 @@ export const terms: TermDef[] = [
     body: "コンテナを動かす仕組みのひとつです。コンテナそのものではありません。ログはコンテナの標準出力に出ることが多く、docker logs で見ることがあります。",
   },
   {
+    term: "docker exec",
+    aliases: ["docker exec", "docker container exec"],
+    body: "稼働中のコンテナ内で、新しいコマンドを実行する Docker のコマンドです。`docker exec コンテナ名 コマンド` の形で使います。`docker exec -it コンテナ名 bash` では、コンテナ内でシェルを起動し、対話的に操作できます。実行するコマンドは、コンテナ内に用意されている必要があります。",
+  },
+  {
     term: "docker-compose.yml",
     aliases: ["docker-compose.yml"],
     body: "複数のコンテナ（アプリ、DB など）をまとめて起動するための設定ファイルです。各コンテナのイメージ、ポート、環境変数などを書きます。`docker compose up` で起動します。",
