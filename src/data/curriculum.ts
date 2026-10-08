@@ -2,6 +2,7 @@ import type { Block, Lesson, Track } from "../types";
 import { introTrack } from "../content/intro";
 import { webTrack } from "../content/web";
 import { javaMapTrack } from "../content/javaMap";
+import { serverNetworkTrack } from "../content/serverNetwork";
 import { readingTrack } from "../content/reading";
 import { traceTrack } from "../content/trace";
 import { troubleshootTrack } from "../content/troubleshoot";
@@ -11,6 +12,7 @@ export const tracks: Track[] = [
   introTrack,
   webTrack,
   javaMapTrack,
+  serverNetworkTrack,
   readingTrack,
   traceTrack,
   troubleshootTrack,

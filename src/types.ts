@@ -1,4 +1,4 @@
-export type TrackId = "intro" | "web" | "java-map" | "reading" | "trace" | "troubleshoot" | "scenario";
+export type TrackId = "intro" | "web" | "java-map" | "server-network" | "reading" | "trace" | "troubleshoot" | "scenario";
 
 export type CalloutKind = "tip" | "note" | "warn" | "trap";
 

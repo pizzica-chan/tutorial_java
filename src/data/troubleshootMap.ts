@@ -90,7 +90,7 @@ export const troubleshootMap: ObservableGroup[] = [
         tells: "接続タイムアウトや `Connection refused` なら経路や向き先、HTTP の 4xx / 5xx なら外部側の応答です。向き先が決まってから、疎通確認のコマンドを打ちましょう。",
         links: [
           { label: "トラブル例：外部システム / 外部 API", to: "/tracks/troubleshoot/p-external" },
-          { label: "ネットワークの疎通確認", to: "/tracks/troubleshoot/net-check" },
+          { label: "ネットワークの疎通確認", to: "/tracks/server-network/net-check" },
         ],
       },
     ],
@@ -106,7 +106,7 @@ export const troubleshootMap: ObservableGroup[] = [
         check: "HTML とは別の CSS / JS のリクエストが 404 になっていないか、Network タブで確認しましょう。",
         tells: "色やレイアウトは CSS / JS が担当します。HTML が 200 でも、別のリクエストだけ失敗していることがあります。手前に HTTP サーバがある構成では、静的ファイルはそこが返すことが多く、アプリのログには出ません。",
         links: [
-          { label: "HTTP サーバのログを見る", to: "/tracks/troubleshoot/http-server-log" },
+          { label: "HTTP サーバのログを見る", to: "/tracks/server-network/http-server-log" },
           { label: "[障害調査] 一覧は出るが、画面だけ崩れている", to: "/tracks/scenario/http-server" },
         ],
       },
@@ -170,7 +170,7 @@ export const troubleshootMap: ObservableGroup[] = [
         tells: "行が無ければ、まだアプリに届いていません。見ているログが違う、別インスタンスで動いている、手前の HTTP サーバで止まっている、なども疑わしいです。Controller の中はまだ関係ありません。",
         links: [
           { label: "アプリログの場所と読み方", to: "/tracks/troubleshoot/logs" },
-          { label: "ネットワークの疎通確認", to: "/tracks/troubleshoot/net-check" },
+          { label: "ネットワークの疎通確認", to: "/tracks/server-network/net-check" },
           { label: "[障害調査] 検証用環境だけ、読み込みが終わらない", to: "/tracks/scenario/net" },
         ],
       },
@@ -210,8 +210,8 @@ export const troubleshootMap: ObservableGroup[] = [
         check: "アプリのプロセスやコンテナが起動しているかを確認しましょう。起動していれば、DB へ直接つないでみましょう。",
         tells: "アプリのプロセスやコンテナが無ければ、原因はソースを読んでも見つかりません。起動と停止を繰り返していると、操作したのにログが無い、という症状にも見えます。",
         links: [
-          { label: "ミドルウェアとコンテナの確認", to: "/tracks/troubleshoot/middleware-check" },
-          { label: "Linux の基本操作", to: "/tracks/troubleshoot/linux-basics" },
+          { label: "ミドルウェアとコンテナの確認", to: "/tracks/server-network/middleware-check" },
+          { label: "Linux の基本操作", to: "/tracks/server-network/linux-basics" },
         ],
       },
       {
@@ -222,7 +222,7 @@ export const troubleshootMap: ObservableGroup[] = [
         tells: "デプロイ直後だけ起きるなら、変わったのは資材か設定か権限です。起動時のメッセージに `Permission denied` があれば、原因はコードではなく、ファイルの所有者と権限です。",
         links: [
           { label: "[障害調査] デプロイ後、検証用環境でアプリが起動しなくなった", to: "/tracks/scenario/process-user" },
-          { label: "Linux の基本操作", to: "/tracks/troubleshoot/linux-basics" },
+          { label: "Linux の基本操作", to: "/tracks/server-network/linux-basics" },
         ],
       },
     ],
@@ -301,7 +301,7 @@ export const troubleshootMap: ObservableGroup[] = [
         tells: "DB へ直接つなげるのにアプリだけ待たされるなら、コネクションプールの枯渇が疑わしいです。時間帯が決まっているなら、同時に動く処理が疑わしいです。",
         links: [
           { label: "トラブル例：遅い", to: "/tracks/troubleshoot/p-slow" },
-          { label: "ミドルウェアとコンテナの確認", to: "/tracks/troubleshoot/middleware-check" },
+          { label: "ミドルウェアとコンテナの確認", to: "/tracks/server-network/middleware-check" },
         ],
       },
     ],

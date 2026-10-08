@@ -85,7 +85,7 @@ export const devtools: DevtoolsSection[] = [
               "フィルタのボタンで CSS や JS に絞り、ステータスコードが 404 などになっている行が無いかを確認しましょう。失敗したリクエストは赤い文字で出ます。",
               "HTML が 200 でも、CSS だけ失敗していることがあります。",
             ],
-            links: [{ label: "HTTP サーバのログを見る", to: "/tracks/troubleshoot/http-server-log" }],
+            links: [{ label: "HTTP サーバのログを見る", to: "/tracks/server-network/http-server-log" }],
           },
           {
             symptom: "直した CSS や JS が、画面に反映されない",
@@ -146,7 +146,7 @@ export const devtools: DevtoolsSection[] = [
               "URL・ヘッダ・Cookie・送った値が、まとめて1つの curl のコマンドになります。",
               "サーバや別の PC で実行すれば、ブラウザを使わずに同じリクエストを試せます。",
             ],
-            links: [{ label: "ネットワークの疎通確認", to: "/tracks/troubleshoot/net-check" }],
+            links: [{ label: "ネットワークの疎通確認", to: "/tracks/server-network/net-check" }],
           },
           {
             symptom: "リクエストが多すぎて、失敗したものが見つからない",
