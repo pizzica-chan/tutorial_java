@@ -117,77 +117,117 @@ export const serverNetworkTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "Java Web アプリは、Docker などのコンテナで動かすこともあります。この教材の申請くんは、自分の PC の Docker で動かします。コンテナの中と外を区別できないと、ログやファイル、接続先を探す場所を間違えます。ここでは、調べるときに必要なことに絞って見ます。",
+          text: "コンテナは、アプリに必要なファイルや実行環境をまとめ、ほかのアプリから分けて動かす仕組みです。まず、サーバに直接アプリを置く場合との違いを確認します。そのあと、環境を作り直す考え方と、申請くんの設定・調査方法を見ていきましょう。",
+        },
+        {
+          type: "h2",
+          text: "サーバに直接置く場合と、コンテナで動かす場合",
+        },
+        {
+          type: "p",
+          text: "コンテナを使う場合も、アプリは PC やサーバの上で動きます。違うのは、アプリに必要なファイルや実行環境の用意の仕方です。",
+        },
+        {
+          type: "p",
+          text: "Java アプリをサーバに直接置く場合は、サーバに JRE などを用意してから起動します。コンテナでは、アプリと必要な JRE などをコンテナイメージ（以下、イメージ）にまとめます。コンテナは、そのイメージから作って動かす実体です。",
+        },
+        {
+          type: "p",
+          text: "申請くんのイメージには Java 17 が含まれています。ホスト OS に入っている Java の代わりに、この Java 17 を使います。同じイメージを配布すれば、手元の PC とサーバで、アプリや JRE のバージョンをそろえやすくなります。",
+        },
+        {
+          type: "p",
+          text: "コンテナで動かせるのは、自作のアプリだけではありません。MySQL のようなミドルウェアも、コンテナで起動できます。申請くんでは、Java アプリを app コンテナ、MySQL を db コンテナで動かします。",
         },
         {
           type: "callout",
           kind: "trap",
           title: "サーブレットコンテナとは別物",
-          text: "前の項目のサーブレットコンテナ（Tomcat や Jetty）は、Java の処理を動かす仕組みです。このページのコンテナは、アプリのファイルやネットワークなどを、ホスト OS やほかのコンテナから分けて動かす仕組みです。名前は似ていますが、別物です。コンテナの中で、Tomcat を内蔵した Spring Boot が動く、という重なり方をします。",
+          text: "Tomcat や Jetty を指すサーブレットコンテナは、Java の処理を動かす仕組みです。ここで扱うコンテナは、アプリが使う環境を分ける仕組みです。申請くんでは、app コンテナの中で、Tomcat を内蔵した Spring Boot が動きます。",
         },
         {
           type: "h2",
-          text: "イメージとコンテナ",
+          text: "名前空間で、プロセスから見える範囲を分ける",
         },
         {
           type: "p",
-          text: "コンテナイメージ（以下、イメージ）は、アプリを動かすのに必要なファイルと、起動するコマンドをまとめたものです。コンテナは、イメージから作って動かしている実体です。同じイメージから、コンテナをいくつでも作れます。",
+          text: "コンテナを動かしている側の OS を、ホスト OS と呼びます。Linux のコンテナ内のアプリも、ホスト OS 上のプロセスとして動きます。コンテナごとに独立した OS 全体を起動するわけではなく、Linux のカーネルを共有します。",
+        },
+        {
+          type: "p",
+          text: "それでも環境を分けられるのは、Linux の名前空間という仕組みを使うためです。名前空間は、プロセスから見えるプロセスの一覧や、ネットワーク、マウントなどの範囲を分けます。コンテナは、複数の種類の名前空間を組み合わせて動きます。",
+        },
+        {
+          type: "diagram",
+          name: "container-isolation",
+          caption: "Linux 上で動かす例です。app と db はカーネルを共有し、別々の名前空間を使います。名前空間を共有する構成もあります。",
+        },
+        {
+          type: "p",
+          text: "申請くんでは、app と db のネットワーク名前空間が分かれています。そのため、app コンテナ内の `localhost` は app 自身を指し、db コンテナにはつながりません。DB には、同じ Compose のネットワーク上の `db` という名前でつなぎます。",
+        },
+        {
+          type: "p",
+          text: "ファイルについても、コンテナ内の `/app` とホスト OS の `/app` は別です。ホスト OS で `ls /app` を実行しても、app コンテナ内のファイルを確認したことにはなりません。外部のファイルを共有する場合は、後で説明するマウントを使います。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "自分の PC で Linux のコンテナを動かす場合",
+          text: "Windows や macOS の Docker Desktop は、Linux の仮想環境を介して Linux のコンテナを動かします。カーネルを共有する相手は、その Linux 環境です。",
         },
         {
           type: "h2",
-          text: "サーバに直接入れて動かす場合との違い",
+          text: "イメージと起動時の構成をファイルに残す",
         },
         {
           type: "p",
-          text: "コンテナを使う場合も、アプリは PC やサーバの上で動きます。違うのは、アプリが使うファイルや実行環境をどう用意するかです。",
+          text: "環境を分けるだけでなく、同じ環境を用意し直せることも大切です。Docker では、イメージを作る手順を `Dockerfile` に、複数のコンテナの起動時の構成を `docker-compose.yml` に残せます。",
         },
         {
           type: "p",
-          text: "サーバに直接 Java アプリを置く場合は、そのサーバに JRE などを用意してから、アプリを起動します。コンテナでは、アプリと必要な JRE などをイメージにまとめて配布します。申請くんも、ホスト OS の Java を使うのではなく、イメージに含まれる Java 17 で動きます。",
+          text: "Compose には、「このイメージを使う」「このポートを公開する」「この保存場所をつなぐ」と書きます。このように、実現したい構成を指定する書き方を、宣言的と呼びます。Compose は、その指定に沿ってコンテナやネットワークなどを作成・起動します。",
         },
         {
           type: "p",
-          text: "同じイメージを使えば、手元の PC とサーバで、アプリや JRE のバージョンをそろえやすくなります。ただし、接続先やパスワードなどの設定、DB のデータまで同じになるわけではありません。これらは、起動時の設定や外部の保存場所で管理します。",
-        },
-        {
-          type: "p",
-          text: "コンテナごとに、独立した OS 全体を起動するわけではありません。Linux のコンテナは、動かしている Linux のカーネルを共有しながら、プロセスが使うファイルやネットワークなどを分けます。Windows や macOS の Docker Desktop では、Linux の仮想環境を介して Linux のコンテナを動かします。",
+          text: "`Dockerfile` はイメージを作る手順、Compose のファイルは起動する構成です。両方をファイルで管理すると、構成を共有し、変更履歴も確認できます。サーバに直接アプリを置く場合も、自動化の仕組みを使えば構成をファイルで管理できます。",
         },
         {
           type: "h2",
-          text: "構成をファイルに書いて、同じように起動する",
+          text: "コンテナは作り直し、必要なデータは残す",
         },
         {
           type: "p",
-          text: "コンテナでは、必要な構成をファイルに残し、それを使って起動する考え方がよく使われます。たとえば Docker Compose には、「MySQL のこのイメージを使う」「このポートを公開する」「この保存場所をつなぐ」と書きます。このように、実現したい構成を指定する書き方を、宣言的と呼びます。",
+          text: "イメージと起動時の設定が残っていれば、コンテナを作り直せます。アプリの更新では、新しいイメージからコンテナを起動するのが基本です。稼働中のコンテナを手作業で直し続けるよりも、同じ構成を再び用意しやすくなります。",
         },
         {
           type: "p",
-          text: "`docker-compose.yml` は、どのコンテナをどんな設定で動かすかを書きます。一方、`Dockerfile` は、イメージを作るための手順を書きます。役割は違いますが、どちらもファイルに残せるので、構成の共有や変更履歴の確認がしやすくなります。サーバに直接アプリを置く場合も、自動化の仕組みを使えば、構成をファイルで管理できます。",
+          text: "この考え方を、コンテナを「使い捨て」にすると表すことがあります。捨てるのは、作り直せる実行環境です。長期間動かすコンテナもありますが、必要なときに交換できるようにしておきます。",
+        },
+        {
+          type: "p",
+          text: "DB のデータや残したいログは、コンテナの外の保存場所をマウントします。マウントは、その保存場所をコンテナ内のパスから使えるようにすることです。申請くんでは、DB のデータを `shinsei-mysql` というボリュームに、ログをホスト OS の `shinsei-kun/logs` に保存します。",
+        },
+        {
+          type: "diagram",
+          name: "container-recreate",
+          caption: "db コンテナを作り直す例です。同じボリュームを新しいコンテナにもマウントするので、DB のデータを引き継げます。ボリューム自体は削除しない前提です。",
+        },
+        {
+          type: "p",
+          text: "外部にマウントしていないファイルの変更は、コンテナを削除すると消えます。`docker restart` で同じコンテナを再起動するだけなら、変更は残ります。外部にマウントしたデータは、その保存場所を削除しなければコンテナを作り直しても残ります。",
+        },
+        {
+          type: "p",
+          text: "ホスト OS のファイルやディレクトリをマウントする方法は、bind mount と呼びます。書き込み可能な bind mount 上の設定ファイルをコンテナ内から変更すると、ホスト OS のファイルも変わります。この変更は、コンテナを作り直しても残ります。",
         },
         {
           type: "h2",
-          text: "コンテナは作り直せるようにする",
+          text: "申請くんのイメージと接続設定を読む",
         },
         {
           type: "p",
-          text: "コンテナは、中を手作業で直し続けるよりも、イメージと起動時の設定から作り直せるようにして使うのが基本です。アプリを更新するときは、新しいイメージを作り、そのイメージからコンテナを起動します。こうすると、稼働中のコンテナにだけ残った変更に頼らず、同じ構成で起動し直せます。",
-        },
-        {
-          type: "p",
-          text: "この考え方を、コンテナを「使い捨て」にすると表すことがあります。捨てるのは、作り直せる実行環境です。DB のデータや残したいログはコンテナの外に保存し、コンテナを交換しても引き継げるようにします。長期間動かすコンテナもありますが、必要なときに作り直せることが大切です。",
-        },
-        {
-          type: "h2",
-          text: "申請くんのイメージと起動設定",
-        },
-        {
-          type: "p",
-          text: "コンテナで動かせるのは、自作のアプリだけではありません。MySQL のようなミドルウェアも、コンテナで起動できます。",
-        },
-        {
-          type: "p",
-          text: "申請くんの app のイメージは、`Dockerfile` から作ります。db のほうは、公開されている `mysql:8.0` のイメージをそのまま使います。",
+          text: "ここまでの考え方を、申請くんのファイルで確認しましょう。app のイメージは `Dockerfile` から作り、db には公開されている `mysql:8.0` のイメージを使います。",
         },
         {
           type: "code",
@@ -202,91 +242,11 @@ ENTRYPOINT ["java", "-Duser.timezone=Asia/Tokyo", "-jar", "app.jar"]`,
         },
         {
           type: "p",
-          text: "`FROM` は土台にするイメージ、`ENTRYPOINT` はコンテナを起動したときに実行するコマンドです。このコンテナの中では、`java -jar app.jar` の Java プロセスが 1 つ動きます。",
-        },
-        {
-          type: "h2",
-          text: "ホスト OS とコンテナの中は別の環境",
+          text: "`FROM` は土台にするイメージ、`ENTRYPOINT` はコンテナを起動したときに実行するコマンドです。この例では、イメージに含まれる JRE で `app.jar` を起動します。",
         },
         {
           type: "p",
-          text: "コンテナを動かしている側の OS を、ホスト OS と呼びます。コンテナ内のファイルやコマンドは、基本的にイメージから用意されます。ホスト OS に入っているコマンドが、そのままコンテナ内でも使えるわけではありません。",
-        },
-        {
-          type: "p",
-          text: "そのため、ホスト OS で `ls /app` を打っても、コンテナの中の `/app` は見えません。中を調べるときは、`docker exec` でコンテナに入りましょう。",
-        },
-        {
-          type: "code",
-          title: "例（申請くんの app コンテナに入る）",
-          lang: "text",
-          code: `$ docker exec -it shinsei-kun-app-1 bash
-root@1a2b3c4d5e6f:/app# ls
-app.jar  logs
-root@1a2b3c4d5e6f:/app# exit`,
-        },
-        {
-          type: "p",
-          text: "`shinsei-kun-app-1` はコンテナ名です。`docker ps` の `NAMES` で確認できます。プロンプトが `root@1a2b3c4d5e6f` に変わっていれば、コンテナの中にいます。`exit` でホスト OS に戻ります。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "コマンドが入っていないことがある",
-          text: "軽量なイメージには、`bash` が入っていないことがあります。そのときは `bash` の代わりに `sh` を指定しましょう。`jstack` のような JDK のコマンドも、JRE だけのイメージには入っていません。申請くんの `eclipse-temurin:17-jre` も JRE だけです。",
-        },
-        {
-          type: "h2",
-          text: "自分の PC のコンテナか、サーバのコンテナか",
-        },
-        {
-          type: "p",
-          text: "ホスト OS は、自分の PC のこともあれば、サーバのこともあります。この教材の申請くんを手元で動かしているなら、ホスト OS は自分の PC です。実務の検証環境や本番環境では、サーバがホスト OS です。",
-        },
-        {
-          type: "p",
-          text: "`docker` コマンドは、接続先の Docker が管理するコンテナを操作します。この教材では、コマンドを打ったマシンの Docker につなぐ設定を前提にしています。この設定なら、自分の PC の `docker ps` には自分の PC のコンテナが出ます。サーバのコンテナを調べる方法の 1 つは、`ssh` でサーバに入り、サーバの Docker に接続して操作することです。",
-        },
-        {
-          type: "p",
-          text: "Docker には、接続先などをまとめた Docker context という設定があります。サーバを接続先にしていれば、自分の PC からもサーバのコンテナを操作できます。調査前に `docker context show` で選択中の context を、`docker context inspect` でその接続先を確認しましょう。環境変数の `DOCKER_HOST` や `DOCKER_CONTEXT`、コマンドの `--host` や `--context` で接続先を変えている場合は、その指定も確認しましょう。",
-        },
-        {
-          type: "code",
-          title: "例（各マシンの Docker に接続して docker ps を実行する）",
-          lang: "text",
-          code: `user@my-pc:~$ docker ps --format '{{.Names}}'
-shinsei-kun-app-1
-shinsei-kun-db-1
-user@my-pc:~$ ssh user@app-server
-user@app-server:~$ docker ps --format '{{.Names}}'
-shinsei-app`,
-        },
-        {
-          type: "p",
-          text: "`--format '{{.Names}}'` は、コンテナ名だけを出す指定です。多くの Linux の初期設定では、プロンプトの `@` の後ろに、いま操作しているマシンの名前が出ます。`my-pc` では自分の PC のコンテナ、`app-server` ではサーバのコンテナが出ています。",
-        },
-        {
-          type: "p",
-          text: "ブラウザで開く URL も変わります。自分の PC のアプリは `http://localhost:8080/shinsei/login` で開きます。サーバのアプリは、`http://intranet.example.co.jp:8080/shinsei/login` のように、サーバのホスト名で開きます。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "kubectl は自分の PC から打ってもサーバ側を操作する",
-          text: "Kubernetes の `kubectl` は、自分の PC で打っても、設定ファイルで指定したクラスタ（サーバ側）を操作します。どのクラスタを操作しているかは、`kubectl config current-context` で確認しましょう。",
-        },
-        {
-          type: "h2",
-          text: "localhost が指す先が変わる",
-        },
-        {
-          type: "p",
-          text: "コンテナの中の `localhost` は、そのコンテナ自身です。ホスト OS や、ほかのコンテナではありません。",
-        },
-        {
-          type: "p",
-          text: "申請くんの app コンテナは、DB へ `localhost` ではなく `db` という名前でつなぎます。`db` は `docker-compose.yml` のサービス名です。Docker Compose で起動したコンテナどうしは、サービス名で相手につながります。",
+          text: "次に、`docker-compose.yml` の接続設定を確認しましょう。`SPRING_DATASOURCE_URL` の `db` はサービス名です。申請くんの app と db は同じネットワークにつながり、この名前で通信できます。",
         },
         {
           type: "code",
@@ -307,67 +267,86 @@ shinsei-app`,
         },
         {
           type: "p",
-          text: "`ports` の `\"8080:8080\"` は、ホスト OS の 8080 番ポートを、コンテナの 8080 番ポートへつなぐ指定です。左がホスト OS、右がコンテナです。ブラウザで `http://localhost:8080/shinsei/login` を開くと、ホスト OS の 8080 番から app コンテナへ届きます。",
+          text: "`ports` の `\"8080:8080\"` は、ホスト OS の 8080 番ポートを app コンテナの 8080 番ポートへつなぐ指定です。左がホスト OS、右がコンテナです。ホスト OS のブラウザから `http://localhost:8080/shinsei/login` を開くと、この公開ポートを通って app に届きます。",
         },
-        { type: "diagram", name: "container-network" },
+        {
+          type: "diagram",
+          name: "container-network",
+          caption: "申請くんの接続例です。ブラウザはホスト OS の公開ポートを使い、app は Compose のネットワーク上のサービス名で db に接続します。",
+        },
         {
           type: "p",
-          text: "同じ `localhost:3306` でも、どこから使うかでつながる先が変わります。ホスト OS の MySQL クライアントからなら、`ports` を通って db コンテナにつながります。app コンテナの中からなら、app コンテナ自身の 3306 番を指すので、DB にはつながりません。接続先を調べるときは、その設定をホスト OS とコンテナの中のどちらで使うのかを確かめましょう。",
+          text: "db の `\"3306:3306\"` も同じ指定です。ホスト OS の MySQL クライアントは `localhost:3306` で db に接続できます。app コンテナ内では `localhost` が指す先が違うため、`db:3306` を使います。",
         },
         {
           type: "h2",
-          text: "ログは標準出力に出すことが多い",
+          text: "調査では、操作対象を確認してから中を見る",
         },
         {
           type: "p",
-          text: "コンテナで動くアプリは、ログを標準出力に出すことが多いです。Docker は既定の設定で、コンテナの標準出力と標準エラー出力を記録しています。記録されたログは `docker logs` で読めます。",
+          text: "いま分かっているのは、申請くんが app と db に分かれ、ファイルや接続先はコンテナごとに異なることです。調査では、まず対象の Docker に接続しているかを確認し、そのあと必要なコンテナのファイルやログを確認しましょう。",
+        },
+        {
+          type: "p",
+          text: "`docker` コマンドは、接続先の Docker が管理するコンテナを操作します。この教材は手元の Docker に接続する設定が前提です。サーバのコンテナを調べる方法の 1 つは、`ssh` でサーバに入り、サーバの Docker に接続して操作することです。",
         },
         {
           type: "code",
-          title: "例（app コンテナのログの末尾 3 行）",
+          title: "例（各マシンの Docker に接続して docker ps を実行する）",
           lang: "text",
-          code: `$ docker logs --tail 3 shinsei-kun-app-1
-04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests
-04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : start RequestService.findMine(..)
-04:12:03.118 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : end RequestService.findMine(..)`,
+          code: `user@my-pc:~$ docker ps --format '{{.Names}}'
+shinsei-kun-app-1
+shinsei-kun-db-1
+user@my-pc:~$ ssh user@app-server
+user@app-server:~$ docker ps --format '{{.Names}}'
+shinsei-app`,
         },
         {
           type: "p",
-          text: "`--tail` は末尾から何行出すかの指定です。`-f` を付けると、新しい行が出るたびに表示し続けます。Docker Compose なら、`docker compose logs app` でもサービス名で同じログを読めます。",
-        },
-        {
-          type: "p",
-          text: "申請くんは、標準出力に加えて、コンテナの中の `/app/logs/shinsei.log` にもログを書いています。このディレクトリは、`docker-compose.yml` の `volumes` でホスト OS の `shinsei-kun/logs` とつないでいます。そのため、ホスト OS からもログのファイルを開けます。ログの出力先の見分け方は「アプリログの場所と読み方」で扱います。",
-          link: {
-            label: "アプリログの場所と読み方",
-            to: "/tracks/troubleshoot/logs",
-          },
-        },
-        {
-          type: "h2",
-          text: "コンテナ内の変更とデータの保存",
-        },
-        {
-          type: "p",
-          text: "外部にマウントしていないファイルをコンテナの中で書き換えた場合、その変更はコンテナを削除すると消えます。作り直したコンテナでは、作成に使ったイメージのファイルが使われます。`docker restart` で同じコンテナを再起動するだけなら、変更は残ります。",
-        },
-        {
-          type: "p",
-          text: "残したいデータは、`volumes` でコンテナの外の場所とつなぎます。このように、外部の保存場所をコンテナ内のパスで使えるようにすることを、マウントと呼びます。申請くんでは、DB のデータを `shinsei-mysql` というボリュームに、ログをホスト OS の `shinsei-kun/logs` に置いています。これらの保存場所を削除しなければ、コンテナを作り直してもデータは残ります。",
-        },
-        {
-          type: "p",
-          text: "ホスト OS のファイルやディレクトリをマウントする方法は、bind mount と呼びます。書き込み可能な bind mount 上のファイルをコンテナ内から変更すると、ホスト OS のファイルも変わります。設定ファイルをこの方法で渡している場合も、変更はコンテナを作り直したあとに残ります。",
+          text: "`--format '{{.Names}}'` はコンテナ名だけを出す指定です。`docker ps` の `NAMES` でも名前を確認できます。この例では、各マシンの Docker に接続しています。ブラウザからサーバのアプリを開くときも、`http://intranet.example.co.jp:8080/shinsei/login` のように対象サーバのホスト名を使います。",
         },
         {
           type: "callout",
-          kind: "trap",
-          title: "設定ファイルの保存場所を確認する",
-          text: "設定ファイルを変更する前に、`docker inspect コンテナ名` の `Mounts` で、そのファイルが外部にマウントされているかを確認しましょう。マウントされていないファイルの変更を残すには、イメージを作る元のファイルや `Dockerfile` を修正して作り直すか、環境変数などの起動時の指定を変えましょう。",
+          kind: "note",
+          title: "コマンドを打った場所だけでは、操作対象は決まらない",
+          text: "Docker context には接続先などが保存されています。`docker context show` と `docker context inspect` で選択中の設定を確認しましょう。`DOCKER_HOST`・`DOCKER_CONTEXT` や、`--host`・`--context` で接続先を変えている場合は、その指定も確認しましょう。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Kubernetes を使う環境では",
+          text: "`kubectl` も、接続先の設定で操作するクラスタが決まります。自分の PC からサーバ側を操作できます。`kubectl config current-context` で選択中の context を確認しましょう。",
+        },
+        {
+          type: "h3",
+          text: "ファイルと起動時の設定を確認する",
         },
         {
           type: "p",
-          text: "コンテナに渡した環境変数は、コンテナの中で `env` を実行すると確認できます。申請くんの接続先は、この環境変数で `application-dev.yml` の値を上書きしています。",
+          text: "コンテナ内のファイルは、`docker exec` でコマンドを実行して確認しましょう。次の例は、app コンテナ内でシェルを起動し、ファイルの一覧を出しています。`exit` でこのシェルを終了します。",
+        },
+        {
+          type: "code",
+          title: "例（申請くんの app コンテナに入る）",
+          lang: "text",
+          code: `$ docker exec -it shinsei-kun-app-1 bash
+root@1a2b3c4d5e6f:/app# ls
+app.jar  logs
+root@1a2b3c4d5e6f:/app# exit`,
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "必要なコマンドが無い場合",
+          text: "軽量なイメージに `bash` が無い場合は、代わりに `sh` を指定しましょう。JRE だけのイメージには、`jstack` などの JDK の診断コマンドも入っていません。申請くんの `eclipse-temurin:17-jre` も JRE だけです。",
+        },
+        {
+          type: "p",
+          text: "設定ファイルを変更する前に、`docker inspect コンテナ名` の `Mounts` を確認しましょう。ファイルがマウント先にある場合は、ボリュームやホスト OS に変更が保存されます。マウント先に無ければ、変更はそのコンテナ内だけに残ります。",
+        },
+        {
+          type: "p",
+          text: "コンテナに渡した環境変数は、コンテナ内で `env` を実行すると確認できます。申請くんの DB 接続先は、この環境変数で `application-dev.yml` の値を上書きしています。",
         },
         {
           type: "code",
@@ -380,13 +359,45 @@ SPRING_DATASOURCE_USERNAME=app`,
         },
         {
           type: "p",
-          text: "設定ファイルと環境変数の関係は「application.yml / application.properties」で扱いました。",
+          text: "設定ファイルと環境変数の優先順位は「application.yml / application.properties」で確認できます。",
           link: {
             label: "application.yml / application.properties",
             to: "/tracks/java-map/yml",
           },
         },
-        { type: "quiz", id: "server-container" },
+        {
+          type: "h3",
+          text: "ログを確認する",
+        },
+        {
+          type: "p",
+          text: "Docker は既定の設定で、コンテナの標準出力と標準エラー出力を記録します。申請くんも標準出力にログを出しているので、`docker logs` で読めます。",
+        },
+        {
+          type: "code",
+          title: "例（app コンテナのログの末尾 3 行）",
+          lang: "text",
+          code: `$ docker logs --tail 3 shinsei-kun-app-1
+04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests
+04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : start RequestService.findMine(..)
+04:12:03.118 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : end RequestService.findMine(..)`,
+        },
+        {
+          type: "p",
+          text: "`--tail` は末尾から何行出すかの指定です。`-f` を付けると新しい行を表示し続けます。Compose では、サービス名を指定した `docker compose logs app` でもログを読めます。",
+        },
+        {
+          type: "p",
+          text: "申請くんは `/app/logs/shinsei.log` にもログを書きます。このディレクトリはホスト OS の `shinsei-kun/logs` にマウントしているので、ホスト OS からも同じログファイルを開けます。ログの出力先を調べる方法は「アプリログの場所と読み方」で扱います。",
+          link: {
+            label: "アプリログの場所と読み方",
+            to: "/tracks/troubleshoot/logs",
+          },
+        },
+        {
+          type: "quiz",
+          id: "server-container",
+        },
       ],
     },
     {

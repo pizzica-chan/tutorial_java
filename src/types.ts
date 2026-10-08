@@ -20,6 +20,8 @@ export type DiagramName =
   | "shared-field"
   | "thread-reuse"
   | "container-network"
+  | "container-isolation"
+  | "container-recreate"
   | "db-transaction"
   | "filters"
   | "mapping"
