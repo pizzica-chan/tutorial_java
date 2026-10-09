@@ -69,7 +69,7 @@ FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.
       blocks: [
         {
           type: "p",
-          text: "申請くんは MyBatis を使っています。`t_request` や `applicant_id` で検索すると、Mapper の XML がヒットします。",
+          text: "申請くんでは、MyBatis で SQL を実行しています。テーブル名 `t_request` やカラム名 `applicant_id` を手がかりに検索し、SQL が書かれた Mapper の XML を探しましょう。",
         },
         {
           type: "code",
