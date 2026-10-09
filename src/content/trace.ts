@@ -19,7 +19,7 @@ export const traceTrack: Track = {
         },
         {
           type: "p",
-          text: "探す前に、そのプロジェクトで SQL の実行に使っているライブラリを確認しましょう。`pom.xml` や `build.gradle` の依存を見ると、MyBatis、JPA（Hibernate）、JdbcTemplate などが分かります。依存の見方は、「Maven / Gradle」で説明しています。",
+          text: "SQL を探す前に、`pom.xml` や `build.gradle` に書かれた依存ライブラリを確認し、DB アクセスに MyBatis、JPA（Hibernate）、JdbcTemplate などのどれを使っているかを調べましょう。依存の見方は、「Maven / Gradle」で説明しています。",
           link: {
             label: "Maven / Gradle",
             to: "/tracks/java-map/build",
@@ -69,7 +69,7 @@ FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.
       blocks: [
         {
           type: "p",
-          text: "申請くんは MyBatis を使っています。`t_request` や `applicant_id` で検索すると、Mapper の XML がヒットします。",
+          text: "申請くんでは、MyBatis で SQL を実行しています。テーブル名 `t_request` やカラム名 `applicant_id` を手がかりに検索し、SQL が書かれた Mapper の XML を探しましょう。",
         },
         {
           type: "code",
@@ -110,7 +110,7 @@ FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.
       blocks: [
         {
           type: "p",
-          text: "JPA（Hibernate）のプロジェクトでは、実行された SQL がソースに無いことが多いです。MyBatis の例と同じ `t_request` を、JPA（Hibernate）で読む例です。",
+          text: "JPA（Hibernate）では、エンティティの定義や取得処理をもとに SQL が生成されるため、実行された SQL がそのままソースに書かれているとは限りません。ここでは、MyBatis の例で使った `t_request` から、JPA（Hibernate）でデータを取得する例を見ていきます。",
         },
         {
           type: "code",
