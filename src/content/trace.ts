@@ -19,7 +19,7 @@ export const traceTrack: Track = {
         },
         {
           type: "p",
-          text: "探す前に、そのプロジェクトで SQL の実行に使っているライブラリを確認しましょう。`pom.xml` や `build.gradle` の依存を見ると、MyBatis、JPA（Hibernate）、JdbcTemplate などが分かります。依存の見方は、「Maven / Gradle」で説明しています。",
+          text: "SQL を探す前に、`pom.xml` や `build.gradle` に書かれた依存ライブラリを確認し、DB アクセスに MyBatis、JPA（Hibernate）、JdbcTemplate などのどれを使っているかを調べましょう。依存の見方は、「Maven / Gradle」で説明しています。",
           link: {
             label: "Maven / Gradle",
             to: "/tracks/java-map/build",
