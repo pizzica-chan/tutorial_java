@@ -328,7 +328,7 @@ Content-Type: application/json
         },
         {
           type: "p",
-          text: "ブラウザやバージョンで欄の表示名は少し違います。載っているキーと値を見れば十分です。",
+          text: "ブラウザやバージョンによって、欄の表示名が違うことがあります。",
         },
         {
           type: "h3",
@@ -1102,4 +1102,3 @@ function RequestList() {
     },
   ],
 };
-
