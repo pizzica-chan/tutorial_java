@@ -110,7 +110,7 @@ FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.
       blocks: [
         {
           type: "p",
-          text: "JPA（Hibernate）のプロジェクトでは、実行された SQL がソースに無いことが多いです。MyBatis の例と同じ `t_request` を、JPA（Hibernate）で読む例です。",
+          text: "JPA（Hibernate）では、エンティティの定義や取得処理をもとに SQL が生成されるため、実行された SQL がそのままソースに書かれているとは限りません。ここでは、MyBatis の例で使った `t_request` から、JPA（Hibernate）でデータを取得する例を見ていきます。",
         },
         {
           type: "code",
