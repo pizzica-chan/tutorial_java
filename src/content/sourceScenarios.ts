@@ -260,7 +260,7 @@ java.lang.IllegalArgumentException: 件名は必須です`,
       },
       {
         type: "p",
-        text: "`transactionActive=false` は、この処理で Spring が管理するトランザクションが開始されていないことを示します。`IllegalArgumentException` は実行時例外なので、既定ではロールバックの対象です。ロールバックの条件を調べる前に、入口から呼び出しを辿りましょう。",
+        text: "`transactionActive=false` は、この処理で Spring が管理するトランザクションが開始されていないことを示します。`IllegalArgumentException` は実行時例外なので、Spring の `@Transactional` の既定の設定ではロールバックの対象です。ロールバックの条件を調べる前に、入口から呼び出しを辿りましょう。",
       },
       {
         type: "code",
