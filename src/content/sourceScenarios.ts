@@ -585,7 +585,7 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
       },
       {
         type: "p",
-        text: "山田でログインし、`/shinsei/investigation` を開きましょう。提出フォームの件名を空にして提出ボタンを押し、Network タブに POST が送信されていないことを確認しましょう。",
+        text: "山田でログインし、`/shinsei/investigation` を開きましょう。提出フォームの件名を空にして提出ボタンを押し、Network タブで POST が送信されていないことを確認しましょう。",
       },
       {
         type: "p",
