@@ -394,7 +394,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "p",
-        text: "手元の申請くんでは、申請の件数が少ないため、一覧がすぐに表示されることがあります。この場合も、ログで SQL の実行回数を確認しましょう。",
+        text: "申請くんの初期データでは、申請の件数が少ないため、一覧がすぐに表示されることがあります。この場合も、ログで SQL の実行回数を確認しましょう。",
       },
       {
         type: "h2",
