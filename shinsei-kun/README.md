@@ -79,4 +79,4 @@ node shinsei-kun/scripts/capture-screens.mjs
 node shinsei-kun/scripts/capture-network.mjs
 ```
 
-成果物は `public/images/screen-*.jpg` です。Network タブは headed Chrome でウィンドウ全体を撮ります。手順の詳細は `.cursor/rules/textbook-screenshots.mdc` です。
+成果物は `public/images/screen-*.jpg` です。Network タブは headed Chrome でウィンドウ全体を撮ります。手順の詳細は、リポジトリ直下の `AGENTS.md` の「教材の画面キャプチャ」です。

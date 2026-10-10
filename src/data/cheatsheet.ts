@@ -35,7 +35,7 @@ export const cheatSheet: CheatSection[] = [
       },
       {
         title: "ログを絞り込む・数える",
-        note: "1 つのファイルが大きい、パターンが複数ある、圧縮済みで探せない、といった「ログが多すぎる／見づらい」ときに使います。",
+        note: "1 つのファイルが大きい、パターンが複数ある、圧縮済みで探せないといった「ログが多すぎる／見づらい」ときに使います。",
         rows: [
           { cmd: "`tail -f app.log | grep requestId=12`", env: "Linux", desc: "追記される行をリアルタイムで絞り込む" },
           { cmd: "`grep -n -A 5 -B 5 'ERROR' app.log`", env: "Linux", desc: "`ERROR` の行と、その前後 5 行ずつを行番号付きで見る。例外の直前に何が起きていたかが分かる" },
@@ -236,7 +236,7 @@ export const cheatSheet: CheatSection[] = [
       },
       {
         title: "待ち受けポート・経路・ファイアウォールを見る",
-        note: "TCP は通るのにこのホストだけ失敗する、経路の途中で止まっている、といったときに、ホスト側の設定を見る手段です。",
+        note: "TCP は通るのにこのホストだけ失敗する、経路の途中で止まっているといったときに、ホスト側の設定を見る手段です。",
         rows: [
           { cmd: "`ip addr`", env: "Linux", desc: "自分のホストの NIC（ネットワークインタフェース）と、割り当てられている IP アドレスを見る" },
           { cmd: "`ifconfig`", env: "Linux", desc: "同じ確認を、より古い `ifconfig` で見る（`ip` コマンドが無い環境向け）" },

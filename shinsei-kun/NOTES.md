@@ -8,10 +8,12 @@
 - **再現用の検索は、件名を Service の共有フィールドへ保存する。** 同時実行で `searchTitle` が上書きされる原因を残しています。ログインユーザの ID は引数で渡すため、検索条件が混ざっても参照権限の条件は維持します。`beforeSearch` はデバッガで現在のスレッドだけ止める場所です。単独操作では再現しません。
 - **再現用の一括登録は内部呼び出しで `@Transactional` を通らない。** `submitBatch` から同じインスタンスの `saveBatch` を呼びます。`RequestService.create` にもトランザクション指定は無いため、2 件目の件名チェックで例外になると 1 件目が残ります。承認処理を変更する例ではありません。トランザクション開始の有無は `transactionActive` のログに出します。
 - **再現用の一覧は申請ごとに申請者名を取得する。** `findMineWithoutNames` のあとで `UserMapper.findById` を繰り返す N+1 の例です。通常の `findMine` は JOIN のままです。初期データでも回数は確認できますが、遅さを体感するには件数や DB との通信時間が必要です。
-- **N+1 の時刻付きログは説明用の例。** 300 件の一覧について、一覧検索と名前取得の時間を比較する流れを示しています。配布環境の実測値ではありません。実際の所要時間はデータと環境に依存するため、SQL の回数だけで今回の遅さの原因と断定しません。各シナリオの末尾に「手元で再現するには」を置き、ほかのシナリオを読まなくても再現できるようにしています。
+- **N+1 の時刻付きログは説明用の例。** 300 件の一覧について、一覧検索と名前取得の時間を比較する流れを示しています。配布環境の実測値ではありません。実際の所要時間はデータと環境に依存するため、SQL の回数だけで今回の遅さの原因と断定しません。
 - **再現用のフォームと API で件名の検証が違う。** `/investigation/form` は空白を拒否し、`/investigation/api` は共通の `create` へそのまま渡します。NOT NULL は空文字を拒否しません。CSRF とログインは通常どおり有効です。これらは原因を読むための不具合なので、共通チェックを足して消さないでください。
 
 ### 追加シナリオの起動
+
+各シナリオの末尾に「手元で再現するには」を置き、ほかのシナリオを読まなくても再現できるようにしています。
 
 `shinsei-kun` で実行します。通常の app が起動していたら先に `docker compose stop app` を実行します。
 
@@ -38,7 +40,7 @@ docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investi
 - **申請履歴のステータス検索は、条件に乗らない。** フォームの name は `status`、Controller の `@RequestParam` は `requestStatus` です。シナリオ「申請履歴検索の結果が不正」用です。件名と申請日は効きます。教材では件名「申請」とステータス承認済みで検索し、件名だけ効いていることを見せます。識別子を揃えて直してはいけません。
 - **申請履歴の件名の Model キーは `searchTitle`。** layout の `title`（画面名）とぶつからないようにしています。フォームの name は `title` のままです。
 - **詳細のパスは `/{id:[0-9]+}`。** `/requests/history` と数字の ID が共存するためです。教材の `RequestController` の抜粋も同じ `/{id:[0-9]+}` にしています。承認の `@PostMapping("/{id}/approve")` は `/history` とぶつからないので、`/{id}` のままです。
-- **申請履歴から詳細を開いて戻ると、検索条件が消える。** `RequestController#history` はセッションに `historySearchCondition` というキーで検索条件を保存しますが、`buildHistoryBackUrl` が読むキーは `historyCondition` です。キーが一致せず `session.getAttribute` は常に `null` を返すため、「← 申請履歴」で戻ると毎回、絞り込みの無い申請履歴が表示されます。画面にエラーは出ません。シナリオ「セッションに保存したはずの検索条件が戻ってこない」用の意図した不一致です。キーを揃えて直してはいけません。
+- **申請履歴から詳細を開いて戻ると、検索条件が消える。** `RequestController#history` はセッションに `historySearchCondition` というキーで検索条件を保存しますが、`buildHistoryBackUrl` が読むキーは `historyCondition` です。キーが一致せず `session.getAttribute` は常に `null` を返すため、「← 申請履歴」で戻ると毎回、絞り込みの無い申請履歴が表示されます。画面にエラーは出ません。シナリオ「申請履歴から詳細を開いて戻ると、検索条件が消える」用の意図した不一致です。キーを揃えて直してはいけません。
 - **承認しても、通知メールが届かないことがある。** `MailService.notifyApplicant` は件名を `request.getTitle().substring(0, 10)` で切り詰めますが、10文字未満の件名（「休暇申請」など、教材データのほとんど）では `StringIndexOutOfBoundsException` になります。この例外は `catch (Exception e)` で捕まえ、`log.warn(...)` するだけで `e` を渡していないため、ログには例外の種類もスタックトレースも残りません。DB の更新自体は成功し、画面にもエラーは出ません。シナリオ「承認は成功するのに、申請者への通知メールが届かない」用の意図した不具合です。件名の切り詰めやログ出力を直してはいけません。
 - **申請履歴の「承認日時」列が、承認済みでも常に「-」になる。** `RequestMapper.xml` の `searchHistory` は `r.updated_at` を SELECT に足しましたが、エイリアスを付けていません。`map-underscore-to-camel-case: true` により `updated_at` は `updatedAt` に変換されますが、`RequestEntity` 側のフィールド名は `approvedAt` です。名前が一致せず、MyBatis はこの列を黙って無視するため、`approvedAt` は常に `null` のままです。SQL は正しく実行され、DB にも値があり、画面にもエラーは出ません。シナリオ「申請履歴の『承認日時』が、承認済みでも空欄になる」用の意図した不一致です。エイリアスやフィールド名を揃えて直してはいけません。
 
@@ -52,7 +54,7 @@ docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investi
 - **ログのスレッド名は後ろから 15 文字（`%.15thread`）。** 本来の名前は `http-nio-8080-exec-3` ですが、教材のログ例は Spring Boot の既定の書式と同じ `nio-8080-exec-3` の形で書いています。`logback-spring.xml` の書式を `%thread` に戻すと、教材の 60 か所以上のログ例と合わなくなります。
 - **教材に載せるスタックの行番号は実ファイルと合わせる。** `RequestService.java` と `RequestController.java` を変更したときは、ラボ、図、クイズ、シナリオの番号も更新します。
 - **教材のソースツリーに無いファイルがある。** `WebMvcConfig`、`LoggingJavaMailSender`、`AccessLogInterceptor`、`ServiceLoggingAspect`、エラー画面などです。Interceptor / AOP / メールログを動かすために足しています。
-- **`static/demo/` は教材キャプチャ用のモック HTML です。** 0 件や CSS 無しなど、起動中のアプリでは出しにくい見え方を撮るためのものです。業務の画面ではありません。Network タブは偽 HTML ではなく、headed Chrome の実物を撮ります。手順は `.cursor/rules/textbook-screenshots.mdc` です。
+- **`static/demo/` は教材キャプチャ用のモック HTML です。** 0 件や CSS 無しなど、起動中のアプリでは出しにくい見え方を撮るためのものです。業務の画面ではありません。Network タブは偽 HTML ではなく、headed Chrome の実物を撮ります。手順は `AGENTS.md` の「教材の画面キャプチャ」です。
 - **CSS 404 の Network キャプチャは、Puppeteer が `app.css` を intercept して 404 にしている。** シナリオ「一覧は出るが、画面だけ崩れている」の原因は、手前の nginx が `/shinsei/css/` を先に受け、ディスクの別ディレクトリを見ている例です。起動中の申請くん（Docker）に nginx は無く、静的ファイルはアプリが返します。画面・Network の URL は検証用ホスト `intranet.example.co.jp` です。
 - **同じシナリオの「WAR を Tomcat へ展開」は、この検証用環境だけの想定です。** 申請くん自体は `pom.xml` に war パッケージング指定が無く、常に `spring-boot-maven-plugin` の実行可能 jar（`java -jar`）で動きます。static も実際は jar 内の `classpath:/static/` で、`WEB-INF/classes/static` を外部 Tomcat に展開する構成ではありません。WAR/Tomcat 配置のトラブルシューティングを教えるためのシナリオ用の設定です。
 - **画面にエラーが出ているが POST が無い見え方は、ページ単体のモックでは撮りません。** サーバの flash に見えるためです。一覧で submit を止めて画面にエラーを出し、headed Chrome のウィンドウ全体を撮ります。

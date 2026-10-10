@@ -749,7 +749,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "p",
-          text: "同時に動いている複数のトランザクションが、お互いの変更をどこまで見えるようにするか、という設定です。DB によって既定値は違います。MySQL（InnoDB）の既定は `REPEATABLE READ` です。",
+          text: "同時に動いている複数のトランザクションが、お互いの変更をどこまで見えるようにするかを決める設定です。DB によって既定値は違います。MySQL（InnoDB）の既定は `REPEATABLE READ` です。",
         },
         {
           type: "p",
@@ -761,7 +761,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "p",
-          text: "承認処理を例にします。読んで判定し、それから更新する、という順番自体に隙があります。`findById` の SELECT は、`update` より前に終わっており、その後の `update` には状態の条件が付いていません。ほぼ同時刻に来た 2 つのリクエストは、どちらも同じ `PENDING` を読み、どちらも判定を通過してしまいます。",
+          text: "承認処理を例にします。読んで判定し、それから更新するという順番自体に隙があります。`findById` の SELECT は、`update` より前に終わっており、その後の `update` には状態の条件が付いていません。ほぼ同時刻に来た 2 つのリクエストは、どちらも同じ `PENDING` を読み、どちらも判定を通過してしまいます。",
         },
         {
           type: "p",
@@ -965,7 +965,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "申請くんは Thymeleaf を使っています。JSP や FreeMarker など別のテンプレートエンジンでも、Model に載せた名前と HTML 側の参照、form の action、表示条件を突き合わせる、という読み方は同じです。",
+          text: "申請くんは Thymeleaf を使っています。JSP や FreeMarker など別のテンプレートエンジンでも、Model に載せた名前と HTML 側の参照、form の action、表示条件を突き合わせるという読み方は同じです。",
         },
         {
           type: "h2",
@@ -1293,7 +1293,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "検索条件が空なら絞り込まない、といった作りは `<if test=\"...\">` で書きます。申請履歴検索の例です。",
+          text: "「検索条件が空なら絞り込まない」のような作りは `<if test=\"...\">` で書きます。申請履歴検索の例です。",
         },
         {
           type: "code",
@@ -1352,7 +1352,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "`<sql id=\"requestSelect\">` が断片の名前で、`<include refid=\"requestSelect\" />` はその中身をそのまま差し込む、という意味です。`findById` と `searchHistory` も同じ断片を `<include>` すれば、3 か所の重複が無くなります。",
+          text: "`<sql id=\"requestSelect\">` が断片の名前で、`<include refid=\"requestSelect\" />` はその中身をそのまま差し込むという意味です。`findById` と `searchHistory` も同じ断片を `<include>` すれば、3 か所の重複が無くなります。",
         },
         {
           type: "callout",
@@ -1437,7 +1437,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "画面の未ログインは 302 でログイン HTML、Web API は 401 で JSON、という違いがよくあります。決まりではありません。",
+          text: "未ログインのとき、画面は 302 でログイン画面へ転送し、Web API は 401 で JSON を返すことがよくあります。決まりではありません。",
         },
         {
           type: "code",

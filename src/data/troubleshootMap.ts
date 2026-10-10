@@ -56,7 +56,7 @@ export const troubleshootMap: ObservableGroup[] = [
         cause: ["クライアント", "サーバ"],
         causeNote: "リクエストがあるかどうかで分かれます",
         check: "Network タブに、その画面へのリクエストがあるかを確認しましょう。あれば URL とステータスコードも見ましょう。",
-        tells: "画面が出ない原因は、リクエストが無い・URL のずれ・サーバ側の失敗に分けられます。リクエストが無ければ、リンクや JS などブラウザ側の問題です。404 は、その URL に対応するものが無い、という応答です。",
+        tells: "画面が出ない原因は、リクエストが無い・URL のずれ・サーバ側の失敗に分けられます。リクエストが無ければ、リンクや JS などブラウザ側の問題です。404 は、その URL に対応するものが無いという応答です。",
         links: [
           { label: "トラブル例：指定の画面が開かない", to: "/tracks/troubleshoot/p-404" },
           { label: "どこまで届いたか", to: "/tracks/troubleshoot/divide" },
@@ -208,7 +208,7 @@ export const troubleshootMap: ObservableGroup[] = [
         keywords: ["サービスダウン", "コンテナが落ちる", "全滅", "不安定", "再起動を繰り返す", "502", "503", "bad gateway", "service unavailable"],
         cause: ["サーバ"],
         check: "アプリのプロセスやコンテナが起動しているかを確認しましょう。起動していれば、DB へ直接つないでみましょう。",
-        tells: "アプリのプロセスやコンテナが無ければ、原因はソースを読んでも見つかりません。起動と停止を繰り返していると、操作したのにログが無い、という症状にも見えます。",
+        tells: "アプリのプロセスやコンテナが無ければ、原因はソースを読んでも見つかりません。起動と停止を繰り返していると、操作したのにログが無いという症状にも見えます。",
         links: [
           { label: "ミドルウェアとコンテナの確認", to: "/tracks/server-network/middleware-check" },
           { label: "Linux の基本操作", to: "/tracks/server-network/linux-basics" },

@@ -1,4 +1,4 @@
-// 教材用画面キャプチャ。方針は .cursor/rules/textbook-screenshots.mdc
+// 教材用画面キャプチャ。方針は AGENTS.md の「教材の画面キャプチャ」
 import { execFileSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";

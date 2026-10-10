@@ -93,7 +93,7 @@ export const serverNetworkTrack: Track = {
         },
         {
           type: "p",
-          text: "上のどの重ね方でも、さらに手前にロードバランサや CDN、WAF が置かれることがあります。いずれも Java のコードより手前です。パターン 3 なら Apache / nginx の外側、パターン 1・2 なら Tomcat や Spring Boot の手前、という位置づけです。",
+          text: "上のどの重ね方でも、さらに手前にロードバランサや CDN、WAF が置かれることがあります。いずれも Java のコードより手前です。パターン 3 なら Apache / nginx の外側、パターン 1・2 なら Tomcat や Spring Boot の手前に置かれます。",
         },
         {
           type: "ul",
@@ -510,7 +510,7 @@ kubectl logs --namespace 名前空間名 Pod名`,
         },
         {
           type: "p",
-          text: "ログファイルを開く・追う・検索する、という操作が中心です。",
+          text: "ログファイルを開く・追う・検索するという操作が中心です。",
         },
         {
           type: "table",
@@ -682,7 +682,7 @@ drwxr-xr-x 2 root root 4096 Aug 20 09:10 /var/log/shinsei`,
           type: "table",
           headers: ["ディレクトリの権限", "できること"],
           rows: [
-            ["`x`", "このディレクトリを挟んだパスが使える"],
+            ["`x`", "このディレクトリを通って、その先のファイルやディレクトリへ進める"],
             ["`w`", "中身を書き換える。ファイルの作成、削除、リネーム"],
             ["`r`", "中のファイル名を一覧する（`ls`）"],
           ],
@@ -735,7 +735,7 @@ java    1842 appuser   45u  IPv6 123456      0t0  TCP *:8080 (LISTEN)`,
           title: "例（同じことを ss で見る）",
           lang: "text",
           code: `$ ss -ltnp | grep 8080
-LISTEN  0       128              0.0.0.0:8080          0.0.0.0:*      users:(("java",pid=1842,fd=45))`,
+LISTEN  0       100                    *:8080                *:*      users:(("java",pid=1842,fd=45))`,
         },
         {
           type: "p",
@@ -747,7 +747,7 @@ LISTEN  0       128              0.0.0.0:8080          0.0.0.0:*      users:(("j
         },
         {
           type: "p",
-          text: "ファイルが削除できない、書き込めない、というときは、どのプロセスがそのファイルを開いたままかを確認しましょう。ポートを調べたのと同じ `lsof` で、対象をファイル名に変えるだけです。",
+          text: "ファイルが削除できない、書き込めないというときは、どのプロセスがそのファイルを開いたままかを確認しましょう。ポートを調べたのと同じ `lsof` で、対象をファイル名に変えるだけです。",
         },
         {
           type: "code",
@@ -843,7 +843,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
             ["`connect`", "相手へつなごうとしている"],
             ["`sin_addr`", "つなごうとしている相手の IP アドレス"],
             ["`sin_port`", "つなごうとしているポート"],
-            ["`ECONNREFUSED`", "失敗の理由。相手のホストまでは届いたが、そのポートで待ち受けが無い"],
+            ["`ECONNREFUSED`", "失敗の理由。多くは、相手のホストまで届いたが、そのポートで待ち受けが無い状態"],
           ],
         },
         {
@@ -854,7 +854,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
           type: "callout",
           kind: "note",
           title: "行が止まって見えるときは、絞り込みを外す",
-          text: "`connect` は成功しているのに、そのあとの行が出ないときは、応答を待つ `read` で止まっていることがあります。`read` は `-e trace=network` の対象に入りません。`-e` を外して、すべてのシステムコールを見ましょう。",
+          text: "`connect` は成功しているのに、そのあとの行が出ないときは、応答を待つ `poll` や `read` で止まっていることがあります。これらは `-e trace=network` の対象に入りません。`-e` を外して、すべてのシステムコールを見ましょう。",
         },
         {
           type: "callout",
@@ -898,15 +898,9 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
             ["ブラウザは 502", "無い、または少ない", "後ろのアプリに届いていない。後ろへの接続失敗（nginx でいう upstream 接続失敗）"],
             ["ブラウザは 503", "無いこともあれば、出ていることも", "手前で弾かれたか、アプリ自身の過負荷・メンテナンス。アプリのログも確認する"],
             ["操作したのにアプリログが無い", "無い", "手前で止まった、別ホストに振られた、静的だけ返した、など"],
-            ["HTTPS の証明書エラー", "関係ないことが多い", "TLS の終端はアプリより手前（HTTP サーバ、LB など）"],
+            ["HTTPS の証明書エラー", "関係ないことが多い", "SSL 終端は、アプリより手前（HTTP サーバ、LB など）で行うことが多い"],
             ["URL は合っているのに 404", "無いことがある", "手前の location が別ディレクトリを見ている"],
           ],
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "SSL 終端の位置",
-          text: "SSL 終端は、必ずしも Apache / nginx で行われるとは限りません。ロードバランサや CDN など、HTTP サーバより前のレイヤで TLS を復号する構成もあります。WAF で遮断されたリクエストもアプリまで届かないことが多いです。証明書エラーは、この TLS を終端する層で起きていることが多く、アプリのログには出ません。",
         },
         {
           type: "code",
@@ -919,7 +913,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
         },
         {
           type: "p",
-          text: "3 行とも同じ接続元 IP・同じ時刻です。`/shinsei/css/app.css` への GET だけ 404 で、`/shinsei/requests` と `/shinsei/js/app.js` は 200 です。動的処理は Java に届いており、CSS だけ手前の設定がずれている、と切り分けできます。出力先と書式は環境次第です。",
+          text: "3 行とも同じ接続元 IP・同じ時刻です。`/shinsei/css/app.css` への GET だけ 404 で、`/shinsei/requests` と `/shinsei/js/app.js` は 200 です。動的処理は Java に届いており、CSS だけ手前の設定がずれていると切り分けられます。出力先と書式は環境次第です。",
         },
         {
           type: "table",
@@ -1001,7 +995,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
           type: "callout",
           kind: "note",
           title: "打つ場所で結果が変わる",
-          text: "自分の PC からと、サーバからでは通る道が違います。ブラウザからは届くのに開発 PC からは届かない、サーバ上のアプリだけ外部 API に失敗する、ということもあります。再現に近い場所から打ちましょう。",
+          text: "自分の PC からと、サーバからでは通る道が違います。ブラウザからは届くのに開発 PC からは届かないことや、サーバ上のアプリだけ外部 API に失敗することもあります。再現に近い場所から打ちましょう。",
         },
         {
           type: "h2",
@@ -1168,7 +1162,7 @@ nc: connect to intranet.example.co.jp (10.20.30.40) port 8080 (tcp) failed: Conn
           type: "ul",
           items: [
             "TCP 接続成功 … そのポートで何かが待ち受けている。アプリ未起動ならすぐ切れることもある",
-            "接続拒否（connection refused）… ホストまでは届いたが、そのポートで待ち受けが無い",
+            "接続拒否（connection refused）… 多くは、ホストまで届いたが、そのポートで待ち受けが無い状態。FW が拒否を返す設定でも同じ表示になる",
             "タイムアウト … FW、ルータ、セキュリティグループ、経路のどこかで止まっていることが多い",
           ],
         },
@@ -1191,7 +1185,7 @@ nc: connect to intranet.example.co.jp (10.20.30.40) port 8080 (tcp) failed: Conn
 # Windows PowerShell では curl.exe と打つ（curl だけだと Invoke-WebRequest の別名になる）
 curl -I http://intranet.example.co.jp:8080/shinsei/requests
 
-# 詳細（TLS 証明書の検証を緩める例。社内検証のみ）
+# 詳細（手前の HTTP サーバが HTTPS で受ける構成の例。-k は TLS 証明書の検証を緩める指定なので、社内の検証だけで使う）
 curl -vk https://intranet.example.co.jp/shinsei/requests`,
         },
         {
@@ -1233,7 +1227,7 @@ Content-Language: en`,
           headers: ["curl のエラーメッセージ（よくある例）", "疑うこと"],
           rows: [
             ["`Could not resolve host`", "DNS で名前が引けない。ホスト名の綴り、DNS サーバ、hosts ファイル（Windows は `C:\\Windows\\System32\\drivers\\etc\\hosts`、Linux / macOS は `/etc/hosts`）を疑う"],
-            ["`Connection refused`", "その先までは届いたが、指定したポートで待ち受けが無い。そのポートを待ち受けるはずのプロセス（アプリや HTTP サーバ）が未起動、またはポート番号違いを疑う"],
+            ["`Connection refused`", "多くは、ホストまで届いたが、指定したポートで待ち受けが無い状態。そのポートを待ち受けるはずのプロセス（アプリや HTTP サーバ）が未起動、またはポート番号違いを疑う"],
             ["`Connection timed out`", "応答が返ってこない。FW やセキュリティグループで止められていることが多い"],
             ["`SSL certificate problem` / `SSL connect error`", "TLS 証明書や設定の問題。証明書の期限切れ、ホスト名不一致、社内 CA が信頼されていない、など"],
             ["`Empty reply from server`", "TCP はつながったが、HTTP の応答が無いまま切れた。別プロトコルが動いている、アプリのプロセスが処理中に終了した、など"],
@@ -1344,7 +1338,7 @@ ERROR 2003 (HY000): Can't connect to MySQL server on 'ホスト名:3306' (110)`,
           type: "callout",
           kind: "note",
           title: "DB は動くがアプリが待つ",
-          text: "DB 自体には直接つながるのに、アプリからは待たされる、というときは、コネクションプールの枯渇が疑われます。設定した最大接続数と、今使われている接続数を確認しましょう。",
+          text: "DB 自体には直接つながるのに、アプリからは待たされるというときは、コネクションプールの枯渇が疑われます。設定した最大接続数と、今使われている接続数を確認しましょう。",
         },
         {
           type: "h2",
@@ -1381,7 +1375,7 @@ shinsei-7d8f9c6b5d-abcde   0/1     CrashLoopBackOff   7          12m`,
         },
         {
           type: "p",
-          text: "コンテナが起動と停止を繰り返していると、アプリのログが急に途切れる、操作したのにログが無い、といった症状に見えることがあります。コンテナが作られていなければ、そのコンテナのアプリログもありません。ログの出力先の確認方法は、後の章の「アプリログの場所と読み方」で扱います。",
+          text: "コンテナが起動と停止を繰り返していると、アプリのログが急に途切れる、操作したのにログが無いといった症状に見えることがあります。コンテナが作られていなければ、そのコンテナのアプリログもありません。ログの出力先の確認方法は、後の章の「アプリログの場所と読み方」で扱います。",
           link: {
             label: "アプリログの場所と読み方",
             to: "/tracks/troubleshoot/logs",
@@ -1426,7 +1420,7 @@ Unit tomcat.service could not be found.`,
         },
         {
           type: "p",
-          text: "ここでの `nginx` `tomcat` はサービス名の例で、実際の名前は環境によって違います（`tomcat9` など）。`Unit ... could not be found` と出た場合は、止まっているのではなく名前が違うだけのことが多いです。正しいユニット名を探すには、`systemctl list-unit-files --type=service` の出力を `grep` で絞り込みましょう。動いていないサービスの単位も含めて、登録されているユニットが一覧できます。",
+          text: "ここでの `nginx` `tomcat` はサービス名の例で、実際の名前は環境によって違います（`tomcat9` など）。`Unit ... could not be found` と出た場合は、止まっているのではなく名前が違うだけのことが多いです。正しいユニット名を探すには、`systemctl list-unit-files --type=service` の出力を `grep` で絞り込みましょう。動いていないサービスも含めて、登録されているユニットが一覧できます。",
         },
         {
           type: "code",

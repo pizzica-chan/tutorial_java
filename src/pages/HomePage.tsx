@@ -77,7 +77,7 @@ export function HomePage() {
           <h1>目次</h1>
         </div>
         <p className="lede home-lede">
-          既存の Java Web アプリを、処理の入口から追い、リクエストがどこまで届いたかで切り分ける教材です。ゼロからアプリを作る入門ではありません。架空の申請アプリ「申請くん」を例に進めます。
+          既存の Java Web アプリを、処理の入口から追い、リクエストがどこまで届いたかで切り分ける教材です。ゼロからアプリを作る入門ではありません。教材用の申請アプリ「申請くん」を例に進めます。
         </p>
         <Link to="/tracks/intro/about" className="btn btn-primary home-hero-cta">
           この教材について

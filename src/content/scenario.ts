@@ -112,7 +112,7 @@ export const scenarioTrack: Track = {
             "`event.preventDefault();` のあと、`const tokenEl = document.getElementById(\"csrfToken\");` で id が `csrfToken` の要素を探し、結果を tokenEl に入れる",
             "その次の行 `const token = tokenEl.value;` で `tokenEl.value` を読もうとしてエラーになる",
             "エラー内容は「null の value を読んだ」となっているので、読もうとした tokenEl が null だと分かる",
-            "tokenEl は 1 行上の `document.getElementById(\"csrfToken\")` の戻り値なので、HTML に `id=\"csrfToken\"` の要素が無かった、と考えられる",
+            "tokenEl は 1 行上の `document.getElementById(\"csrfToken\")` の戻り値なので、HTML に `id=\"csrfToken\"` の要素が無かったと考えられる",
           ],
         },
         {
@@ -517,7 +517,7 @@ document.querySelectorAll("form.js-approve-confirm").forEach((form) => {
         },
         {
           type: "p",
-          text: "承認の処理自体が、この二重送信に耐えられるかを見ます。詳細画面の Controller にも、承認前に同じ `status` の判定があります（前のシナリオ「この申請は承認できません」で見た分岐です）。ただし、2 回目が届いた `04:12:05.020` の時点では、1 回目のトランザクションはまだ確定していません。2 回目は確定前の `PENDING` を読むので、判定を通過してしまいます。",
+          text: "承認の処理自体が、この二重送信に耐えられるかを見ます。詳細画面の Controller にも、承認前に同じ `status` の判定があります（シナリオ「この申請は承認できません」で見た分岐です）。ただし、2 回目が届いた `04:12:05.020` の時点では、1 回目のトランザクションはまだ確定していません。2 回目は確定前の `PENDING` を読むので、判定を通過してしまいます。",
         },
         {
           type: "code",
@@ -1329,7 +1329,7 @@ GET /shinsei/requests/history                   200`,
         },
         {
           type: "p",
-          text: "申請履歴を条件なしで表示すると、レコードは正しい件数で出る。ただし、新しく追加された「承認日時」の列が、承認済みの「備品購入」も含めて、どのレコードも「-」のままになっている。",
+          text: "申請履歴を条件なしで表示すると、申請は正しい件数で出る。ただし、新しく追加された「承認日時」の列が、承認済みの「備品購入」も含めて、どの行も「-」のままになっている。",
         },
         {
           type: "h2",
@@ -1340,7 +1340,7 @@ GET /shinsei/requests/history                   200`,
           items: [
             "山田（yamada）でログイン。検証用環境。申請履歴を、検索条件を入れずに表示した",
             "山田に関係する申請が正しい件数で表示される。承認済み（APPROVED）の「備品購入」も出ている",
-            "「承認日時」の列だけ、承認済みのレコードも含めて、どれも「-」になっている",
+            "「承認日時」の列だけ、承認済みの行も含めて、どれも「-」になっている",
             "画面にエラーは出ていない",
           ],
         },
@@ -1999,7 +1999,7 @@ $`,
         },
         {
           type: "p",
-          text: "該当する行がありません。プロセスがそもそも起動していない、ということです。手動で起動を試してみます。",
+          text: "該当する行がありません。プロセスがそもそも起動していないということです。手動で起動を試してみます。",
         },
         {
           type: "code",
@@ -2888,7 +2888,7 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "p",
-          text: "`ForbiddenException` の if だけを見ると、権限判定はここだけのように見えます。役割（ロール）はどちらの if でも見ていません。部長職なら誰でも、という条件を足すには、この 2 つの if に分岐を追加すればよさそうに思えます。",
+          text: "`ForbiddenException` の if だけを見ると、権限判定はここだけのように見えます。役割（ロール）はどちらの if でも見ていません。部長職なら誰でも承認できるという条件を足すには、この 2 つの if に分岐を追加すればよさそうに思えます。",
         },
         {
           type: "h3",
@@ -3385,7 +3385,7 @@ public class SlackNotificationService {
         },
         {
           type: "p",
-          text: "`MailService.notifyApplicant` は、送信に失敗しても例外を投げず、ログに警告を出すだけです。承認そのものは成功させ、通知の失敗で承認処理全体を失敗させない、という設計です。",
+          text: "`MailService.notifyApplicant` は、送信に失敗しても例外を投げず、ログに警告を出すだけです。承認そのものは成功させ、通知の失敗で承認処理全体を失敗させないという設計です。",
         },
         {
           type: "code",

@@ -11,7 +11,7 @@ export const terms: TermDef[] = [
     term: "申請くん",
     kana: "しんせいくん",
     aliases: ["申請くん"],
-    body: "この教材の架空の社内申請アプリ。社員が申請を出し、承認者が承認する想定です。Spring Boot、Thymeleaf、MyBatis、MySQL、Spring Security を使う設定ですが、このアプリ自体は実在しません。",
+    body: "この教材で使う社内申請アプリのサンプル。社員が申請を出し、承認者が承認する想定です。Spring Boot、Thymeleaf、MyBatis、MySQL、Spring Security で作られています。実際の業務で使われているシステムではありません。",
   },
   {
     term: "HTTP",
@@ -132,7 +132,7 @@ export const terms: TermDef[] = [
   {
     term: "@ResponseBody",
     aliases: ["@ResponseBody", "ResponseBody"],
-    body: "戻り値をテンプレート名ではなく、JSON などの本文にする印です。`@RestController` はクラス全体にこれを付けたもの、と考えてよいです。Spring のアノテーションです。",
+    body: "戻り値をテンプレート名ではなく、JSON などの本文にする印です。`@RestController` はクラス全体にこれを付けたものと考えてよいです。Spring のアノテーションです。",
   },
   {
     term: "Service",
@@ -823,7 +823,7 @@ export const terms: TermDef[] = [
   {
     term: "nslookup",
     aliases: ["nslookup", "dig"],
-    body: "指定したホスト名が、どの IP アドレスに解決されるかを調べるコマンドです。`dig ホスト名` でも同じ確認ができます。名前解決できない、想定と違う IP が返る、といった DNS まわりの切り分けに使います。",
+    body: "指定したホスト名が、どの IP アドレスに解決されるかを調べるコマンドです。`dig ホスト名` でも同じ確認ができます。名前解決できない、想定と違う IP が返るといった DNS まわりの切り分けに使います。",
   },
   {
     term: "ミドルウェア",
@@ -1496,7 +1496,7 @@ export const terms: TermDef[] = [
   {
     term: "リフレクション",
     aliases: ["リフレクション", "reflection"],
-    body: "実行時に、クラスやメソッドの名前を文字列などから調べて操作する仕組みです。Setter の名前を対応づけて呼ぶ、といったことができます。フレームワークが裏側でよく使い、ソースには呼び出しの行が現れません。",
+    body: "実行時に、クラスやメソッドの名前を文字列などから調べて操作する仕組みです。Setter の名前を対応づけて呼ぶといったことができます。フレームワークが裏側でよく使い、ソースには呼び出しの行が現れません。",
   },
   {
     term: "空文字",
