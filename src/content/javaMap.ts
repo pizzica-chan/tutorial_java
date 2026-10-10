@@ -1293,7 +1293,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "検索条件が空なら絞り込まないといった作りは `<if test=\"...\">` で書きます。申請履歴検索の例です。",
+          text: "「検索条件が空なら絞り込まない」のような作りは `<if test=\"...\">` で書きます。申請履歴検索の例です。",
         },
         {
           type: "code",
@@ -1437,7 +1437,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "画面の未ログインは 302 でログイン HTML、Web API は 401 で JSON を返すという違いがよくあります。決まりではありません。",
+          text: "未ログインのとき、画面は 302 でログイン画面へ転送し、Web API は 401 で JSON を返すことがよくあります。決まりではありません。",
         },
         {
           type: "code",

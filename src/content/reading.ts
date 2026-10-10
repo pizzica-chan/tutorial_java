@@ -508,7 +508,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "つなげて書く — request と approve のあいだに何かあってもよいといった書き方です。",
+          text: "つなげて書く — request と approve のあいだに任意の文字があってもヒットさせる書き方です。",
         },
         {
           type: "table",
@@ -599,7 +599,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "候補を挙げる — `NotFoundException` でも `ForbiddenException` でもヒットさせたい、大文字小文字のゆれを両方拾いたいといった書き方です。",
+          text: "候補を挙げる — `NotFoundException` でも `ForbiddenException` でもヒットさせたい、大文字小文字のゆれを両方拾いたいときの書き方です。",
         },
         {
           type: "table",

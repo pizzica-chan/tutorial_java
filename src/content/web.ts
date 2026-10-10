@@ -822,7 +822,7 @@ public String showCart(HttpSession session, Model model) {
           type: "callout",
           kind: "note",
           title: "Ajax、Web API、JSON の違い",
-          text: "Ajax は通信の方法です。Web API はデータを提供する HTTP の窓口、JSON は送受信するデータ形式です。Ajax の通信先が Web API で、その応答が JSON という組み合わせがあります。",
+          text: "Ajax は通信の方法です。Web API はデータを提供する HTTP の窓口、JSON は送受信するデータ形式です。Ajax で Web API を呼び、JSON の応答を受け取るという組み合わせがあります。",
         },
         { type: "quiz", id: "web-ajax" },
       ],

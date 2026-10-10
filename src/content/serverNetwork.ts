@@ -682,7 +682,7 @@ drwxr-xr-x 2 root root 4096 Aug 20 09:10 /var/log/shinsei`,
           type: "table",
           headers: ["ディレクトリの権限", "できること"],
           rows: [
-            ["`x`", "このディレクトリを通るパスで、その先のファイルを開ける"],
+            ["`x`", "このディレクトリを通って、その先のファイルやディレクトリへ進める"],
             ["`w`", "中身を書き換える。ファイルの作成、削除、リネーム"],
             ["`r`", "中のファイル名を一覧する（`ls`）"],
           ],
@@ -843,7 +843,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
             ["`connect`", "相手へつなごうとしている"],
             ["`sin_addr`", "つなごうとしている相手の IP アドレス"],
             ["`sin_port`", "つなごうとしているポート"],
-            ["`ECONNREFUSED`", "失敗の理由。相手のホストまでは届いたが、そのポートで待ち受けが無いことが多い"],
+            ["`ECONNREFUSED`", "失敗の理由。多くは、相手のホストまで届いたが、そのポートで待ち受けが無い状態"],
           ],
         },
         {
@@ -995,7 +995,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
           type: "callout",
           kind: "note",
           title: "打つ場所で結果が変わる",
-          text: "自分の PC からと、サーバからでは通る道が違います。ブラウザからは届くのに開発 PC からは届かない、サーバ上のアプリだけ外部 API に失敗するということもあります。再現に近い場所から打ちましょう。",
+          text: "自分の PC からと、サーバからでは通る道が違います。ブラウザからは届くのに開発 PC からは届かないことや、サーバ上のアプリだけ外部 API に失敗することもあります。再現に近い場所から打ちましょう。",
         },
         {
           type: "h2",
@@ -1162,7 +1162,7 @@ nc: connect to intranet.example.co.jp (10.20.30.40) port 8080 (tcp) failed: Conn
           type: "ul",
           items: [
             "TCP 接続成功 … そのポートで何かが待ち受けている。アプリ未起動ならすぐ切れることもある",
-            "接続拒否（connection refused）… ホストまでは届いたが、そのポートで待ち受けが無いことが多い。FW が拒否を返す設定でも同じ表示になる",
+            "接続拒否（connection refused）… 多くは、ホストまで届いたが、そのポートで待ち受けが無い状態。FW が拒否を返す設定でも同じ表示になる",
             "タイムアウト … FW、ルータ、セキュリティグループ、経路のどこかで止まっていることが多い",
           ],
         },
@@ -1185,7 +1185,7 @@ nc: connect to intranet.example.co.jp (10.20.30.40) port 8080 (tcp) failed: Conn
 # Windows PowerShell では curl.exe と打つ（curl だけだと Invoke-WebRequest の別名になる）
 curl -I http://intranet.example.co.jp:8080/shinsei/requests
 
-# 詳細（手前の HTTP サーバが HTTPS で受ける構成の例。-k は TLS 証明書の検証を緩める指定で、社内検証のみ）
+# 詳細（手前の HTTP サーバが HTTPS で受ける構成の例。-k は TLS 証明書の検証を緩める指定なので、社内の検証だけで使う）
 curl -vk https://intranet.example.co.jp/shinsei/requests`,
         },
         {
@@ -1227,7 +1227,7 @@ Content-Language: en`,
           headers: ["curl のエラーメッセージ（よくある例）", "疑うこと"],
           rows: [
             ["`Could not resolve host`", "DNS で名前が引けない。ホスト名の綴り、DNS サーバ、hosts ファイル（Windows は `C:\\Windows\\System32\\drivers\\etc\\hosts`、Linux / macOS は `/etc/hosts`）を疑う"],
-            ["`Connection refused`", "ホストまでは届いたが、指定したポートで待ち受けが無いことが多い。そのポートを待ち受けるはずのプロセス（アプリや HTTP サーバ）が未起動、またはポート番号違いを疑う"],
+            ["`Connection refused`", "多くは、ホストまで届いたが、指定したポートで待ち受けが無い状態。そのポートを待ち受けるはずのプロセス（アプリや HTTP サーバ）が未起動、またはポート番号違いを疑う"],
             ["`Connection timed out`", "応答が返ってこない。FW やセキュリティグループで止められていることが多い"],
             ["`SSL certificate problem` / `SSL connect error`", "TLS 証明書や設定の問題。証明書の期限切れ、ホスト名不一致、社内 CA が信頼されていない、など"],
             ["`Empty reply from server`", "TCP はつながったが、HTTP の応答が無いまま切れた。別プロトコルが動いている、アプリのプロセスが処理中に終了した、など"],
