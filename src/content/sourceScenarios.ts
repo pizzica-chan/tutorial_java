@@ -83,7 +83,7 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "`searchTitle` は Java メソッド内の変数ではなく、インスタンスのフィールドです。Bean は Spring が生成・管理するオブジェクトです。この Service は既定のスコープであるシングルトン（singleton）で登録され、同じ Bean のインスタンスを複数のリクエストが使います。",
+        text: "この Service は、Spring が生成・管理するオブジェクトである Bean として登録されています。既定のスコープはシングルトン（singleton）で、複数のリクエストが同じインスタンスを使います。`searchTitle` はそのインスタンスのフィールドなので、複数のリクエストが同じ保存場所を読み書きします。",
       },
       {
         type: "p",
