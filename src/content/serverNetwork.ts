@@ -539,15 +539,10 @@ kubectl logs --namespace 名前空間名 Pod名`,
         },
         {
           type: "code",
-          title: "例（requestId=12 を含む行だけ表示する）",
+          title: "実行例（requestId=12 を含む行だけ表示する）",
           lang: "text",
-          code: `tail -f app.log | grep --line-buffered 'requestId=12'`,
-        },
-        {
-          type: "code",
-          title: "出力例（requestId=13 の行は表示されない）",
-          lang: "text",
-          code: `04:12:03.100 INFO requestId=12 承認処理を開始
+          code: `$ tail -f app.log | grep --line-buffered 'requestId=12'
+04:12:03.100 INFO requestId=12 承認処理を開始
 04:12:03.200 ERROR requestId=12 承認処理で例外が発生`,
         },
         {
