@@ -355,7 +355,7 @@ export const terms: TermDef[] = [
   {
     term: "@Transactional",
     aliases: ["@Transactional", "Transactional"],
-    body: "その Java メソッドをトランザクションで囲む印です。Spring の AOP プロキシが先に動くので、Java メソッド本体の 1 行目より前に処理があります。",
+    body: "その Java メソッドをトランザクションで囲む印です。Spring の AOP プロキシが先に動くので、Java メソッド本体の 1 行目より前に処理が動きます。",
   },
   {
     term: "TransactionTemplate",
