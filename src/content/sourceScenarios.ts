@@ -219,7 +219,7 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "山田で `/shinsei/investigation` を開き、Console で次を実行しましょう。画面の CSRF トークンを使うため、ログインした状態の再現用の画面で操作します。",
+        text: "山田でログインし、`/shinsei/investigation` を開きましょう。この画面を開いたまま、開発者ツールの Console で次のコードを実行しましょう。コードは、画面のフォームに含まれる CSRF トークンを読み取り、一括登録のリクエストに付けて送信します。",
       },
       {
         type: "code",
@@ -260,7 +260,7 @@ java.lang.IllegalArgumentException: 件名は必須です`,
       },
       {
         type: "p",
-        text: "`transactionActive=false` は、この処理で Spring が管理するトランザクションが開始されていないことを示します。`IllegalArgumentException` は実行時例外なので、既定ではロールバックの対象です。ロールバックの条件を調べる前に、入口から呼び出しを辿りましょう。",
+        text: "`transactionActive=false` は、この処理で Spring が管理するトランザクションが開始されていないことを示します。`IllegalArgumentException` は実行時例外なので、Spring の `@Transactional` の既定の設定ではロールバックの対象です。ロールバックの条件を調べる前に、入口から呼び出しを辿りましょう。",
       },
       {
         type: "code",
@@ -307,7 +307,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       {
         type: "ul",
         items: [
-          "`@Transactional` は、プロキシを通った呼び出しにだけ効く。同じインスタンス内の呼び出しでは、トランザクションは開始されない",
+          "`@Transactional` によるトランザクション管理は、プロキシを通った呼び出しにだけ適用される。同じインスタンス内の呼び出しでは、トランザクションは開始されない",
           "修正するなら、外から呼ばれる `submitBatch` に `@Transactional` を付けて、一括処理全体を囲む。1 件ごとに確定する方法では、一括処理の仕様を満たさない",
         ],
       },
@@ -394,7 +394,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "p",
-        text: "配布している初期データは件数が少なく、遅さは体感できないことがあります。名前取得の SQL が繰り返されることは、初期データでも確認できます。",
+        text: "申請くんの初期データでは、申請の件数が少ないため、一覧がすぐに表示されることがあります。この場合も、ログで SQL の実行回数を確認しましょう。",
       },
       {
         type: "h2",
@@ -483,7 +483,11 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
       },
       {
         type: "p",
-        text: "このログ例では、Service 全体が約 600 ミリ秒、最初の一覧検索が約 9 ミリ秒、繰り返す名前取得が約 579 ミリ秒です。時間の大半が名前取得にあり、ループ内の 300 回の DB アクセスが遅さにつながっていると判断できます。実際の調査でも、同じスレッドのログを使い、同時に動く別のリクエストを混ぜないようにしましょう。",
+        text: "このログ例では、Service 全体が約 600 ミリ秒、最初の一覧検索が約 9 ミリ秒、繰り返す名前取得が約 579 ミリ秒です。時間の大半が名前取得にあり、ループ内の 300 回の DB アクセスが遅さにつながっていると判断できます。",
+      },
+      {
+        type: "p",
+        text: "この例では、`nio-8080-exec-3` というスレッドのログで、処理の開始から終了までを追っています。調査するときは、スレッド名と処理の開始・終了時刻を確認し、別のリクエストのログを混ぜないようにしましょう。",
       },
       {
         type: "h2",
