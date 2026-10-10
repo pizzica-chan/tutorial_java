@@ -219,7 +219,7 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "山田で `/shinsei/investigation` を開き、Console で次を実行しましょう。画面の CSRF トークンを使うため、ログインした状態の再現用の画面で操作します。",
+        text: "山田でログインし、`/shinsei/investigation` を開きましょう。この画面を開いたまま、開発者ツールの Console で次のコードを実行しましょう。コードは、画面のフォームに含まれる CSRF トークンを読み取り、一括登録のリクエストに付けて送信します。",
       },
       {
         type: "code",
