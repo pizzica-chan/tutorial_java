@@ -394,7 +394,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "p",
-        text: "配布している初期データは件数が少なく、遅さは体感できないことがあります。名前取得の SQL が繰り返されることは、初期データでも確認できます。",
+        text: "手元の申請くんでは、申請の件数が少ないため、一覧がすぐに表示されることがあります。この場合も、ログで SQL の実行回数を確認しましょう。",
       },
       {
         type: "h2",
