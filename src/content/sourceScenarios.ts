@@ -307,7 +307,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       {
         type: "ul",
         items: [
-          "`@Transactional` は、プロキシを通った呼び出しにだけ効く。同じインスタンス内の呼び出しでは、トランザクションは開始されない",
+          "`@Transactional` によるトランザクション管理は、プロキシを通った呼び出しにだけ適用される。同じインスタンス内の呼び出しでは、トランザクションは開始されない",
           "修正するなら、外から呼ばれる `submitBatch` に `@Transactional` を付けて、一括処理全体を囲む。1 件ごとに確定する方法では、一括処理の仕様を満たさない",
         ],
       },
