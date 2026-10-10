@@ -225,7 +225,7 @@ logging:
   {
     path: "src/main/resources/application-dev.yml",
     note: "dev プロファイル用の上書き",
-    why: "`spring.profiles.active` が `dev` のとき、`application.yml` のあとにこのファイルが読み込まれます。同じ項目はこちらの設定が優先されます。ローカルだけ DB 名やログ量を変える、という使い方が多いです。",
+    why: "`spring.profiles.active` が `dev` のとき、`application.yml` のあとにこのファイルが読み込まれます。同じ項目はこちらの設定が優先されます。ローカルだけ DB 名やログ量を変えるという使い方が多いです。",
     code: `spring:
   datasource:
     url: jdbc:mysql://localhost:3306/shinsei_dev?characterEncoding=UTF-8
@@ -238,7 +238,7 @@ logging:
   {
     path: "src/main/resources/application-stg.yml",
     note: "stg プロファイル用の追加分",
-    why: "`spring.profiles.active` が `stg` のとき、`application.yml` のあとにこのファイルが読み込まれます。同じ項目はこちらの設定が優先されます。検証環境の DB 接続先やログ量をまとめて書く、という使い方が多いです。password の `${DB_PASSWORD}` は、起動時に環境変数 `DB_PASSWORD` の値に差し替わる書き方です。yml にパスワードを直書きしないときに使います。",
+    why: "`spring.profiles.active` が `stg` のとき、`application.yml` のあとにこのファイルが読み込まれます。同じ項目はこちらの設定が優先されます。検証環境の DB 接続先やログ量をまとめて書くという使い方が多いです。password の `${DB_PASSWORD}` は、起動時に環境変数 `DB_PASSWORD` の値に差し替わる書き方です。yml にパスワードを直書きしないときに使います。",
     code: `spring:
   datasource:
     url: jdbc:mysql://stg-db.example.internal:3306/shinsei
@@ -585,7 +585,7 @@ class ShinseiApplicationTests {
   {
     path: "src/test/java/.../service/RequestServiceTest.java",
     note: "Service の単体テスト",
-    why: "本番の RequestService と同じパッケージ構成で、test 配下に置きます。Mapper や MailService をモックにして、承認ロジックだけを切り出して確認する、という形が多いです。",
+    why: "本番の RequestService と同じパッケージ構成で、test 配下に置きます。Mapper や MailService をモックにして、承認ロジックだけを切り出して確認するという形が多いです。",
     code: `@ExtendWith(MockitoExtension.class)
 class RequestServiceTest {
   @Mock

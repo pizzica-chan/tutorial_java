@@ -43,7 +43,7 @@ public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     id: "service",
     layer: "Service",
     title: "RequestService#findMine",
-    detail: "渡された userId は、Cookie から辿ったログインユーザの ID です。自分に関係する申請だけ返す、といった判定は Service に置かれることが多いです。Controller に書かれている構成もあります。",
+    detail: "渡された userId は、Cookie から辿ったログインユーザの ID です。自分に関係する申請だけ返すといった判定は Service に置かれることが多いです。Controller に書かれている構成もあります。",
     code: `public List<RequestEntity> findMine(Long userId) {
   return requestMapper.findMine(userId);
 }`,
@@ -176,7 +176,7 @@ export const stackCases: StackCase[] = [
   {
     id: "sql",
     title: "一覧でステータスコード 500",
-    symptom: "申請一覧に行くとステータスコード 500（サーバエラー）になる。昨日まで動いていた。DB にカラムを足した、という話がある。",
+    symptom: "申請一覧に行くとステータスコード 500（サーバエラー）になる。昨日まで動いていた。DB にカラムを足したという話がある。",
     lines: [
       {
         kind: "exception",
@@ -206,7 +206,7 @@ export const stackCases: StackCase[] = [
       {
         kind: "app",
         text: "    at jp.co.example.shinsei.controller.RequestController.list(RequestController.java:32)",
-        note: "画面の処理の入口。一覧を開いた操作から来ている、と確認できます。",
+        note: "画面の処理の入口。一覧を開いた操作から来ていると確認できます。",
       },
       {
         kind: "framework",
@@ -275,7 +275,7 @@ Content-Type: text/html;charset=UTF-8
     },
     {
       label: "200",
-      text: "サーバは応答を返せた、という意味です。本文に HTML が載っていれば、ブラウザはそれを画面にします。",
+      text: "サーバは応答を返せたという意味です。本文に HTML が載っていれば、ブラウザはそれを画面にします。",
     },
     {
       label: "Content-Type",

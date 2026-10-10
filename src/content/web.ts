@@ -51,7 +51,7 @@ export const webTrack: Track = {
         },
         {
           type: "p",
-          text: "申請くんは、この教材で使う架空の社内申請アプリです。",
+          text: "申請くんは、この教材で使う社内申請アプリのサンプルです。",
         },
         {
           type: "p",
@@ -601,7 +601,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "件数や中身は DB にあります。どのレコードが対象かは、実行された SQL の WHERE で決まります。コードが正しくても、画面に何も出なかったり、古い値が出たりすることがあります。その条件のレコードが無い、マスタが違う、別の DB に接続している、といった場合です。",
+          text: "件数や中身は DB にあります。どのレコードが対象かは、実行された SQL の WHERE で決まります。コードが正しくても、画面に何も出なかったり、古い値が出たりすることがあります。その条件のレコードが無い、マスタが違う、別の DB に接続しているといった場合です。",
         },
         { type: "quiz", id: "web-front-back" },
       ],
@@ -728,7 +728,7 @@ public String showCart(HttpSession session, Model model) {
           type: "callout",
           kind: "trap",
           title: "エラーが出ないこともある",
-          text: "要素が見つからないとき、`document.querySelectorAll` は 0 件を返すだけです。例外にならないので、Console にも何も出ません。イベントの処理が登録されず、ボタンを押しても何も起きない、という見え方になります。",
+          text: "要素が見つからないとき、`document.querySelectorAll` は 0 件を返すだけです。例外にならないので、Console にも何も出ません。イベントの処理が登録されず、ボタンを押しても何も起きないという見え方になります。",
         },
         {
           type: "p",
@@ -822,7 +822,7 @@ public String showCart(HttpSession session, Model model) {
           type: "callout",
           kind: "note",
           title: "Ajax、Web API、JSON の違い",
-          text: "Ajax は通信の方法です。Web API はデータを提供する HTTP の窓口、JSON は送受信するデータ形式です。Ajax の通信先が Web API で、その応答が JSON、という組み合わせがあります。",
+          text: "Ajax は通信の方法です。Web API はデータを提供する HTTP の窓口、JSON は送受信するデータ形式です。Ajax の通信先が Web API で、その応答が JSON という組み合わせがあります。",
         },
         { type: "quiz", id: "web-ajax" },
       ],
@@ -1050,7 +1050,7 @@ function RequestList() {
         },
         {
           type: "p",
-          text: "`item.title` と `item.status` は、前の項目で見た JSON の `title` と `status` です。JSON 側と違う名前を書くと、その値だけが空になります。行自体は出るので、JSON は届いているのに中身が抜けている、という見え方になります。",
+          text: "`item.title` と `item.status` は、前の項目で見た JSON の `title` と `status` です。JSON 側と違う名前を書くと、その値だけが空になります。行自体は出るので、JSON は届いているのに中身が抜けているという見え方になります。",
         },
         {
           type: "h2",

@@ -380,7 +380,7 @@ export const quizzes = {
       "MyBatis の設定ファイルが壊れている",
     ],
     answer: 1,
-    explanation: "Preparing が文、Parameters がバインド値、Total が件数です。0 は実行失敗ではなく、その条件のレコードが無かった、と読みます。",
+    explanation: "Preparing が文、Parameters がバインド値、Total が件数です。0 は実行失敗ではなく、その条件のレコードが無かったと読みます。",
   },
   "ts-env": {
     id: "ts-env",
@@ -473,10 +473,10 @@ export const quizzes = {
       "DNS の名前解決に失敗している",
       "8080 が FW で閉じている、または HTTP サーバやアプリがそのポートで待ち受けていない",
       "TLS 証明書の期限切れ",
-      "ロードバランサの振り分け設定",
+      "Controller の `@GetMapping` のパス",
     ],
     answer: 1,
-    explanation: "ping はホスト到達、TCP はポート到達です。層が違います。ping が通っているので DNS の名前解決はできています。TCP が失敗する時点では、その上の TLS や HTTP、ロードバランサの振り分けもまだ関係ありません。FW と、HTTP サーバやアプリの待ち受けを見ます。",
+    explanation: "ping はホスト到達、TCP はポート到達です。層が違います。ping が通っているので DNS の名前解決はできています。TCP が失敗する時点では、その上の TLS や HTTP、Controller のマッピングはまだ関係ありません。FW と、HTTP サーバやアプリの待ち受けを見ます。手前にロードバランサがある構成では、その向き先も確認します。",
   },
   "ts-middleware": {
     id: "ts-middleware",
@@ -640,7 +640,7 @@ export const quizzes = {
       "検証用環境のコネクションプールが枯渇している",
     ],
     answer: 1,
-    explanation: "`type` が `ALL` なら、そのテーブルを先頭から全部読むことが多いです。`possible_keys` が `NULL` なのは、この SQL で使える候補が無い、という意味です。`PRIMARY KEY` があっても、この `WHERE` の候補になるとは限りません。",
+    explanation: "`type` が `ALL` なら、そのテーブルを先頭から全部読むことが多いです。`possible_keys` が `NULL` なのは、この SQL で使える候補が無いという意味です。`PRIMARY KEY` があっても、この `WHERE` の候補になるとは限りません。",
   },
   "sc-net": {
     id: "sc-net",

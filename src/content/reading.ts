@@ -508,7 +508,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "つなげて書く — request と approve のあいだに何かあってもよい、といった書き方です。",
+          text: "つなげて書く — request と approve のあいだに何かあってもよいといった書き方です。",
         },
         {
           type: "table",
@@ -599,7 +599,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "候補を挙げる — `NotFoundException` でも `ForbiddenException` でもヒットさせたい、大文字小文字のゆれを両方拾いたい、といった書き方です。",
+          text: "候補を挙げる — `NotFoundException` でも `ForbiddenException` でもヒットさせたい、大文字小文字のゆれを両方拾いたいといった書き方です。",
         },
         {
           type: "table",
@@ -1509,7 +1509,7 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "p",
-          text: "ファイル名にハッシュが付いている（`main.3f2a1c.js` など）、1 行が異常に長い、変数名が 1〜2 文字ばかり、コメントが無い、といった見た目が目印です。",
+          text: "ファイル名にハッシュが付いている（`main.3f2a1c.js` など）、1 行が異常に長い、変数名が 1〜2 文字ばかり、コメントが無いといった見た目が目印です。",
         },
         {
           type: "callout",
