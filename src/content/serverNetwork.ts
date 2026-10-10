@@ -527,13 +527,32 @@ kubectl logs --namespace 名前空間名 Pod名`,
         },
         {
           type: "p",
-          text: "`tail -f` と `grep` を組み合わせると、流れてくるログをリアルタイムで絞り込めます。",
+          text: "`tail -f` は、ログファイルの末尾と、そのあと追記された行を表示し続けます。パイプ（`|`）を使うと、その出力を `grep` に渡せます。次の例では、`grep` が `requestId=12` を含む行だけを表示します。",
         },
         {
           type: "code",
-          title: "例（requestId=12 を含む行だけ見る）",
+          title: "app.log の例（説明用）",
           lang: "text",
-          code: `tail -f app.log | grep requestId=12`,
+          code: `04:12:03.100 INFO requestId=12 承認処理を開始
+04:12:03.150 INFO requestId=13 詳細を取得
+04:12:03.200 ERROR requestId=12 承認処理で例外が発生`,
+        },
+        {
+          type: "code",
+          title: "例（requestId=12 を含む行だけ表示する）",
+          lang: "text",
+          code: `tail -f app.log | grep --line-buffered 'requestId=12'`,
+        },
+        {
+          type: "code",
+          title: "出力例（requestId=13 の行は表示されない）",
+          lang: "text",
+          code: `04:12:03.100 INFO requestId=12 承認処理を開始
+04:12:03.200 ERROR requestId=12 承認処理で例外が発生`,
+        },
+        {
+          type: "p",
+          text: "`--line-buffered` は、`grep` の出力をまとめてためずに、1 行ずつ表示する指定です。新しいログが追記されると、条件に一致する行も続けて表示されます。終了するときは Ctrl + C を押しましょう。",
         },
         {
           type: "h2",

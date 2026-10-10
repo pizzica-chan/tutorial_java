@@ -83,7 +83,7 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "`searchTitle` は Java メソッド内の変数ではなく、インスタンスのフィールドです。Bean は Spring が生成・管理するオブジェクトです。この Service は既定のスコープであるシングルトン（singleton）で登録され、同じ Bean のインスタンスを複数のリクエストが使います。",
+        text: "この Service は、Spring が生成・管理するオブジェクトである Bean として登録されています。既定のスコープはシングルトン（singleton）で、複数のリクエストが同じインスタンスを使います。`searchTitle` はそのインスタンスのフィールドなので、複数のリクエストが同じ保存場所を読み書きします。",
       },
       {
         type: "p",
@@ -581,11 +581,15 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
       },
       {
         type: "p",
-        text: "フォームでは拒否され、API では通ります。入口ごとに入力チェックが違う可能性を疑いましょう。ブラウザの `required` は送信前の確認で、サーバのチェックとは別です。同じ空文字を、サーバへ直接送って比べます。",
+        text: "提出フォームでは、件名を空にして送信しようとすると、`required` によるチェックで送信が止まります。リクエストがサーバに届かないため、これだけではサーバが空の件名を拒否するか分かりません。",
       },
       {
         type: "p",
-        text: "山田で `/shinsei/investigation` を開き、Console から二つの POST を送りましょう。空のフォームを送ろうとしたとき、Network タブに POST が無ければ、ブラウザで止まっています。",
+        text: "山田でログインし、`/shinsei/investigation` を開きましょう。提出フォームの件名を空にして提出ボタンを押し、Network タブで POST が送信されていないことを確認しましょう。",
+      },
+      {
+        type: "p",
+        text: "次に、この画面の開発者ツールの Console で次のコードを実行しましょう。このコードは、`required` のチェックを経由せずに、空の件名をフォームの送信先と API に送ります。Console に表示された二つのステータスコードを比べましょう。",
       },
       {
         type: "code",

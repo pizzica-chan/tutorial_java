@@ -691,6 +691,16 @@ export const terms: TermDef[] = [
     body: "通信を暗号化し、ネットワーク越しにサーバのターミナルを安全に操作するプロトコルです。GUI の無いサーバでは、SSH でログインしてコマンドを打って調べます。",
   },
   {
+    term: "tail",
+    aliases: ["tail"],
+    body: "ファイルの末尾を表示するコマンドです。`tail -n 20 ファイル名` で末尾の 20 行を表示し、`tail -f ファイル名` で追記された行を表示し続けます。",
+  },
+  {
+    term: "パイプ",
+    aliases: ["パイプ"],
+    body: "シェルで、左側のコマンドの標準出力を右側のコマンドに入力として渡す仕組みです。コマンドの間に `|` を書き、複数のコマンドを組み合わせて使います。",
+  },
+  {
     term: "grep",
     aliases: ["grep"],
     body: "指定した文字列を含む行だけを取り出すコマンドです。`grep 文字列 ファイル名` のように使い、大きなログファイルから必要な行だけを絞り込めます。",
@@ -1654,6 +1664,11 @@ export const terms: TermDef[] = [
     term: "Docker",
     aliases: ["Docker", "docker"],
     body: "コンテナを動かす仕組みのひとつです。コンテナそのものではありません。ログはコンテナの標準出力に出ることが多く、docker logs で見ることがあります。",
+  },
+  {
+    term: "Docker Desktop",
+    aliases: ["Docker Desktop"],
+    body: "PC でコンテナを作成・実行・管理するためのアプリです。Docker Engine、Docker コマンド、Docker Compose などを含み、画面からもコンテナやイメージを管理できます。Windows や macOS で Linux のコンテナを動かす場合は、Linux の仮想環境を使います。",
   },
   {
     term: "docker ps",
