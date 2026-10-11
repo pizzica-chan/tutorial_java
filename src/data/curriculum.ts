@@ -76,7 +76,7 @@ export function getLesson(trackId: string | undefined, lessonId: string | undefi
 
 export function pageDescription(pathname: string): string {
   const fallback =
-    "既存の Java Web アプリを、処理の入口から追い、リクエストがどこまで届いたかで切り分ける教材です。ゼロからアプリを作る入門ではありません。";
+    "既存の Java Web アプリのソースを読み、不具合の原因を切り分ける方法を学ぶ教材です。";
   if (pathname === "/") return fallback;
   if (pathname === "/lab") return "通読とは独立して、申請くんの HTTP とソース、リクエストの区間を確認できます。";
   if (pathname === "/cheatsheet") return "本文で使った Linux・Git・SQL・HTTP の調査コマンドの早見表です。";

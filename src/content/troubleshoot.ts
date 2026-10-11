@@ -156,7 +156,7 @@ export const troubleshootTrack: Track = {
     },
     {
       id: "recent-change",
-      title: "いつから起きているかを疑う",
+      title: "直近の変更を疑う",
       minutes: 7,
       blocks: [
         {
@@ -951,9 +951,9 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
         },
         {
           type: "p",
-          text: "デプロイ履歴やビルド番号が分かるなら、それを見ましょう。分からないときは、jar やコンテナがいつ配置されたかで確かめられます。手順は「いつから起きているかを疑う」にあります。",
+          text: "デプロイ履歴やビルド番号が分かるなら、それを見ましょう。分からないときは、jar やコンテナがいつ配置されたかで確かめられます。手順は「直近の変更を疑う」にあります。",
           link: {
-            label: "いつから起きているかを疑う",
+            label: "直近の変更を疑う",
             to: "/tracks/troubleshoot/recent-change",
           },
         },

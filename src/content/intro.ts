@@ -15,7 +15,7 @@ export const introTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "この教材は、既存の Java Web アプリのソースを読む力を身につけるためのものです。ゼロからアプリを作る入門ではありません。",
+          text: "この教材は、既存の Java Web アプリのソースを読む力を身につけるためのものです。",
         },
         {
           type: "p",
@@ -97,7 +97,7 @@ export const introTrack: Track = {
           type: "download",
           href: "/downloads/shinsei-kun.zip",
           label: "申請くんのソースをダウンロード",
-          note: "Docker（`docker compose up --build`）で手元に起動できます。",
+          note: "Docker（`docker compose up --build`）で、自分の PC で起動できます。",
         },
         {
           type: "callout",
