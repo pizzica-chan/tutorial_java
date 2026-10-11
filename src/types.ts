@@ -78,21 +78,25 @@ export type Block =
  * 「Java 全般」は、Java には固有だがフレームワークには依らない話に付ける。
  * タグが無いレッスンは、特定の技術に依らない一般の話とする。
  */
-export type LessonTag =
-  | "Java 全般"
-  | "Spring"
-  | "MyBatis"
-  | "JPA"
-  | "MySQL"
-  | "Thymeleaf"
-  | "Maven"
-  | "Gradle"
-  | "JavaScript"
-  | "Linux"
-  | "Docker"
-  | "Kubernetes"
-  | "Git"
-  | "SVN";
+export const LESSON_TAGS = [
+  "Java 全般",
+  "Spring",
+  "MyBatis",
+  "JPA",
+  "MySQL",
+  "Thymeleaf",
+  "Maven",
+  "Gradle",
+  "JavaScript",
+  "Linux",
+  "Docker",
+  "Kubernetes",
+  "Git",
+  "SVN",
+] as const;
+
+/** 画面にはこの並び順で出す（データに書いた順ではない） */
+export type LessonTag = (typeof LESSON_TAGS)[number];
 
 export type Lesson = {
   id: string;

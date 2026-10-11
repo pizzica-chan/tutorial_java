@@ -411,7 +411,7 @@ public class RegionInfo {
       id: "layers",
       title: "Controller / Service / Repository / Mapper",
       minutes: 9,
-      tags: ["Java 全般", "Spring"],
+      tags: ["Spring"],
       blocks: [
         {
           type: "p",
@@ -967,7 +967,7 @@ if (updated == 0) {
       id: "template-read",
       title: "テンプレートの読み方",
       minutes: 12,
-      tags: ["Thymeleaf"],
+      tags: ["Spring", "Thymeleaf"],
       blocks: [
         {
           type: "p",
