@@ -22,6 +22,7 @@ export const javaMapTrack: Track = {
       id: "tree",
       title: "ディレクトリ構成",
       minutes: 8,
+      tags: ["Maven", "Spring"],
       blocks: [
         {
           type: "p",
@@ -38,6 +39,7 @@ export const javaMapTrack: Track = {
       id: "build",
       title: "Maven / Gradle",
       minutes: 9,
+      tags: ["Maven", "Gradle"],
       blocks: [
         {
           type: "p",
@@ -101,6 +103,7 @@ export const javaMapTrack: Track = {
       id: "yml",
       title: "application.yml / application.properties",
       minutes: 18,
+      tags: ["Spring"],
       blocks: [
         {
           type: "p",
@@ -408,6 +411,7 @@ public class RegionInfo {
       id: "layers",
       title: "Controller / Service / Repository / Mapper",
       minutes: 9,
+      tags: ["Java 全般", "Spring"],
       blocks: [
         {
           type: "p",
@@ -529,6 +533,7 @@ public class RequestApiController {
       id: "threads",
       title: "プロセスとスレッド",
       minutes: 6,
+      tags: ["Java 全般"],
       blocks: [
         {
           type: "p",
@@ -628,6 +633,7 @@ public class RequestApiController {
       id: "transaction",
       title: "トランザクションと同時実行",
       minutes: 13,
+      tags: ["Spring", "MySQL"],
       blocks: [
         {
           type: "p",
@@ -848,6 +854,7 @@ if (updated == 0) {
       id: "view-static",
       title: "テンプレートと静的ファイル",
       minutes: 8,
+      tags: ["Spring", "Thymeleaf"],
       blocks: [
         {
           type: "p",
@@ -960,6 +967,7 @@ if (updated == 0) {
       id: "template-read",
       title: "テンプレートの読み方",
       minutes: 12,
+      tags: ["Thymeleaf"],
       blocks: [
         {
           type: "p",
@@ -1192,6 +1200,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
       id: "mapper-xml",
       title: "mapper.xml の読み方",
       minutes: 13,
+      tags: ["MyBatis"],
       blocks: [
         {
           type: "p",
@@ -1377,6 +1386,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
       id: "security-filter",
       title: "Filter / Interceptor / AOP / @ControllerAdvice",
       minutes: 11,
+      tags: ["Java 全般", "Spring"],
       blocks: [
         {
           type: "p",

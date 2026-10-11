@@ -73,10 +73,15 @@ export type Block =
   | { type: "investigation-flow"; items: InvestigationFlowItem[] }
   | { type: "download"; href: string; label: string; note?: string };
 
+/** レッスンの内容が、どの技術に固有の話か（Java 全般で通じる話か）を示すタグ */
+export type LessonTag = "Java 全般" | "Spring" | "MyBatis" | "MySQL" | "Thymeleaf" | "Maven" | "Gradle";
+
 export type Lesson = {
   id: string;
   title: string;
   minutes: number;
+  /** 大見出しの下に出すタグ。サイドバーの目次には出さない */
+  tags?: LessonTag[];
   blocks: Block[];
 };
 

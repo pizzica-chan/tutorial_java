@@ -33,6 +33,15 @@ export function LessonPage() {
         <h1 className="serif page-title">
           <LessonTitle title={lesson.title} />
         </h1>
+        {lesson.tags?.length ? (
+          <ul className="lesson-tags" aria-label="このページで扱う技術">
+            {lesson.tags.map((tag) => (
+              <li key={tag} className="lesson-tag">
+                {tag}
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <Article blocks={lesson.blocks} />
         <div className="pager">
           {prev ? (
