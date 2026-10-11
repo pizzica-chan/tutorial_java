@@ -1727,6 +1727,8 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "code",
+          highlightLines: [13],
+          highlightKind: "error",
           title: "例（社内端末から）",
           lang: "text",
           code: `PS> ping intranet.example.co.jp
@@ -1851,6 +1853,7 @@ Content-Type: text/html;charset=UTF-8`,
         },
         {
           type: "code",
+          highlightLines: [1, 5],
           title: "操作時刻のサーバログ（申請くん・検証用環境・抜粋）",
           lang: "text",
           code: `04:12:03.512 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests

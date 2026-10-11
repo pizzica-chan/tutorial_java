@@ -389,6 +389,7 @@ root@1a2b3c4d5e6f:/app# exit`,
         },
         {
           type: "code",
+          highlightLines: [3],
           title: "例（app コンテナに渡した環境変数のうち、SPRING で始まるもの）",
           lang: "text",
           code: `$ docker exec shinsei-kun-app-1 env | grep SPRING
@@ -646,6 +647,7 @@ appuser   1842  java -jar shinsei-kun.jar`,
         },
         {
           type: "code",
+          highlightLines: [2, 4],
           title: "例（実行権限が無いスクリプト）",
           lang: "text",
           code: `$ ls -l start.sh
@@ -663,6 +665,7 @@ $ ./start.sh
         },
         {
           type: "code",
+          highlightLines: [2, 4],
           title: "例（ファイルには書けるが、ディレクトリには書けない）",
           lang: "text",
           code: `$ ls -l /var/log/shinsei/app.log
@@ -1012,6 +1015,7 @@ ping -c 4 intranet.example.co.jp`,
         },
         {
           type: "code",
+          highlightLines: [9],
           title: "結果の例（Windows の日本語表示。統計の行は省略）",
           lang: "text",
           code: `# 応答がある
@@ -1041,7 +1045,7 @@ ping 要求ではホスト intranet.example.co.jp が見つかりませんでし
         },
         {
           type: "p",
-          text: "タイムアウトの例でも、1 行目に IP アドレス（10.20.30.40）が出ています。名前解決まではできていて、その先で応答が返っていないと分かります。",
+          text: "タイムアウトの例でも、ping を送信している行に IP アドレス（10.20.30.40）が出ています。名前解決まではできていて、その先で応答が返っていないと分かります。",
         },
         {
           type: "p",
@@ -1068,6 +1072,8 @@ traceroute -T -p 8080 intranet.example.co.jp`,
         },
         {
           type: "code",
+          highlightLines: [6, 7, 8],
+          highlightKind: "error",
           title: "結果の例（Windows の日本語表示。途中で止まる場合）",
           lang: "text",
           code: `intranet.example.co.jp [10.20.30.40] へのルートをトレースしています
@@ -1119,6 +1125,8 @@ telnet intranet.example.co.jp 8080`,
         },
         {
           type: "code",
+          highlightLines: [19],
+          highlightKind: "error",
           title: "結果の例（Test-NetConnection）",
           lang: "text",
           code: `# TCP 接続成功
@@ -1190,6 +1198,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
         },
         {
           type: "code",
+          highlightLines: [3, 10],
           title: "結果の例（curl -I。ヘッダは抜粋）",
           lang: "text",
           code: `# 申請一覧（ログインしていないので、ログイン画面へ 302）
@@ -1207,7 +1216,7 @@ Content-Language: en`,
         },
         {
           type: "p",
-          text: "1 行目のステータスコードで、HTTP まで届いたかが分かります。申請くんでは、ログインしていないと 302 でログイン画面へ転送されます。302 が返れば、アプリまでは届いています。",
+          text: "レスポンスの 1 行目のステータスコードで、HTTP まで届いたかが分かります。申請くんでは、ログインしていないと 302 でログイン画面へ転送されます。302 が返れば、アプリまでは届いています。",
         },
         {
           type: "ul",
@@ -1320,6 +1329,8 @@ Enter password:
         },
         {
           type: "code",
+          highlightLines: [3],
+          highlightKind: "error",
           title: "例（MySQL、つながらないとき）",
           lang: "text",
           code: `$ mysql -h ホスト名 -u ユーザ名 -p -e "SELECT 1"
@@ -1350,6 +1361,8 @@ ERROR 2003 (HY000): Can't connect to MySQL server on 'ホスト名:3306' (110)`,
         },
         {
           type: "code",
+          highlightLines: [4],
+          highlightKind: "error",
           title: "例（Docker）",
           lang: "text",
           code: `$ docker ps
@@ -1359,6 +1372,8 @@ CONTAINER ID   IMAGE             COMMAND                  CREATED       STATUS  
         },
         {
           type: "code",
+          highlightLines: [3],
+          highlightKind: "error",
           title: "例（Kubernetes）",
           lang: "text",
           code: `$ kubectl get pods
@@ -1395,6 +1410,7 @@ shinsei-7d8f9c6b5d-abcde   0/1     CrashLoopBackOff   7          12m`,
         },
         {
           type: "code",
+          highlightLines: [4],
           title: "例（Linux、systemd を使う環境。動いているとき）",
           lang: "text",
           code: `$ systemctl status nginx
