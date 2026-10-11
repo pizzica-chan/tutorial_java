@@ -1125,7 +1125,8 @@ telnet intranet.example.co.jp 8080`,
         },
         {
           type: "code",
-          highlightLines: [7, 19],
+          highlightLines: [19],
+          highlightKind: "error",
           title: "結果の例（Test-NetConnection）",
           lang: "text",
           code: `# TCP 接続成功
