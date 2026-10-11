@@ -55,6 +55,7 @@ export const sourceScenarios: Lesson[] = [
       },
       {
         type: "code",
+        highlightLines: [1, 3],
         title: "操作が重なったときのサーバログ（申請くん・再現用の機能を有効にした起動・抜粋）",
         code: `04:12:03.100 DEBUG [nio-8080-exec-1] j.c.e.s.service.InvestigationService : search user=7 title=休暇
 04:12:03.200 DEBUG [nio-8080-exec-2] j.c.e.s.service.InvestigationService : search user=3 title=交通費
@@ -66,6 +67,7 @@ export const sourceScenarios: Lesson[] = [
       },
       {
         type: "code",
+        highlightLines: [1, 4, 7],
         title: "InvestigationService.search（申請くん）",
         lang: "java",
         code: `private String searchTitle;
@@ -257,6 +259,7 @@ WHERE title = '一括調査用' ORDER BY id;`,
       },
       {
         type: "code",
+        highlightLines: [1],
         title: "サーバログ（申請くん・再現用の機能を有効にした起動・抜粋）",
         code: `j.c.e.s.service.InvestigationService : batch transactionActive=false
 j.c.e.s.mapper.RequestMapper.insert : ==>  Preparing: INSERT INTO t_request ...
@@ -268,6 +271,7 @@ java.lang.IllegalArgumentException: 件名は必須です`,
       },
       {
         type: "code",
+        highlightLines: [2, 5],
         title: "InvestigationService（申請くん）",
         lang: "java",
         code: `public void submitBatch(Long userId, Long approverId, List<String> titles) {
@@ -410,6 +414,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "code",
+        highlightLines: [3, 4, 5, 6],
         title: "操作時刻の SQL ログ（申請くん・再現用の機能を有効にした起動・抜粋）",
         code: `j.c.e.s.m.R.findMineWithoutNames : ==>  Preparing: SELECT id, title, ... FROM t_request ...
 j.c.e.s.m.R.findMineWithoutNames : <==      Total: 4
@@ -425,6 +430,7 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
       },
       {
         type: "code",
+        highlightLines: [4],
         title: "InvestigationService.listWithNames（申請くん）",
         lang: "java",
         code: `public List<RequestEntity> listWithNames(Long userId) {
@@ -475,6 +481,7 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
       },
       {
         type: "code",
+        highlightLines: [3, 6],
         title: "300 件の一覧で時間を比較する例（申請くん・説明用・途中のログは省略）",
         lang: "text",
         code: `04:12:03.100 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : start InvestigationService.listWithNames(..)
@@ -625,6 +632,7 @@ console.log(formResult.status, apiResult.status);`,
       },
       {
         type: "code",
+        highlightLines: [4, 13],
         title: "InvestigationController（申請くん）",
         lang: "java",
         code: `@PostMapping("/form")
@@ -652,6 +660,7 @@ public RequestResponse api(@RequestBody NewRequest body,
       },
       {
         type: "code",
+        highlightLines: [3],
         title: "RequestService.create（申請くん）",
         lang: "java",
         code: `public RequestEntity create(Long applicantId, String title, Long approverId) {

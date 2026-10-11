@@ -660,6 +660,7 @@ public class RequestApiController {
         },
         {
           type: "code",
+          highlightLines: [7],
           title: "例（承認処理）",
           lang: "java",
           code: `@Transactional
@@ -727,6 +728,7 @@ public void approve(Long requestId, Long approverId) {
         },
         {
           type: "code",
+          highlightLines: [2, 3, 4, 5, 6, 7],
           title: "例",
           lang: "java",
           code: `public void approve(Long requestId, Long approverId) {
