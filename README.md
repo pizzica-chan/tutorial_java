@@ -1,8 +1,8 @@
 # 参画前に知っておきたい Java Web アプリの読み解き方
 
-Java Web アプリを、処理の入口から追い、リクエストがどこまで届いたかで切り分ける静的サイトです。ゼロからアプリを作る入門ではありません。
+Java Web アプリを、処理の入口から追い、リクエストがどこまで届いたかで切り分ける静的サイトです。
 
-コード例は架空の申請アプリ「申請くん」（Spring Boot / Thymeleaf / MyBatis / MySQL / Spring Security）です。動くソースは `shinsei-kun/` にあります。起動方法は `shinsei-kun/README.md` です。
+コード例は教材用の申請アプリ「申請くん」（Spring Boot / Thymeleaf / MyBatis / MySQL / Spring Security）です。動くソースは `shinsei-kun/` にあります。起動方法は `shinsei-kun/README.md` です。
 
 - バックエンド処理はありません。静的ファイルだけです
 - Cloudflare の無料枠（Workers の静的アセット、または Pages）で公開できます

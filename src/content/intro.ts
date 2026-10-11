@@ -15,7 +15,7 @@ export const introTrack: Track = {
       blocks: [
         {
           type: "p",
-          text: "この教材は、既存の Java Web アプリのソースを読む力を身につけるためのものです。ゼロからアプリを作る入門ではありません。",
+          text: "この教材は、既存の Java Web アプリのソースを読む力を身につけるためのものです。",
         },
         {
           type: "p",
