@@ -7,6 +7,7 @@ import { Icon } from "../components/Icon";
 import { LessonTitle } from "../components/LessonTitle";
 import { extractHeadings } from "../lib/headings";
 import { useHashTarget } from "../hooks/useHashTarget";
+import { LESSON_TAGS } from "../types";
 
 export function LessonPage() {
   const { trackId, lessonId } = useParams();
@@ -33,6 +34,15 @@ export function LessonPage() {
         <h1 className="serif page-title">
           <LessonTitle title={lesson.title} />
         </h1>
+        {lesson.tags?.length ? (
+          <ul className="lesson-tags" aria-label="このページで扱う技術">
+            {[...lesson.tags].sort((a, b) => LESSON_TAGS.indexOf(a) - LESSON_TAGS.indexOf(b)).map((tag) => (
+              <li key={tag} className="lesson-tag">
+                {tag}
+              </li>
+            ))}
+          </ul>
+        ) : null}
         <Article blocks={lesson.blocks} />
         <div className="pager">
           {prev ? (

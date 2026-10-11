@@ -61,6 +61,7 @@ export const readingTrack: Track = {
       id: "dont-read-all",
       title: "URL から処理の入口を探す",
       minutes: 10,
+      tags: ["Spring"],
       blocks: [
         {
           type: "p",
@@ -624,6 +625,7 @@ mailService.notifyApplicant(request);`,
       id: "call-chain",
       title: "呼び出し元と呼び出し先",
       minutes: 11,
+      tags: ["Java 全般", "Spring", "MyBatis"],
       blocks: [
         {
           type: "p",
@@ -828,6 +830,7 @@ requestService.approve(id, user.getId());`,
       id: "history",
       title: "変更履歴を追う",
       minutes: 7,
+      tags: ["Git", "SVN"],
       blocks: [
         {
           type: "p",
@@ -1001,6 +1004,7 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
       id: "where-from",
       title: "値がどこで入ったかを辿る",
       minutes: 12,
+      tags: ["Spring", "MyBatis"],
       blocks: [
         {
           type: "p",
@@ -1152,6 +1156,7 @@ request.getApproverId().equals(userId); // NPE`,
       id: "debug",
       title: "デバッガで止めて見る",
       minutes: 10,
+      tags: ["Java 全般", "JavaScript"],
       blocks: [
         {
           type: "p",
@@ -1301,6 +1306,7 @@ if (!"PENDING".equals(request.getStatus())) {
       id: "js-trace",
       title: "ブラウザの JavaScript を辿る",
       minutes: 10,
+      tags: ["JavaScript"],
       blocks: [
         {
           type: "p",

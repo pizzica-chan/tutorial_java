@@ -158,6 +158,7 @@ export const troubleshootTrack: Track = {
       id: "recent-change",
       title: "直近の変更を疑う",
       minutes: 7,
+      tags: ["Git", "Linux"],
       blocks: [
         {
           type: "p",
@@ -318,6 +319,7 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
       id: "logs",
       title: "アプリログの場所と読み方",
       minutes: 8,
+      tags: ["Java 全般", "Spring"],
       blocks: [
         {
           type: "p",
@@ -423,6 +425,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
       id: "log-follow",
       title: "アプリのログで処理を追う",
       minutes: 12,
+      tags: ["Spring", "MyBatis"],
       blocks: [
         {
           type: "p",
@@ -546,6 +549,7 @@ ORDER BY r.created_at DESC
       id: "stack",
       title: "スタックトレース",
       minutes: 12,
+      tags: ["Java 全般", "Spring", "MyBatis"],
       blocks: [
         {
           type: "p",
@@ -808,6 +812,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
       id: "p-404",
       title: "トラブル例：指定の画面が開かない",
       minutes: 7,
+      tags: ["Spring"],
       blocks: [
         {
           type: "p",
@@ -842,6 +847,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
       id: "p-auth",
       title: "トラブル例：ログイン画面へ戻される / 権限エラー",
       minutes: 9,
+      tags: ["Spring"],
       blocks: [
         {
           type: "p",
@@ -935,6 +941,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
       id: "p-env",
       title: "トラブル例：ある環境だけで再現する",
       minutes: 12,
+      tags: ["Spring", "MySQL"],
       blocks: [
         {
           type: "p",
@@ -1109,6 +1116,7 @@ SPRING_DATASOURCE_URL=jdbc:mysql://10.0.2.31:3306/shinsei`,
       id: "p-slow",
       title: "トラブル例：遅い",
       minutes: 12,
+      tags: ["MyBatis", "MySQL"],
       blocks: [
         {
           type: "p",
@@ -1354,6 +1362,7 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
       id: "p-memory",
       title: "トラブル例：メモリ不足・GC の当たりをつける",
       minutes: 9,
+      tags: ["Java 全般"],
       blocks: [
         {
           type: "p",
@@ -1454,6 +1463,7 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
       id: "p-hang",
       title: "トラブル例：処理が返ってこない（スレッドダンプ）",
       minutes: 10,
+      tags: ["Java 全般"],
       blocks: [
         {
           type: "p",

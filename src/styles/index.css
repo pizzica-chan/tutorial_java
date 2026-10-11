@@ -457,6 +457,26 @@ h2,
   margin-top: 8px;
 }
 
+.lesson-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -4px 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.lesson-tag {
+  padding: 3px 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--panel-2);
+  color: var(--amber);
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
 .lede {
   max-width: 42em;
   color: var(--paper-dim);

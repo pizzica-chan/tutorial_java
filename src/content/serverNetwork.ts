@@ -12,6 +12,7 @@ export const serverNetworkTrack: Track = {
       id: "arch",
       title: "HTTP サーバとサーブレットコンテナ",
       minutes: 10,
+      tags: ["Java 全般", "Spring"],
       blocks: [
         {
           type: "p",
@@ -114,6 +115,7 @@ export const serverNetworkTrack: Track = {
       id: "container",
       title: "コンテナで動くアプリ",
       minutes: 19,
+      tags: ["Docker", "Kubernetes"],
       blocks: [
         {
           type: "p",
@@ -475,6 +477,7 @@ kubectl logs --namespace 名前空間名 Pod名`,
       id: "linux-basics",
       title: "Linux の基本操作",
       minutes: 20,
+      tags: ["Linux"],
       blocks: [
         {
           type: "p",
@@ -1298,6 +1301,7 @@ curl -I https://notify.example.internal/api/send`,
       id: "middleware-check",
       title: "ミドルウェアとコンテナの確認",
       minutes: 9,
+      tags: ["Linux", "Docker", "Kubernetes", "MySQL"],
       blocks: [
         {
           type: "p",

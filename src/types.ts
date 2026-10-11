@@ -73,10 +73,37 @@ export type Block =
   | { type: "investigation-flow"; items: InvestigationFlowItem[] }
   | { type: "download"; href: string; label: string; note?: string };
 
+/**
+ * レッスンの内容が、どの技術に固有の話かを示すタグ。
+ * 「Java 全般」は、Java には固有だがフレームワークには依らない話に付ける。
+ * タグが無いレッスンは、特定の技術に依らない一般の話とする。
+ */
+export const LESSON_TAGS = [
+  "Java 全般",
+  "Spring",
+  "MyBatis",
+  "JPA",
+  "MySQL",
+  "Thymeleaf",
+  "Maven",
+  "Gradle",
+  "JavaScript",
+  "Linux",
+  "Docker",
+  "Kubernetes",
+  "Git",
+  "SVN",
+] as const;
+
+/** 画面にはこの並び順で出す（データに書いた順ではない） */
+export type LessonTag = (typeof LESSON_TAGS)[number];
+
 export type Lesson = {
   id: string;
   title: string;
   minutes: number;
+  /** 大見出しの下に出すタグ。サイドバーの目次には出さない */
+  tags?: LessonTag[];
   blocks: Block[];
 };
 
