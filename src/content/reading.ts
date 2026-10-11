@@ -263,7 +263,7 @@ public class RequestApiController {
     },
     {
       id: "order",
-      title: "入口のあとの順番",
+      title: "処理の入口のあとに読む順番",
       minutes: 6,
       blocks: [
         {
@@ -766,7 +766,7 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "h2",
-          text: "中身の前に見ること",
+          text: "メソッド本体を読む前に確認すること",
         },
         {
           type: "p",
@@ -1179,7 +1179,7 @@ if (!"PENDING".equals(request.getStatus())) {
         },
         {
           type: "h2",
-          text: "有効なとき",
+          text: "向いているとき",
         },
         {
           type: "p",
