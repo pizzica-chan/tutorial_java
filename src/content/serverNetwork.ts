@@ -194,7 +194,7 @@ export const serverNetworkTrack: Track = {
         },
         {
           type: "h2",
-          text: "コンテナは作り直し、必要なデータは残す",
+          text: "コンテナを作り直すと消えるもの、残るもの",
         },
         {
           type: "p",
