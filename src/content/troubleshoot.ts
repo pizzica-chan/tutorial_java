@@ -398,7 +398,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
         },
         {
           type: "h2",
-          text: "足りないときだけ足す",
+          text: "ログが足りないときだけ一時的に足す",
         },
         {
           type: "p",
@@ -460,7 +460,7 @@ java.lang.NullPointerException: Cannot invoke "java.lang.Long.equals(Object)" be
         },
         {
           type: "h2",
-          text: "混在した本番ログから一本を拾う",
+          text: "混在した本番ログから 1 つのリクエストの行を拾う",
         },
         {
           type: "p",
@@ -1591,7 +1591,7 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
         },
         {
           type: "h2",
-          text: "ログで範囲を切る",
+          text: "ログの時刻が空いている区間を探す",
         },
         {
           type: "p",

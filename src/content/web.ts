@@ -38,7 +38,7 @@ export const webTrack: Track = {
         },
         {
           type: "h2",
-          text: "往復と画面",
+          text: "画面の裏にあるリクエストとレスポンス",
         },
         {
           type: "p",

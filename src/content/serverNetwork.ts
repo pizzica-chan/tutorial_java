@@ -89,7 +89,7 @@ export const serverNetworkTrack: Track = {
         },
         {
           type: "h2",
-          text: "さらに手前",
+          text: "さらに手前に置かれる機器（ロードバランサ・CDN・WAF）",
         },
         {
           type: "p",
@@ -1049,7 +1049,7 @@ ping 要求ではホスト intranet.example.co.jp が見つかりませんでし
         },
         {
           type: "h2",
-          text: "経路（traceroute）",
+          text: "どこで止まっているか（traceroute）",
         },
         {
           type: "code",
