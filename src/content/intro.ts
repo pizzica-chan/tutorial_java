@@ -97,7 +97,7 @@ export const introTrack: Track = {
           type: "download",
           href: "/downloads/shinsei-kun.zip",
           label: "申請くんのソースをダウンロード",
-          note: "Docker（`docker compose up --build`）で手元に起動できます。",
+          note: "Docker（`docker compose up --build`）で、自分の PC で起動できます。",
         },
         {
           type: "callout",
