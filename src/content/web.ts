@@ -610,6 +610,7 @@ public String showCart(HttpSession session, Model model) {
       id: "front-roles",
       title: "HTML / CSS / JavaScript の役割",
       minutes: 10,
+      tags: ["JavaScript", "Thymeleaf"],
       blocks: [
         {
           type: "p",
@@ -769,6 +770,7 @@ public String showCart(HttpSession session, Model model) {
       id: "ajax",
       title: "Ajax",
       minutes: 5,
+      tags: ["JavaScript"],
       blocks: [
         {
           type: "p",
@@ -831,6 +833,7 @@ public String showCart(HttpSession session, Model model) {
       id: "api-json",
       title: "Web API から JSON を受け取る",
       minutes: 8,
+      tags: ["JavaScript"],
       blocks: [
         {
           type: "p",
@@ -959,6 +962,7 @@ fetch("/shinsei/api/requests", {
       id: "json-ui",
       title: "JSON から画面を作る",
       minutes: 7,
+      tags: ["JavaScript"],
       blocks: [
         {
           type: "p",

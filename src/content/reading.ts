@@ -830,6 +830,7 @@ requestService.approve(id, user.getId());`,
       id: "history",
       title: "変更履歴を追う",
       minutes: 7,
+      tags: ["Git", "SVN"],
       blocks: [
         {
           type: "p",
@@ -1155,7 +1156,7 @@ request.getApproverId().equals(userId); // NPE`,
       id: "debug",
       title: "デバッガで止めて見る",
       minutes: 10,
-      tags: ["Java 全般"],
+      tags: ["Java 全般", "JavaScript"],
       blocks: [
         {
           type: "p",
@@ -1305,6 +1306,7 @@ if (!"PENDING".equals(request.getStatus())) {
       id: "js-trace",
       title: "ブラウザの JavaScript を辿る",
       minutes: 10,
+      tags: ["JavaScript"],
       blocks: [
         {
           type: "p",

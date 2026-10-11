@@ -158,6 +158,7 @@ export const troubleshootTrack: Track = {
       id: "recent-change",
       title: "直近の変更を疑う",
       minutes: 7,
+      tags: ["Git", "Linux"],
       blocks: [
         {
           type: "p",

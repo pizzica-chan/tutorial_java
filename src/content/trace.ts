@@ -66,6 +66,7 @@ FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.
       id: "mybatis",
       title: "MyBatis で探す",
       minutes: 6,
+      tags: ["MyBatis"],
       blocks: [
         {
           type: "p",
@@ -107,6 +108,7 @@ FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.
       id: "jpa",
       title: "JPA（Hibernate）で探す",
       minutes: 8,
+      tags: ["JPA"],
       blocks: [
         {
           type: "p",
@@ -177,6 +179,7 @@ public class Request {
       id: "jdbc",
       title: "JdbcTemplate で探す",
       minutes: 7,
+      tags: ["Spring"],
       blocks: [
         {
           type: "p",
@@ -228,6 +231,7 @@ public class RequestJdbcRepository {
       id: "not-found",
       title: "見つからない・多すぎるとき",
       minutes: 7,
+      tags: ["MyBatis", "JPA"],
       blocks: [
         {
           type: "p",
@@ -320,6 +324,7 @@ public class RequestJdbcRepository {
       id: "full-flow",
       title: "申請一覧を開く処理を追う",
       minutes: 10,
+      tags: ["Spring", "MyBatis", "MySQL", "Thymeleaf"],
       blocks: [
         {
           type: "p",
