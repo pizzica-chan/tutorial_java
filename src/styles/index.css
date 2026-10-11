@@ -467,11 +467,10 @@ h2,
 }
 
 .lesson-tag {
-  padding: 3px 12px;
-  border: 1px solid var(--line-strong);
-  border-radius: 999px;
-  background: var(--panel-2);
-  color: var(--amber);
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: #d1e2f0;
+  color: var(--text);
   font-size: 13px;
   line-height: 1.6;
   white-space: nowrap;
