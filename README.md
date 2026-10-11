@@ -1,6 +1,6 @@
 # 参画前に知っておきたい Java Web アプリの読み解き方
 
-Java Web アプリを、処理の入口から追い、リクエストがどこまで届いたかで切り分ける静的サイトです。
+既存の Java Web アプリのソースを処理の入口から追い、不具合の原因を、リクエストがどこまで届いたかで切り分ける教材です。
 
 コード例は教材用の申請アプリ「申請くん」（Spring Boot / Thymeleaf / MyBatis / MySQL / Spring Security）です。動くソースは `shinsei-kun/` にあります。起動方法は `shinsei-kun/README.md` です。
 
