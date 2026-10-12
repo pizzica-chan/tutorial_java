@@ -273,7 +273,7 @@ ENTRYPOINT ["java", "-Duser.timezone=Asia/Tokyo", "-jar", "app.jar"]`,
         },
         {
           type: "p",
-          text: "`FROM` は土台にするイメージ、`ENTRYPOINT` はコンテナを起動したときに実行するコマンドです。この例では、イメージに含まれる JRE で `app.jar` を起動します。",
+          text: "`FROM` は土台にするイメージ、`ENTRYPOINT` はコンテナを起動したときに実行するコマンドです。この例では、イメージに含まれる JRE で `app.jar` を起動します。`COPY --from=build` は、この抜粋では省いた前半の段階（`build` という名前のステージで、Maven で jar を作る）から、できた jar をコピーする指定です。",
         },
         {
           type: "p",
