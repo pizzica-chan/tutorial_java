@@ -1449,7 +1449,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "未ログインのとき、画面は 302 でログイン画面へ転送し、Web API は 401 で JSON を返すことがよくあります。決まりではありません。",
+          text: "未ログインのとき、画面は 302 でログイン画面へ転送し、Web API は 401 で JSON を返すことがよくあります。",
         },
         {
           type: "code",
