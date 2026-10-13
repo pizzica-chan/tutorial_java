@@ -9,6 +9,8 @@ import json from "highlight.js/lib/languages/json";
 import css from "highlight.js/lib/languages/css";
 import nginx from "highlight.js/lib/languages/nginx";
 import gradle from "highlight.js/lib/languages/gradle";
+import properties from "highlight.js/lib/languages/properties";
+import dockerfile from "highlight.js/lib/languages/dockerfile";
 import { lookupTerm, type TermDef } from "../data/terms";
 
 hljs.registerLanguage("java", java);
@@ -22,6 +24,8 @@ hljs.registerLanguage("json", json);
 hljs.registerLanguage("css", css);
 hljs.registerLanguage("nginx", nginx);
 hljs.registerLanguage("gradle", gradle);
+hljs.registerLanguage("properties", properties);
+hljs.registerLanguage("dockerfile", dockerfile);
 
 const aliases: Record<string, string> = {
   java: "java",
@@ -38,6 +42,15 @@ const aliases: Record<string, string> = {
   css: "css",
   nginx: "nginx",
   gradle: "gradle",
+  shell: "shell",
+  sh: "shell",
+  bash: "shell",
+  console: "shell",
+  powershell: "powershell",
+  pwsh: "powershell",
+  ps1: "powershell",
+  properties: "properties",
+  dockerfile: "dockerfile",
 };
 
 const JAVA_KEYWORDS = new Set([
@@ -301,8 +314,35 @@ export function highlightJava(code: string): string {
     .join("");
 }
 
+/** `$ ` だけのプロンプトと、`user@host:path$ ` / `root@host:path# ` の形を拾う。行頭の `# ` だけならコメント */
+const SHELL_PROMPT = /^([\w.-]+@[\w.-]+:\S*?[$#] |\$ )(.*)$/;
+/** `PS> ` と `PS C:\path> ` の形を拾う */
+const POWERSHELL_PROMPT = /^(PS(?: [A-Za-z]:\\[^>]*)?> )(.*)$/;
+
+function promptFor(lang: string): RegExp {
+  return lang === "powershell" ? POWERSHELL_PROMPT : SHELL_PROMPT;
+}
+
+/** プロンプトが 1 つも無いブロックは、コマンドだけを並べた例とみなす */
+function shellLineHighlighter(code: string, lang: string): (line: string) => string {
+  const prompt = promptFor(lang);
+  const hasPrompt = code.split("\n").some((line) => prompt.test(line));
+  return (line) => {
+    const match = prompt.exec(line);
+    if (match) return span("sh-prompt", match[1]) + (match[2] ? span("sh-command", match[2]) : "");
+    if (/^#( |$)/.test(line)) return span("hljs-comment", line);
+    if (!line) return "";
+    return span(hasPrompt ? "sh-output" : "sh-command", line);
+  };
+}
+
+function isShellLang(lang: string | undefined): lang is "shell" | "powershell" {
+  return lang === "shell" || lang === "powershell";
+}
+
 export function highlightCode(code: string, lang?: string): string {
   if (lang === "java") return highlightJava(code);
+  if (isShellLang(lang)) return code.split("\n").map(shellLineHighlighter(code, lang)).join("\n");
   if (lang && hljs.getLanguage(lang)) {
     return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
   }
@@ -357,6 +397,17 @@ export function highlightCodeLines(code: string, lang: string | undefined, highl
         const highlighted = line ? highlightJava(line) : "&nbsp;";
         const mark = highlightLines.includes(lineNo);
         return `<span class="code-line${mark ? " code-line-mark" : ""}">${highlighted}</span>`;
+      })
+      .join("");
+  }
+
+  if (isShellLang(lang)) {
+    const highlightLine = shellLineHighlighter(code, lang);
+    return code
+      .split("\n")
+      .map((line, index) => {
+        const mark = highlightLines.includes(index + 1);
+        return `<span class="code-line${mark ? " code-line-mark" : ""}">${line ? highlightLine(line) : "&nbsp;"}</span>`;
       })
       .join("");
   }

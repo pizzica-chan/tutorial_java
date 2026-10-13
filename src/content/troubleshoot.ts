@@ -189,7 +189,7 @@ export const troubleshootTrack: Track = {
         {
           type: "code",
           title: "例（架空のログです。症状の報告は 2026-08-30 09:00）",
-          lang: "text",
+          lang: "shell",
           code: `$ git log --until="2026-08-30 09:00" -3 --pretty=format:"%h %ad %s" --date=format:"%Y-%m-%d %H:%M"
 7b2e8f4 2026-08-29 15:40 依存ライブラリのバージョンを更新
 1d4a6c0 2026-08-29 09:05 ログ出力の書式を変更
@@ -214,7 +214,7 @@ export const troubleshootTrack: Track = {
         {
           type: "code",
           title: "例（架空のログです）",
-          lang: "text",
+          lang: "shell",
           code: `$ stat application.yml
   File: application.yml
   Size: 842        Blocks: 8          IO Block: 4096   regular file
@@ -248,7 +248,7 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
         {
           type: "code",
           title: "例（架空のログです）",
-          lang: "text",
+          lang: "shell",
           code: `$ docker inspect --format='{{.Created}}' shinsei-kun-app-1
 2026-08-30T00:58:22.104512Z  # UTC。日本時間では 09:58:22`,
         },
@@ -1063,7 +1063,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
         {
           type: "code",
           title: "例（架空のログです）",
-          lang: "text",
+          lang: "shell",
           code: `$ grep -i profile logs/shinsei.log
 2026-08-30 09:58:30.412 INFO  [main] j.c.e.shinsei.ShinseiApplication : The following 1 profile is active: "stg"`,
         },
@@ -1088,7 +1088,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
         {
           type: "code",
           title: "例（起動引数と、プロセスに渡っている環境変数を見る）",
-          lang: "text",
+          lang: "shell",
           code: `$ ps -p 1842 -o args=
 java -jar /opt/app/shinsei-kun.jar --spring.profiles.active=stg
 $ sudo cat /proc/1842/environ | tr '\\0' '\\n' | grep SPRING

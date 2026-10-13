@@ -1262,6 +1262,19 @@ h2,
   color: #c5bba8;
 }
 
+.codeblock .sh-prompt {
+  color: #7d8c9c;
+  user-select: none;
+}
+
+.codeblock .sh-command {
+  color: #ffd37a;
+}
+
+.codeblock .sh-output {
+  color: #c5bba8;
+}
+
 .codeblock .code-line {
   display: block;
 }

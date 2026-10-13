@@ -853,7 +853,7 @@ requestService.approve(id, user.getId());`,
         {
           type: "code",
           title: "git blame（例。申請くんの実履歴ではありません）",
-          lang: "text",
+          lang: "shell",
           code: `$ git blame -L 51,52 RequestService.java
 a1b2c3d4 (Sato Taro 2026-03-12 10:14:22 +0900 51) if (!"PENDING".equals(request.getStatus())) {
 a1b2c3d4 (Sato Taro 2026-03-12 10:14:22 +0900 52)   throw new ConflictException("この申請は承認できません");`,
@@ -865,7 +865,7 @@ a1b2c3d4 (Sato Taro 2026-03-12 10:14:22 +0900 52)   throw new ConflictException(
         {
           type: "code",
           title: "git log -1（例）",
-          lang: "text",
+          lang: "shell",
           highlightLines: [6, 8],
           code: `$ git log -1 a1b2c3d4
 commit a1b2c3d4f9e2b6c1...
@@ -887,7 +887,7 @@ Date:   2026-03-12 10:14:22 +0900
         {
           type: "code",
           title: "git show（例）",
-          lang: "text",
+          lang: "shell",
           highlightLines: [17, 18, 19],
           code: `$ git show a1b2c3d4
 commit a1b2c3d4f9e2b6c1...
@@ -927,7 +927,7 @@ diff --git a/RequestService.java b/RequestService.java
         {
           type: "code",
           title: "文字列がいつ入ったかを探す（例）",
-          lang: "text",
+          lang: "shell",
           code: `$ git log -S"ConflictException" --oneline -- RequestService.java
 a1b2c3d 承認済みの申請を二重承認できてしまう不具合を修正 (#482)`,
         },
@@ -942,7 +942,7 @@ a1b2c3d 承認済みの申請を二重承認できてしまう不具合を修正
         {
           type: "code",
           title: "svn blame（例）",
-          lang: "text",
+          lang: "shell",
           code: `$ svn blame -r 1200 RequestService.java
 1187   sato-t   if (!"PENDING".equals(request.getStatus())) {
 1187   sato-t     throw new ConflictException("この申請は承認できません");`,
@@ -954,7 +954,7 @@ a1b2c3d 承認済みの申請を二重承認できてしまう不具合を修正
         {
           type: "code",
           title: "svn log -r（例）",
-          lang: "text",
+          lang: "shell",
           highlightLines: [5],
           code: `$ svn log -r 1187 RequestService.java
 ------------------------------------------------------------------
@@ -970,7 +970,7 @@ r1187 | sato-t | 2026-03-12 10:14:22 +0900 | 1 line
         {
           type: "code",
           title: "svn diff -c（例）",
-          lang: "text",
+          lang: "shell",
           code: `$ svn diff -c 1187 RequestService.java
 --- RequestService.java (revision 1186)
 +++ RequestService.java (revision 1187)
