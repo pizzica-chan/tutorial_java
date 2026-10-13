@@ -1104,5 +1104,192 @@ function RequestList() {
         { type: "quiz", id: "web-json-ui" },
       ],
     },
+    {
+      id: "jwt",
+      title: "トークン認証と JWT",
+      minutes: 8,
+      tags: ["JavaScript"],
+      blocks: [
+        {
+          type: "p",
+          text: "申請くんは、ログイン状態をセッションで持っています。Web API では、セッションの代わりにトークンでログイン状態を伝えるアプリもあります。そのトークンの形式としてよく使われるのが JWT（JSON Web Token）です。",
+        },
+        {
+          type: "p",
+          text: "申請くんは JWT を使っていません。この項目のコードと通信は、一般的な例です。",
+        },
+        {
+          type: "h2",
+          text: "セッションとの違い",
+        },
+        {
+          type: "p",
+          text: "セッションでは、ログイン情報はサーバ側にあり、ブラウザは ID だけを Cookie で持ちます。仕組みは「Cookie とセッション」で扱いました。JWT では、ログインユーザの ID や有効期限をトークン自体に書き込み、サーバが署名を付けて渡します。",
+          link: {
+            label: "Cookie とセッション",
+            to: "/tracks/web/session",
+          },
+        },
+        {
+          type: "diagram",
+          name: "jwt-flow",
+          caption: "「Cookie とセッション」の図と同じ 2 つの場面です。ログイン情報はサーバではなくトークンの中にあり、サーバは署名を検証して中身を読みます。送り方は `Authorization` ヘッダが多いですが、Cookie に入れるアプリもあります。",
+        },
+        {
+          type: "p",
+          text: "中身を書き換えたトークンは、署名の検証で無効になります。そのため、サーバはセッションを保管しなくても、トークンだけでログインユーザが分かります。ただし、ログアウトしたトークンをすぐ使えなくするために、無効にしたトークンをサーバ側で記録するアプリもあります。",
+        },
+        {
+          type: "h2",
+          text: "Network タブでの見え方",
+        },
+        {
+          type: "p",
+          text: "トークンは、ログイン API の応答で受け取る形が多いです。受け取ったトークンを JavaScript が保存し、以降の Web API のリクエストに付けて送ります。",
+        },
+        {
+          type: "code",
+          lang: "http",
+          title: "ログイン API の応答（例）",
+          highlightLines: [5],
+          code: `HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+  "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3Iiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3OTE4NTMyMDAsImV4cCI6MTc5MTg1NjgwMH0.pzp9uFZZNZsp1kiulMHPPaxz1wkLa-YyfyQfbti_wJM",
+  "tokenType": "Bearer"
+}`,
+        },
+        {
+          type: "code",
+          lang: "http",
+          title: "続く一覧のリクエスト（例）",
+          highlightLines: [3],
+          code: `GET /api/requests HTTP/1.1
+Host: api.example.co.jp
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3Iiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3OTE4NTMyMDAsImV4cCI6MTc5MTg1NjgwMH0.pzp9uFZZNZsp1kiulMHPPaxz1wkLa-YyfyQfbti_wJM`,
+        },
+        {
+          type: "p",
+          text: "Bearer は「持っている人」という意味です。トークンを持っていれば、その利用者として扱う方式を表します。Network タブでは、行を選んで Headers 欄の Request Headers を確認しましょう。",
+        },
+        {
+          type: "code",
+          title: "トークンを付けて Web API を呼ぶ（例）",
+          lang: "javascript",
+          highlightLines: [1, 4],
+          code: `const token = localStorage.getItem("accessToken");
+
+fetch("/api/requests", {
+  headers: { Authorization: \`Bearer \${token}\` },
+})
+  .then((res) => {
+    if (!res.ok) throw new Error(\`HTTP \${res.status}\`);
+    return res.json();
+  })
+  .then((data) => console.log(data))
+  .catch((error) => console.error(error));`,
+        },
+        {
+          type: "p",
+          text: "トークンをどこに保存するかは、アプリによって違います。この例では localStorage から読んでいます。どこに置くのが安全かは意見が分かれますが、調査では保存場所より先に、リクエストにトークンが付いているかを確認しましょう。",
+        },
+        {
+          type: "p",
+          text: "Cookie と違い、`Authorization` ヘッダはブラウザが自動では付けません。JavaScript が付け忘れると、ログイン済みでも、トークンの無いリクエストになります。",
+        },
+        {
+          type: "h2",
+          text: "トークンの中身を読む",
+        },
+        {
+          type: "p",
+          text: "JWT は、ドット（`.`）で区切った 3 つの部分でできています。",
+        },
+        {
+          type: "diagram",
+          name: "jwt-parts",
+          caption: "上の例のトークンを 3 つに分けたものです（途中を省略）。文字列の色と、下の各部分の色が対応しています。",
+        },
+        {
+          type: "p",
+          text: "ヘッダとペイロードは、JSON を Base64URL という方式で文字列にしたものです。暗号化ではないので、元に戻せば誰でも読めます。JSON の `{\"` から始まるので、変換後は `eyJ` で始まることが多いです。",
+        },
+        {
+          type: "code",
+          title: "上のトークンのペイロードを戻したもの",
+          lang: "json",
+          code: `{
+  "sub": "7",
+  "role": "USER",
+  "iat": 1791853200,
+  "exp": 1791856800
+}`,
+        },
+        {
+          type: "table",
+          headers: ["クレーム", "意味"],
+          rows: [
+            ["`sub`", "誰のトークンか。この例ではユーザ ID の 7"],
+            ["`iat`", "発行した時刻"],
+            ["`exp`", "有効期限。検証では、この時刻を過ぎたトークンは無効になる"],
+          ],
+        },
+        {
+          type: "p",
+          text: "`iat` と `exp` は、1970 年 1 月 1 日（UTC）からの秒数です。この例の `exp` は、日本時間で 2026 年 10 月 13 日 11:00 です。`sub` や `exp` は仕様で決まった名前ですが、`role` のような項目はアプリが独自に足したものです。",
+        },
+        {
+          type: "p",
+          text: "ペイロードは、ブラウザの Console で読めます。1 行目に、Network タブからコピーしたトークンを入れて実行しましょう。",
+        },
+        {
+          type: "code",
+          title: "ペイロードと有効期限を読む（Console）",
+          lang: "javascript",
+          code: `const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3Iiwicm9sZSI6IlVTRVIiLCJpYXQiOjE3OTE4NTMyMDAsImV4cCI6MTc5MTg1NjgwMH0.pzp9uFZZNZsp1kiulMHPPaxz1wkLa-YyfyQfbti_wJM";
+const payload = token.split(".")[1];
+const claims = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+console.log(claims, new Date(claims.exp * 1000));`,
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "トークンはパスワードと同じように扱う",
+          text: "有効期限内のトークンがあれば、誰でもその利用者として Web API を呼べます。中身を確かめるときは、JWT を読める外部のサイトへ貼り付けず、手元の Console で読みましょう。チケットやチャットに通信を貼るときも、トークンの値は伏せましょう。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "CSRF トークンとは別のもの",
+          text: "「Web API から JSON を受け取る」の CSRF トークンも「トークン」と呼ばれますが、役割が違います。CSRF トークンは、POST が自分のアプリの画面から送られたことを確かめる値です。JWT は、誰のリクエストかをサーバに伝える値です。",
+        },
+        {
+          type: "h2",
+          text: "Web API が認証エラーを返したとき",
+        },
+        {
+          type: "p",
+          text: "トークンが無いときや期限切れのときは 401 を返すアプリが多いですが、ステータスコードや本文はアプリによって違います。認証エラーらしい応答が返ったら、Network タブで次を順に確認しましょう。",
+        },
+        {
+          type: "ol",
+          items: [
+            "Request Headers に `Authorization: Bearer ...` が付いているか。無ければ、JavaScript が付けていない",
+            "付いていれば、ペイロードの `exp` が現在時刻を過ぎていないか。過ぎていれば、トークンの期限切れ",
+            "期限内なら、ログイン API が最後に返したトークンと、送っているトークンが同じか。古いトークンを送り続けていないか",
+          ],
+        },
+        {
+          type: "p",
+          text: "応答に `WWW-Authenticate` ヘッダがあれば、`error=\"invalid_token\"` のように理由が書かれていることがあります。",
+        },
+        {
+          type: "p",
+          text: "期限が切れたときに、新しいトークンを取り直す仕組み（リフレッシュトークンなど）を持つアプリもあります。その場合は、取り直しのリクエストが Network タブに出ているかも確認しましょう。",
+        },
+        { type: "quiz", id: "web-jwt" },
+      ],
+    },
   ],
 };

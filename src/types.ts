@@ -14,6 +14,8 @@ export type DiagramName =
   | "html-json"
   | "session"
   | "session-store"
+  | "jwt-flow"
+  | "jwt-parts"
   | "layers"
   | "process-threads"
   | "thread-pool"

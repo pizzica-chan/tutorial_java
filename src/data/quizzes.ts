@@ -73,6 +73,18 @@ export const quizzes = {
     answer: 1,
     explanation: "上の例では一覧の行を JSON から組みます。Network タブの Fetch/XHR で応答を確認しましょう。JSON の件数も違うなら API の SQL と DB、JSON が正しいならプロパティ名、React の state、JavaScript の例外を調べます。",
   },
+  "web-jwt": {
+    id: "web-jwt",
+    question: "トークンで認証する Web API が 401 を返した。Request Headers には `Authorization: Bearer eyJ...` が付いている。次に確認するのはどれ？",
+    choices: [
+      "フォームの hidden にある `_csrf` の値",
+      "トークンのペイロードにある `exp` が、現在時刻を過ぎていないか",
+      "応答の `Content-Type` が `text/html` か",
+      "Cookie の `JSESSIONID` が送られているか",
+    ],
+    answer: 1,
+    explanation: "ヘッダが付いているなら、次はトークン自体が有効かを確かめます。ペイロードは Console で戻せるので、`exp` を現在時刻と比べましょう。`_csrf` は POST の送信元を確かめる値で、誰のリクエストかを伝える値ではありません。トークンで認証する API では、`JSESSIONID` を使わないことが多いです。",
+  },
   "web-status": {
     id: "web-status",
     question: "ログイン後の操作で「権限がありません」と出た。ステータスコードについて妥当なのは？",
