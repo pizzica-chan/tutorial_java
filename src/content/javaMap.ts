@@ -1397,7 +1397,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "table",
           headers: ["種類", "動く位置", "ソースでの見え方"],
           rows: [
-            ["Filter", "サーブレットコンテナ。Controller の前（静的ファイルも通ることがある）", "Controller から呼ばれない。Filter 実装や `SecurityConfig` を別検索する"],
+            ["Filter", "サーブレットコンテナ。Controller の前（静的ファイルも通ることがある）", "Controller から呼ばれない。Filter 実装や `SecurityConfig` を検索して探す"],
             ["Interceptor", "Spring MVC。Controller の Java メソッドの直前・直後", "`HandlerInterceptor` と `WebMvcConfigurer` の `addInterceptors`。Controller に呼び出しは無い"],
             ["AOP / プロキシ", "Service などの Java メソッド呼び出しの手前", "見た目は `requestService.approve()`。実行時は `$Proxy` や CGLIB を経由する"],
             ["`@ControllerAdvice`", "例外のあと。レスポンスの画面や JSON を別クラスが決める", "throw したメソッドの return を追っても、レスポンスはここで決まる"],
