@@ -260,7 +260,7 @@ public class MailProperties {
         {
           type: "code",
           title: "custom.properties（別ファイルの例）",
-          lang: "text",
+          lang: "properties",
           code: `app.feature.beta-enabled=true`,
         },
         {
@@ -329,7 +329,7 @@ public class NoticeService {
         {
           type: "code",
           title: "/etc/myapp/application.properties（指定先に置く側の例）",
-          lang: "text",
+          lang: "properties",
           code: `app.region=ap-northeast-1`,
         },
         {
@@ -798,7 +798,7 @@ public void approve(Long requestId, Long approverId) {
         {
           type: "code",
           title: "対処例（RequestMapper.xml）",
-          lang: "text",
+          lang: "xml",
           code: `<update id="update">
   UPDATE t_request
      SET status = 'APPROVED', updated_at = NOW()

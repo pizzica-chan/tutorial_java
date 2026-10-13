@@ -1730,7 +1730,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
           highlightLines: [13],
           highlightKind: "error",
           title: "例（社内端末から）",
-          lang: "text",
+          lang: "powershell",
           code: `PS> ping intranet.example.co.jp
 
 intranet.example.co.jp [10.20.30.40]に ping を送信しています 32 バイトのデータ:
@@ -1763,7 +1763,7 @@ TcpTestSucceeded : False`,
         {
           type: "code",
           title: "例（検証用環境のサーバ上）",
-          lang: "text",
+          lang: "shell",
           code: `$ ss -tlnp | grep 8080
 LISTEN 0      100               *:8080            *:*    users:(("java",pid=2841,fd=46))
 
@@ -1894,7 +1894,7 @@ com.mysql.cj.exceptions.ConnectionIsClosedException: No operations allowed after
         {
           type: "code",
           title: "例（検証用環境のアプリサーバから）",
-          lang: "text",
+          lang: "shell",
           code: `$ nc -zv stg-db.example.internal 3306
 nc: connect to stg-db.example.internal (10.30.40.50) port 3306 (tcp) failed: Connection timed out`,
         },
@@ -1905,7 +1905,7 @@ nc: connect to stg-db.example.internal (10.30.40.50) port 3306 (tcp) failed: Con
         {
           type: "code",
           title: "例（検証用環境のアプリサーバから）",
-          lang: "text",
+          lang: "shell",
           code: `$ traceroute -T -p 3306 stg-db.example.internal
 traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packets
  1  gw-app.internal (10.20.30.1)  0.412 ms
@@ -1996,7 +1996,7 @@ traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packet
         {
           type: "code",
           title: "例（検証用環境のサーバ上）",
-          lang: "text",
+          lang: "shell",
           code: `$ ps -eo user,pid,cmd | grep java | grep -v grep
 $`,
         },
@@ -2007,7 +2007,7 @@ $`,
         {
           type: "code",
           title: "例（アプリの実行ユーザで起動を試す）",
-          lang: "text",
+          lang: "shell",
           code: `$ sudo -u appuser java -jar shinsei-kun.jar
 Exception in thread "main" java.io.FileNotFoundException: /var/log/shinsei-kun/app.log (Permission denied)
     at java.base/java.io.FileOutputStream.open0(Native Method)`,
@@ -2019,7 +2019,7 @@ Exception in thread "main" java.io.FileNotFoundException: /var/log/shinsei-kun/a
         {
           type: "code",
           title: "例（ログの出力先ディレクトリ）",
-          lang: "text",
+          lang: "shell",
           code: `$ ls -l /var/log/
 drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
         },
@@ -2040,7 +2040,7 @@ drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
         {
           type: "code",
           title: "例（直す）",
-          lang: "text",
+          lang: "shell",
           code: `$ sudo chown appuser:appuser /var/log/shinsei-kun`,
         },
         {
@@ -2143,7 +2143,7 @@ drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
         {
           type: "code",
           title: "例（検証用環境のサーバ上）",
-          lang: "text",
+          lang: "shell",
           code: `$ ls -l /opt/tomcat/webapps/shinsei/WEB-INF/classes/static/css/
 -rw-r--r-- 1 tomcat tomcat 4120 Aug 16 04:00 app.css`,
         },
@@ -2171,7 +2171,7 @@ location /shinsei/ {
         {
           type: "code",
           title: "例（nginx が見ている先）",
-          lang: "text",
+          lang: "shell",
           code: `$ ls -l /var/www/html/css/
 ls: cannot access '/var/www/html/css/': No such file or directory`,
         },

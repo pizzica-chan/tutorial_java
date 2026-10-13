@@ -114,12 +114,37 @@ export const serverNetworkTrack: Track = {
     {
       id: "container",
       title: "コンテナで動くアプリ",
-      minutes: 19,
-      tags: ["Docker", "Kubernetes"],
+      minutes: 12,
+      tags: ["Docker"],
       blocks: [
         {
           type: "p",
-          text: "コンテナは、アプリに必要なファイルや実行環境をまとめ、ほかのアプリから分けて動かす仕組みです。まず、サーバに直接アプリを置く場合との違いを確認します。そのあと、環境を作り直す考え方と、申請くんの設定・調査方法を見ていきましょう。",
+          text: "コンテナは、アプリに必要なファイルや実行環境をまとめ、ほかのアプリから分けて動かす仕組みです。まず、コンテナを使う理由と、サーバに直接アプリを置く場合との違いを確認します。そのあと、環境を作り直す考え方と、申請くんの設定を見ていきましょう。調べ方は、次の「コンテナで動くアプリを調べる」で扱います。",
+          link: {
+            label: "コンテナで動くアプリを調べる",
+            to: "/tracks/server-network/container-investigate",
+          },
+        },
+        {
+          type: "h2",
+          text: "コンテナを使う理由",
+        },
+        {
+          type: "p",
+          text: "コンテナを使うと、次のことがしやすくなります。",
+        },
+        {
+          type: "ul",
+          items: [
+            "開発環境をすぐ用意する：参画した初日に、Java や MySQL を手順書どおりに入れるのは手間がかかる。構成を書いたファイルがあれば、`docker compose up` で DB まで含めて起動できる",
+            "環境をそろえる：手元の PC では動くのに、サーバでは動かない。原因が Java やライブラリのバージョンの違いなら、同じイメージ（アプリと実行環境をまとめたもの）を使うことで防げる",
+            "ほかのアプリと分ける：同じサーバで動くアプリのうち、1 つだけ Java 17 にしたい。コンテナなら、ほかのアプリの Java 8 はそのままにできる",
+            "作り直して入れ替える：アプリを新しい版に更新したら、不具合が出た。そんなときも、前の版のイメージからコンテナを起動し直せば、アプリを更新前の版に戻せる",
+          ],
+        },
+        {
+          type: "p",
+          text: "代わりに、コンテナの中で変更したファイルは、作り直すと消えます。残したいデータは、コンテナの外に置きます。それぞれの仕組みは、このあとの節で確認しましょう。",
         },
         {
           type: "h2",
@@ -135,7 +160,7 @@ export const serverNetworkTrack: Track = {
         },
         {
           type: "p",
-          text: "申請くんのイメージには Java 17 が含まれています。ホスト OS に入っている Java の代わりに、この Java 17 を使います。同じイメージを配布すれば、手元の PC とサーバで、アプリや JRE のバージョンをそろえやすくなります。",
+          text: "申請くんのイメージには Java 17 が含まれています。PC やサーバに入っている Java の代わりに、この Java 17 を使います。",
         },
         {
           type: "p",
@@ -195,6 +220,28 @@ export const serverNetworkTrack: Track = {
           text: "`Dockerfile` はイメージを作る手順、Compose のファイルは起動する構成です。両方をファイルで管理すると、構成を共有し、変更履歴も確認できます。サーバに直接アプリを置く場合も、自動化の仕組みを使えば構成をファイルで管理できます。",
         },
         {
+          type: "h3",
+          text: "ファイルとイメージを配る",
+        },
+        {
+          type: "p",
+          text: "ファイルとイメージは、配り方が違います。`Dockerfile` と Compose のファイルは、ソースと一緒にリポジトリで共有します。冒頭の「開発環境をすぐ用意する」は、このファイルを使います。",
+        },
+        {
+          type: "p",
+          text: "イメージは、レジストリと呼ばれる置き場所に登録して配ります。公開されているイメージは Docker Hub などにあり、申請くんの db が使う `mysql:8.0` もその 1 つです。社内のアプリのイメージは、チームで用意したレジストリに置くことが多いです。申請くんの app はレジストリを使わず、手元の `Dockerfile` からイメージを作ります。",
+        },
+        {
+          type: "p",
+          text: "イメージの名前の `:` から後ろをタグと呼び、版を区別するのに使います。`mysql:8.0` なら `8.0` がタグです。サーバでは、レジストリから同じタグのイメージを取得して起動します。手元の PC とサーバで環境をそろえられるのも、前の版に戻せるのも、このためです。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "タグが同じでも、中身が同じとは限らない",
+          text: "タグは、同じ名前のまま別のイメージに付け替えられます。特に `latest` は、取得した時期によって中身が違うことがあります。環境ごとの差を調べるときは、タグだけでなく、`docker images` に出るイメージ ID も比べましょう。",
+        },
+        {
           type: "h2",
           text: "コンテナを作り直すと消えるもの、残るもの",
         },
@@ -225,35 +272,6 @@ export const serverNetworkTrack: Track = {
         },
         {
           type: "h2",
-          text: "Kubernetes とサーバレスの位置づけ",
-        },
-        {
-          type: "p",
-          text: "ここまで説明したのは、コンテナで環境を分け、作り直せるようにする考え方です。実務では、そのコンテナの稼働を Kubernetes で管理したり、クラウドのサーバレスサービスに任せたりすることもあります。役割を分けて確認しましょう。",
-        },
-        {
-          type: "table",
-          headers: ["用語", "主な役割"],
-          rows: [
-            ["コンテナ", "アプリが使うファイルや実行環境をまとめ、ほかの環境から分けて動かす"],
-            ["Kubernetes（K8s）", "指定した構成に近づくように、コンテナの配置や稼働状態を管理する"],
-            ["サーバレス", "サーバの用意や管理をクラウド事業者に任せて、アプリを動かす"],
-          ],
-        },
-        {
-          type: "p",
-          text: "Kubernetes では、コンテナを Pod という単位で動かします。たとえば、アプリを動かす Pod を 3 つ維持する構成を指定すると、Pod が失われた場合には新しい Pod を作り、指定した数に近づけます。宣言的な構成と、作り直せる実行環境という考え方が、ここでも使われます。",
-        },
-        {
-          type: "p",
-          text: "サーバレスでも、アプリを動かすサーバは存在します。その用意や管理をクラウド事業者が担います。コンテナと両立し、Cloud Run のようにコンテナでアプリを動かすサービスもあります。サーバレスサービスには、関数単位のコードを渡すものなどもあり、すべてが同じ実行方法ではありません。",
-        },
-        {
-          type: "p",
-          text: "調査で確認する場所も変わります。Docker で直接動かしているならコンテナの状態やログ、Kubernetes なら Pod の状態やログを確認しましょう。サーバレスなら、サービスの管理画面で設定やログを確認しましょう。後半で、環境に応じた確認方法を見ていきましょう。",
-        },
-        {
-          type: "h2",
           text: "申請くんのイメージと接続設定を読む",
         },
         {
@@ -263,7 +281,7 @@ export const serverNetworkTrack: Track = {
         {
           type: "code",
           title: "Dockerfile（申請くん・抜粋）",
-          lang: "text",
+          lang: "dockerfile",
           highlightLines: [1, 5],
           code: `FROM eclipse-temurin:17-jre
 WORKDIR /app
@@ -312,7 +330,7 @@ ENTRYPOINT ["java", "-Duser.timezone=Asia/Tokyo", "-jar", "app.jar"]`,
         {
           type: "code",
           title: "例（ホスト OS から MySQL に TCP で接続する）",
-          lang: "text",
+          lang: "shell",
           code: `mysql --host=127.0.0.1 --port=3306 --user=app --password`,
         },
         {
@@ -326,6 +344,26 @@ ENTRYPOINT ["java", "-Duser.timezone=Asia/Tokyo", "-jar", "app.jar"]`,
           text: "ここまでの例は、手元の PC で申請くんを動かす場合です。サーバで動かしているアプリをブラウザから開くときは、`http://intranet.example.co.jp:8080/shinsei/login` のように対象サーバのホスト名を使います。",
         },
         {
+          type: "quiz",
+          id: "server-container",
+        },
+      ],
+    },
+    {
+      id: "container-investigate",
+      title: "コンテナで動くアプリを調べる",
+      minutes: 9,
+      tags: ["Docker", "Kubernetes"],
+      blocks: [
+        {
+          type: "p",
+          text: "前の項目「コンテナで動くアプリ」では、コンテナの仕組みと申請くんの設定を確認しました。ここでは、コンテナで動くアプリを調べるときに、どのコンテナの、何を確認するかを見ていきましょう。",
+          link: {
+            label: "コンテナで動くアプリ",
+            to: "/tracks/server-network/container",
+          },
+        },
+        {
           type: "h2",
           text: "調査では、操作対象を確認してから中を見る",
         },
@@ -335,22 +373,35 @@ ENTRYPOINT ["java", "-Duser.timezone=Asia/Tokyo", "-jar", "app.jar"]`,
         },
         {
           type: "p",
-          text: "`docker` コマンドは、接続先の Docker が管理するコンテナを操作します。この教材は手元の Docker に接続する設定が前提です。サーバのコンテナを調べる方法の 1 つは、`ssh` でサーバに入り、サーバの Docker に接続して操作することです。",
+          text: "`docker` コマンドは、接続先の Docker が管理するコンテナを操作します。サーバのコンテナを調べる方法の 1 つは、`ssh` でサーバに入ってから操作することです。",
+        },
+        {
+          type: "p",
+          text: "同じ `docker ps` でも、どの Docker に接続しているかで、表示されるコンテナが変わります。手元の PC とサーバで実行して比べてみましょう。`--format '{{.Names}}'` は、コンテナ名だけを表示する指定です。",
         },
         {
           type: "code",
-          title: "例（各マシンの Docker に接続して docker ps を実行する）",
-          lang: "text",
+          title: "例（手元の PC で実行する）",
+          lang: "shell",
           code: `user@my-pc:~$ docker ps --format '{{.Names}}'
 shinsei-kun-app-1
-shinsei-kun-db-1
-user@my-pc:~$ ssh user@app-server
+shinsei-kun-db-1`,
+        },
+        {
+          type: "p",
+          text: "手元の Docker には、申請くんの app と db があります。",
+        },
+        {
+          type: "code",
+          title: "例（ssh でサーバに入ってから実行する）",
+          lang: "shell",
+          code: `user@my-pc:~$ ssh user@app-server
 user@app-server:~$ docker ps --format '{{.Names}}'
 shinsei-app`,
         },
         {
           type: "p",
-          text: "`--format '{{.Names}}'` はコンテナ名だけを出す指定です。指定しない場合は、`docker ps` の `NAMES` で名前を確認しましょう。この例では、手元の Docker に app と db があり、サーバの Docker には `shinsei-app` があります。",
+          text: "サーバの Docker には `shinsei-app` があり、手元とは別のコンテナです。プロンプトの `@` の後ろ（`my-pc` や `app-server`）で、いまどのマシンで操作しているかが分かります。どのイメージから起動したかは、`docker ps` の `IMAGE` で確認できます。",
         },
         {
           type: "callout",
@@ -369,7 +420,7 @@ shinsei-app`,
         {
           type: "code",
           title: "例（申請くんの app コンテナに入る）",
-          lang: "text",
+          lang: "shell",
           code: `$ docker exec -it shinsei-kun-app-1 bash
 root@1a2b3c4d5e6f:/app# ls
 app.jar  logs
@@ -393,7 +444,7 @@ root@1a2b3c4d5e6f:/app# exit`,
           type: "code",
           highlightLines: [3],
           title: "例（app コンテナに渡した環境変数のうち、SPRING で始まるもの）",
-          lang: "text",
+          lang: "shell",
           code: `$ docker exec shinsei-kun-app-1 env | grep SPRING
 SPRING_DATASOURCE_PASSWORD=app
 SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/shinsei_dev?characterEncoding=UTF-8
@@ -418,7 +469,7 @@ SPRING_DATASOURCE_USERNAME=app`,
         {
           type: "code",
           title: "例（app コンテナのログの末尾 3 行）",
-          lang: "text",
+          lang: "shell",
           code: `$ docker logs --tail 3 shinsei-kun-app-1
 04:12:03.100 INFO  [nio-8080-exec-3] j.c.e.s.i.AccessLogInterceptor : GET /shinsei/requests
 04:12:03.105 DEBUG [nio-8080-exec-3] j.c.e.s.aspect.ServiceLoggingAspect : start RequestService.findMine(..)
@@ -437,12 +488,41 @@ SPRING_DATASOURCE_USERNAME=app`,
           },
         },
         {
+          type: "h2",
+          text: "Kubernetes とサーバレスの位置づけ",
+        },
+        {
+          type: "p",
+          text: "ここまでは、Docker で直接動かすコンテナを扱いました。実務では、そのコンテナの稼働を Kubernetes で管理したり、クラウドのサーバレスサービスに任せたりすることもあります。役割を分けて確認しましょう。",
+        },
+        {
+          type: "table",
+          headers: ["用語", "主な役割"],
+          rows: [
+            ["コンテナ", "アプリが使うファイルや実行環境をまとめ、ほかの環境から分けて動かす"],
+            ["Kubernetes（K8s）", "指定した構成に近づくように、コンテナの配置や稼働状態を管理する"],
+            ["サーバレス", "サーバの用意や管理をクラウド事業者に任せて、アプリを動かす"],
+          ],
+        },
+        {
+          type: "p",
+          text: "Kubernetes では、コンテナを Pod という単位で動かします。たとえば、アプリを動かす Pod を 3 つ維持する構成を指定すると、Pod が失われた場合には新しい Pod を作り、指定した数に近づけます。宣言的な構成と、作り直せる実行環境という考え方が、ここでも使われます。",
+        },
+        {
+          type: "p",
+          text: "サーバレスでも、アプリを動かすサーバは存在します。その用意や管理をクラウド事業者が担います。コンテナと両立し、Cloud Run のようにコンテナでアプリを動かすサービスもあります。サーバレスサービスには、関数単位のコードを渡すものなどもあり、すべてが同じ実行方法ではありません。",
+        },
+        {
+          type: "p",
+          text: "調査で確認する場所も変わります。Docker で直接動かしているならコンテナの状態やログ、Kubernetes なら Pod の状態やログを確認しましょう。サーバレスなら、サービスの管理画面で設定やログを確認しましょう。次で、Kubernetes とサーバレスの環境での確認方法を見ていきましょう。",
+        },
+        {
           type: "h3",
           text: "Kubernetes やサーバレスの環境で確認する",
         },
         {
           type: "p",
-          text: "Kubernetes の名前空間は、Pod などをまとめて区別する範囲です。前半で説明した Linux の名前空間とは別の仕組みです。調査では、どのクラスタのどの名前空間にある Pod を調べるかを確認しましょう。",
+          text: "Kubernetes の名前空間は、Pod などをまとめて区別する範囲です。前の項目で説明した Linux の名前空間とは別の仕組みです。調査では、どのクラスタのどの名前空間にある Pod を調べるかを確認しましょう。",
         },
         {
           type: "p",
@@ -455,7 +535,7 @@ SPRING_DATASOURCE_USERNAME=app`,
         {
           type: "code",
           title: "例（Kubernetes の対象の名前空間で Pod の状態とログを確認する）",
-          lang: "text",
+          lang: "shell",
           code: `kubectl get pods --namespace 名前空間名
 kubectl logs --namespace 名前空間名 Pod名`,
         },
@@ -469,7 +549,7 @@ kubectl logs --namespace 名前空間名 Pod名`,
         },
         {
           type: "quiz",
-          id: "server-container",
+          id: "server-container-target",
         },
       ],
     },
@@ -494,7 +574,7 @@ kubectl logs --namespace 名前空間名 Pod名`,
         {
           type: "code",
           title: "例",
-          lang: "text",
+          lang: "shell",
           code: `ssh ユーザ名@ホスト名`,
         },
         {
@@ -544,7 +624,7 @@ kubectl logs --namespace 名前空間名 Pod名`,
         {
           type: "code",
           title: "実行例（requestId=12 を含む行だけ表示する）",
-          lang: "text",
+          lang: "shell",
           code: `$ tail -f app.log | grep --line-buffered 'requestId=12'
 04:12:03.100 INFO requestId=12 承認処理を開始
 04:12:03.200 ERROR requestId=12 承認処理で例外が発生`,
@@ -564,7 +644,7 @@ kubectl logs --namespace 名前空間名 Pod名`,
         {
           type: "code",
           title: "例（ログファイルの権限を見る）",
-          lang: "text",
+          lang: "shell",
           code: `$ ls -l app.log
 -rw-r--r-- 1 appuser appuser 48213 Aug 20 09:10 app.log`,
         },
@@ -609,7 +689,7 @@ kubectl logs --namespace 名前空間名 Pod名`,
         {
           type: "code",
           title: "例（そのプロセスを動かしているユーザを見る）",
-          lang: "text",
+          lang: "shell",
           code: `$ ps -eo user,pid,cmd | grep java | grep -v grep
 appuser   1842  java -jar shinsei-kun.jar`,
         },
@@ -620,7 +700,7 @@ appuser   1842  java -jar shinsei-kun.jar`,
         {
           type: "code",
           title: "例（アプリと同じユーザで書き込めるか試す）",
-          lang: "text",
+          lang: "shell",
           code: `$ sudo -u appuser touch app.log`,
         },
         {
@@ -652,7 +732,7 @@ appuser   1842  java -jar shinsei-kun.jar`,
           type: "code",
           highlightLines: [2, 4],
           title: "例（実行権限が無いスクリプト）",
-          lang: "text",
+          lang: "shell",
           code: `$ ls -l start.sh
 -rw-r--r-- 1 appuser appuser 312 Aug 20 09:10 start.sh
 $ ./start.sh
@@ -670,7 +750,7 @@ $ ./start.sh
           type: "code",
           highlightLines: [2, 4],
           title: "例（ファイルには書けるが、ディレクトリには書けない）",
-          lang: "text",
+          lang: "shell",
           code: `$ ls -l /var/log/shinsei/app.log
 -rw-rw-r-- 1 root appuser 48213 Aug 20 09:10 /var/log/shinsei/app.log
 $ ls -ld /var/log/shinsei
@@ -727,7 +807,7 @@ drwxr-xr-x 2 root root 4096 Aug 20 09:10 /var/log/shinsei`,
         {
           type: "code",
           title: "例（ポート 8080 を使っているプロセスを見る）",
-          lang: "text",
+          lang: "shell",
           code: `$ lsof -i :8080
 COMMAND  PID    USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 java    1842 appuser   45u  IPv6 123456      0t0  TCP *:8080 (LISTEN)`,
@@ -739,7 +819,7 @@ java    1842 appuser   45u  IPv6 123456      0t0  TCP *:8080 (LISTEN)`,
         {
           type: "code",
           title: "例（同じことを ss で見る）",
-          lang: "text",
+          lang: "shell",
           code: `$ ss -ltnp | grep 8080
 LISTEN  0       100                    *:8080                *:*      users:(("java",pid=1842,fd=45))`,
         },
@@ -758,7 +838,7 @@ LISTEN  0       100                    *:8080                *:*      users:(("j
         {
           type: "code",
           title: "例（app.log を開いているプロセスを見る）",
-          lang: "text",
+          lang: "shell",
           code: `$ lsof app.log
 COMMAND  PID    USER   FD   TYPE DEVICE SIZE/OFF   NODE NAME
 java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
@@ -811,7 +891,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
         {
           type: "code",
           title: "例（どのファイルを開こうとしているかを見る）",
-          lang: "text",
+          lang: "shell",
           code: `$ sudo strace -f -p 1842 -e trace=file -s 256
 [pid 1842] openat(AT_FDCWD, "/opt/app/config/application.yml", O_RDONLY) = -1 ENOENT (No such file or directory)`,
         },
@@ -838,7 +918,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
         {
           type: "code",
           title: "例（どこへつなごうとしているかを見る）",
-          lang: "text",
+          lang: "shell",
           code: `$ sudo strace -f -p 1842 -e trace=network -s 256
 [pid 1842] connect(48, {sa_family=AF_INET, sin_port=htons(3306), sin_addr=inet_addr("10.0.2.31")}, 16) = -1 ECONNREFUSED (Connection refused)`,
         },
@@ -1010,6 +1090,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
         {
           type: "code",
           title: "例（検証用環境のホスト intranet.example.co.jp）",
+          lang: "shell",
           code: `# Windows（PowerShell または cmd）
 ping intranet.example.co.jp
 
@@ -1018,10 +1099,11 @@ ping -c 4 intranet.example.co.jp`,
         },
         {
           type: "code",
-          highlightLines: [9],
+          highlightLines: [11],
           title: "結果の例（Windows の日本語表示。統計の行は省略）",
-          lang: "text",
+          lang: "powershell",
           code: `# 応答がある
+PS> ping intranet.example.co.jp
 intranet.example.co.jp [10.20.30.40]に ping を送信しています 32 バイトのデータ:
 10.20.30.40 からの応答: バイト数 =32 時間 =2ms TTL=58
 10.20.30.40 からの応答: バイト数 =32 時間 =1ms TTL=58
@@ -1029,6 +1111,7 @@ intranet.example.co.jp [10.20.30.40]に ping を送信しています 32 バイ�
 10.20.30.40 からの応答: バイト数 =32 時間 =1ms TTL=58
 
 # 要求がタイムアウト
+PS> ping intranet.example.co.jp
 intranet.example.co.jp [10.20.30.40]に ping を送信しています 32 バイトのデータ:
 要求がタイムアウトしました。
 要求がタイムアウトしました。
@@ -1036,6 +1119,7 @@ intranet.example.co.jp [10.20.30.40]に ping を送信しています 32 バイ�
 要求がタイムアウトしました。
 
 # 名前解決できない
+PS> ping intranet.example.co.jp
 ping 要求ではホスト intranet.example.co.jp が見つかりませんでした。ホスト名を確認してもう一度実行してください。`,
         },
         {
@@ -1061,6 +1145,7 @@ ping 要求ではホスト intranet.example.co.jp が見つかりませんでし
         {
           type: "code",
           title: "例",
+          lang: "shell",
           code: `# Windows（ICMP が多い）
 tracert intranet.example.co.jp
 
@@ -1075,11 +1160,12 @@ traceroute -T -p 8080 intranet.example.co.jp`,
         },
         {
           type: "code",
-          highlightLines: [6, 7, 8],
+          highlightLines: [7, 8, 9],
           highlightKind: "error",
           title: "結果の例（Windows の日本語表示。途中で止まる場合）",
-          lang: "text",
-          code: `intranet.example.co.jp [10.20.30.40] へのルートをトレースしています
+          lang: "powershell",
+          code: `PS> tracert intranet.example.co.jp
+intranet.example.co.jp [10.20.30.40] へのルートをトレースしています
 経由するホップ数は最大 30 です:
 
   1    <1 ms    <1 ms    <1 ms  192.168.10.1
@@ -1117,6 +1203,7 @@ traceroute -T -p 8080 intranet.example.co.jp`,
         {
           type: "code",
           title: "例（ポート 8080）",
+          lang: "shell",
           code: `# Windows（PowerShell）
 Test-NetConnection -ComputerName intranet.example.co.jp -Port 8080
 
@@ -1128,11 +1215,12 @@ telnet intranet.example.co.jp 8080`,
         },
         {
           type: "code",
-          highlightLines: [19],
+          highlightLines: [21],
           highlightKind: "error",
           title: "結果の例（Test-NetConnection）",
-          lang: "text",
+          lang: "powershell",
           code: `# TCP 接続成功
+PS> Test-NetConnection -ComputerName intranet.example.co.jp -Port 8080
 ComputerName     : intranet.example.co.jp
 RemoteAddress    : 10.20.30.40
 RemotePort       : 8080
@@ -1141,6 +1229,7 @@ SourceAddress    : 192.168.10.23
 TcpTestSucceeded : True
 
 # TCP 接続失敗（ping は通っている）
+PS> Test-NetConnection -ComputerName intranet.example.co.jp -Port 8080
 警告: TCP connect to (10.20.30.40 : 8080) failed
 
 ComputerName           : intranet.example.co.jp
@@ -1155,14 +1244,17 @@ TcpTestSucceeded       : False`,
         {
           type: "code",
           title: "結果の例（nc）",
-          lang: "text",
+          lang: "shell",
           code: `# TCP 接続成功
+$ nc -zv intranet.example.co.jp 8080
 Connection to intranet.example.co.jp (10.20.30.40) 8080 port [tcp/http-alt] succeeded!
 
 # 接続拒否
+$ nc -zv intranet.example.co.jp 8080
 nc: connect to intranet.example.co.jp (10.20.30.40) port 8080 (tcp) failed: Connection refused
 
 # タイムアウト
+$ nc -zv intranet.example.co.jp 8080
 nc: connect to intranet.example.co.jp (10.20.30.40) port 8080 (tcp) failed: Connection timed out`,
         },
         {
@@ -1192,6 +1284,7 @@ nc: connect to intranet.example.co.jp (10.20.30.40) port 8080 (tcp) failed: Conn
         {
           type: "code",
           title: "例（申請一覧）",
+          lang: "shell",
           code: `# ヘッダだけ見る（本文は捨てる）
 # Windows PowerShell では curl.exe と打つ（curl だけだと Invoke-WebRequest の別名になる）
 curl -I http://intranet.example.co.jp:8080/shinsei/requests
@@ -1203,7 +1296,7 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
           type: "code",
           highlightLines: [3, 10],
           title: "結果の例（curl -I。ヘッダは抜粋）",
-          lang: "text",
+          lang: "shell",
           code: `# 申請一覧（ログインしていないので、ログイン画面へ 302）
 $ curl -I http://intranet.example.co.jp:8080/shinsei/requests
 HTTP/1.1 302
@@ -1256,6 +1349,7 @@ Content-Language: en`,
         {
           type: "code",
           title: "例（申請くんのサーバから、外部の通知 API へ）",
+          lang: "shell",
           code: `# 申請くんのサーバにログインしてから実行
 
 ping notify.example.internal
@@ -1318,7 +1412,7 @@ curl -I https://notify.example.internal/api/send`,
         {
           type: "code",
           title: "例（MySQL、つながるとき）",
-          lang: "text",
+          lang: "shell",
           code: `$ mysql -h ホスト名 -u ユーザ名 -p -e "SELECT 1"
 Enter password:
 +---+
@@ -1336,7 +1430,7 @@ Enter password:
           highlightLines: [3],
           highlightKind: "error",
           title: "例（MySQL、つながらないとき）",
-          lang: "text",
+          lang: "shell",
           code: `$ mysql -h ホスト名 -u ユーザ名 -p -e "SELECT 1"
 Enter password:
 ERROR 2003 (HY000): Can't connect to MySQL server on 'ホスト名:3306' (110)`,
@@ -1368,7 +1462,7 @@ ERROR 2003 (HY000): Can't connect to MySQL server on 'ホスト名:3306' (110)`,
           highlightLines: [4],
           highlightKind: "error",
           title: "例（Docker）",
-          lang: "text",
+          lang: "shell",
           code: `$ docker ps
 CONTAINER ID   IMAGE             COMMAND                  CREATED       STATUS                         PORTS                     NAMES
 1a2b3c4d5e6f   shinsei-kun-app   "java -Duser.timezon…"   2 hours ago   Up 2 hours                     0.0.0.0:8080->8080/tcp   shinsei-kun-app-1
@@ -1379,7 +1473,7 @@ CONTAINER ID   IMAGE             COMMAND                  CREATED       STATUS  
           highlightLines: [3],
           highlightKind: "error",
           title: "例（Kubernetes）",
-          lang: "text",
+          lang: "shell",
           code: `$ kubectl get pods
 NAME                       READY   STATUS             RESTARTS   AGE
 shinsei-7d8f9c6b5d-abcde   0/1     CrashLoopBackOff   7          12m`,
@@ -1416,7 +1510,7 @@ shinsei-7d8f9c6b5d-abcde   0/1     CrashLoopBackOff   7          12m`,
           type: "code",
           highlightLines: [4],
           title: "例（Linux、systemd を使う環境。動いているとき）",
-          lang: "text",
+          lang: "shell",
           code: `$ systemctl status nginx
 ● nginx.service - A high performance web server and a reverse proxy server
    Loaded: loaded (/usr/lib/systemd/system/nginx.service; enabled)
@@ -1434,7 +1528,7 @@ shinsei-7d8f9c6b5d-abcde   0/1     CrashLoopBackOff   7          12m`,
         {
           type: "code",
           title: "例（サービス名が違うとき）",
-          lang: "text",
+          lang: "shell",
           code: `$ systemctl status tomcat
 Unit tomcat.service could not be found.`,
         },
@@ -1445,7 +1539,7 @@ Unit tomcat.service could not be found.`,
         {
           type: "code",
           title: "例（サービス名の一部で絞り込む）",
-          lang: "text",
+          lang: "shell",
           code: `$ systemctl list-unit-files --type=service | grep -i tomcat
 tomcat9.service                            enabled`,
         },

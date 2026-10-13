@@ -502,6 +502,20 @@ export const quizzes = {
     answer: 1,
     explanation: "DB に直接つながるなら DB 自体は動いています。アプリから待たされるときは、アプリ側のコネクションプールが枯渇していないかを疑いましょう。",
   },
+  "server-container-target": {
+    id: "server-container-target",
+    question:
+      "サーバで動いている申請くんのログを読みたい。手元のターミナルで `docker ps` を実行したが、サーバのコンテナ `shinsei-app` が一覧に無い。まず疑うのはどれ？",
+    choices: [
+      "`shinsei-app` のコンテナが停止している",
+      "`docker` コマンドの接続先が、手元の Docker になっている",
+      "`--format` の指定が間違っている",
+      "コンテナ名が `shinsei-kun-app-1` に変わった",
+    ],
+    answer: 1,
+    explanation:
+      "`docker` は、接続先の Docker が管理するコンテナだけを表示します。手元の Docker に接続していれば、サーバのコンテナは一覧に出ません。`ssh` でサーバに入ってから実行するか、`docker context show` で接続先を確認しましょう。止まっているかどうかは、接続先が正しいと分かってから確かめます。",
+  },
   "server-container": {
     id: "server-container",
     question:

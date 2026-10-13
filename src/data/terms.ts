@@ -126,7 +126,7 @@ export const terms: TermDef[] = [
   {
     term: "クレーム",
     aliases: ["クレーム"],
-    body: "JWT のペイロードに入る、1 つ 1 つの項目です。`sub`（誰のトークンか）、`iat`（発行時刻）、`exp`（有効期限）などは仕様で名前が決まっています。アプリが独自の項目を足すこともあります。",
+    body: "JWT のペイロードに入る、1 つ 1 つの項目です。`sub`（誰のトークンか）、`iat`（発行時刻）、`exp`（有効期限）などは仕様で名前が決まっています。アプリが独自の項目を加えることもあります。",
   },
   {
     term: "Controller",
@@ -1727,7 +1727,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "docker-compose.yml",
-    aliases: ["docker-compose.yml"],
+    aliases: ["docker-compose.yml", "Compose のファイル"],
     body: "複数のコンテナ（アプリ、DB など）をまとめて起動するための設定ファイルです。各コンテナのイメージ、ポート、環境変数などを書きます。`docker compose up` で起動します。",
   },
   {
@@ -1742,7 +1742,7 @@ export const terms: TermDef[] = [
   },
   {
     term: "Docker Compose",
-    aliases: ["Docker Compose", "docker-compose", "docker compose"],
+    aliases: ["Docker Compose", "docker-compose", "docker compose", "Compose"],
     body: "複数のコンテナの構成を `docker-compose.yml` などのファイルに書き、まとめて起動する仕組みです。既定では、各サービスのコンテナが同じネットワークに参加します。共通のネットワークに参加しているコンテナどうしは、サービス名で相手につながります。",
   },
   {
