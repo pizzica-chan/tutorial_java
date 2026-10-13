@@ -114,6 +114,21 @@ export const terms: TermDef[] = [
     body: "Cross-Site Request Forgery。ログイン中の利用者に、別サイトから意図しない POST をさせる攻撃。トークンで防ぎます。",
   },
   {
+    term: "JWT",
+    aliases: ["JSON Web Token", "JWT"],
+    body: "JSON Web Token。ログインユーザの ID や有効期限などを JSON で書き、署名を付けた文字列です。ドットで区切った 3 つの部分（ヘッダ、ペイロード、署名）でできています。ペイロードは暗号化されておらず、Base64URL を戻せば読めます。",
+  },
+  {
+    term: "Bearer トークン",
+    aliases: ["Bearer トークン", "Bearer"],
+    body: "`Authorization: Bearer <トークン>` の形でリクエストに付けて送るトークンです。持っている人を、その利用者として扱います。形式は JWT が多いですが、ほかの形式もあります。",
+  },
+  {
+    term: "クレーム",
+    aliases: ["クレーム"],
+    body: "JWT のペイロードに入る、1 つ 1 つの項目です。`sub`（誰のトークンか）、`iat`（発行時刻）、`exp`（有効期限）などは仕様で名前が決まっています。アプリが独自の項目を足すこともあります。",
+  },
+  {
     term: "Controller",
     aliases: ["Controller"],
     body: "URL と HTTP メソッドを受けて、次の処理へ渡す層。画面処理を追うときの起点です。Spring ではこの名前が多いです。",

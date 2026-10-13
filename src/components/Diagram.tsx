@@ -28,6 +28,8 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "html-json": HtmlJson,
   session: SessionCookie,
   "session-store": SessionStore,
+  "jwt-flow": JwtFlow,
+  "jwt-parts": JwtParts,
   layers: Layers,
   "process-threads": ProcessThreads,
   "thread-pool": ThreadPool,
@@ -343,6 +345,131 @@ function SessionStore() {
         <Chip icon="key">9F2E1C77 → 佐藤花子</Chip>
         <Chip icon="key">5D3A80B1 → 鈴木一郎</Chip>
         <Chip icon="key">…</Chip>
+      </div>
+    </div>
+  );
+}
+
+const jwtClaims = [
+  ["sub", "7"],
+  ["role", "USER"],
+  ["exp", "1791856800"],
+];
+
+function JwtClaims() {
+  return (
+    <dl className="session-flow-values">
+      {jwtClaims.map(([key, value]) => (
+        <div key={key}>
+          <dt>{key}</dt>
+          <dd>{value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
+}
+
+function JwtFlow() {
+  return (
+    <div className="session-flow">
+      <p className="session-flow-intro">JWT でログイン状態を伝える例</p>
+      <div className="session-flow-head" aria-hidden="true">
+        <span><Icon name="browser" size={24} />ブラウザ</span>
+        <span><Icon name="server" size={24} />サーバ</span>
+      </div>
+      <ol className="session-flow-steps">
+        <li>
+          <div className="session-flow-step"><b>1</b><strong>ログイン成功後、トークンを渡す</strong></div>
+          <div className="session-flow-row">
+            <div className="session-flow-card">
+              <span className="session-flow-label">JavaScript が保存</span>
+              <strong><Icon name="key" size={18} />トークン</strong>
+              <code>eyJhbGciOi…</code>
+              <span className="session-flow-user"><Icon name="user" size={16} />ログイン情報もトークンの中</span>
+              <JwtClaims />
+            </div>
+            <div className="session-flow-transfer is-response">
+              <span>サーバ → ブラウザ</span>
+              <strong>レスポンス</strong>
+              <code>accessToken</code>
+              <i aria-hidden="true" />
+            </div>
+            <div className="session-flow-card is-server">
+              <span className="session-flow-label">サーバに保存</span>
+              <strong><Icon name="lock" size={18} />署名に使う鍵だけ</strong>
+              <span className="session-flow-user">ログイン情報は保存しない</span>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div className="session-flow-step"><b>2</b><strong>次のリクエストで、トークンを付けて送る</strong></div>
+          <div className="session-flow-row">
+            <div className="session-flow-card">
+              <span className="session-flow-label">JavaScript が付けて送信</span>
+              <strong><Icon name="key" size={18} />保存したトークン</strong>
+              <code>eyJhbGciOi…</code>
+            </div>
+            <div className="session-flow-transfer">
+              <span>ブラウザ → サーバ</span>
+              <strong>リクエスト</strong>
+              <code>Authorization: Bearer</code>
+              <i aria-hidden="true" />
+            </div>
+            <div className="session-flow-card is-server">
+              <span className="session-flow-label">サーバで検証</span>
+              <strong><Icon name="shield" size={18} />署名と期限を確かめる</strong>
+              <span className="session-flow-user"><Icon name="user" size={16} />トークンから読んだログイン情報</span>
+              <JwtClaims />
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  );
+}
+
+function JwtParts() {
+  return (
+    <div className="jwt-parts">
+      <p className="jwt-parts-token">
+        <code>
+          <span className="is-header">eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9</span>.
+          <span className="is-payload">eyJzdWIiOiI3Iiwicm9sZSI6…</span>.
+          <span className="is-signature">pzp9uFZZNZsp…</span>
+        </code>
+      </p>
+      <ol className="jwt-parts-list">
+        <li className="is-header">
+          <span className="jwt-parts-label">1 つ目</span>
+          <strong>ヘッダ</strong>
+          <span>署名の方式など</span>
+          <span className="jwt-parts-decoded">戻すと</span>
+          <code>{`{"alg":"HS256","typ":"JWT"}`}</code>
+        </li>
+        <li className="is-payload">
+          <span className="jwt-parts-label">2 つ目</span>
+          <strong>ペイロード</strong>
+          <span>ログイン情報や有効期限（クレーム）</span>
+          <span className="jwt-parts-decoded">戻すと</span>
+          <dl className="session-flow-values">
+            {[["sub", "7"], ["role", "USER"], ["iat", "1791853200"], ["exp", "1791856800"]].map(([key, value]) => (
+              <div key={key}>
+                <dt>{key}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
+        </li>
+        <li className="is-signature">
+          <span className="jwt-parts-label">3 つ目</span>
+          <strong>署名</strong>
+          <span>改ざんを見分ける値</span>
+          <span className="jwt-parts-decoded">1 つ目と 2 つ目から、サーバの鍵で計算する。戻しても JSON にはならない</span>
+        </li>
+      </ol>
+      <div className="jwt-parts-notes">
+        <span><Icon name="eye" size={16} />1 つ目と 2 つ目は暗号化されていない。Base64URL を戻せば誰でも読める</span>
+        <span><Icon name="shield" size={16} />2 つ目を書き換えると 3 つ目と合わなくなり、検証で無効になる</span>
       </div>
     </div>
   );

@@ -3672,6 +3672,106 @@ th {
   }
 }
 
+.jwt-parts {
+  --jwt-header: #395ca3;
+  --jwt-payload: #287c74;
+  --jwt-signature: #c0564a;
+  display: grid;
+  gap: 16px;
+  color: var(--text);
+}
+
+.jwt-parts-token {
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  background: var(--panel-2);
+  font-size: 13px;
+}
+
+.jwt-parts-token code {
+  overflow-wrap: anywhere;
+}
+
+.jwt-parts-token span {
+  font-weight: 700;
+}
+
+.jwt-parts-token .is-header { color: var(--jwt-header); }
+.jwt-parts-token .is-payload { color: var(--jwt-payload); }
+.jwt-parts-token .is-signature { color: var(--jwt-signature); }
+
+.jwt-parts .jwt-parts-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.jwt-parts-list li {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--line-strong);
+  border-top: 4px solid var(--jwt-color);
+  border-radius: 12px;
+  background: var(--panel);
+  font-size: 14px;
+}
+
+.jwt-parts-list li.is-header { --jwt-color: var(--jwt-header); }
+.jwt-parts-list li.is-payload { --jwt-color: var(--jwt-payload); }
+.jwt-parts-list li.is-signature { --jwt-color: var(--jwt-signature); }
+
+.jwt-parts-list strong {
+  color: var(--jwt-color);
+}
+
+.jwt-parts-label,
+.jwt-parts-decoded {
+  color: var(--paper-dim);
+  font-size: 12px;
+}
+
+.jwt-parts-decoded {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+}
+
+.jwt-parts-list code {
+  width: fit-content;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+
+.jwt-parts-notes {
+  display: grid;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.jwt-parts-notes span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.jwt-parts-notes .icon {
+  flex-shrink: 0;
+}
+
+@media (max-width: 700px) {
+  .jwt-parts .jwt-parts-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .troubleshoot-map {
   background: var(--panel);
 }
