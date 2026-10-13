@@ -1397,7 +1397,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           type: "table",
           headers: ["種類", "動く位置", "ソースでの見え方"],
           rows: [
-            ["Filter", "サーブレットコンテナ。Controller の前（静的ファイルも通ることがある）", "Controller から呼ばれない。Filter 実装や SecurityConfig を別検索する"],
+            ["Filter", "サーブレットコンテナ。Controller の前（静的ファイルも通ることがある）", "Controller から呼ばれない。Filter 実装や `SecurityConfig` を別検索する"],
             ["Interceptor", "Spring MVC。Controller の Java メソッドの直前・直後", "`HandlerInterceptor` と `WebMvcConfigurer` の `addInterceptors`。Controller に呼び出しは無い"],
             ["AOP / プロキシ", "Service などの Java メソッド呼び出しの手前", "見た目は `requestService.approve()`。実行時は `$Proxy` や CGLIB を経由する"],
             ["`@ControllerAdvice`", "例外のあと。レスポンスの画面や JSON を別クラスが決める", "throw したメソッドの return を追っても、レスポンスはここで決まる"],
@@ -1449,7 +1449,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "未ログインのとき、画面は 302 でログイン画面へ転送し、Web API は 401 で JSON を返すことがよくあります。",
+          text: "未ログインのとき、画面は 302 でログイン画面へ転送し、Web API は 401 で JSON を返すことがよくあります。決まりではありません。",
         },
         {
           type: "code",
@@ -1555,11 +1555,11 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "table",
-          headers: ["症状", "確認する場所"],
+          headers: ["症状", "確認する場所", "検索の手がかり"],
           rows: [
-            ["Controller の Java メソッドに入らない", "Filter や Interceptor の処理、Spring Security の設定を確認しましょう。`OncePerRequestFilter`、`HandlerInterceptor`、`addInterceptors`、`SecurityConfig` などを手がかりに検索しましょう。"],
-            ["Controller には入るが、Service の Java メソッド本体に入らない", "メソッド認可や独自の AOP が呼び出しを止めていないか、トランザクション開始時に失敗していないかを確認しましょう。`@PreAuthorize`、`@Aspect`、`@Transactional` と、関連するログを確認しましょう。"],
-            ["例外が起きたときの画面や JSON を、例外を投げた Java メソッドから見つけられない", "例外処理を探しましょう。`@ControllerAdvice`、`@ExceptionHandler`、`HandlerExceptionResolver` などを手がかりに検索しましょう。"],
+            ["Controller の Java メソッドに入らない", "Filter、Interceptor、Spring Security の設定", "`OncePerRequestFilter`、`HandlerInterceptor`、`addInterceptors`、`SecurityConfig`"],
+            ["Controller には入るが、Service の Java メソッド本体に入らない", "メソッド認可、独自の AOP、トランザクション開始時の失敗", "`@PreAuthorize`、`@Aspect`、`@Transactional`"],
+            ["例外が起きたときの画面や JSON を、例外を投げた Java メソッドから見つけられない", "例外処理のクラス", "`@ControllerAdvice`、`@ExceptionHandler`、`HandlerExceptionResolver`"],
           ],
         },
         { type: "quiz", id: "java-crosscut" },
