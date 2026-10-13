@@ -1390,7 +1390,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
       blocks: [
         {
           type: "p",
-          text: "Controller から Service を追うとき、ソースに書いてある Java メソッド呼び出しだけを見るのでは足りないことがあります。リクエストの前後や、メソッド呼び出しの手前に、別クラスが挟まることがあるためです。ソースを読んでも、挟まっている別クラスの名前は出てきません。",
+          text: "Controller から Service を追うとき、ソースに書いてある Java メソッド呼び出しだけを見るのでは足りないことがあります。リクエストの前後や、メソッド呼び出しの手前に、別クラスが挟まることがあるためです。呼び出し元のコードには、こうした処理が直接書かれていないことがあります。",
         },
         { type: "diagram", name: "cross-cut", caption: "リクエストの前後と、メソッド呼び出しの手前に挟まります。" },
         {
@@ -1398,7 +1398,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
           headers: ["種類", "動く位置", "ソースでの見え方"],
           rows: [
             ["Filter", "サーブレットコンテナ。Controller の前（静的ファイルも通ることがある）", "Controller から呼ばれない。Filter 実装や SecurityConfig を別検索する"],
-            ["Interceptor", "Spring MVC。Controller の Java メソッドの直前・直後", "`HandlerInterceptor` と WebMvcConfigurer の `addInterceptors`。Controller に呼び出しは無い"],
+            ["Interceptor", "Spring MVC。Controller の Java メソッドの直前・直後", "`HandlerInterceptor` と `WebMvcConfigurer` の `addInterceptors`。Controller に呼び出しは無い"],
             ["AOP / プロキシ", "Service などの Java メソッド呼び出しの手前", "見た目は `requestService.approve()`。実行時は `$Proxy` や CGLIB を経由する"],
             ["`@ControllerAdvice`", "例外のあと。レスポンスの画面や JSON を別クラスが決める", "throw したメソッドの return を追っても、レスポンスはここで決まる"],
           ],
@@ -1436,20 +1436,20 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "Java メソッドに入らないときは、Spring Security の設定を順に確認しましょう。",
+          text: "Controller の Java メソッドに入らないときは、Spring Security の設定とリクエストの内容を順に確認しましょう。",
         },
         {
           type: "ol",
           items: [
-            "パス許可",
-            "CSRF",
-            "セッション",
-            "コンテキストパス",
+            "対象のパスへのアクセスが許可されているか",
+            "POST などのリクエストで、必要な CSRF トークンが送られているか",
+            "ログイン時のセッションが有効で、そのセッションの Cookie が送られているか",
+            "アプリのコンテキストパスと、アクセス先の URL が合っているか",
           ],
         },
         {
           type: "p",
-          text: "未ログインのとき、画面は 302 でログイン画面へ転送し、Web API は 401 で JSON を返すことがよくあります。決まりではありません。",
+          text: "未ログインのとき、画面は 302 でログイン画面へ転送し、Web API は 401 で JSON を返すことがよくあります。",
         },
         {
           type: "code",
@@ -1467,7 +1467,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "Spring MVC の `HandlerInterceptor` は、Controller の Java メソッドの直前（preHandle）と直後（postHandle / afterCompletion）に動きます。ログ、共通の権限、アクセス記録などで使います。",
+          text: "Spring MVC の `HandlerInterceptor` は、Controller の Java メソッドの直前（`preHandle`）と直後（`postHandle` / `afterCompletion`）に動きます。ログ、共通の権限、アクセス記録などで使います。",
         },
         {
           type: "code",
@@ -1488,12 +1488,12 @@ public void addInterceptors(InterceptorRegistry registry) {
           items: [
             "`HandlerInterceptor`",
             "`addInterceptors`",
-            "WebMvcConfigurer",
+            "`WebMvcConfigurer`",
           ],
         },
         {
           type: "p",
-          text: "preHandle が false を返すと、Controller に届きません。",
+          text: "`preHandle` が false を返すと、Controller に届きません。",
         },
         {
           type: "h2",
@@ -1501,7 +1501,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "Service のメソッドを直接呼んでいるように見えても、実行時はプロキシが先に動きます。スタックトレースに出る $Proxy や CGLIB は、この経由を通った跡です。",
+          text: "Service のメソッドを直接呼んでいるように見えても、実行時はプロキシが先に動きます。スタックトレースに出る `$Proxy` や CGLIB は、この経由を通った跡です。",
         },
         {
           type: "ul",
@@ -1513,7 +1513,7 @@ public void addInterceptors(InterceptorRegistry registry) {
         },
         {
           type: "p",
-          text: "これらは、アノテーションが付いているだけで処理が動きます。読み飛ばさず確認しましょう。",
+          text: "これらの処理は、Spring の設定とプロキシを通る呼び出しによって動きます。Java メソッドの本体だけでなく、アノテーションと設定も確認しましょう。",
         },
         {
           type: "p",
@@ -1550,12 +1550,16 @@ public void addInterceptors(InterceptorRegistry registry) {
           text: "`@ControllerAdvice` や `HandlerExceptionResolver` があると、throw したあとの応答はこれらのクラスが決めます。業務例外を投げたメソッドの return を追っても、画面メッセージや JSON の形は見つかりません。",
         },
         {
-          type: "ul",
-          items: [
-            "Controller に届かない → Filter、Interceptor、SecurityConfig",
-            "Controller には入るが Service の本体に入らない → メソッド認可、独自の AOP、トランザクション開始時の失敗",
-            "例外の画面や JSON がメソッドに無い → `@ControllerAdvice`",
-            "検索語: `HandlerInterceptor`、`addInterceptors`、`OncePerRequestFilter`、`@Aspect`、`@ControllerAdvice`",
+          type: "h2",
+          text: "症状から確認する場所を選ぶ",
+        },
+        {
+          type: "table",
+          headers: ["症状", "確認する場所"],
+          rows: [
+            ["Controller の Java メソッドに入らない", "Filter や Interceptor の処理、Spring Security の設定を確認しましょう。`OncePerRequestFilter`、`HandlerInterceptor`、`addInterceptors`、`SecurityConfig` などを手がかりに検索しましょう。"],
+            ["Controller には入るが、Service の Java メソッド本体に入らない", "メソッド認可や独自の AOP が呼び出しを止めていないか、トランザクション開始時に失敗していないかを確認しましょう。`@PreAuthorize`、`@Aspect`、`@Transactional` と、関連するログを確認しましょう。"],
+            ["例外が起きたときの画面や JSON を、例外を投げた Java メソッドから見つけられない", "例外処理を探しましょう。`@ControllerAdvice`、`@ExceptionHandler`、`HandlerExceptionResolver` などを手がかりに検索しましょう。"],
           ],
         },
         { type: "quiz", id: "java-crosscut" },
