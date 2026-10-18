@@ -6,7 +6,7 @@ export function ThreadDumpAnatomy() {
     { label: "状態", code: "java.lang.Thread.State: RUNNABLE", note: "状態だけで、CPU を使っているとは判断できない。", tone: "state" },
     { label: "最上段の at 行", code: "at sun.nio.ch.SocketDispatcher.read0(…)", note: "いまいる場所。この例では、ソケットから読もうとしている。", tone: "wait" },
     { label: "ライブラリ", code: "at …RestTemplate.postForObject(…)", note: "何の処理か。HTTP の POST の応答を待っている。", tone: "library" },
-    { label: "自分たちのコード", code: "at …NotificationClient.send(NotificationClient.java:25)", note: "ソースを開く場所。この例では通知 API を呼んでいる。", tone: "own" },
+    { label: "自分たちのコード", code: "at …NotificationClient.send(NotificationClient.java:25)", note: "自分たちが書いたコードで最初に出る行。まずこの行のソースを開く。この例では通知 API を呼んでいる。", tone: "own" },
     { label: "呼び出し元", code: "at …InvestigationService.approveAndNotify(…)", note: "下へ行くほど呼び出し元。その下には Controller の行がある。", tone: "caller" },
   ];
   return <div className="thread-figure">
@@ -18,7 +18,7 @@ export function ThreadDumpAnatomy() {
         <div><code>{row.code}</code><p>{row.note}</p></div>
       </div>,
     )}</div>
-    <p className="thread-figure-footnote"><code>- locked &lt;0x…&gt;</code> は、そのスレッドが持っているロックを示します。待っている場所を示す行とは別です。</p>
+    <p className="thread-figure-footnote"><code>- locked &lt;0x…&gt;</code> は、そのスレッドが持っているロックを示します。待っている場所を示す行とは別です。このロックを待っているスレッドがいなければ、問題ありません。</p>
   </div>;
 }
 
@@ -38,9 +38,7 @@ export function ThreadDumpWait() {
       </div>
       <div className="thread-wait-summary">
         <div className="thread-api"><Icon name="server" size={26} /><strong>通知 API</strong><span>POST は送信済み</span><span>応答はまだ返っていない</span></div>
-        <p>同じスレッドが、呼び出し先の中で待っています。Controller や Service が、それぞれ別のスレッドになっているわけではありません。</p>
-        <div className="thread-state-note"><strong>この例の状態は RUNNABLE</strong><span>CPU で計算し続けているとは限りません。数秒あけて取り、最上段と <code>cpu=</code> を比べましょう。</span></div>
-      </div>
+        <p>同じスレッドが、呼び出し先の中で待っています。Controller や Service が、それぞれ別のスレッドになっているわけではありません。</p>      </div>
     </div>
   </div>;
 }

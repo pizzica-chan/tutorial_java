@@ -773,6 +773,14 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
           text: "Tomcat のリクエスト用のスレッドは、起動時に一定の数が作られ、リクエストのたびに使い回されます。`elapsed=` が 23 秒でも、いまのリクエストが 23 秒前に始まったとは限りません。いつ始まったかは、同じスレッド名のログの時刻で確認しましょう。",
         },
         {
+          type: "p",
+          text: "at 行を下から上へ読むと、Java メソッドを呼び出した順になります。",
+        },
+        {
+          type: "diagram",
+          name: "thread-dump-wait",
+        },
+        {
           type: "h2",
           text: "見るスレッドを絞る",
         },
@@ -838,10 +846,6 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
         {
           type: "p",
           text: "表の 1 行目と 2 行目は、どちらも `RUNNABLE` です。`RUNNABLE` は、CPU を使っているという意味ではありません。CPU を使っているかどうかは、次の節のように 2 回取って `cpu=` を比べましょう。",
-        },
-        {
-          type: "diagram",
-          name: "thread-dump-wait",
         },
         {
           type: "h2",
