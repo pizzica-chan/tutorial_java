@@ -14,6 +14,15 @@
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     <button>提出</button>
   </form>
+  <form th:action="@{/investigation/approve/12}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button>ID 12 を承認して通知</button>
+  </form>
+  <form th:action="@{/investigation/approve/13}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button>ID 13 を承認して通知</button>
+  </form>
+  <p>承認の期限（JSON）: <a th:href="@{/investigation/12/due-date}">ID 12</a> / <a th:href="@{/investigation/13/due-date}">ID 13</a></p>
   <p>一括登録と JSON API の操作は教材本文の Console の例を使ってください。</p>
 </main>
 </html>

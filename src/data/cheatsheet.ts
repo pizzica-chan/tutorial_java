@@ -268,7 +268,7 @@ export const cheatSheet: CheatSection[] = [
     title: "5. JVM（スレッド・GC・メモリ）",
     groups: [
       {
-        title: "スレッドダンプ（処理が返ってこないとき）",
+        title: "スレッドダンプ（処理が返ってこない、CPU 使用率が下がらないとき）",
         note: "1 回だけでなく、数秒おきに 2〜3 回取って比べましょう。同じスレッドが毎回同じ場所で止まっていれば、そこが疑わしい箇所です。`jstack`/`jcmd` はどちらも JDK 同梱のツールで、JRE だけの軽量コンテナには入っていないことがあります（申請くんの Docker イメージもこの構成）。その場合は `kill -3` を使いましょう。",
         rows: [
           { cmd: "`jstack PID`", env: "JDK", desc: "その瞬間の全スレッドの状態を書き出す" },
@@ -276,6 +276,8 @@ export const cheatSheet: CheatSection[] = [
           { cmd: "`kubectl exec -it Pod名 -- jstack PID`", env: "Kubernetes", desc: "Kubernetes の Pod の中の Java プロセスに対して取る" },
           { cmd: "`jcmd PID Thread.print`", env: "JDK", desc: "同じく JDK 同梱のツールで、書式は少し違うがスレッドダンプを取る" },
           { cmd: "`kill -3 PID`", env: "Linux", desc: "Java プロセスに送ると、プロセスは終了せず、`jstack` と同じ内容のスレッドダンプを標準出力へ書き出す。Docker なら `docker logs` で見えるが、Logback などが書くログファイルには入らない。追加のツールが要らないため、JDK が無い環境でも使える" },
+          { cmd: "`jstack -l PID`", env: "JDK", desc: "`ReentrantLock` などのロックの持ち主（`Locked ownable synchronizers`）も出す。`jcmd PID Thread.print -l` でも同じ" },
+          { cmd: "`printf '%x\\n' TID`", env: "Linux", desc: "`top -H -p PID` の PID の列に出るスレッドの ID（10 進）を 16 進に直す。スレッドダンプの `nid=` と一致する" },
         ],
       },
       {

@@ -9,6 +9,9 @@
 - **再現用の一括登録は内部呼び出しで `@Transactional` を通らない。** `submitBatch` から同じインスタンスの `saveBatch` を呼びます。`RequestService.create` にもトランザクション指定は無いため、2 件目の件名チェックで例外になると 1 件目が残ります。承認処理を変更する例ではありません。トランザクション開始の有無は `transactionActive` のログに出します。
 - **再現用の一覧は申請ごとに申請者名を取得する。** `findMineWithoutNames` のあとで `UserMapper.findById` を繰り返す N+1 の例です。通常の `findMine` は JOIN のままです。初期データでも回数は確認できますが、遅さを体感するには件数や DB との通信時間が必要です。
 - **N+1 の時刻付きログは説明用の例。** 300 件の一覧について、一覧検索と名前取得の時間を比較する流れを示しています。配布環境の実測値ではありません。実際の所要時間はデータと環境に依存するため、SQL の回数だけで今回の遅さの原因と断定しません。
+- **再現用の承認は、通知 API の応答を待ち続ける。** `/investigation/approve/{id}` は、`InvestigationService.approveAndNotify` でステータスを更新したあと、`NotificationClient` で通知 API へ POST します。`NotificationClient` は `new RestTemplate()` のままなので、接続と読み取りのタイムアウトがありません。通知 API の代役（Compose の `notify` サービス、`scripts/notify-stub.py`）は接続を受け付けるだけで応答を返さないため、POST が返りません。`@Transactional` の中なので、DB のコネクションを持ったまま止まります。教材「トラブル例：処理が返ってこない（スレッドダンプ）」用の意図した不具合です。タイムアウトを足して直してはいけません。止まったリクエストは確定しません。アプリを再起動すると、`data.sql` が ID 12・13 を PENDING に戻します。
+- **一覧まで止まる見え方は、コネクションの上限を 2 本にして撮る。** HikariCP の既定は 10 本です。起動時に `-e SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE=2` を付け、ID 12 と 13 を承認すると、一覧の `findMine` がコネクションを待ち、30 秒後に `SQLTransientConnectionException` で 500 になります。`application.yml` は変えていません。
+- **再現用の期限日は、土日に当たると返らない。** `/investigation/{id}/due-date` は申請日の 1 週間後を返し、土日なら次の平日にずらすつもりの処理です。`due.plusDays(1)` の戻り値を捨てているので、`due` が変わらず、ループが終わりません。ID 13（申請日 2026-04-12、1 週間後は日曜）でリクエストのスレッドが CPU を使い続けます。ID 12（1 週間後は金曜）は返ります。止めるにはアプリを再起動します。教材「スレッドダンプの読み方」の CPU の例です。直してはいけません。
 - **再現用のフォームと API で件名の検証が違う。** `/investigation/form` は空白を拒否し、`/investigation/api` は共通の `create` へそのまま渡します。NOT NULL は空文字を拒否しません。CSRF とログインは通常どおり有効です。これらは原因を読むための不具合なので、共通チェックを足して消さないでください。
 
 ### 追加シナリオの起動
@@ -22,6 +25,8 @@ docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investi
 ```
 
 山田の ID は 7、佐藤の ID は 3 です。`/shinsei/investigation` を開きます。POST の Console 例は教材本文にあります。一括登録や空文字の登録を再実行するとレコードが増えるため、レスポンスや SQL で ID を記録してください。
+
+「処理が返ってこない」と「スレッドダンプの読み方」は、先に `docker compose --profile investigation up -d notify` で通知 API の代役を起動し、run に `--name shinsei-hang -e SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE=2` を足します。スレッドダンプは `docker exec shinsei-hang kill -3 1` で取り、`docker logs shinsei-hang` で読みます。コンテナは JRE だけなので `jstack` はありません。`top` と `ps` はあります。教材のダンプとログは、2026-10-18 にこの手順で撮った実物です。スレッド名の番号、`nid`、アドレス、時刻は実行ごとに変わります。ロック待ちとデッドロックの例だけは、申請くんではなく JDK 17 の小さなプログラムで撮った出力です（クラス名だけ置き換えています）。
 
 デバッガを使う場合は、run のオプションに `-e "JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" -p 127.0.0.1:5005:5005` を追加します。IDE から localhost:5005 に接続します。
 

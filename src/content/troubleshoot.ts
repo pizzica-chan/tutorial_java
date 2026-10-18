@@ -679,6 +679,401 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
       ],
     },
     {
+      id: "thread-dump",
+      title: "スレッドダンプの読み方",
+      minutes: 12,
+      tags: ["Java 全般", "Linux"],
+      blocks: [
+        {
+          type: "p",
+          text: "スレッドダンプは、ある瞬間に、Java のプロセスの中の各スレッドが何をしているかを書き出した記録です。スレッドごとに、スタックトレースと同じ形の at 行が並びます。",
+        },
+        {
+          type: "p",
+          text: "スレッドダンプが役に立つのは、例外もエラーのログも出ないまま、処理がおかしくなっているときです。例外のスタックトレースは例外が起きたときにしか出ませんが、スレッドダンプは、動いているプロセスから好きなときに取れます。",
+        },
+        {
+          type: "ul",
+          items: [
+            "画面の応答が返ってこない：どのスレッドが、どの行で、何を待っているか（外部 API の応答、DB のコネクション、ロックなど）が分かる",
+            "CPU 使用率が高いまま下がらない：どのスレッドが、どの行を実行し続けているかが分かる",
+            "遅いのか止まっているのか分からない：数回取って比べると、処理が進んでいるかどうかが分かる",
+          ],
+        },
+        {
+          type: "p",
+          text: "例外のスタックトレースとのもう 1 つの違いは、最上段の意味です。例外のスタックトレースでは、最上段は例外が起きた場所でした。スレッドダンプでは、取った瞬間にそのスレッドが実行していた場所、または待っていた場所です。",
+        },
+        {
+          type: "p",
+          text: "取り方は「トラブル例：処理が返ってこない（スレッドダンプ）」で扱います。このページでは、取ったスレッドダンプをどう読むかを扱います。",
+          link: {
+            label: "トラブル例：処理が返ってこない（スレッドダンプ）",
+            to: "/tracks/troubleshoot/p-hang",
+          },
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "書式は OpenJDK 系の JVM のもの",
+          text: "このページの例は、OpenJDK 系の JVM（Temurin や Oracle JDK など）が出すスレッドダンプです。ほかの JVM では、書式が違うことがあります。",
+        },
+        {
+          type: "h2",
+          text: "1 スレッド分の塊",
+        },
+        {
+          type: "p",
+          text: "次は、申請くんで、通知 API の応答を待っているスレッドの塊です。見出し行、状態、at 行の順に並びます。",
+        },
+        {
+          type: "code",
+          title: "通知 API の応答を待っているスレッド（申請くん・抜粋）",
+          lang: "text",
+          highlightLines: [3, 11],
+          code: `"http-nio-8080-exec-7" #30 daemon prio=5 os_prio=0 cpu=83.44ms elapsed=23.61s tid=0x000078874d1c7ab0 nid=0x34 runnable  [0x00007886d2ef9000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.SocketDispatcher.read0(java.base@17.0.20/Native Method)
+	at sun.nio.ch.SocketDispatcher.read(java.base@17.0.20/Unknown Source)
+	at sun.nio.ch.NioSocketImpl.tryRead(java.base@17.0.20/Unknown Source)
+	（中略）
+	at java.io.BufferedInputStream.read(java.base@17.0.20/Unknown Source)
+	- locked <0x000000070fdd4f20> (a java.io.BufferedInputStream)
+	（中略）
+	at org.springframework.web.client.RestTemplate.postForObject(RestTemplate.java:443)
+	at jp.co.example.shinsei.client.NotificationClient.send(NotificationClient.java:25)
+	at jp.co.example.shinsei.service.InvestigationService.approveAndNotify(InvestigationService.java:64)
+	（中略）
+	at jp.co.example.shinsei.controller.InvestigationController.approve(InvestigationController.java:59)
+	（以下略）`,
+        },
+        {
+          type: "table",
+          headers: ["行", "何の行か"],
+          rows: [
+            ["`\"http-nio-8080-exec-7\"` で始まる行", "見出し行。スレッド名、使った CPU 時間、OS から見たスレッドの ID などが並ぶ"],
+            ["`java.lang.Thread.State: RUNNABLE`", "スレッドの状態"],
+            ["`SocketDispatcher.read0`", "最上段。いま実行している場所。ここではソケットから読もうとしている"],
+            ["`- locked <0x000000070fdd4f20>`", "このスレッドが持っているロック。このロックを待っているスレッドがいなければ問題ない"],
+            ["`RestTemplate.postForObject`", "ライブラリの行。HTTP の POST の応答を待っている"],
+            ["`NotificationClient.send`", "自分たちが書いたコードで最初に出る行。まずこの行のソースを開く"],
+            ["`InvestigationService.approveAndNotify`、`InvestigationController.approve`", "呼び出し元と、処理の入口"],
+          ],
+        },
+        {
+          type: "p",
+          text: "見出し行には、次の項目があります。",
+        },
+        {
+          type: "table",
+          headers: ["項目", "意味"],
+          rows: [
+            ["`\"http-nio-8080-exec-7\"`", "スレッド名。ログの角括弧の中のスレッド名と同じもの。申請くんのログでは、後ろの 15 文字だけの `nio-8080-exec-7` になる"],
+            ["`cpu=83.44ms`", "このスレッドがこれまでに使った CPU 時間（JDK 11 以降。JDK 8 には無い）"],
+            ["`elapsed=23.61s`", "スレッドが作られてからの時間（JDK 11 以降。JDK 8 には無い）"],
+            ["`nid=0x34`", "OS から見たスレッドの ID（16 進）。`top` などの OS のコマンドと突き合わせるときに使う"],
+            ["末尾の `runnable` や `waiting on condition`", "状態の短い表記。詳しくは次の行の `java.lang.Thread.State` を読む"],
+          ],
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "`elapsed=` はリクエストの経過時間ではない",
+          text: "Tomcat のリクエスト用のスレッドは、起動時に一定の数が作られ、リクエストのたびに使い回されます。`elapsed=` が 23 秒でも、いまのリクエストが 23 秒前に始まったとは限りません。いつ始まったかは、同じスレッド名のログの時刻で確認しましょう。",
+        },
+        {
+          type: "h2",
+          text: "見るスレッドを絞る",
+        },
+        {
+          type: "p",
+          text: "スレッドダンプには、数十のスレッドが並びます。申請くんでも 40 を超えます。多くは、JVM や Tomcat が自分の仕事のために動かしているスレッドです。画面の操作で動いた処理は、リクエストを処理するスレッドで実行されています。",
+        },
+        {
+          type: "table",
+          headers: ["スレッド名の例", "何をするスレッドか", "扱い"],
+          rows: [
+            ["`http-nio-8080-exec-7`", "Tomcat がリクエストを処理する", "最初に見る"],
+            ["`http-nio-8080-Acceptor`、`http-nio-8080-Poller`", "Tomcat が接続を受け付ける", "飛ばす"],
+            ["`HikariPool-1 housekeeper`", "DB のコネクションプールを管理する", "飛ばす"],
+            ["`GC Thread#0`、`C2 CompilerThread0`、`Reference Handler`", "JVM 自身の仕事（GC、コンパイルなど）", "ふだんは飛ばす。CPU を使っているなら見る"],
+          ],
+        },
+        {
+          type: "p",
+          text: "ログにスレッド名が出ていれば、その名前でスレッドダンプを検索しましょう。申請くんのログの `[nio-8080-exec-7]` なら、探すのは `http-nio-8080-exec-7` の塊です。",
+        },
+        {
+          type: "p",
+          text: "リクエストを処理するスレッドでも、何もしていないものがあります。リクエストが来るのを待っているだけのスレッドは、次の形です。",
+        },
+        {
+          type: "code",
+          title: "次のリクエストを待っているスレッド（申請くん・抜粋）",
+          lang: "text",
+          highlightLines: [5],
+          code: `"http-nio-8080-exec-1" #24 daemon prio=5 os_prio=0 cpu=407.17ms elapsed=23.61s tid=0x000078874c612700 nid=0x2e waiting on condition  [0x0000788720505000]
+   java.lang.Thread.State: WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@17.0.20/Native Method)
+	（中略）
+	at org.apache.tomcat.util.threads.TaskQueue.take(TaskQueue.java:141)
+	（以下略）`,
+        },
+        {
+          type: "p",
+          text: "上のほうに `TaskQueue.take` があれば、リクエストが来るのを待っているだけです。飛ばしましょう。",
+        },
+        {
+          type: "h2",
+          text: "状態と最上段の数行を合わせて読む",
+        },
+        {
+          type: "p",
+          text: "状態の行（`java.lang.Thread.State`）だけでは、何を待っているかは分かりません。最上段から数行のクラス名とメソッド名も、合わせて読みましょう。スタックトレースでは JDK やライブラリの行を飛ばしましたが、スレッドダンプでは飛ばしません。この数行から、スレッドが何をしているかが分かるためです。`Unknown Source` の行でも、クラス名とメソッド名は読めます。",
+        },
+        {
+          type: "table",
+          headers: ["状態", "最上段付近の行（例）", "読み方"],
+          rows: [
+            ["`RUNNABLE`", "`SocketDispatcher.read0`（JDK 17）、`Net.poll`（JDK 17 で、読み取りのタイムアウトがあるとき）、`SocketInputStream.socketRead0`（JDK 8）", "ネットワークの相手（外部 API や DB）の応答を待っている"],
+            ["`RUNNABLE`", "自分たちが書いたコードの行", "CPU を使って処理している。何回取っても同じ行なら、ループから抜けられていないことがある"],
+            ["`TIMED_WAITING (parking)`", "`HikariPool.getConnection`", "DB のコネクションが空くのを待っている。待つ時間には上限がある"],
+            ["`WAITING (parking)`", "`TaskQueue.take`", "次のリクエストを待っている"],
+            ["`BLOCKED (on object monitor)`", "`- waiting to lock <0x...>`", "ほかのスレッドが持つロック（`synchronized`）の解放を待っている"],
+            ["`WAITING (parking)`", "`- parking to wait for <0x...> (a java.util.concurrent.locks.ReentrantLock$NonfairSync)`", "ほかのスレッドが持つ `ReentrantLock` の解放を待っている"],
+            ["`TIMED_WAITING (sleeping)`", "`Thread.sleep`", "決めた時間だけ待っている"],
+          ],
+        },
+        {
+          type: "p",
+          text: "表の 1 行目と 2 行目は、どちらも `RUNNABLE` です。`RUNNABLE` は、CPU を使っているという意味ではありません。CPU を使っているかどうかは、次の節のように 2 回取って `cpu=` を比べましょう。",
+        },
+        {
+          type: "h2",
+          text: "数回取って比べる",
+        },
+        {
+          type: "p",
+          text: "1 回のスレッドダンプで分かるのは、その瞬間の様子だけです。数秒おきに 2〜3 回取り、同じスレッドを比べましょう。",
+        },
+        {
+          type: "code",
+          title: "5 秒あけて取った 2 回の見出し行（申請くん・通知 API の応答待ち）",
+          lang: "text",
+          code: `"http-nio-8080-exec-7" #30 daemon prio=5 os_prio=0 cpu=83.44ms elapsed=23.61s tid=0x000078874d1c7ab0 nid=0x34 runnable  [0x00007886d2ef9000]
+"http-nio-8080-exec-7" #30 daemon prio=5 os_prio=0 cpu=83.44ms elapsed=28.85s tid=0x000078874d1c7ab0 nid=0x34 runnable  [0x00007886d2ef9000]`,
+        },
+        {
+          type: "p",
+          text: "`elapsed=` は 5 秒増えていますが、`cpu=` は 83.44ms のままです。2 回とも、最上段は `SocketDispatcher.read0` でした。この 5 秒間、CPU を使わず、同じ場所で応答を待っていたと読めます。",
+        },
+        {
+          type: "table",
+          headers: ["2 回を比べると", "読み方"],
+          rows: [
+            ["最上段が同じで、`cpu=` も変わらない", "同じ場所で待っている（応答待ち、ロック待ち）"],
+            ["最上段が同じで、`cpu=` が増えている", "同じ場所で CPU を使い続けている"],
+            ["最上段が変わっている", "処理は進んでいる。止まっているのではなく、遅いのかもしれない"],
+          ],
+        },
+        {
+          type: "p",
+          text: "最上段が変わっているなら、「トラブル例：遅い」の調べ方に切り替えましょう。",
+          link: {
+            label: "トラブル例：遅い",
+            to: "/tracks/troubleshoot/p-slow",
+          },
+        },
+        {
+          type: "h2",
+          text: "CPU を使っているスレッドを特定する",
+        },
+        {
+          type: "p",
+          text: "CPU 使用率が高いまま下がらないときは、どのスレッドが CPU を使っているかを OS のコマンドで調べ、スレッドダンプと突き合わせましょう。",
+        },
+        {
+          type: "ol",
+          items: [
+            "`top -H -p PID` で、Java のプロセスのスレッドごとに CPU 使用率を出す。`-H` はスレッドごとに表示するオプションで、PID の列にはスレッドの ID が出る",
+            "CPU 使用率の高いスレッドの ID を 16 進に直す（`printf '%x\\n' 54` なら `36`）",
+            "スレッドダンプで `nid=0x36` を検索する",
+          ],
+        },
+        {
+          type: "code",
+          title: "申請くんのコンテナの中で top を実行した例（Java のプロセスは PID 1）",
+          lang: "text",
+          highlightLines: [3],
+          code: `$ top -H -b -n 1 -p 1
+  PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND
+   54 root      20   0 9036932 352580  22076 R  90.9   2.2   0:08.44 http-nio-+
+    1 root      20   0 9036932 352580  22076 S   0.0   2.2   0:00.02 java
+    7 root      20   0 9036932 352580  22076 S   0.0   2.2   0:03.89 java
+（以下略）`,
+        },
+        {
+          type: "p",
+          text: "`-b -n 1` は、画面を更新し続けずに 1 回だけ出力するオプションです。ID が 54 のスレッドが、CPU を 90% 使っています。54 を 16 進に直すと 36 です。スレッドダンプで `nid=0x36` を検索すると、次の塊が見つかります。",
+        },
+        {
+          type: "code",
+          title: "nid=0x36 のスレッド（申請くん・5 秒あけて取った 2 回。抜粋）",
+          lang: "text",
+          highlightLines: [3, 9],
+          code: `"http-nio-8080-exec-7" #30 daemon prio=5 os_prio=0 cpu=8693.42ms elapsed=10.33s tid=0x00007243fce26050 nid=0x36 runnable  [0x00007243817ee000]
+   java.lang.Thread.State: RUNNABLE
+	at jp.co.example.shinsei.service.InvestigationService.dueDate(InvestigationService.java:72)
+	（中略）
+	at jp.co.example.shinsei.controller.InvestigationController.dueDate(InvestigationController.java:65)
+	（以下略）
+"http-nio-8080-exec-7" #30 daemon prio=5 os_prio=0 cpu=13968.34ms elapsed=15.63s tid=0x00007243fce26050 nid=0x36 runnable  [0x00007243817ee000]
+   java.lang.Thread.State: RUNNABLE
+	at jp.co.example.shinsei.service.InvestigationService.dueDate(InvestigationService.java:72)
+	（以下略）`,
+        },
+        {
+          type: "p",
+          text: "2 回とも、最上段は自分たちが書いたコードの `InvestigationService.java:72` です。5.3 秒の間に、`cpu=` も約 5.3 秒増えています。CPU のコアを 1 つ使い切って、同じ場所を回り続けていると読めます。72 行目は、承認の期限日を求めるループの中の `due.plusDays(1);` です。",
+        },
+        {
+          type: "code",
+          title: "InvestigationService.java（申請くん・再現用、67〜75 行目）",
+          lang: "java",
+          highlightLines: [6],
+          highlightKind: "error",
+          code: `// 承認の期限は申請日の 1 週間後。土日に当たるときは、次の平日にずらす。
+public LocalDate dueDate(Long requestId, Long userId) {
+  RequestEntity request = requestService.findById(requestId, userId);
+  LocalDate due = request.getCreatedAt().toLocalDate().plusDays(7);
+  while (due.getDayOfWeek() == DayOfWeek.SATURDAY || due.getDayOfWeek() == DayOfWeek.SUNDAY) {
+    due.plusDays(1);
+  }
+  return due;
+}`,
+        },
+        {
+          type: "p",
+          text: "`plusDays` は、1 日後の新しい `LocalDate` を返すメソッドです。`due` そのものは変わりません。戻り値を捨てているので、`due` は土日の日付のままで、ループが終わりません。申請 ID 13 は申請日が 2026-04-12 で、1 週間後が日曜なので、このループから出られなくなります。正しくは `due = due.plusDays(1);` と書きます。",
+        },
+        {
+          type: "callout",
+          kind: "tip",
+          title: "`top` が無いとき",
+          text: "`ps -L -o tid,pcpu,comm -p PID` でも、スレッドごとの ID と CPU 使用率を出せます。ただし `ps` の CPU 使用率は、スレッドが作られてからの平均です。どちらのコマンドも無い環境でも、JDK 11 以降なら、2 回取ったスレッドダンプの `cpu=` の増え方を比べられます。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "コンテナの外から見ると、スレッドの ID が違う",
+          text: "`nid=` は、コンテナの中から見たスレッドの ID です。同じスレッドでも、ホストから見ると別の ID になります。`top -H` は、Java と同じコンテナの中（`docker exec` など）で実行しましょう。",
+        },
+        {
+          type: "h2",
+          text: "ロックの持ち主を辿る",
+        },
+        {
+          type: "p",
+          text: "`BLOCKED` のスレッドには、`- waiting to lock <0x...>` の行があります。山括弧の中は、待っているロックのアドレスです。同じアドレスでスレッドダンプを検索し、`- locked <同じアドレス>` の行を持つスレッドを探しましょう。そのスレッドがロックを持ったまま何をしているかを見れば、待ちの原因が分かります。",
+        },
+        {
+          type: "code",
+          title: "ロックを待ち合っている 2 つのスレッド（JDK 17 の jstack の出力。申請くんの実ログではない）",
+          lang: "text",
+          highlightLines: [4, 11],
+          code: `"worker-1" #14 prio=5 os_prio=0 cpu=0.71ms elapsed=7.87s tid=0x00007efa2c1be1e0 nid=0x3b waiting for monitor entry  [0x00007ef9fc838000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at StockService.reserve(StockService.java:12)
+	- waiting to lock <0x0000000716819960> (a java.lang.Object)
+	- locked <0x0000000716819950> (a java.lang.Object)
+	（以下略）
+"worker-2" #15 prio=5 os_prio=0 cpu=0.54ms elapsed=7.87s tid=0x00007efa2c1bf880 nid=0x3c waiting for monitor entry  [0x00007ef9fc738000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+	at StockService.settle(StockService.java:19)
+	- waiting to lock <0x0000000716819950> (a java.lang.Object)
+	- locked <0x0000000716819960> (a java.lang.Object)
+	（以下略）`,
+        },
+        {
+          type: "p",
+          text: "worker-1 が待っている `<0x0000000716819960>` は、worker-2 が持っています。worker-2 が待っている `<0x0000000716819950>` は、worker-1 が持っています。互いに相手のロックを待っているので、どちらも先へ進めません。これがデッドロックです。",
+        },
+        {
+          type: "p",
+          text: "JVM は、スレッド同士のロックの待ち合いを見つけると、スレッドダンプの末尾近くに「Found one Java-level deadlock」を出します。",
+        },
+        {
+          type: "code",
+          title: "同じスレッドダンプの末尾（抜粋）",
+          lang: "text",
+          code: `Found one Java-level deadlock:
+=============================
+"worker-1":
+  waiting to lock monitor 0x00007ef97c000ff0 (object 0x0000000716819960, a java.lang.Object),
+  which is held by "worker-2"
+
+"worker-2":
+  waiting to lock monitor 0x00007ef970000ff0 (object 0x0000000716819950, a java.lang.Object),
+  which is held by "worker-1"`,
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "`ReentrantLock` の持ち主は `- locked` に出ない",
+          text: "`synchronized` ではなく、`ReentrantLock` などのロックを待っているスレッドは、`BLOCKED` ではなく `WAITING (parking)` になり、`- parking to wait for <0x...>` の行が出ます。このロックの持ち主は、`jstack PID` や `kill -3` の出力には出ません。`jstack -l PID` か `jcmd PID Thread.print -l` で取ると、各スレッドの `Locked ownable synchronizers` に、持っているロックのアドレスが出ます。デッドロックになっていれば、オプションを付けなくても「Found one Java-level deadlock」は出ます。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "DB のレコードロックの待ちは、ここには出ない",
+          text: "DB のレコードロックを待っているスレッドは、Java から見ると DB の応答を待っているだけなので、`RUNNABLE` のソケットの読み込みに見えます。`waiting to lock` も「Found one Java-level deadlock」も出ません。DB 側で、ロックを待っているトランザクションを確認しましょう。",
+        },
+        {
+          type: "h2",
+          text: "スレッドダンプでは分からないこと",
+        },
+        {
+          type: "p",
+          text: "スレッドダンプで分かるのは、どのスレッドが、どのクラスのどの行で、何を待っているかまでです。次のことは出ないので、ほかの記録で確かめましょう。",
+        },
+        {
+          type: "table",
+          headers: ["分からないこと", "確かめる場所"],
+          rows: [
+            ["どのホストのどのポートへ接続しているか", "アプリのログ（送信先の URL）、`application.yml` の設定"],
+            ["どの SQL を実行しているか", "MyBatis などの SQL のログ、DB 側の実行中の処理の一覧（MySQL なら `SHOW PROCESSLIST`）"],
+            ["どの申請や利用者の処理か", "同じスレッド名のログ"],
+          ],
+        },
+        { type: "quiz", id: "ts-dump-state" },
+        { type: "quiz", id: "ts-dump-nid" },
+        {
+          type: "h2",
+          text: "手元で試すには",
+          aside: "hands-on",
+        },
+        {
+          type: "p",
+          text: "CPU を使い続ける例は、申請くんで試せます。「トラブル例：処理が返ってこない（スレッドダンプ）」の「手元で再現するには」と同じ方法で起動し、佐藤（`sato`）でログインしてから `http://localhost:8080/shinsei/investigation/13/due-date` を開きましょう。応答は返ってこないまま、スレッドが CPU を使い続けます。",
+          link: {
+            label: "トラブル例：処理が返ってこない（スレッドダンプ）",
+            to: "/tracks/troubleshoot/p-hang",
+          },
+        },
+        {
+          type: "code",
+          title: "別の端末で、スレッドごとの CPU 使用率とスレッドダンプを取る",
+          lang: "bash",
+          code: `docker exec shinsei-hang top -H -b -n 1 -p 1
+docker exec shinsei-hang kill -3 1`,
+        },
+        {
+          type: "p",
+          text: "このループは終わらないので、試し終えたら `docker rm -f shinsei-hang` でコンテナを消しましょう。",
+        },
+      ],
+    },
+    {
       id: "compare-working",
       title: "正常なケースと突き合わせる",
       minutes: 8,
@@ -1462,12 +1857,16 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
     {
       id: "p-hang",
       title: "トラブル例：処理が返ってこない（スレッドダンプ）",
-      minutes: 10,
-      tags: ["Java 全般"],
+      minutes: 12,
+      tags: ["Java 全般", "Spring", "Docker"],
       blocks: [
         {
           type: "p",
           text: "「トラブル例：遅い」は、ログが進みながら時間がかかっているケースでした。ここで扱うのは、ログの続きが一切出ないまま、処理が止まっているように見えるケースです。",
+        },
+        {
+          type: "p",
+          text: "例として、申請くんで承認ボタンを押しても応答が返ってこない場面を使います。この例の承認は、ステータスを更新したあと、申請者への通知を外部の通知 API へ POST します。申請くんで試す手順は、末尾の「手元で再現するには」にあります。",
         },
         {
           type: "h2",
@@ -1480,6 +1879,23 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
             label: "トラブル例：遅い",
             to: "/tracks/troubleshoot/p-slow",
           },
+        },
+        {
+          type: "code",
+          title: "佐藤が ID 12 を承認したときのログ（申請くん・抜粋）",
+          lang: "text",
+          highlightLines: [7],
+          code: `12:37:48.229 DEBUG [nio-8080-exec-7] j.c.e.s.aspect.ServiceLoggingAspect : start InvestigationService.approveAndNotify(..)
+（中略：findById の SQL）
+12:37:48.251 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.RequestMapper.update : ==>  Preparing: UPDATE t_request SET status = ?, updated_at = NOW() WHERE id = ?
+12:37:48.252 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.RequestMapper.update : ==> Parameters: APPROVED(String), 12(Long)
+12:37:48.254 DEBUG [nio-8080-exec-7] j.c.e.s.mapper.RequestMapper.update : <==    Updates: 1
+（中略）
+12:37:48.256 INFO  [nio-8080-exec-7] j.c.e.s.client.NotificationClient : POST http://notify:9000/api/send requestId=12`,
+        },
+        {
+          type: "p",
+          text: "`[nio-8080-exec-7]` のスレッドが最後に出した行は、`NotificationClient` が通知 API へ POST する直前に出したログです。`NotificationClient` のソースには、POST のあとに `sent requestId=...` を出す行があります。その行も、ERROR も出ていません。ここまでで、POST を始めたあとで止まっていることが分かります。中で何を待っているかは、ログからは分かりません。",
         },
         {
           type: "h2",
@@ -1505,66 +1921,162 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
           text: "軽量化のため、コンテナは JRE だけ（JDK 抜き）で作られていることがあります。申請くんの Docker イメージ（`eclipse-temurin:17-jre`）もこの構成で、`jstack` はコンテナの中に入っていません。`command not found` になったら、Java プロセスへ `kill -3 PID` を送りましょう。スレッドダンプと同じ内容が標準出力に書き出されます。Docker なら `docker logs` で見られますが、これは JVM が直接書く出力なので、Logback などロギングフレームワークが書くログファイルには入りません。追加のツールが要らないので、JDK が無いコンテナでも使えます。",
         },
         {
-          type: "callout",
-          kind: "note",
-          title: "1 回だけでなく数回取る",
-          text: "同じスレッドが何度取っても同じ場所で止まっていれば、そこが疑わしいです。数秒おきに 2〜3 回取って比べましょう。",
-        },
-        {
-          type: "h2",
-          text: "スレッドの状態を読む",
-        },
-        {
           type: "p",
-          text: "スレッドダンプの各スレッドには、そのときの状態が書かれています。",
-        },
-        {
-          type: "table",
-          headers: ["状態", "意味"],
-          rows: [
-            ["`RUNNABLE`", "実行中、または OS レベルの入出力待ちを含む実行可能な状態"],
-            ["`BLOCKED`", "他のスレッドが持つロック（`synchronized` など）の解放を待っている"],
-            ["`WAITING` / `TIMED_WAITING`", "`wait()` や `join()`、外部からの応答など、何かの完了を待っている"],
-          ],
-        },
-        {
-          type: "h2",
-          text: "デッドロックを見分ける",
-        },
-        {
-          type: "p",
-          text: "`jstack` の出力の最後に「Found one Java-level deadlock」という行が出ることがあります。出ていれば、どのスレッドがどのロックを待っているかが明示されます。",
+          text: "申請くんでは、`kill -3` を 5 秒あけて 2 回送りました。申請くんの Dockerfile は `java` を直接起動しているので、コンテナの中では Java のプロセスの PID は 1 です。",
         },
         {
           type: "code",
-          title: "デッドロックの出力例（申請くんの実ログではない）",
-          lang: "text",
-          code: `Found one Java-level deadlock:
-=============================
-"pool-1-thread-1":
-  waiting to lock monitor 0x00007f... (object 0x000000076ab12345, a jp.co.example.shinsei.service.RequestService),
-  which is held by "pool-1-thread-2"
-"pool-1-thread-2":
-  waiting to lock monitor 0x00007f... (object 0x000000076ab67890, a jp.co.example.shinsei.service.UserService),
-  which is held by "pool-1-thread-1"`,
+          title: "申請くんのコンテナでスレッドダンプを取る",
+          lang: "bash",
+          code: `docker exec コンテナ名 kill -3 1
+docker logs コンテナ名`,
         },
         {
-          type: "p",
-          text: "2 つのスレッドが、お互いの持つロックを待ち合っています。この出力が無くても、複数のスレッドが `BLOCKED` のまま同じロックを待っていれば、デッドロックに近い状態を疑いましょう。",
+          type: "callout",
+          kind: "note",
+          title: "1 回だけでなく数回取る",
+          text: "何度取っても、同じスレッドが同じ場所で止まっていれば、そこが疑わしいです。数秒おきに 2〜3 回取って比べましょう。",
         },
         {
           type: "h2",
-          text: "スタックだけでは分からないこと",
+          text: "ログのスレッド名でスレッドダンプを探す",
         },
         {
           type: "p",
-          text: "外部 API への応答待ちで止まっているときは、スレッドの状態が `RUNNABLE` のまま長時間動かないこともあります。デッドロックの表示が無いからといって、正常とは限りません。at 行の一番上に、どのクラスのどのメソッドで止まっているかが出ます。それが自分たちのコードか、外部呼び出し用のライブラリかを確認しましょう。外部呼び出しで止まっているなら、「トラブル例：外部システム / 外部 API」で向き先を特定しましょう。",
+          text: "ログの `[nio-8080-exec-7]` は、スレッド名の後ろ 15 文字です。スレッドダンプで `http-nio-8080-exec-7` を検索しましょう。",
+        },
+        {
+          type: "code",
+          title: "http-nio-8080-exec-7 の塊（申請くん・1 回目。抜粋）",
+          lang: "text",
+          highlightLines: [3, 6],
+          code: `"http-nio-8080-exec-7" #30 daemon prio=5 os_prio=0 cpu=83.44ms elapsed=23.61s tid=0x000078874d1c7ab0 nid=0x34 runnable  [0x00007886d2ef9000]
+   java.lang.Thread.State: RUNNABLE
+	at sun.nio.ch.SocketDispatcher.read0(java.base@17.0.20/Native Method)
+	（中略：JDK のソケットと HTTP の行）
+	at org.springframework.web.client.RestTemplate.postForObject(RestTemplate.java:443)
+	at jp.co.example.shinsei.client.NotificationClient.send(NotificationClient.java:25)
+	at jp.co.example.shinsei.service.InvestigationService.approveAndNotify(InvestigationService.java:64)
+	（以下略）`,
+        },
+        {
+          type: "p",
+          text: "2 回目も、状態は `RUNNABLE` で、最上段は `SocketDispatcher.read0` のままでした。見出し行の `cpu=83.44ms` も変わっていません。CPU を使わず、ソケットから読もうとして待ち続けていると読めます。自分たちが書いたコードで最初に出る行は `NotificationClient.java:25` で、その上は `RestTemplate.postForObject` です。通知 API へ POST して、その応答を待っています。見出し行や状態の読み方は、「スレッドダンプの読み方」で扱っています。",
           link: {
-            label: "トラブル例：外部システム / 外部 API",
-            to: "/tracks/troubleshoot/p-external",
+            label: "スレッドダンプの読み方",
+            to: "/tracks/troubleshoot/thread-dump",
           },
         },
+        {
+          type: "h2",
+          text: "原因を特定する",
+        },
+        {
+          type: "code",
+          title: "NotificationClient.java（申請くん・再現用、抜粋）",
+          lang: "java",
+          highlightLines: [4],
+          highlightKind: "error",
+          code: `@Component
+@Slf4j
+public class NotificationClient {
+  private final RestTemplate restTemplate = new RestTemplate();
+  private final String url;
+
+  // （コンストラクタは省略）
+
+  public void send(Long requestId, String to) {
+    log.info("POST {} requestId={}", url, requestId);
+    restTemplate.postForObject(url, Map.of("requestId", requestId, "to", to), String.class);
+    log.info("sent requestId={}", requestId);
+  }
+}`,
+        },
+        {
+          type: "p",
+          text: "`new RestTemplate()` で作った `RestTemplate` には、接続と読み取りのタイムアウトが設定されていません。この場合、相手が接続を受け付けたまま応答を返さないと、読み取りでいつまでも待ちます（JVM のシステムプロパティで既定値を変えていない場合）。この例の通知 API は、接続を受け付けたまま応答を返していません。これが、承認の応答が返ってこない原因です。",
+        },
+        {
+          type: "p",
+          text: "直すには、`RestTemplate` を作るときに、接続と読み取りのタイムアウトを設定します。申請くんの Spring Boot 2.7 なら、`RestTemplateBuilder` の `setConnectTimeout` と `setReadTimeout` で設定できます。あわせて、時間切れになったときに承認をどう扱うかを決めます。",
+        },
+        {
+          type: "h2",
+          text: "ほかの画面まで止まる",
+        },
+        {
+          type: "p",
+          text: "この承認は、`@Transactional` の中で通知 API を呼んでいます。トランザクションが終わるまで、DB のコネクションはコネクションプールへ返されません。通知の応答を待つ間、コネクションを 1 本持ったままになります。",
+        },
+        {
+          type: "p",
+          text: "止まった承認が増えてコネクションを使い切ると、通知と関係の無い画面も止まります。この例では、ID 13 の承認も同じように止めたあと、一覧（`GET /shinsei/requests`）を開くと、その応答も返ってきませんでした（この再現では、コネクションの上限を 2 本にしています）。そのときのスレッドダンプでは、一覧のスレッドが次の状態でした。",
+        },
+        {
+          type: "code",
+          title: "一覧を処理しているスレッド（申請くん・抜粋）",
+          lang: "text",
+          highlightLines: [5],
+          code: `"http-nio-8080-exec-9" #32 daemon prio=5 os_prio=0 cpu=4.65ms elapsed=23.61s tid=0x000078874c8c7aa0 nid=0x36 waiting on condition  [0x00007886d2cf8000]
+   java.lang.Thread.State: TIMED_WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@17.0.20/Native Method)
+	（中略）
+	at com.zaxxer.hikari.pool.HikariPool.getConnection(HikariPool.java:180)
+	（中略）
+	at jp.co.example.shinsei.service.RequestService.findMine(RequestService.java:21)
+	（中略）
+	at jp.co.example.shinsei.controller.RequestController.list(RequestController.java:32)
+	（以下略）`,
+        },
+        {
+          type: "p",
+          text: "`HikariPool.getConnection` で、コネクションが空くのを待っています。30 秒待っても空かず、一覧はエラー画面（ステータスコード 500）になりました。ログには `HikariPool-1 - Connection is not available, request timed out after 30001ms.` が出ます。「一覧が開かない」という報告から調べても、コネクションを持ったまま止まっているスレッド（ここでは `NotificationClient.send` で待っている 2 本）を探せば、同じ原因に辿り着きます。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "コネクションの上限を増やしても直らない",
+          text: "上限を増やしても、止まった承認がコネクションを使い切るまでの時間が延びるだけです。待ち続ける原因（ここではタイムアウトの無い通知 API の呼び出し）を直しましょう。",
+        },
         { type: "quiz", id: "ts-hang" },
+        {
+          type: "h2",
+          text: "手元で再現するには",
+          aside: "hands-on",
+        },
+        {
+          type: "p",
+          text: "ここからは、申請くんを手元で動かして、この例を試すための手順です。再現用の承認は、`investigation` プロファイルを指定して起動したときだけ有効です。通知 API の代わりに、接続を受け付けるだけで応答を返さないサーバ（Compose の `notify` サービス）も起動します。",
+        },
+        {
+          type: "p",
+          text: "Docker を起動し、端末で `shinsei-kun` ディレクトリへ移動しましょう。通常の app コンテナが起動している場合は、先に `docker compose stop app` で 8080 番ポートを空けます。そのあと次を実行します。DB は Compose が起動します。",
+        },
+        {
+          type: "code",
+          title: "通知 API の代わりのサーバと、再現用の申請くんを起動する",
+          lang: "bash",
+          code: `docker compose --profile investigation up -d notify
+docker compose run --build --service-ports --name shinsei-hang -e SPRING_PROFILES_ACTIVE=dev,investigation -e SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE=2 app`,
+        },
+        {
+          type: "p",
+          text: "`SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE=2` は、コネクションの上限を 2 本にする指定です。HikariCP の既定は 10 本なので、そのままだと一覧まで止めるには承認を 10 件止める必要があります。",
+        },
+        {
+          type: "p",
+          text: "ブラウザで `http://localhost:8080/shinsei/login` を開き、佐藤（`sato`）でログインしましょう。パスワードは `password` です。`http://localhost:8080/shinsei/investigation` を開き、「ID 12 を承認して通知」を押すと、応答が返ってこず、画面の読み込みが終わらなくなります。別のタブで同じ画面を開いて「ID 13 を承認して通知」を押し、さらに別のタブで一覧を開きましょう。",
+        },
+        {
+          type: "code",
+          title: "別の端末で、スレッドダンプを取る",
+          lang: "bash",
+          code: `docker exec shinsei-hang kill -3 1`,
+        },
+        {
+          type: "p",
+          text: "スレッドダンプは、`docker compose run` を実行した端末に出ます。あとから読むなら `docker logs shinsei-hang` を使いましょう。終わったら、`docker rm -f shinsei-hang` と `docker compose --profile investigation stop notify` で止めましょう。止まった承認は確定していません。次にアプリを起動すると、ID 12 と 13 は PENDING に戻ります。",
+        },
       ],
     },
     {
