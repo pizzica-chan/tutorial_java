@@ -1295,6 +1295,9 @@ h2,
   overflow: auto;
   margin: 18px 0;
   border: 1px solid var(--line);
+  /* 横に広い表でも、モバイルブラウザがセルの文字を自動拡大しないようにする */
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
 }
 
 table {
