@@ -796,7 +796,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
             ["`http-nio-8080-exec-7`", "Tomcat がリクエストを処理する", "最初に見る"],
             ["`http-nio-8080-Acceptor`、`http-nio-8080-Poller`", "Tomcat が接続を受け付ける", "飛ばす"],
             ["`HikariPool-1 housekeeper`", "DB のコネクションプールを管理する", "飛ばす"],
-            ["`GC Thread#0`、`C2 CompilerThread0`、`Reference Handler`", "JVM 自身の仕事（GC、コンパイルなど）", "ふだんは飛ばす。CPU を使っているなら見る"],
+            ["`GC Thread#0`、`C2 CompilerThread0`、`Reference Handler`", "JVM 自身の仕事（GC、コンパイルなど）", "飛ばす"],
           ],
         },
         {
@@ -955,6 +955,14 @@ public LocalDate dueDate(Long requestId, Long userId) {
         {
           type: "p",
           text: "`plusDays` は、1 日後の新しい `LocalDate` を返すメソッドです。`due` そのものは変わりません。戻り値を捨てているので、`due` は土日の日付のままで、ループが終わりません。申請 ID 13 は申請日が 2026-04-12 で、1 週間後が日曜なので、このループから出られなくなります。正しくは `due = due.plusDays(1);` と書きます。",
+        },
+        {
+          type: "p",
+          text: "突き合わせた先が `GC Thread#0` や `G1 Conc#0` などの GC のスレッドなら、スレッドダンプには見出し行しか無く、原因の行は分かりません。GC が CPU を使い続けるのは、メモリが足りないときが多いです。GC ログを確認しましょう。読み方は「トラブル例：メモリ不足・GC の当たりをつける」で扱っています。",
+          link: {
+            label: "トラブル例：メモリ不足・GC の当たりをつける",
+            to: "/tracks/troubleshoot/p-memory",
+          },
         },
         {
           type: "callout",
