@@ -1826,6 +1826,59 @@ th {
   overflow-x: auto;
 }
 
+.thread-figure {
+  color: var(--text);
+  font-size: 14px;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+.thread-figure .thread-figure-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+  color: var(--paper);
+  font-size: 18px;
+}
+
+.thread-figure-intro { margin: 0 0 18px; }
+.thread-figure code { font-family: var(--mono); font-size: 13px; overflow-wrap: anywhere; }
+.thread-anatomy { border: 1px solid var(--line-strong); background: var(--panel); }
+.thread-anatomy-row {
+  display: grid;
+  grid-template-columns: 150px minmax(0, 1fr);
+  gap: 16px;
+  padding: 16px;
+  border-left: 4px solid var(--amber-2);
+}
+.thread-anatomy-row + .thread-anatomy-row { border-top: 1px solid var(--line); }
+.thread-anatomy-row > strong { color: var(--paper); }
+.thread-anatomy-row code { display: block; }
+.thread-anatomy-row p { margin: 6px 0 0; font-size: 13px; }
+.thread-tone-wait { border-left-color: #ad6c23; background: #fff7e9; }
+.thread-tone-own { border-left-color: #338779; background: #e8f5f2; }
+.thread-figure-footnote { margin: 14px 0 0; font-size: 13px; }
+.thread-wait-layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 24px; }
+.thread-call-chain, .thread-wait-summary { min-width: 0; }
+.thread-call-node { display: grid; gap: 5px; padding: 14px 16px; background: var(--panel); border: 1px solid var(--line-strong); border-radius: 8px; }
+.thread-call-node > span, .thread-call-node small { font-size: 13px; }
+.thread-call-own { background: #e8f5f2; border-color: #338779; }
+.thread-call-wait { background: #fff7e9; border: 2px solid #ad6c23; }
+.thread-call-wait strong { display: flex; align-items: center; gap: 8px; color: #80501a; }
+.thread-call-wait .icon { flex-shrink: 0; }
+.thread-call-arrow { text-align: center; color: var(--amber); font-size: 22px; line-height: 1.5; }
+.thread-api { display: grid; justify-items: center; gap: 8px; padding: 22px 14px; border: 1px dashed var(--line-strong); border-radius: 8px; background: var(--panel); }
+.thread-api .icon { color: var(--amber); }
+.thread-api strong { font-size: 17px; }
+.thread-api span { font-size: 13px; }
+.thread-wait-summary p { margin: 16px 0; }
+.thread-state-note { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--line-strong); }
+@media (max-width: 640px) {
+  .thread-anatomy-row { grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 14px 12px; }
+  .thread-wait-layout { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+}
+
 .diagram-cap,
 .diagram-note {
   margin: 12px 0 0;

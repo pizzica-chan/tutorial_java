@@ -748,17 +748,8 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
 	（以下略）`,
         },
         {
-          type: "table",
-          headers: ["行", "何の行か"],
-          rows: [
-            ["`\"http-nio-8080-exec-7\"` で始まる行", "見出し行。スレッド名、使った CPU 時間、OS から見たスレッドの ID などが並ぶ"],
-            ["`java.lang.Thread.State: RUNNABLE`", "スレッドの状態"],
-            ["`SocketDispatcher.read0`", "最上段。いま実行している場所。ここではソケットから読もうとしている"],
-            ["`- locked <0x000000070fdd4f20>`", "このスレッドが持っているロック。このロックを待っているスレッドがいなければ問題ない"],
-            ["`RestTemplate.postForObject`", "ライブラリの行。HTTP の POST の応答を待っている"],
-            ["`NotificationClient.send`", "自分たちが書いたコードで最初に出る行。まずこの行のソースを開く"],
-            ["`InvestigationService.approveAndNotify`、`InvestigationController.approve`", "呼び出し元と、処理の入口"],
-          ],
+          type: "diagram",
+          name: "thread-dump-anatomy",
         },
         {
           type: "p",
@@ -847,6 +838,10 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
         {
           type: "p",
           text: "表の 1 行目と 2 行目は、どちらも `RUNNABLE` です。`RUNNABLE` は、CPU を使っているという意味ではありません。CPU を使っているかどうかは、次の節のように 2 回取って `cpu=` を比べましょう。",
+        },
+        {
+          type: "diagram",
+          name: "thread-dump-wait",
         },
         {
           type: "h2",
