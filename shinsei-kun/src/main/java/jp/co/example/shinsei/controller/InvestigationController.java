@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Profile("investigation")
@@ -51,6 +52,17 @@ public class InvestigationController {
   public RequestResponse api(@RequestBody NewRequest body,
       @AuthenticationPrincipal LoginUser user) {
     return RequestResponse.from(requestService.create(user.getId(), body.title(), body.approverId()));
+  }
+
+  @PostMapping("/approve/{id}")
+  public Map<String, Object> approve(@PathVariable Long id, @AuthenticationPrincipal LoginUser user) {
+    investigationService.approveAndNotify(id, user.getId());
+    return Map.of("id", id, "status", "APPROVED");
+  }
+
+  @GetMapping("/{id}/due-date")
+  public Map<String, Object> dueDate(@PathVariable Long id, @AuthenticationPrincipal LoginUser user) {
+    return Map.of("id", id, "dueDate", investigationService.dueDate(id, user.getId()));
   }
 
   public record Batch(Long approverId, List<String> titles) {}

@@ -33,5 +33,14 @@ services:
       db:
         condition: service_healthy
 
+  # 「処理が返ってこない」の再現用。応答を返さない通知 API。
+  # docker compose --profile investigation up -d notify で起動する。
+  notify:
+    image: python:3.12-alpine
+    profiles: ["investigation"]
+    volumes:
+      - ./scripts/notify-stub.py:/notify-stub.py:ro
+    command: ["python", "/notify-stub.py"]
+
 volumes:
   shinsei-mysql:
