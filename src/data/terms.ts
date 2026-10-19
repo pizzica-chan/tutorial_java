@@ -771,6 +771,107 @@ export const terms: TermDef[] = [
     body: "JVM がメモリを確保できなくなったときに投げられる `Error`（`Exception` ではありません）です。`Java heap space` はヒープ不足、`Metaspace` はクラス情報の領域不足など、メッセージによって疑う場所が変わります。",
   },
   {
+    term: "CPU",
+    aliases: ["CPU"],
+    body: "プログラムの命令を実行し、計算や判断を行う装置です。CPU 使用率は、一定の時間のうち、CPU が処理に使われた割合を表します。",
+  },
+  {
+    term: "CPU 時間",
+    aliases: ["CPU 時間", "cpu="],
+    body: "プロセスやスレッドが、実際に CPU を使った時間の合計です。通信の応答やロックの解放を待っていて、CPU を使っていない時間は含みません。処理が始まってからの経過時間とは異なります。",
+  },
+  {
+    term: "JVM",
+    aliases: ["JVM"],
+    body: "Java Virtual Machine（Java 仮想マシン）の略です。コンパイルされた Java のプログラムを実行します。メモリの管理やガベージコレクションも担います。",
+  },
+  {
+    term: "ソケット",
+    aliases: ["ソケット"],
+    body: "プログラムがデータを送受信するための通信の端点です。TCP 通信では、IP アドレスとポートを使って相手と接続します。同じ OS 上で通信する Unix ソケットもあります。",
+  },
+  {
+    term: "16 進数",
+    kana: "じゅうろくしんすう",
+    aliases: ["16 進数", "16 進"],
+    body: "0〜9 と a〜f の 16 種類の数字で数を表す方法です。10 進数の 10 は a、16 は 10、54 は 36 になります。`0x36` のように、先頭の `0x` で 16 進数だと示す書き方があります。",
+  },
+  {
+    term: "jstack",
+    aliases: ["jstack"],
+    body: "実行中の Java プロセスからスレッドダンプを取る、JDK 付属のコマンドです。`jstack PID` で、各スレッドの状態とスタックを表示します。`-l` を付けると、ReentrantLock などのロックを誰が持っているかという情報も表示します。",
+  },
+  {
+    term: "jcmd",
+    aliases: ["jcmd"],
+    body: "実行中の JVM に診断用の命令を送る、JDK 付属のコマンドです。`jcmd PID Thread.print` でスレッドダンプを表示できます。使える命令は、`jcmd PID help` で確認できます。",
+  },
+  {
+    term: "top -H",
+    aliases: ["top -H"],
+    body: "Linux の top コマンドで、プロセス単位ではなくスレッド単位の CPU 使用率などを表示する指定です。`top -H -p PID` で、対象のプロセスに絞れます。",
+  },
+  {
+    term: "ps -L",
+    aliases: ["ps -L"],
+    body: "Linux の ps コマンドで、プロセス内のスレッドも表示する指定です。`ps -L -p PID` で対象のプロセスに絞り、`-o` で表示する項目を選べます。",
+  },
+  {
+    term: "elapsed=",
+    aliases: ["elapsed="],
+    body: "OpenJDK 系のスレッドダンプの見出しで、そのスレッドが作られてからの経過時間を表す項目です。同じスレッドが複数のリクエストを処理するため、個々のリクエストの処理時間を表すものではありません。",
+  },
+  {
+    term: "nid=",
+    aliases: ["nid="],
+    body: "OpenJDK 系のスレッドダンプの見出しで、OS が付けたスレッドの ID を表す項目です。JDK 17 の Linux 版では、`nid=0x36` のように 16 進数で表示されます。",
+  },
+  {
+    term: "tid=",
+    aliases: ["tid="],
+    body: "OpenJDK 系のスレッドダンプの見出しで、JVM 内部のスレッドのデータのアドレスを表す項目です。OS が付けたスレッドの ID とは異なります。",
+  },
+  {
+    term: "RUNNABLE",
+    aliases: ["RUNNABLE"],
+    body: "Java のスレッドの状態の 1 つです。JVM 上で実行中の状態ですが、OS の資源やネットワークの応答を待っている場合も含まれます。この状態だけで、CPU を使い続けているとは判断できません。",
+  },
+  {
+    term: "BLOCKED",
+    aliases: ["BLOCKED"],
+    body: "Java のスレッドが、synchronized の処理に入るためのロックの解放を待っている状態です。通信や DB の応答を待つ状態とは区別されます。",
+  },
+  {
+    term: "WAITING",
+    aliases: ["WAITING"],
+    body: "Java のスレッドが、待つ時間の上限を指定せず、ほかのスレッドの動作を待っている状態です。通知やロックの解放を待つ場合などがあり、何を待っているかはスタックの行と合わせて読みます。",
+  },
+  {
+    term: "TIMED_WAITING",
+    aliases: ["TIMED_WAITING"],
+    body: "Java のスレッドが、待つ時間の上限を指定して待っている状態です。Thread.sleep による待機や、時間の上限を付けたロック待ちなどが含まれます。",
+  },
+  {
+    term: "parking",
+    aliases: ["parking"],
+    body: "Java のスレッドが、LockSupport.park などの仕組みで実行を休止していることを示す表記です。ロックの解放や、キューに仕事が入るのを待つ場合などに現れます。これだけでは、何を待っているかは分かりません。",
+  },
+  {
+    term: "synchronized",
+    aliases: ["synchronized"],
+    body: "Java で、同じロックを使う処理を複数のスレッドが同時に実行しないようにするキーワードです。処理に入るときにロックを取り、抜けるときに解放します。",
+  },
+  {
+    term: "ReentrantLock",
+    aliases: ["ReentrantLock"],
+    body: "Java で、ロックの取得と解放を明示的に行うためのクラスです。同じロックを使う処理の同時実行を防ぎます。ロックを取ったスレッド自身は、同じロックを重ねて取得できます。",
+  },
+  {
+    term: "Locked ownable synchronizers",
+    aliases: ["Locked ownable synchronizers"],
+    body: "OpenJDK 系のスレッドダンプで、そのスレッドが持つ ReentrantLock などのロックを列挙する欄です。synchronized で持っているロックは、この欄とは別にスタックの途中に表示されます。",
+  },
+  {
     term: "スレッドダンプ",
     aliases: ["スレッドダンプ", "thread dump"],
     body: "ある瞬間に、動いている各スレッドが何をしているかを書き出した記録です。`jstack` などで取得します。処理が返ってこないときに、どこで止まっているかを確認する手がかりになります。CPU を使い続けているスレッドを探すときにも使います。",
@@ -2112,7 +2213,9 @@ const matchers: Matcher[] = terms
     const escaped = escapeRegex(alias);
     let pattern = escaped;
     if (isAsciiTerm(alias)) {
-      pattern = `(?<![A-Za-z0-9_])${escaped}(?![A-Za-z0-9_])`;
+      // cpu= などの項目名は、直後に値が続く。単語で終わる語だけ末尾の境界を付ける。
+      const endBoundary = /[A-Za-z0-9_]$/.test(alias) ? "(?![A-Za-z0-9_])" : "";
+      pattern = `(?<![A-Za-z0-9_])${escaped}${endBoundary}`;
     } else if (isKatakanaTerm(alias)) {
       pattern = `(?<![\\u30A0-\\u30FFー])${escaped}(?![\\u30A0-\\u30FFー])`;
     }
