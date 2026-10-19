@@ -7,10 +7,10 @@ export function ThreadDumpAnatomy() {
     { label: "最上段の at 行", code: "at sun.nio.ch.SocketDispatcher.read0(…)", note: "ダンプを取った瞬間に、実行していた処理。この例では、ソケットからの読み込みで応答を待っている。", tone: "wait" },
     { label: "ライブラリ", code: "at …RestTemplate.postForObject(…)", note: "何の処理か。HTTP の POST の応答を待っている。", tone: "library" },
     { label: "自分たちのコード", code: "at …NotificationClient.send(NotificationClient.java:25)", note: "自分たちが書いたコードで最初に出る行。まずこの行のソースを開く。この例では通知 API を呼んでいる。", tone: "own" },
-    { label: "呼び出し元", code: "at …InvestigationService.approveAndNotify(…)", note: "下へ行くほど呼び出し元。その下には Controller の行がある。", tone: "caller" },
+    { label: "呼び出し元", code: "at …InvestigationService.approveAndNotify(…)", note: "下の at 行には、その上の処理を呼び出した Java メソッドが並ぶ。その下には Controller の行がある。", tone: "caller" },
   ];
   return <div className="thread-figure">
-    <h3 className="thread-figure-title"><Icon name="file" size={20} />1 スレッド分を、上から読む</h3>
+    <h3 className="thread-figure-title"><Icon name="file" size={20} />スレッドダンプの各行が表すこと</h3>
     <p className="thread-figure-intro">申請くんで通知 API の応答を待っている例。行の一部と、間の at 行は省略しています。</p>
     <div className="thread-anatomy">{rows.map((row) =>
       <div className={`thread-anatomy-row thread-tone-${row.tone}`} key={row.label}>
@@ -24,7 +24,7 @@ export function ThreadDumpAnatomy() {
 
 export function ThreadDumpWait() {
   return <div className="thread-figure">
-    <h3 className="thread-figure-title"><Icon name="route" size={20} />呼び出した順と、いま待っている場所</h3>
+    <h3 className="thread-figure-title"><Icon name="route" size={20} />通知 API の応答を待つまでの処理</h3>
     <p className="thread-figure-intro">申請くんの通知処理の例。矢印は Java メソッドを呼び出す向きです。</p>
     <div className="thread-wait-layout">
       <div className="thread-call-chain">
