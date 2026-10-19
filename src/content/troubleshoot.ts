@@ -748,17 +748,8 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
 	（以下略）`,
         },
         {
-          type: "table",
-          headers: ["行", "何の行か"],
-          rows: [
-            ["`\"http-nio-8080-exec-7\"` で始まる行", "見出し行。スレッド名、使った CPU 時間、OS から見たスレッドの ID などが並ぶ"],
-            ["`java.lang.Thread.State: RUNNABLE`", "スレッドの状態"],
-            ["`SocketDispatcher.read0`", "最上段。いま実行している場所。ここではソケットから読もうとしている"],
-            ["`- locked <0x000000070fdd4f20>`", "このスレッドが持っているロック。このロックを待っているスレッドがいなければ問題ない"],
-            ["`RestTemplate.postForObject`", "ライブラリの行。HTTP の POST の応答を待っている"],
-            ["`NotificationClient.send`", "自分たちが書いたコードで最初に出る行。まずこの行のソースを開く"],
-            ["`InvestigationService.approveAndNotify`、`InvestigationController.approve`", "呼び出し元と、処理の入口"],
-          ],
+          type: "diagram",
+          name: "thread-dump-anatomy",
         },
         {
           type: "p",
@@ -780,6 +771,14 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
           kind: "trap",
           title: "`elapsed=` はリクエストの経過時間ではない",
           text: "Tomcat のリクエスト用のスレッドは、起動時に一定の数が作られ、リクエストのたびに使い回されます。`elapsed=` が 23 秒でも、いまのリクエストが 23 秒前に始まったとは限りません。いつ始まったかは、同じスレッド名のログの時刻で確認しましょう。",
+        },
+        {
+          type: "p",
+          text: "at 行を下から上へ読むと、Java メソッドを呼び出した順になります。",
+        },
+        {
+          type: "diagram",
+          name: "thread-dump-wait",
         },
         {
           type: "h2",

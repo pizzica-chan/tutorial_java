@@ -3,6 +3,7 @@ import { PageAssets, Layers, Filters, ArchRoles, NPlusOne, ProcessThreads, Threa
 import type { DiagramName } from "../types";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon, type IconName } from "./Icon";
+import { ThreadDumpAnatomy, ThreadDumpWait } from "./ThreadDumpDiagrams";
 
 export function Diagram({ name, caption, anchorId }: { name: DiagramName; caption?: string; anchorId?: string }) {
   return (
@@ -46,6 +47,8 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "value-origin": ValueOrigin,
   "stack-own": StackOwn,
   "stack-line": StackLine,
+  "thread-dump-anatomy": ThreadDumpAnatomy,
+  "thread-dump-wait": ThreadDumpWait,
   "not-found": NotFound,
   "env-diff": EnvDiff,
   "cause-sides": CauseSides,

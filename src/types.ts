@@ -32,6 +32,8 @@ export type DiagramName =
   | "value-origin"
   | "stack-own"
   | "stack-line"
+  | "thread-dump-anatomy"
+  | "thread-dump-wait"
   | "not-found"
   | "env-diff"
   | "cause-sides"
