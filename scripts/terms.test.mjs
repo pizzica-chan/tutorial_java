@@ -16,7 +16,7 @@ const hints = (text) => splitByTerms(text)
 
 test("スレッドダンプの項目・状態・コマンドにヒントが付く", () => {
   for (const [text, term] of [
-    ["CPU", "CPU"], ["CPU 時間", "CPU 時間"], ["JVM", "JVM"],
+    ["CPU", "CPU"], ["CPU 時間", "CPU 時間"], ["CPU時間", "CPU 時間"], ["JVM", "JVM"],
     ["ソケット", "ソケット"], ["16 進", "16 進数"], ["16 進数", "16 進数"],
     ["cpu=83.44ms", "CPU 時間"], ["elapsed=23.61s", "elapsed="],
     ["nid=0x34", "nid="], ["tid=0x000078874d1c7ab0", "tid="],
@@ -64,7 +64,10 @@ test("長い用語と状態名を優先し、既存のヒントを維持する",
 
 test("別の用語とエイリアスが重複せず、検索と本文が同じ用語を参照する", () => {
   const seen = new Map();
+  const names = new Set();
   for (const term of terms) {
+    assert.ok(!names.has(term.term), `用語の定義が重複: ${term.term}`);
+    names.add(term.term);
     for (const alias of term.aliases) {
       assert.ok(!seen.has(alias.toLowerCase()) || seen.get(alias.toLowerCase()) === term,
         `別の用語と重複: ${alias}`);
