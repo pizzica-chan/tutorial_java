@@ -4,7 +4,7 @@ export function ThreadDumpAnatomy() {
   const rows = [
     { label: "見出し行", code: '"http-nio-8080-exec-7" … cpu=83.44ms … nid=0x34 …', note: "どのスレッドか。使った CPU 時間や ID もここにある。", tone: "header" },
     { label: "状態", code: "java.lang.Thread.State: RUNNABLE", note: "状態だけで、CPU を使っているとは判断できない。", tone: "state" },
-    { label: "最上段の at 行", code: "at sun.nio.ch.SocketDispatcher.read0(…)", note: "いまいる場所。この例では、ソケットから読もうとしている。", tone: "wait" },
+    { label: "最上段の at 行", code: "at sun.nio.ch.SocketDispatcher.read0(…)", note: "ダンプを取った瞬間に、実行していた処理。この例では、ソケットからの読み込みで応答を待っている。", tone: "wait" },
     { label: "ライブラリ", code: "at …RestTemplate.postForObject(…)", note: "何の処理か。HTTP の POST の応答を待っている。", tone: "library" },
     { label: "自分たちのコード", code: "at …NotificationClient.send(NotificationClient.java:25)", note: "自分たちが書いたコードで最初に出る行。まずこの行のソースを開く。この例では通知 API を呼んでいる。", tone: "own" },
     { label: "呼び出し元", code: "at …InvestigationService.approveAndNotify(…)", note: "下へ行くほど呼び出し元。その下には Controller の行がある。", tone: "caller" },
