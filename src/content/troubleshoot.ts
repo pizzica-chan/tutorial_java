@@ -724,7 +724,11 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
         },
         {
           type: "p",
-          text: "次は、申請くんで、通知 API の応答を待っているスレッドの塊です。見出し行、状態、at 行の順に並びます。",
+          text: "ここでは、申請くんで承認ボタンを押しても、画面の応答が返ってこない例を使います。この例では、承認後に別のサーバへ通知を依頼します。そのサーバから応答が返らず、承認の処理が待ち続けています。",
+        },
+        {
+          type: "p",
+          text: "次は、そのときのスレッドダンプです。見出し行、状態、at 行の順に並びます。",
         },
         {
           type: "code",
