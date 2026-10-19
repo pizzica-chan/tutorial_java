@@ -1,5 +1,6 @@
 import { highlightCode, highlightCodeLines, inferLang } from "../lib/highlight";
 import { JavaCode } from "./JavaCode";
+import { markCodePlaceholders } from "../lib/codePlaceholders";
 
 type Props = {
   anchorId?: string;
@@ -10,9 +11,10 @@ type Props = {
   codeScope?: "fragment-common" | "fragment-individual";
   highlightLines?: number[];
   highlightKind?: "error";
+  placeholders?: string[];
 };
 
-export function CodeBlock({ anchorId, code, lang, title, path, codeScope, highlightLines, highlightKind }: Props) {
+export function CodeBlock({ anchorId, code, lang, title, path, codeScope, highlightLines, highlightKind, placeholders = [] }: Props) {
   const resolved = inferLang(code, lang, path);
   const html =
     resolved === "java"
@@ -37,7 +39,7 @@ export function CodeBlock({ anchorId, code, lang, title, path, codeScope, highli
         ) : (
           <code
             className={resolved ? `language-${resolved}` : undefined}
-            dangerouslySetInnerHTML={{ __html: html ?? "" }}
+            dangerouslySetInnerHTML={{ __html: markCodePlaceholders(html ?? "", placeholders) }}
           />
         )}
       </pre>

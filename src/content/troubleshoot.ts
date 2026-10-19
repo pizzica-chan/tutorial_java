@@ -730,6 +730,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
           type: "code",
           title: "スレッドダンプをファイルに保存する",
           lang: "bash",
+          placeholders: ["PID"],
           code: "jstack -l PID > thread-dump.txt",
         },
         {
@@ -748,6 +749,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
           type: "code",
           title: "申請くんのコンテナでスレッドダンプを取る",
           lang: "bash",
+          placeholders: ["コンテナ名"],
           code: `docker exec コンテナ名 kill -3 1
 docker logs コンテナ名`,
         },
