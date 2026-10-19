@@ -277,7 +277,7 @@ export const cheatSheet: CheatSection[] = [
           { cmd: "`jcmd PID Thread.print`", env: "JDK", desc: "同じく JDK 同梱のツールで、書式は少し違うがスレッドダンプを取る" },
           { cmd: "`kill -3 PID`", env: "Linux", desc: "Java プロセスに送ると、プロセスは終了せず、`jstack` と同じ内容のスレッドダンプを標準出力へ書き出す。Docker なら `docker logs` で見えるが、Logback などが書くログファイルには入らない。追加のツールが要らないため、JDK が無い環境でも使える" },
           { cmd: "`jstack -l PID`", env: "JDK", desc: "`ReentrantLock` などのロックの持ち主（`Locked ownable synchronizers`）も出す。`jcmd PID Thread.print -l` でも同じ" },
-          { cmd: "`printf '%x\\n' TID`", env: "Linux", desc: "`top -H -p PID` の PID の列に出るスレッドの ID（10 進）を 16 進に直す。スレッドダンプの `nid=` と一致する" },
+          { cmd: "`printf '%x\\n' TID`", env: "Linux", desc: "`nid=` が 16 進数で表示される JDK 17 などで、`top -H -p PID` の PID の列に出るスレッドの ID（10 進）を 16 進に直す。JDK 18 以降では `nid=` が 10 進数なので、変換せずに同じ ID を探す" },
         ],
       },
       {

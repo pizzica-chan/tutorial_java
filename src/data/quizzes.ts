@@ -480,10 +480,10 @@ export const quizzes = {
   },
   "ts-dump-nid": {
     id: "ts-dump-nid",
-    question: "`top -H -p PID` で、ID が 54 のスレッドが CPU を 90% 使っている。スレッドダンプで何を検索する？",
+    question: "JDK 17 の Linux 環境で、`top -H -p PID` に ID が 54、CPU 使用率が 90% のスレッドが出ている。スレッドダンプで何を検索する？",
     choices: ["`#54`", "`nid=54`", "`nid=0x36`", "`tid=0x36`"],
     answer: 2,
-    explanation: "`top -H` の PID の列はスレッドの ID で、10 進です。スレッドダンプの `nid=` は同じ ID を 16 進で書いたもので、54 は 16 進で 36 です。見出し行の `#` の番号は Java が付けたスレッドの番号、`tid=` は JVM の中のデータのアドレスなので、どちらも `top` の値とは一致しません。",
+    explanation: "`top -H` の PID の列はスレッドの ID で、10 進です。JDK 17 のスレッドダンプでは、`nid=` は同じ ID を 16 進で書いたもので、54 は 16 進で 36 です。JDK 18 以降なら、10 進のまま `nid=54` を探します。見出し行の `#` の番号は Java が付けたスレッドの番号、`tid=` は JVM の中のデータのアドレスなので、どちらも `top` の値とは一致しません。",
   },
   "ts-external": {
     id: "ts-external",

@@ -762,7 +762,7 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
             ["`\"http-nio-8080-exec-7\"`", "スレッド名。ログの角括弧の中のスレッド名と同じもの。申請くんのログでは、後ろの 15 文字だけの `nio-8080-exec-7` になる"],
             ["`cpu=83.44ms`", "このスレッドがこれまでに使った CPU 時間（JDK 11 以降。JDK 8 には無い）"],
             ["`elapsed=23.61s`", "スレッドが作られてからの時間（JDK 11 以降。JDK 8 には無い）"],
-            ["`nid=0x34`", "OS から見たスレッドの ID（16 進）。`top` などの OS のコマンドと突き合わせるときに使う"],
+            ["`nid=0x34`", "OS から見たスレッドの ID。この JDK 17 の例では 16 進。`top` などの OS のコマンドと突き合わせるときに使う"],
             ["末尾の `runnable` や `waiting on condition`", "状態の短い表記。詳しくは次の行の `java.lang.Thread.State` を読む"],
           ],
         },
@@ -890,6 +890,10 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
         {
           type: "p",
           text: "CPU 使用率が高いまま下がらないときは、どのスレッドが CPU を使っているかを OS のコマンドで調べ、スレッドダンプと突き合わせましょう。",
+        },
+        {
+          type: "p",
+          text: "以下の手順は、申請くんが使う JDK 17 の例です。JDK 18 以降では `nid=` が 10 進数で表示されるため、16 進に変換せず、`nid=54` のように OS のコマンドで調べた ID をそのまま検索しましょう。",
         },
         {
           type: "ol",

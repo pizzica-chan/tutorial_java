@@ -809,7 +809,7 @@ export const terms: TermDef[] = [
   {
     term: "nid=",
     aliases: ["nid="],
-    body: "OpenJDK 系のスレッドダンプの見出しで、OS が付けたスレッドの ID を表す項目です。JDK 17 の Linux 版では、`nid=0x36` のように 16 進数で表示されます。",
+    body: "OpenJDK 系のスレッドダンプの見出しで、OS が付けたスレッドの ID を表す項目です。JDK 17 の Linux 版では、`nid=0x36` のように 16 進数で表示されます。JDK 18 以降では、同じ ID が `nid=54` のように 10 進数で表示されます。",
   },
   {
     term: "tid=",
