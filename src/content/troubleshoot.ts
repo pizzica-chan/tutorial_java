@@ -705,8 +705,55 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
           text: "例外のスタックトレースとのもう 1 つの違いは、最上段の意味です。例外のスタックトレースでは、最上段は例外が起きた場所でした。スレッドダンプでは、取った瞬間にそのスレッドが実行していた場所、または待っていた場所です。",
         },
         {
+          type: "h2",
+          text: "スレッドダンプを取る",
+        },
+        {
           type: "p",
-          text: "取り方は「トラブル例：処理が返ってこない（スレッドダンプ）」で扱います。このページでは、取ったスレッドダンプをどう読むかを扱います。",
+          text: "JDK が使える環境では、まず `jcmd -l` で Java プロセスの一覧を表示しましょう。対象のアプリの起動コマンドを確認し、先頭に出る PID（プロセス ID）を控えましょう。アプリが動いているマシンで、アプリを起動した OS のユーザとして実行しましょう。",
+        },
+        {
+          type: "code",
+          title: "Java プロセスの PID を調べる（JDK がある環境）",
+          lang: "bash",
+          code: "jcmd -l",
+        },
+        {
+          type: "p",
+          text: "次の `PID` を、調べた数字に置き換えましょう。PID は Java プロセスの ID であり、ダンプの `nid=` に出るスレッドの ID とは別です。",
+        },
+        {
+          type: "p",
+          text: "`jstack` の出力を `thread-dump.txt` に保存し、エディタで開いて読みましょう。`-l` は、スレッドが持つロックの情報も表示するオプションです。",
+        },
+        {
+          type: "code",
+          title: "スレッドダンプをファイルに保存する",
+          lang: "bash",
+          code: "jstack -l PID > thread-dump.txt",
+        },
+        {
+          type: "p",
+          text: "`jcmd PID Thread.print -l` でもスレッドダンプを取れます。いずれも動いている Java プロセスを終了させずに取得します。数秒おきに 2〜3 回取るときは、保存するファイル名を変えて、前の出力を残しましょう。比べ方は後の「数回取って比べる」で説明します。",
+        },
+        {
+          type: "p",
+          text: "Docker では、対象のコンテナの中でコマンドを実行します。申請くんのイメージは JRE だけなので、`jstack` や `jcmd` が入っていません。代わりに、次のコマンドで Java プロセスに `kill -3` を送り、標準出力に書き出されたダンプを確認しましょう。",
+        },
+        {
+          type: "p",
+          text: "`コンテナ名` は `docker ps` で調べた名前に置き換えましょう。申請くんでは Java を直接起動しているため、コンテナ内の Java プロセスの PID は 1 です。",
+        },
+        {
+          type: "code",
+          title: "申請くんのコンテナでスレッドダンプを取る",
+          lang: "bash",
+          code: `docker exec コンテナ名 kill -3 1
+docker logs コンテナ名`,
+        },
+        {
+          type: "p",
+          text: "承認の応答が返らない場面を再現し、ログとスレッドダンプから原因を特定する手順は、「トラブル例：処理が返ってこない（スレッドダンプ）」で扱います。ここからは、取ったダンプの読み方を確認しましょう。",
           link: {
             label: "トラブル例：処理が返ってこない（スレッドダンプ）",
             to: "/tracks/troubleshoot/p-hang",
@@ -1080,7 +1127,8 @@ public LocalDate dueDate(Long requestId, Long userId) {
           title: "別の端末で、スレッドごとの CPU 使用率とスレッドダンプを取る",
           lang: "bash",
           code: `docker exec shinsei-hang top -H -b -n 1 -p 1
-docker exec shinsei-hang kill -3 1`,
+docker exec shinsei-hang kill -3 1
+docker logs shinsei-hang`,
         },
         {
           type: "p",
