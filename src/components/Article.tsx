@@ -118,6 +118,7 @@ function BlockView({ block, anchorId }: { block: Block; anchorId: string }) {
           codeScope={block.codeScope}
           highlightLines={block.highlightLines}
           highlightKind={block.highlightKind}
+          placeholders={block.placeholders}
         />
       );
     case "callout":
