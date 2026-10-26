@@ -1299,7 +1299,7 @@ console.log(claims, new Date(claims.exp * 1000));`,
           type: "code",
           title: "JWT の検証を有効にする（例。申請くんではありません）",
           lang: "java",
-          highlightLines: [9, 14],
+          highlightLines: [9, 15, 16],
           code: `@Bean
 SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
   http.authorizeHttpRequests(auth -> auth
@@ -1324,7 +1324,7 @@ JwtDecoder jwtDecoder(@Value("\${app.jwt.secret}") String secret) {
         },
         {
           type: "p",
-          text: "`JwtDecoder` に渡している鍵が、図の「署名に使う鍵」です。この例のトークンはヘッダの `alg` が `HS256` なので、発行するサーバと検証するサーバが同じ鍵を使います。鍵が食い違うと、改ざんされていないトークンでも検証に失敗します。",
+          text: "`JwtDecoder` に渡している鍵が、最初の図でサーバに保存している鍵です。この例のトークンはヘッダの `alg` が `HS256` なので、発行するサーバと検証するサーバが同じ鍵を使います。鍵が食い違うと、改ざんされていないトークンでも検証に失敗します。",
         },
         {
           type: "code",
@@ -1363,7 +1363,7 @@ public List<RequestSummary> list(@AuthenticationPrincipal Jwt jwt) {
         },
         {
           type: "p",
-          text: "3 つとも問題が無いのに 401 になるなら、サーバ側を疑います。`oauth2ResourceServer` や `JwtDecoder` の設定と、検証に使う鍵が発行側と同じかを確認しましょう。",
+          text: "3 つとも問題が無いのに 401 になるなら、サーバ側を疑いましょう。上の例のように Spring Security で検証しているアプリなら、`oauth2ResourceServer` や `JwtDecoder` の設定と、検証に使う鍵が発行側と同じかを確認しましょう。",
         },
         {
           type: "p",
