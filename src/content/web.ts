@@ -1289,6 +1289,64 @@ console.log(claims, new Date(claims.exp * 1000));`,
         },
         {
           type: "h2",
+          text: "サーバ側で検証する",
+        },
+        {
+          type: "p",
+          text: "サーバは、届いたリクエストの `Authorization` ヘッダからトークンを取り出し、署名と期限を確かめます。Spring Security を使うアプリでは、この検証を自分で書かず、設定で有効にすることが多いです。次は、申請くんではない一般的な例です。",
+        },
+        {
+          type: "code",
+          title: "JWT の検証を有効にする（例。申請くんではありません）",
+          lang: "java",
+          highlightLines: [9, 14],
+          code: `@Bean
+SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
+  http.authorizeHttpRequests(auth -> auth
+      .antMatchers("/api/login").permitAll()
+      .anyRequest().authenticated()
+    )
+    .sessionManagement(session -> session
+      .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
+  return http.build();
+}
+
+@Bean
+JwtDecoder jwtDecoder(@Value("\${app.jwt.secret}") String secret) {
+  SecretKey key = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+  return NimbusJwtDecoder.withSecretKey(key).build();
+}`,
+        },
+        {
+          type: "p",
+          text: "`oauth2ResourceServer` の行で、JWT の検証が有効になります。Spring Security の Filter が `Authorization: Bearer ...` を読み、`JwtDecoder` で署名と `exp` を確かめます。この設定では、検証に通らないリクエストは Controller に入る前に 401 になります。`SessionCreationPolicy.STATELESS` は、セッションを作らない指定です。",
+        },
+        {
+          type: "p",
+          text: "`JwtDecoder` に渡している鍵が、図の「署名に使う鍵」です。この例のトークンはヘッダの `alg` が `HS256` なので、発行するサーバと検証するサーバが同じ鍵を使います。鍵が食い違うと、改ざんされていないトークンでも検証に失敗します。",
+        },
+        {
+          type: "code",
+          title: "トークンから取り出す（例。申請くんではありません）",
+          lang: "java",
+          highlightLines: [2, 3],
+          code: `@GetMapping("/api/requests")
+public List<RequestSummary> list(@AuthenticationPrincipal Jwt jwt) {
+  Long userId = Long.valueOf(jwt.getSubject());
+  return requestService.findMine(userId);
+}`,
+        },
+        {
+          type: "p",
+          text: "`@AuthenticationPrincipal` は、「Cookie とセッション」の Controller と同じアノテーションです。ここで渡るのは、検証済みのトークンの中身（`Jwt`）です。`jwt.getSubject()` が返す `\"7\"` は、サーバに保管したセッションではなく、ペイロードの `sub` から来ています。",
+          link: {
+            label: "Cookie とセッション",
+            to: "/tracks/web/session",
+          },
+        },
+        {
+          type: "h2",
           text: "Web API が認証エラーを返したとき",
         },
         {
@@ -1302,6 +1360,10 @@ console.log(claims, new Date(claims.exp * 1000));`,
             "付いていれば、ペイロードの `exp` が現在時刻を過ぎていないか。過ぎていれば、トークンの期限切れ",
             "期限内なら、ログイン API が最後に返したトークンと、送っているトークンが同じか。古いトークンを送り続けていないか",
           ],
+        },
+        {
+          type: "p",
+          text: "3 つとも問題が無いのに 401 になるなら、サーバ側を疑います。`oauth2ResourceServer` や `JwtDecoder` の設定と、検証に使う鍵が発行側と同じかを確認しましょう。",
         },
         {
           type: "p",
