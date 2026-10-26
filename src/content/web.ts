@@ -1363,11 +1363,11 @@ public List<RequestSummary> list(@AuthenticationPrincipal Jwt jwt) {
         },
         {
           type: "p",
-          text: "3 つとも問題が無いのに 401 になるなら、サーバ側を疑いましょう。上の例のように Spring Security で検証しているアプリなら、`oauth2ResourceServer` や `JwtDecoder` の設定と、検証に使う鍵が発行側と同じかを確認しましょう。",
+          text: "応答に `WWW-Authenticate` ヘッダがあれば、`error=\"invalid_token\"` のように理由が書かれていることがあります。",
         },
         {
           type: "p",
-          text: "応答に `WWW-Authenticate` ヘッダがあれば、`error=\"invalid_token\"` のように理由が書かれていることがあります。",
+          text: "3 つとも問題が無いのに 401 になるなら、サーバ側を疑いましょう。上の例のように Spring Security で検証しているアプリなら、`oauth2ResourceServer` や `JwtDecoder` の設定と、検証に使う鍵が発行側と同じかを確認しましょう。",
         },
         {
           type: "p",
