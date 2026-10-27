@@ -216,7 +216,7 @@ public class Request {
           rows: [
             ["`@Table(name = \"t_request\")`", "クラスが対応するテーブル", "`@Table` が無いクラスは、クラス名からテーブル名が決まる（Spring Boot の既定では `RequestItem` → `request_item`）。テーブル名でヒットしなければ、クラス名で探す"],
             ["`@Column(name = \"applicant_id\")`", "フィールドが対応するカラム", "ログのカラム名で探す。`@Column` が無いフィールドは、フィールド名からカラム名が決まる。カラム名でヒットしなければ、`applicantId` のようなフィールド名で探す"],
-            ["`@ManyToOne` / `@OneToMany`\n`@JoinColumn`", "Entity が別の Entity を持つ（例: 申請が申請者の `User` を持つ）", "`request.getApplicant()` で申請者の `User` を取り出すだけで、Hibernate が JOIN や追加の SELECT を発行することがある。SQL が書かれていないこの行が、SQL の発行元になっていることがある"],
+            ["`@ManyToOne` / `@OneToMany`\n`@JoinColumn`", "Entity が別の Entity を持つ（例: 申請が申請者の `User` を持つ）。`fetch` で、関連先をいつ読み込むかを指定する", "`fetch = FetchType.EAGER`（`@ManyToOne` の既定）なら、申請を読み込んだ時点で、JOIN か追加の SELECT が発行される。`fetch = FetchType.LAZY` なら、`request.getApplicant().getName()` のように関連先の中身に初めて触れた行で、追加の SELECT が発行される。どちらも、発行した行に SQL は書かれていない"],
             ["`@SQLRestriction(\"deleted = false\")`", "Entity に、いつも付ける条件を書く（例: 削除済みのレコードを除く）。Hibernate 6.3 より前は `@Where`", "ログの WHERE にこの条件が自動で付く。Repository を探しても、この条件は見つからない"],
           ],
         },
