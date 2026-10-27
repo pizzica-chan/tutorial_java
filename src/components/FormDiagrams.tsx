@@ -17,8 +17,8 @@ export function FormSubmission() {
       <span><Icon name="send" size={18} />送信するリクエスト</span>
     </div>
     <FormField
-      source={<><small>送信先</small><code>{'th:action="@{/requests}"'}</code></>}
-      target={<><small>URL（コンテキストパスを含む）</small><code>/shinsei/requests</code></>}
+      source={<><small>送信先</small><code>{'action="/shinsei/requests"'}</code></>}
+      target={<><small>URL</small><code>/shinsei/requests</code></>}
     />
     <FormField
       source={<><small>HTTP メソッドの指定</small><code>{'method="post"'}</code></>}
@@ -39,7 +39,40 @@ export function FormSubmission() {
         target={<><small>hidden の値も本文に載る</small><code>_csrf=8f3a…</code></>}
       />
     </div>
-    <p className="td-footnote">hidden はブラウザへ届いた HTML の例です。トークンの値は省略し、<code>_csrf</code> は 1 つだけ示しています。</p>
+    <p className="td-footnote">HTML はブラウザへ届いたものの例です。トークンの値は省略し、<code>_csrf</code> は 1 つだけ示しています。</p>
+  </div>;
+}
+
+export function FormHandler() {
+  return <div className="teaching-diagram form-submit">
+    <p className="td-heading">申請くん：POST を受け取る Java メソッド</p>
+    <div className="form-submit-head" aria-hidden="true">
+      <span><Icon name="send" size={18} />リクエスト</span>
+      <span><Icon name="file" size={18} />RequestController.java</span>
+    </div>
+    <FormField
+      source={<><small>URL のパス</small><code>/shinsei/requests</code><span>コンテキストパスの <code>/shinsei</code> を除くと <code>/requests</code></span></>}
+      target={<><small>クラスのパス</small><code>{'@RequestMapping("/requests")'}</code></>}
+    />
+    <FormField
+      source={<><small>HTTP メソッド</small><strong>POST</strong></>}
+      target={<><small>Java メソッドに付いた指定（パスなし）</small><code>@PostMapping</code><span>この Java メソッドが受け取る：<code>create</code></span></>}
+    />
+    <div className="form-submit-body">
+      <p className="form-submit-body-label">本文の値と <code>create</code> の引数</p>
+      <FormField
+        source={<code>title=交通費申請</code>}
+        target={<code>@RequestParam String title</code>}
+      />
+      <FormField
+        source={<code>approverId=3</code>}
+        target={<code>@RequestParam Long approverId</code>}
+      />
+      <FormField
+        source={<code>_csrf=8f3a…</code>}
+        target={<><small>引数には無い</small><span>Controller より手前で Spring Security が確かめる</span></>}
+      />
+    </div>
   </div>;
 }
 
