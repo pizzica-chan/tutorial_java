@@ -45,10 +45,10 @@ export function FormSubmission() {
 
 export function FormRedirect() {
   const steps = [
-    { method: "POST", detail: "/shinsei/requests", browser: "提出", server: "申請を登録", response: false },
-    { method: "302", detail: "Location: /shinsei/requests", browser: "一覧の URL を受け取る", server: "", response: true },
-    { method: "GET", detail: "/shinsei/requests", browser: "一覧を要求", server: "一覧を取得", response: false },
-    { method: "200", detail: "一覧の HTML", browser: "一覧を表示", server: "", response: true },
+    { method: "POST", detail: "/shinsei/requests", isCode: true, browser: "提出", server: "申請を登録", response: false },
+    { method: "302", detail: "Location: http://localhost:8080/shinsei/requests", isCode: true, browser: "一覧の URL を受け取る", server: "", response: true },
+    { method: "GET", detail: "/shinsei/requests", isCode: true, browser: "一覧を要求", server: "一覧を取得", response: false },
+    { method: "200", detail: "一覧の HTML", isCode: false, browser: "一覧を表示", server: "", response: true },
   ];
   return <div className="teaching-diagram form-redirect">
     <p className="td-heading">申請くん：提出してから一覧が表示されるまで</p>
@@ -60,11 +60,11 @@ export function FormRedirect() {
       <span className="form-redirect-end">{step.browser}</span>
       <div className="form-redirect-transfer">
         <span className="form-redirect-label"><b>{index + 1}</b><strong>{step.method}</strong><small>{step.response ? "サーバ → ブラウザ" : "ブラウザ → サーバ"}</small></span>
-        {index === 3 ? <span>{step.detail}</span> : <code>{step.detail}</code>}
+        {step.isCode ? <code>{step.detail}</code> : <span>{step.detail}</span>}
         <i className="form-redirect-wire" aria-hidden="true" />
       </div>
       <span className="form-redirect-end">{step.server}</span>
     </li>)}</ol>
-    <p className="td-footnote">1 と 3 は別のリクエストです。一覧の表示後に再読み込みすると、3 の GET がもう一度送られます。</p>
+    <p className="td-footnote">1 と 3 は別のリクエストです。</p>
   </div>;
 }
