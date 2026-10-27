@@ -117,7 +117,10 @@ export const devtools: DevtoolsSection[] = [
               "ここに出ている `name` と値の組が、ブラウザが実際に送ったものです。",
               "view source を押すと、URL エンコードされたままの形も確認できます。",
             ],
-            links: [{ label: "リクエストのパラメータ", to: "/tracks/web/params" }],
+            links: [
+              { label: "リクエストのパラメータ", to: "/tracks/web/params" },
+              { label: "フォームの送信", to: "/tracks/web/form-post" },
+            ],
           },
           {
             symptom: "画面にはエラーの文言しか出ず、詳しいことが分からない",
