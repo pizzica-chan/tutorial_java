@@ -508,11 +508,11 @@ title=%E4%BA%A4%E9%80%9A%E8%B2%BB%E7%94%B3%E8%AB%8B&approverId=3&_csrf=8f3a2b1c-
         },
         {
           type: "p",
-          text: "本文は、`name=値` を `&` でつないだ形です。この形であることを、`Content-Type: application/x-www-form-urlencoded` のヘッダで示します。日本語や記号は、`%E4%BA%A4...` のように URL エンコードされます。Network タブの Payload の Form Data には、デコードした値が出ます。",
+          text: "本文は、`name=値` を `&` でつないだ形です。ブラウザは、本文がこの形であることを `Content-Type: application/x-www-form-urlencoded` のヘッダで伝えます。日本語や記号は、`%E4%BA%A4...` のように URL エンコードされます。Network タブの Payload の Form Data には、元の文字に戻した値（デコードした値）が出ます。",
         },
         {
           type: "p",
-          text: "例では `_csrf` を 1 つだけ書いています。申請くんの実際の本文には、承認の POST と同じ理由で `_csrf` が 2 つ載ります。",
+          text: "上のリクエストの例では、`_csrf` を 1 つだけ書いています。申請くんの実際の本文には、承認の POST と同じ理由で `_csrf` が 2 つ載ります。",
           link: { label: "承認の POST", to: "/tracks/web/params" },
         },
         {
@@ -525,7 +525,7 @@ title=%E4%BA%A4%E9%80%9A%E8%B2%BB%E7%94%B3%E8%AB%8B&approverId=3&_csrf=8f3a2b1c-
         },
         {
           type: "p",
-          text: "受け取るのは `RequestController.create` です。本文の `title` と `approverId` が、同じ名前の `@RequestParam` に入ります。`_csrf` は、Controller より手前で Spring Security が確かめるので、引数にはありません。",
+          text: "受け取るのは `RequestController.create` です。本文の `title` と `approverId` が、同じ名前の `@RequestParam` の引数に入ります。`_csrf` は、Controller より手前で Spring Security が確かめるので、引数にはありません。",
         },
         {
           type: "code",
@@ -544,7 +544,7 @@ public String create(
         },
         {
           type: "p",
-          text: "ファイルを添付するフォームでは、`<form>` に `enctype=\"multipart/form-data\"` を書きます。本文の形が変わり、Spring では `MultipartFile` の引数で受け取ります。",
+          text: "ファイルを添付するフォームでは、`<form>` に `enctype=\"multipart/form-data\"` を書きます。本文は、項目ごとに区切った形になります。Spring では、ファイルを `MultipartFile` の引数で受け取ります。",
         },
         {
           type: "h2",
@@ -567,7 +567,7 @@ public String create(
           type: "callout",
           kind: "trap",
           title: "チェックを外したのに更新されない",
-          text: "チェックを外して送ると、そのキーは本文に無いので、サーバは「外した」と「項目が無い画面から送った」を区別できません。前の値をそのまま残す実装だと、外しても更新されません。Spring で `@ModelAttribute` で受け取るときは、チェックボックスの `name` の前に `_` を付けた hidden（`active` なら `_active=on`）を一緒に送ると、キーが無いチェックボックスを false として扱います。Thymeleaf の `th:field` は、この hidden を自動で足します。Form Data に、チェックボックスの `name` に `_` を付けたキーがあるかを確認しましょう。",
+          text: "チェックを外して送ると、そのキーは本文に無いので、サーバは、チェックを外して送ったのか、その項目が無いフォームから送ったのかを区別できません。前の値をそのまま残す実装だと、外しても更新されません。`@ModelAttribute` で受け取るとき、チェックボックスの `name` の前に `_` を付けた hidden（`active` なら `_active=on`）を一緒に送ると、Spring はキーが無いチェックボックスを false として扱います。Thymeleaf の `th:field` は、この hidden を自動で足します。Form Data に、チェックボックスの `name` に `_` を付けたキーがあるかを確認しましょう。",
         },
         {
           type: "h2",
@@ -575,7 +575,7 @@ public String create(
         },
         {
           type: "p",
-          text: "フォームの送信は、ページの移動です。返ってきたレスポンスで、画面全体が置き換わります。Network タブでは、種類が document の行になります。JavaScript から送る Ajax とは、ここが違います。",
+          text: "フォームの送信は、ページの移動です。返ってきたレスポンスで、画面全体が置き換わります。Network タブでは、種類が document の行になります。JavaScript から送る Ajax では、画面全体は置き換わらず、Network タブでは fetch や xhr の行になります。",
           link: { label: "Ajax", to: "/tracks/web/ajax" },
         },
         {
@@ -596,7 +596,7 @@ public String create(
         },
         {
           type: "p",
-          text: "POST のあとにリダイレクトするのは、再読み込みで同じ POST がもう一度送られないようにするためです。POST の応答の画面のまま再読み込みすると、ブラウザは再送信してよいかを確認します。再送信すると同じ POST がもう一度届くので、登録の処理なら同じ内容が 2 件登録されることがあります。リダイレクトしておけば、再読み込みしても一覧の GET が送られるだけです。",
+          text: "POST のあとにリダイレクトするのは、再読み込みで同じ POST がもう一度送られないようにするためです。POST の応答として返ってきた画面のまま再読み込みすると、ブラウザは再送信してよいかを確認します。再送信すると同じ POST がもう一度届くので、登録の処理なら同じ内容が 2 件登録されることがあります。リダイレクトしておけば、再読み込みしても一覧の GET が送られるだけです。",
         },
         {
           type: "p",
@@ -610,7 +610,7 @@ public String create(
         },
         {
           type: "p",
-          text: "`required` を経由せずに空の件名を送り、サーバ側の入力チェックを入口ごとに比べる例を、シナリオ「画面では拒否される空の件名が、API から登録できる」で追っています。",
+          text: "`required` のチェックを通さずに空の件名を送り、サーバ側の入力チェックを入口ごとに比べる例を、シナリオ「画面では拒否される空の件名が、API から登録できる」で追っています。",
           link: { label: "画面では拒否される空の件名が、API から登録できる", to: "/tracks/scenario/validation-paths" },
         },
         {

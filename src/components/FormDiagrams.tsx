@@ -11,35 +11,24 @@ function FormField({ source, target }: { source: ReactNode; target: ReactNode })
 
 export function FormSubmission() {
   return <div className="teaching-diagram form-submit">
-    <p className="td-heading">申請くん：HTML と送信内容の対応</p>
+    <p className="td-heading">申請くん：入力欄と本文の対応</p>
     <div className="form-submit-head" aria-hidden="true">
-      <span><Icon name="code" size={18} />HTML・入力した値</span>
-      <span><Icon name="send" size={18} />送信するリクエスト</span>
+      <span><Icon name="code" size={18} />ブラウザに届いた HTML と操作</span>
+      <span><Icon name="send" size={18} />本文に載るキーと値</span>
     </div>
     <FormField
-      source={<><small>送信先</small><code>{'th:action="@{/requests}"'}</code></>}
-      target={<><small>URL（コンテキストパスを含む）</small><code>/shinsei/requests</code></>}
+      source={<><code>{'<input name="title">'}</code><span>「交通費申請」と入力</span></>}
+      target={<code>title=交通費申請</code>}
     />
     <FormField
-      source={<><small>HTTP メソッドの指定</small><code>{'method="post"'}</code></>}
-      target={<><small>HTTP メソッド</small><strong>POST</strong></>}
+      source={<><code>{'<select name="approverId">'}</code><code>{'<option value="3">佐藤花子</option>'}</code><span>佐藤花子を選ぶ</span></>}
+      target={<><code>approverId=3</code><small>送られるのは画面の名前ではなく、<code>value</code> の 3</small></>}
     />
-    <div className="form-submit-body">
-      <p className="form-submit-body-label">ここから下は本文に載る値（デコードした表示）</p>
-      <FormField
-        source={<><small>件名</small><code>{'name="title"'}</code><span>入力：交通費申請</span></>}
-        target={<><small><code>name</code> がキー、入力した内容が値</small><code>title=交通費申請</code></>}
-      />
-      <FormField
-        source={<><small>承認者</small><code>{'name="approverId"'}</code><span>表示：佐藤花子</span><small>選んだ <code>option</code> の値</small><code>{'value="3"'}</code></>}
-        target={<><small>選んだ <code>option</code> の <code>value</code> を送る</small><code>approverId=3</code><span>送るのは名前ではなく ID</span></>}
-      />
-      <FormField
-        source={<><small>hidden（画面には出ない）</small><code>{'type="hidden" name="_csrf"'}</code></>}
-        target={<><small>hidden の値も本文に載る</small><code>_csrf=8f3a…</code></>}
-      />
-    </div>
-    <p className="td-footnote">hidden はブラウザへ届いた HTML の例です。トークンの値は省略し、<code>_csrf</code> は 1 つだけ示しています。</p>
+    <FormField
+      source={<><code>{'<input type="hidden" name="_csrf" value="8f3a…">'}</code><span>画面には出ない</span></>}
+      target={<code>_csrf=8f3a…</code>}
+    />
+    <p className="td-footnote">HTML は属性の一部だけを示しています。トークンの値は省略しています。</p>
   </div>;
 }
 
