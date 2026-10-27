@@ -1324,7 +1324,7 @@ JwtDecoder jwtDecoder(@Value("\${app.jwt.secret}") String secret) {
         },
         {
           type: "p",
-          text: "`SessionCreationPolicy.STATELESS` は、Spring Security がセッションを作らず、ログイン状態をセッションから読まない指定です。",
+          text: "`SessionCreationPolicy.STATELESS` を指定すると、Spring Security はログイン状態をセッションに残しません。サーバが複数台でもセッションを共有せずに済む代わりに、どのリクエストにもトークンが要ります。付け忘れると、前のリクエストが通っていても 401 になります。",
         },
         {
           type: "p",
