@@ -490,15 +490,9 @@ public String search(@ModelAttribute OrderSearchForm form, Model model) {
 </form>`,
         },
         {
-          type: "table",
-          headers: ["HTML の書き方", "リクエストのどこになるか", "新規申請の例"],
-          rows: [
-            ["`<form>` の `action`（`th:action`）", "URL", "`/shinsei/requests`"],
-            ["`<form>` の `method`", "HTTP メソッド", "POST"],
-            ["入力欄の `name`", "本文のキー", "`title`、`approverId`"],
-            ["入力した値、選んだ `<option>` の `value`", "本文の値", "`交通費申請`、`3`"],
-            ["`type=\"hidden\"` の入力欄", "本文のキーと値（画面には出ない）", "`_csrf`"],
-          ],
+          type: "diagram",
+          name: "form-submission",
+          caption: "入力欄の `name` が本文のキーになり、入力した値や選んだ `<option>` の `value` が値になります。hidden の値も本文に載ります。",
         },
         {
           type: "p",
@@ -599,6 +593,11 @@ public String create(
         {
           type: "p",
           text: "申請くんの `create` は `redirect:/requests` を返します。レスポンスは 302 で、`Location` ヘッダに一覧の URL が入ります。ブラウザはそれを受けて、`GET /shinsei/requests` を送ります。画面が切り替わると POST の行が Network タブから消えることがあるので、Keep log（Chrome のバージョンによっては Preserve log）にチェックを入れてから送信しましょう。",
+        },
+        {
+          type: "diagram",
+          name: "form-redirect",
+          caption: "POST の応答は 302 で、ブラウザは `Location` の URL へ GET を送ります。",
         },
         {
           type: "figure",

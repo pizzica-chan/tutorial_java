@@ -8,6 +8,8 @@ export type DiagramName =
   | "http-roundtrip"
   | "url-parts"
   | "request-params"
+  | "form-submission"
+  | "form-redirect"
   | "get-post"
   | "status-codes"
   | "page-assets"
