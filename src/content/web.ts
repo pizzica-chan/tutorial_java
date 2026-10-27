@@ -468,7 +468,7 @@ public String history(@ModelAttribute HistorySearchForm form, Model model) {
           type: "code",
           title: "request/form.html（申請くん・抜粋）",
           lang: "html",
-          highlightLines: [1, 4, 8, 12],
+          highlightLines: [1, 4, 8, 13],
           code: `<form class="stack js-submit-confirm" th:action="@{/requests}" method="post">
   <label>
     件名
