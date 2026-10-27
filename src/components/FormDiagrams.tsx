@@ -11,24 +11,24 @@ function FormField({ source, target }: { source: ReactNode; target: ReactNode })
 
 export function FormSubmission() {
   return <div className="teaching-diagram form-submit">
-    <p className="td-heading">申請くん：入力欄と本文の対応</p>
+    <p className="td-heading">申請くん：入力欄と送られる値</p>
     <div className="form-submit-head" aria-hidden="true">
-      <span><Icon name="code" size={18} />ブラウザに届いた HTML と操作</span>
-      <span><Icon name="send" size={18} />本文に載るキーと値</span>
+      <span><Icon name="code" size={18} />入力欄</span>
+      <span><Icon name="send" size={18} />送られる値</span>
     </div>
     <FormField
-      source={<><code>{'<input name="title">'}</code><span>「交通費申請」と入力</span></>}
+      source={<><small>件名</small><code>{'<input name="title">'}</code><span>入力した値：交通費申請</span></>}
       target={<code>title=交通費申請</code>}
     />
     <FormField
-      source={<><code>{'<select name="approverId">'}</code><code>{'<option value="3">佐藤花子</option>'}</code><span>佐藤花子を選ぶ</span></>}
-      target={<><code>approverId=3</code><small>送られるのは画面の名前ではなく、<code>value</code> の 3</small></>}
+      source={<><small>承認者</small><code>{'<select name="approverId">'}</code><span>選んだ項目：佐藤花子（<code>value</code> は 3）</span></>}
+      target={<><code>approverId=3</code><small>画面の名前ではなく、<code>value</code> が送られる</small></>}
     />
     <FormField
-      source={<><code>{'<input type="hidden" name="_csrf" value="8f3a…">'}</code><span>画面には出ない</span></>}
+      source={<><small>CSRF トークン</small><code>{'<input type="hidden" name="_csrf">'}</code><span>値：HTML にはじめから入っている</span></>}
       target={<code>_csrf=8f3a…</code>}
     />
-    <p className="td-footnote">HTML は属性の一部だけを示しています。トークンの値は省略しています。</p>
+    <p className="td-footnote">HTML は、ブラウザに届いたものを短くして示しています。</p>
   </div>;
 }
 
