@@ -492,6 +492,7 @@ public String search(@ModelAttribute OrderSearchForm form, Model model) {
         {
           type: "diagram",
           name: "form-submission",
+          caption: "入力欄の `name` が本文のキーになり、入力した値や選んだ `<option>` の `value` が値になります。hidden の値も本文に載ります。",
         },
         {
           type: "p",
@@ -596,6 +597,7 @@ public String create(
         {
           type: "diagram",
           name: "form-redirect",
+          caption: "POST の応答は 302 で、ブラウザは `Location` の URL へ GET を送ります。",
         },
         {
           type: "figure",
