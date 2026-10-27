@@ -458,15 +458,11 @@ public String search(@ModelAttribute OrderSearchForm form, Model model) {
       blocks: [
         {
           type: "p",
-          text: "フォームの送信ボタンを押すと、ブラウザは入力欄の値をまとめてサーバへ送ります。登録や承認のようにデータを変える画面では POST がよく使われ、値はリクエストの本文に入ります。検索画面のように GET で送るフォームでは、同じ値が URL のクエリに付きます。申請くんの申請履歴の検索は、GET の例です。",
+          text: "画面のフォームで送信ボタンを押すと、ブラウザは入力欄の値を集めて送ります。`method=\"post\"` のフォームでは、値はリクエストの本文に載ります。登録・更新・承認の画面の多くは、この形です。`method=\"get\"` のフォームでは、同じ値が URL のクエリに載ります（申請くんの申請履歴の検索がこの形）。",
         },
         {
           type: "h2",
           text: "申請くんの例：新規申請",
-        },
-        {
-          type: "p",
-          text: "新規申請の画面のテンプレートです。送られる値の名前は、入力欄の `name` で決まります。",
         },
         {
           type: "code",
@@ -492,11 +488,11 @@ public String search(@ModelAttribute OrderSearchForm form, Model model) {
         {
           type: "diagram",
           name: "form-submission",
-          caption: "入力欄の `name` がキーになり、入力した値や選んだ `<option>` の `value` が値になります。",
+          caption: "入力欄の `name` が本文のキーになり、入力した値や選んだ `<option>` の `value` が値になります。hidden の値も本文に載ります。",
         },
         {
           type: "p",
-          text: "件名に「交通費申請」と入力し、承認者に佐藤花子を選んで提出すると、次のリクエストが送られます。",
+          text: "件名に「交通費申請」と入れ、承認者に佐藤花子を選んで提出すると、次のリクエストが送られます。",
         },
         {
           type: "code",
@@ -512,11 +508,11 @@ title=%E4%BA%A4%E9%80%9A%E8%B2%BB%E7%94%B3%E8%AB%8B&approverId=3&_csrf=8f3a2b1c-
         },
         {
           type: "p",
-          text: "本文は `キー=値` を `&` でつないだ形で、ヘッダの `Content-Type: application/x-www-form-urlencoded` がこの形式を表します。日本語は `%E4%BA%A4...` のように URL エンコードされて送られます。Network タブの Payload では、元の文字に戻して表示されます。",
+          text: "本文は、`name=値` を `&` でつないだ形です。この形であることを、`Content-Type: application/x-www-form-urlencoded` のヘッダで示します。日本語や記号は、`%E4%BA%A4...` のように URL エンコードされます。Network タブの Payload の Form Data には、デコードした値が出ます。",
         },
         {
           type: "p",
-          text: "実際の申請くんでは、`_csrf` が 2 つ送られます。理由は承認の POST と同じです。上の例では 1 つに省略しています。",
+          text: "例では `_csrf` を 1 つだけ書いています。申請くんの実際の本文には、承認の POST と同じ理由で `_csrf` が 2 つ載ります。",
           link: { label: "承認の POST", to: "/tracks/web/params" },
         },
         {
@@ -524,12 +520,12 @@ title=%E4%BA%A4%E9%80%9A%E8%B2%BB%E7%94%B3%E8%AB%8B&approverId=3&_csrf=8f3a2b1c-
           kind: "screen",
           src: "/images/screen-network-create-payload.jpg",
           alt: "新規申請の POST の Payload。Form Data に _csrf、title（交通費申請）、approverId（3）、_csrf が並ぶ",
-          caption: "新規申請の POST の Payload。`_csrf` が 2 つ並んでいます。",
+          caption: "新規申請の POST の Payload。",
           size: "small",
         },
         {
           type: "p",
-          text: "サーバ側では、`RequestController.create` がこのリクエストを受け取ります。本文の `title` と `approverId` は、同じ名前の `@RequestParam` の引数に入ります。`_csrf` は Controller に届く前に Spring Security が確認するため、引数にはありません。",
+          text: "受け取るのは `RequestController.create` です。本文の `title` と `approverId` が、同じ名前の `@RequestParam` に入ります。`_csrf` は、Controller より手前で Spring Security が確かめるので、引数にはありません。",
         },
         {
           type: "code",
@@ -548,30 +544,30 @@ public String create(
         },
         {
           type: "p",
-          text: "ファイルを添付するフォームでは、`<form>` に `enctype=\"multipart/form-data\"` を指定します。このとき本文は項目ごとに区切られた形式になり、Spring ではファイルを `MultipartFile` の引数で受け取ります。",
+          text: "ファイルを添付するフォームでは、`<form>` に `enctype=\"multipart/form-data\"` を書きます。本文の形が変わり、Spring では `MultipartFile` の引数で受け取ります。",
         },
         {
           type: "h2",
-          text: "送られない値",
+          text: "送られない項目",
         },
         {
           type: "p",
-          text: "画面に入力欄があっても、送られない値があります。値がサーバに届かないときは、次の点を確認しましょう。",
+          text: "画面に入力欄があっても、本文に載らないものがあります。値が届かないときは、HTML の書き方を確かめましょう。",
         },
         {
           type: "ul",
           items: [
-            "`name` が無い入力欄は、値を入れても送られません。",
-            "`disabled` の入力欄は送られません。書き換えできないだけの `readonly` は送られます。",
-            "チェックしていないチェックボックスとラジオボタンは、項目ごと送られません。`false` や空文字が送られるわけではありません。チェックすると `value` の値が送られ、`value` が無ければ `on` が送られます。",
-            "送信ボタンが複数あるときは、押したボタンの `name` と `value` だけが送られます。",
+            "`name` の無い入力欄。値を入れても送られない",
+            "`disabled` の入力欄。書き換えられないだけの `readonly` は送られる",
+            "チェックの入っていないチェックボックスとラジオボタン。`false` や空の値が送られるのではなく、キーごと送られない。チェックしたときは `value` の値が送られ、`value` を書いていなければ `on` が送られる",
+            "押されなかった送信ボタンの `name` と `value`。送られるのは、押したボタンの分だけ",
           ],
         },
         {
           type: "callout",
           kind: "trap",
-          title: "チェックを外しても更新されない",
-          text: "チェックを外すと項目ごと送られないため、サーバからは、チェックを外したのか、その項目がフォームに無かったのかを見分けられません。前の値を残す実装だと、外したことが反映されません。Spring の `@ModelAttribute` では、`_active=on` のように名前の前に `_` を付けた hidden を一緒に送ると、チェックボックスが送られなかったときに false として扱います。Thymeleaf の `th:field` を使うと、この hidden が自動で追加されます。Form Data に `_` 付きの項目があるかを確認しましょう。",
+          title: "チェックを外したのに更新されない",
+          text: "チェックを外して送ると、そのキーは本文に無いので、サーバは「外した」と「項目が無い画面から送った」を区別できません。前の値をそのまま残す実装だと、外しても更新されません。Spring で `@ModelAttribute` で受け取るときは、チェックボックスの `name` の前に `_` を付けた hidden（`active` なら `_active=on`）を一緒に送ると、キーが無いチェックボックスを false として扱います。Thymeleaf の `th:field` は、この hidden を自動で足します。Form Data に、チェックボックスの `name` に `_` を付けたキーがあるかを確認しましょう。",
         },
         {
           type: "h2",
@@ -579,42 +575,42 @@ public String create(
         },
         {
           type: "p",
-          text: "フォームを送信すると、ブラウザは返ってきたレスポンスで画面全体を置き換えます。Network タブでは、種類（Type）が document の行になります。JavaScript から送る Ajax では画面全体は置き換わらず、行の種類は fetch や xhr になります。",
+          text: "フォームの送信は、ページの移動です。返ってきたレスポンスで、画面全体が置き換わります。Network タブでは、種類が document の行になります。JavaScript から送る Ajax とは、ここが違います。",
           link: { label: "Ajax", to: "/tracks/web/ajax" },
         },
         {
           type: "p",
-          text: "申請くんの `create` は `redirect:/requests` を返すので、POST のあとに一覧を取得する GET が続きます。画面が切り替わると Network タブから POST の行が消えることがあるため、Keep log（Chrome のバージョンによっては Preserve log）にチェックを入れてから送信しましょう。",
+          text: "申請くんの `create` は `redirect:/requests` を返すので、POST のあとに一覧の GET が続きます。画面が切り替わると POST の行が Network タブから消えることがあるので、Keep log（Chrome のバージョンによっては Preserve log）にチェックを入れてから送信しましょう。",
         },
         {
           type: "diagram",
           name: "form-redirect",
-          caption: "POST の応答は 302 です。ブラウザは `Location` ヘッダの URL に GET を送ります。",
+          caption: "POST の応答は 302 で、ブラウザは `Location` の URL へ GET を送ります。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-create-post.jpg",
           alt: "新規申請を送信したあとの申請一覧と Network タブ。requests の行が 2 つあり、1 行目が 302、2 行目が 200。どちらも Type は document",
-          caption: "新規申請を送信したあとの Network タブ（Keep log をオン）。1 行目が POST（302）、2 行目がリダイレクト先の GET（200）です。一覧の先頭が、いま登録した申請です。",
+          caption: "新規申請を送信したあと（Keep log をオン）。1 行目の `requests` が POST の 302、2 行目がリダイレクト先の GET の 200 です。画面の一覧の先頭が、いま登録した申請です。",
         },
         {
           type: "p",
-          text: "POST のあとにリダイレクトするのは、二重登録を防ぐためです。POST の結果をそのまま画面に表示すると、再読み込みしたときに、ブラウザが同じ POST をもう一度送ろうとします（送信してよいかの確認が出ます）。そのまま送ると、同じ申請が 2 件登録されることがあります。リダイレクトしておけば、再読み込みで送られるのは一覧の GET だけです。",
+          text: "POST のあとにリダイレクトするのは、再読み込みで同じ POST がもう一度送られないようにするためです。POST の応答の画面のまま再読み込みすると、ブラウザは再送信してよいかを確認します。再送信すると同じ POST がもう一度届くので、登録の処理なら同じ内容が 2 件登録されることがあります。リダイレクトしておけば、再読み込みしても一覧の GET が送られるだけです。",
         },
         {
           type: "p",
-          text: "入力エラーのときは、リダイレクトせずに入力画面をそのまま返すアプリもあります。この場合、POST の行のステータスコードは 200 になることが多いです。",
+          text: "入力エラーのときは、リダイレクトせずに、入力画面の HTML をそのまま返すアプリもあります。このときは、POST の行のステータスコードが 200 になることが多いです。",
         },
         {
           type: "callout",
           kind: "trap",
           title: "required はブラウザのチェック",
-          text: "`required` や `maxlength` は、送信前にブラウザが確認するだけです。curl や JavaScript でリクエストを直接送ると、このチェックを通らずにサーバへ届きます。サーバ側でも入力をチェックしているかは、Controller や Service を確認しましょう。",
+          text: "`required` や `maxlength` は、送信の前にブラウザが確かめるだけです。curl や JavaScript からリクエストを直接送ると、このチェックを通らずにサーバへ届きます。サーバ側でも入力をチェックしているかは、Controller や Service を確認しましょう。",
         },
         {
           type: "p",
-          text: "空の件名を直接送って、画面と API でサーバ側のチェックを比べる例は、シナリオ「画面では拒否される空の件名が、API から登録できる」で扱っています。",
+          text: "`required` を経由せずに空の件名を送り、サーバ側の入力チェックを入口ごとに比べる例を、シナリオ「画面では拒否される空の件名が、API から登録できる」で追っています。",
           link: { label: "画面では拒否される空の件名が、API から登録できる", to: "/tracks/scenario/validation-paths" },
         },
         {
@@ -623,11 +619,11 @@ public String create(
         },
         {
           type: "p",
-          text: "HTML のフォームで送れる HTTP メソッドは、GET と POST だけです。`@PutMapping` や `@DeleteMapping` の Java メソッドをフォームから呼ぶアプリでは、`_method=delete` のような hidden を付けて POST で送り、サーバ側のフィルタ（Spring では `HiddenHttpMethodFilter`）が DELETE として扱います。Thymeleaf では `th:method=\"delete\"` と書くと、この hidden が自動で追加されます。Network タブには POST と表示されるので、Form Data の `_method` を確かめて、対応する Java メソッドを探しましょう。",
+          text: "HTML のフォームが送れる HTTP メソッドは、GET と POST だけです。`@PutMapping` や `@DeleteMapping` の Java メソッドをフォームから呼ぶアプリでは、hidden の `_method`（`_method=delete` など）を付けて POST で送ります。サーバのフィルタ（Spring なら `HiddenHttpMethodFilter`）が、それを DELETE などとして扱います。Thymeleaf の `th:method=\"delete\"` は、この hidden を自動で足します。Network タブでは POST と表示されるので、Form Data の `_method` の値で Java メソッドを探しましょう。",
         },
         {
           type: "p",
-          text: "Spring Boot では、このフィルタは初期状態で無効です。`spring.mvc.hiddenmethod.filter.enabled=true` が設定されているかを確認しましょう。",
+          text: "Spring Boot では、このフィルタは既定で無効です。`spring.mvc.hiddenmethod.filter.enabled=true` を設定しているかを確認しましょう。",
         },
         { type: "quiz", id: "web-form-post" },
       ],

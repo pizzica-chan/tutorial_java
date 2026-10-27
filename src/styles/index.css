@@ -3587,6 +3587,8 @@ th {
 .form-submit small { color: var(--paper-dim); font-size: 12px; }
 .form-submit code { width: fit-content; font-size: 12px; overflow-wrap: anywhere; }
 .form-submit-arrow { color: var(--amber); font-size: 24px; text-align: center; }
+.form-submit-body { margin-top: 16px; padding-top: 12px; border-top: 1px dashed var(--line-strong); }
+.form-submit-body-label { margin: 0 0 12px; color: var(--paper); font-weight: 700; font-size: 13px; }
 
 .form-redirect-head {
   display: flex;
