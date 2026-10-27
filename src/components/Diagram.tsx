@@ -4,6 +4,7 @@ import type { DiagramName } from "../types";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon, type IconName } from "./Icon";
 import { ThreadDumpAnatomy, ThreadDumpWait } from "./ThreadDumpDiagrams";
+import { FormSubmission, FormRedirect } from "./FormDiagrams";
 
 export function Diagram({ name, caption, anchorId }: { name: DiagramName; caption?: string; anchorId?: string }) {
   return (
@@ -23,6 +24,8 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "http-roundtrip": HttpRoundtrip,
   "url-parts": UrlParts,
   "request-params": RequestParams,
+  "form-submission": FormSubmission,
+  "form-redirect": FormRedirect,
   "get-post": GetPost,
   "status-codes": StatusCodes,
   "page-assets": PageAssets,
