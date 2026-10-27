@@ -526,6 +526,14 @@ title=%E4%BA%A4%E9%80%9A%E8%B2%BB%E7%94%B3%E8%AB%8B&approverId=3&_csrf=8f3a2b1c-
           link: { label: "承認の POST", to: "/tracks/web/params" },
         },
         {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-create-payload.jpg",
+          alt: "新規申請の POST の Payload。Form Data に _csrf、title（交通費申請）、approverId（3）、_csrf が並ぶ",
+          caption: "新規申請の POST の Payload。`title` はデコードした「交通費申請」、`approverId` は承認者の ID の `3` です。`_csrf` は 2 つ載っています。",
+          size: "small",
+        },
+        {
           type: "p",
           text: "受け取るのは `RequestController.create` です。本文の `title` と `approverId` が、同じ名前の `@RequestParam` に入ります。`_csrf` は、Controller より手前で Spring Security が確かめるので、引数にはありません。",
         },
@@ -586,7 +594,14 @@ public String create(
         },
         {
           type: "p",
-          text: "申請くんの `create` は `redirect:/requests` を返します。レスポンスは 302 で、`Location` ヘッダに一覧の URL が入ります。ブラウザはそれを受けて、`GET /shinsei/requests` を送ります。画面が切り替わると POST の行が Network タブから消えることがあるので、Preserve log にチェックを入れてから送信しましょう。",
+          text: "申請くんの `create` は `redirect:/requests` を返します。レスポンスは 302 で、`Location` ヘッダに一覧の URL が入ります。ブラウザはそれを受けて、`GET /shinsei/requests` を送ります。画面が切り替わると POST の行が Network タブから消えることがあるので、Keep log（Chrome のバージョンによっては Preserve log）にチェックを入れてから送信しましょう。",
+        },
+        {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-network-create-post.jpg",
+          alt: "新規申請を送信したあとの申請一覧と Network タブ。requests の行が 2 つあり、1 行目が 302、2 行目が 200。どちらも Type は document",
+          caption: "新規申請を送信したあと（Keep log をオン）。1 行目の `requests` が POST の 302、2 行目がリダイレクト先の GET の 200 です。",
         },
         {
           type: "p",

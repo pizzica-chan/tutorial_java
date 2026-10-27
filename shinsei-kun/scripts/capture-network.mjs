@@ -31,7 +31,8 @@ writeFileSync(
       preferences: {
         currentDockState: '"right"',
         "panel-selectedTab": '"network"',
-        "network-log.preserve-log": "false",
+        // 新規申請は POST（302）とリダイレクト後の GET を並べて撮るので、Preserve log を付ける
+        "network-log.preserve-log": process.argv.includes("--create-post-only") ? "true" : "false",
         "network-show-overview": "false",
         "disable-locale-info-bar": "true",
         "InspectorView.splitViewState": JSON.stringify({
@@ -383,6 +384,40 @@ async function captureApprovePayload(page, appBase = base) {
   console.log("payload shot saved to", payloadShot, "- crop manually once coordinates are known");
 }
 
+// 新規申請の POST。撮影で申請が 1 件増えるので、撮ったあとで DB から消す（NOTES.md）
+async function captureCreatePost(page, appBase = base) {
+  await page.goto(`${appBase}/requests/new`, { waitUntil: "networkidle0" });
+  await page.evaluate(() => {
+    window.confirm = () => true;
+  });
+  await page.type('input[name="title"]', "交通費申請");
+  await page.select('select[name="approverId"]', "3");
+  await page.bringToFront();
+  prepareNetworkPanel({ clear: true });
+  await sleep(300);
+  await Promise.allSettled([
+    page.waitForNavigation({ waitUntil: "networkidle0", timeout: 8000 }),
+    page.$eval("form.js-submit-confirm", (form) => form.submit()),
+  ]);
+  await sleep(800);
+  await page.bringToFront();
+  prepareNetworkPanel();
+  await sleep(300);
+  shotWindow("screen-network-create-post.jpg", true);
+  waitForManualStep(
+    "次の操作を実施した後、OK を押してください。\n\n" +
+      "1. Network タブで、新規申請の POST（requests、ステータス 302）をクリックする\n" +
+      "2. Payload を開き、Form Data で title / approverId / _csrf が見える状態にする\n" +
+      "3. マウスを DevTools の外へ移す（ツールチップが残らないように）",
+  );
+  const payloadShot = join(tmpdir(), "screen-network-create-payload-full.jpg");
+  shotWindow("screen-network-create-post.jpg", false, {
+    outPath: payloadShot,
+    preserveUi: true,
+  });
+  console.log("payload shot saved to", payloadShot, "- crop manually once coordinates are known");
+}
+
 async function captureCookiesPanel(page, appBase = base) {
   await page.bringToFront();
   await sleep(300);
@@ -574,6 +609,16 @@ if (process.argv.includes("--approve-payload-only")) {
   await page.keyboard.press("Escape").catch(() => {});
   await sleep(400);
   await captureApprovePayload(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
+if (process.argv.includes("--create-post-only")) {
+  const appBase = process.argv.includes("--verify") ? verifyBase : base;
+  await login(page, appBase);
+  await page.keyboard.press("Escape").catch(() => {});
+  await sleep(400);
+  await captureCreatePost(page, appBase);
   await browser.close();
   process.exit(0);
 }
