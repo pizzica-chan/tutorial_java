@@ -993,6 +993,11 @@ export const terms: TermDef[] = [
     body: "本文の種類を示すヘッダ。`text/html` は画面、`application/json` は API のデータです。",
   },
   {
+    term: "URL エンコード",
+    aliases: ["URL エンコード", "パーセントエンコーディング"],
+    body: "URL やフォームの本文に入れられない文字を、`%` と 16 進数の並びに置き換えることです。UTF-8 なら「交」は `%E4%BA%A4` になります。フォームの本文では、空白が `+` になることがあります。",
+  },
+  {
     term: "Ajax",
     aliases: ["Ajax"],
     body: "Asynchronous JavaScript and XML。ページ全体を読み直さず、JavaScript から HTTP 通信する方法です。名前に XML とありますが、JSON も扱えます。",

@@ -303,7 +303,8 @@ node shinsei-kun/scripts/capture-network.mjs
 - HTML / CSS / JS が並ぶ Network は `--rows-only`（検証用ホストなら `--verify`）。撮影前に Network パネルを選ぶ。Elements タブのまま撮らない
 - 申請履歴は `--history-search-only`（検証用ホストなら `--verify`）。クエリの `title=申請` と `status=APPROVED`、PENDING のレコードが同時に見える状態で撮る。検索 GET のクエリ詳細は手動。スクリプトがダイアログで案内する。`screen-network-history-search-request.jpg` は Payload の Query String Parameters から `crop-jpeg.ps1` で切り出す
 - 承認 500 は、山田で ID 16「研修参加」を開き、実際に承認を送信して撮る。`request.getApproverId()` が null のため、実アプリが 500 を返す
-- POST 後にログが消えるので、403 / 500 は遷移後の document 行を撮る（preserve log は必須ではない）
+- POST 後にログが消えるので、403 / 500 は遷移後の document 行を撮る（Keep log は必須ではない）
+- 新規申請は `--create-post-only`。このモードだけ Keep log（旧 Preserve log）をオンにして、POST の 302 とリダイレクト先の GET を並べて撮る。Payload の Form Data の表示は手動。スクリプトがダイアログで案内する。`screen-network-create-payload.jpg` は `crop-jpeg.ps1` で切り出す。撮影で申請が 1 件登録されるので、撮ったあとで DB から消す（`shinsei-kun/NOTES.md`）
 - 画面にエラーが出ているが POST が無い見え方は、ページ単体ではなく Network のウィンドウ全体で撮る。`screen-network-js-error.jpg` は Network のログを消してから押す。ログ消去は手動。スクリプトがダイアログで案内する（`capture-network.mjs` の js-error 撮影）。キャプションは「例」
 
 ### DevTools Application タブ（Cookies）
