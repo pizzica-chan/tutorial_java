@@ -461,10 +461,6 @@ public String search(@ModelAttribute OrderSearchForm form, Model model) {
           text: "画面のフォームで送信ボタンを押すと、ブラウザは入力欄の値を集めて送ります。`method=\"post\"` のフォームでは、値はリクエストの本文に載ります。登録・更新・承認の画面の多くは、この形です。`method=\"get\"` のフォームでは、同じ値が URL のクエリに載ります（申請くんの申請履歴の検索がこの形）。",
         },
         {
-          type: "p",
-          text: "このレッスンでは、申請くんの新規申請を例に、HTML のどこが HTTP リクエストのどこになるかを追います。",
-        },
-        {
           type: "h2",
           text: "申請くんの例：新規申請",
         },
@@ -516,10 +512,6 @@ title=%E4%BA%A4%E9%80%9A%E8%B2%BB%E7%94%B3%E8%AB%8B&approverId=3&_csrf=8f3a2b1c-
         },
         {
           type: "p",
-          text: "承認者のプルダウンで送られるのは、画面に出ている「佐藤花子」ではなく、`<option>` の `value` です。申請くんでは承認者の ID（`3`）が入っています。",
-        },
-        {
-          type: "p",
           text: "例では `_csrf` を 1 つだけ書いています。申請くんの実際の本文には、承認の POST と同じ理由で `_csrf` が 2 つ載ります。",
           link: { label: "承認の POST", to: "/tracks/web/params" },
         },
@@ -528,7 +520,7 @@ title=%E4%BA%A4%E9%80%9A%E8%B2%BB%E7%94%B3%E8%AB%8B&approverId=3&_csrf=8f3a2b1c-
           kind: "screen",
           src: "/images/screen-network-create-payload.jpg",
           alt: "新規申請の POST の Payload。Form Data に _csrf、title（交通費申請）、approverId（3）、_csrf が並ぶ",
-          caption: "新規申請の POST の Payload。`title` はデコードした「交通費申請」、`approverId` は承認者の ID の `3` です。",
+          caption: "新規申請の POST の Payload。",
           size: "small",
         },
         {
@@ -567,13 +559,9 @@ public String create(
           items: [
             "`name` の無い入力欄。値を入れても送られない",
             "`disabled` の入力欄。書き換えられないだけの `readonly` は送られる",
-            "チェックの入っていないチェックボックスとラジオボタン。`false` や空の値が送られるのではなく、キーごと送られない",
+            "チェックの入っていないチェックボックスとラジオボタン。`false` や空の値が送られるのではなく、キーごと送られない。チェックしたときは `value` の値が送られ、`value` を書いていなければ `on` が送られる",
             "押されなかった送信ボタンの `name` と `value`。送られるのは、押したボタンの分だけ",
           ],
-        },
-        {
-          type: "p",
-          text: "チェックボックスに `value` を書いていないと、チェックしたときの値は `on` になります。",
         },
         {
           type: "callout",
@@ -592,7 +580,7 @@ public String create(
         },
         {
           type: "p",
-          text: "申請くんの `create` は `redirect:/requests` を返します。レスポンスは 302 で、`Location` ヘッダに一覧の URL が入ります。ブラウザはそれを受けて、`GET /shinsei/requests` を送ります。画面が切り替わると POST の行が Network タブから消えることがあるので、Keep log（Chrome のバージョンによっては Preserve log）にチェックを入れてから送信しましょう。",
+          text: "申請くんの `create` は `redirect:/requests` を返すので、POST のあとに一覧の GET が続きます。画面が切り替わると POST の行が Network タブから消えることがあるので、Keep log（Chrome のバージョンによっては Preserve log）にチェックを入れてから送信しましょう。",
         },
         {
           type: "diagram",
