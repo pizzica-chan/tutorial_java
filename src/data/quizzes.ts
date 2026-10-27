@@ -109,6 +109,18 @@ export const quizzes = {
     answer: 0,
     explanation: "? 以降がクエリです。Network タブでは Query String Parameters に出ることが多いです。Controller では `@RequestParam` で受け取ることが多いです。",
   },
+  "web-params-bind": {
+    id: "web-params-bind",
+    question: "Network タブでは `status=APPROVED` が送られているのに、検索条件に入らない。Controller は `history(@ModelAttribute HistorySearchForm form, Model model)` で、`status` で検索しても Controller にはヒットしない。次に確かめるのは？",
+    choices: [
+      "`HistorySearchForm` に、`status` という名前のフィールド（Setter）があるか",
+      "`@GetMapping` のパスに `status` が含まれているか",
+      "テンプレートの `th:text` に `status` が書かれているか",
+      "`application.yml` に `status` のキーがあるか",
+    ],
+    answer: 0,
+    explanation: "`@ModelAttribute` は、パラメータ名と同じ名前のフィールドへ値を入れます。名前は Controller の引数ではなく、受け取るクラスの側にあります。`HistorySearchForm` を開いて、フィールド名が `status` かどうかを確かめましょう。",
+  },
   "web-cookie": {
     id: "web-cookie",
     question: "セッション ID は通常どこに載って、次のリクエストに引き継がれる？",

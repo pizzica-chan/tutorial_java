@@ -1575,7 +1575,22 @@ export const terms: TermDef[] = [
   {
     term: "@ModelAttribute",
     aliases: ["@ModelAttribute"],
-    body: "フォームの入力値を、Java のオブジェクトへ自動で詰め替える印です。Setter をリフレクションで呼んで値を入れるので、ソースには呼び出しの行がありません。Spring のアノテーションです。",
+    body: "クエリやフォームの値を、Java のオブジェクトへ自動で詰め替える印です。パラメータ名と同じ名前のフィールドへ、Setter をリフレクションで呼んで値を入れるので、ソースには呼び出しの行がありません。Spring のアノテーションです。",
+  },
+  {
+    term: "@RequestHeader",
+    aliases: ["@RequestHeader"],
+    body: "リクエストヘッダの値を、Java メソッドの引数に取り出す印です。`@RequestHeader(\"User-Agent\")` のようにヘッダ名を書きます。Spring のアノテーションです。",
+  },
+  {
+    term: "@CookieValue",
+    aliases: ["@CookieValue"],
+    body: "リクエストの Cookie の値を、Java メソッドの引数に取り出す印です。`@CookieValue(\"lang\")` のように Cookie 名を書きます。Spring のアノテーションです。",
+  },
+  {
+    term: "BindingResult",
+    aliases: ["BindingResult"],
+    body: "リクエストの値をオブジェクトへ詰め替えたときの、型の変換や入力チェックの失敗を受け取る Spring のインタフェースです。詰め替える引数のすぐ後ろに置くと、失敗しても例外にならず、Java メソッドが動きます。",
   },
   {
     term: "@AuthenticationPrincipal",

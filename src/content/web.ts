@@ -246,7 +246,7 @@ Content-Type: application/json
     {
       id: "params",
       title: "リクエストのパラメータ",
-      minutes: 10,
+      minutes: 15,
       blocks: [
         {
           type: "p",
@@ -358,13 +358,93 @@ Content-Type: application/json
             "現場では、更新を GET のクエリで送る実装もあります。約束事より、実際に送っている内容を見ましょう",
           ],
         },
+        { type: "quiz", id: "web-params" },
+        {
+          type: "h2",
+          text: "Java 側で受け取る（Spring の例）",
+        },
+        {
+          type: "p",
+          text: "Network タブで値の場所が分かったら、Controller の Java メソッドの引数で、その値を受け取っている箇所を探しましょう。Spring では、引数に付けるアノテーションで、リクエストのどこから値を取るかが決まります。",
+        },
+        {
+          type: "table",
+          headers: ["載る場所", "受け取り方（例）", "名前を確かめる場所"],
+          rows: [
+            ["パス", "`@PathVariable Long id`", "マッピングの `{id}`"],
+            ["クエリ・フォーム（1 つずつ）", "`@RequestParam String title`", "`@RequestParam` の value。書いていなければ引数名"],
+            ["クエリ・フォーム（まとめて）", "`@ModelAttribute HistorySearchForm form`", "受け取るクラスのフィールド名"],
+            ["JSON 本文", "`@RequestBody NewRequest body`", "受け取るクラスのフィールド名"],
+            ["ヘッダ", "`@RequestHeader(\"X-Request-Id\") String requestId`", "アノテーションに書いたヘッダ名"],
+            ["Cookie", "`@CookieValue(\"lang\") String lang`", "アノテーションに書いた Cookie 名"],
+          ],
+        },
+        {
+          type: "h3",
+          text: "クラスにまとめて受け取る（@ModelAttribute）",
+        },
+        {
+          type: "p",
+          text: "検索条件のように項目が多いときは、`@RequestParam` を並べずに、項目をまとめたクラスで受け取る書き方がよくあります。",
+        },
+        {
+          type: "code",
+          title: "HistorySearchForm.java（例。申請くんではありません）",
+          lang: "java",
+          code: `public class HistorySearchForm {
+  private String title;
+  private String status;
+
+  public String getTitle() { return title; }
+  public void setTitle(String title) { this.title = title; }
+  public String getStatus() { return status; }
+  public void setStatus(String status) { this.status = status; }
+}`,
+        },
+        {
+          type: "code",
+          title: "RequestController.java（例。申請くんではありません）",
+          lang: "java",
+          highlightLines: [2],
+          code: `@GetMapping("/history")
+public String history(@ModelAttribute HistorySearchForm form, Model model) {
+  model.addAttribute("results", requestService.searchHistory(form));
+  return "request/history";
+}`,
+        },
+        {
+          type: "p",
+          text: "`?title=申請&status=APPROVED` が届くと、Spring は同じ名前のフィールドへ、Setter を通して値を入れます。Controller の引数にはパラメータ名が出てこないので、`status` で Controller を検索してもヒットしません。受け取るクラス（ここでは `HistorySearchForm`）を開いて、フィールド名を確かめましょう。",
+        },
+        {
+          type: "h3",
+          text: "アノテーションが無い引数",
+        },
+        {
+          type: "p",
+          text: "アノテーションを省いても、値は入ります。Spring は、`String` や `Long` のような単純な型の引数を `@RequestParam` と同じように扱い、それ以外のクラスの引数を `@ModelAttribute` と同じように扱います。`Model` のように、Spring が別に用意して渡す型は除きます。`history(HistorySearchForm form, Model model)` と書いても、`form` にフォームの値が入ります。",
+        },
+        {
+          type: "p",
+          text: "`@RequestParam` を書いた引数は、既定では値が必須です。パラメータが無いと、Java メソッドが動く前に 400 になることが多いです。`String` や `Long` の引数でアノテーションを省くと必須にならず、値が無ければ null が入ります。",
+        },
+        {
+          type: "p",
+          text: "Spring のアノテーションを使わないコードでは、`request.getParameter(\"title\")` のように、`HttpServletRequest` から名前を指定して取り出します。この場合は `getParameter(` で検索すると、受け取っている箇所が見つかります。",
+        },
         {
           type: "callout",
           kind: "trap",
           title: "名前の不一致",
-          text: "フォームの `name` と、サーバ側で受け取る名前（Spring なら `@RequestParam`）が違うと、値が null のまま届くことがあります。400 やバリデーションエラーになることもあります。画面、Network タブ、Java の引数を並べて見ましょう。",
+          text: "フォームの `name` と、サーバ側で受け取る名前（`@RequestParam` の名前や、`@ModelAttribute` で受け取るクラスのフィールド名）が違うと、Java の引数やフィールドが null のままになることがあります。400 やバリデーションエラーになることもあります。画面、Network タブ、Java の引数を並べて確認しましょう。",
         },
-        { type: "quiz", id: "web-params" },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "型に変換できない値と BindingResult",
+          text: "`approverId=abc` のように型に変換できない値が届くと、Java メソッドが動く前に失敗し、400 になることが多いです。`@RequestParam` でも `@ModelAttribute` でも同じです。ただし、`@ModelAttribute` の引数のすぐ後ろに `BindingResult` の引数があると、例外にならずに Java メソッドが動きます。そのフィールドには値が入らず、失敗の内容は `BindingResult` に入ります。値が入っていないのにログに例外が無いときは、`BindingResult` を確認しましょう。",
+        },
+        { type: "quiz", id: "web-params-bind" },
       ],
     },
     {
