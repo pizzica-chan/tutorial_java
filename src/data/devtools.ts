@@ -103,9 +103,9 @@ export const devtools: DevtoolsSection[] = [
         rows: [
           {
             symptom: "画面が切り替わると、見たいリクエストが Network タブから消える",
-            tool: "Network（Preserve log）",
+            tool: "Network（Keep log）",
             check: [
-              "Preserve log を付けてから操作しましょう。",
+              "Keep log を付けてから操作しましょう。",
               "POST のあとにリダイレクトする処理やログインの流れも、画面が切り替わる前のリクエストから順に追えます。",
             ],
           },
@@ -192,7 +192,7 @@ export const devtools: DevtoolsSection[] = [
             symptom: "操作するとログイン画面へ戻される",
             tool: "Network（Headers）→ Application（Cookies）",
             check: [
-              "Preserve log を付けて再現し、戻される直前のリクエストで Status Code と `Location` を確認しましょう。",
+              "Keep log を付けて再現し、戻される直前のリクエストで Status Code と `Location` を確認しましょう。",
               "同じリクエストの Request Headers に `Cookie` があるかを確認しましょう。",
               "Application タブの Cookies に、セッション ID の Cookie があるかも確認しましょう。",
               "Ajax の場合は、Response が JSON ではなくログイン画面の HTML になっていないかも見ましょう。",
@@ -254,7 +254,7 @@ export const devtools: DevtoolsSection[] = [
         title: "Network タブ",
         note: "一覧に出るのは、開発者ツールを開いたあとの通信だけです。開く前に済んだ通信は、再読み込みしないと出ません。",
         rows: [
-          { name: "Preserve log", how: "上部のチェックボックス", desc: "画面の切り替えや再読み込みで、一覧を消さない" },
+          { name: "Keep log", how: "上部のチェックボックス", desc: "画面の切り替えや再読み込みで、一覧を消さない。Chrome のバージョンによっては Preserve log という名前" },
           { name: "Disable cache", how: "上部のチェックボックス", desc: "開発者ツールを開いている間だけ、キャッシュを使わずに毎回サーバへ取りに行く" },
           {
             name: "フィルタ",
@@ -268,7 +268,7 @@ export const devtools: DevtoolsSection[] = [
           {
             name: "Preview / Response",
             how: "リクエストを選ぶ",
-            desc: "返ってきた本文。Preview は、JSON なら折りたためる形で、HTML なら描画して見せる。Response は受け取ったままの文字列。画面が切り替わる前のリクエストは、Preserve log を付けていても本文が出ないことがある",
+            desc: "返ってきた本文。Preview は、JSON なら折りたためる形で、HTML なら描画して見せる。Response は受け取ったままの文字列。画面が切り替わる前のリクエストは、Keep log を付けていても本文が出ないことがある",
           },
           { name: "Initiator", how: "リクエストを選ぶ", desc: "そのリクエストを送った JS の呼び出し履歴。ファイル名と行番号をクリックすると、Sources タブでその行が開く" },
           {
@@ -323,7 +323,7 @@ export const devtools: DevtoolsSection[] = [
             how: "Default levels と出ている選択肢",
             desc: "Errors だけを選ぶと、警告やログに埋もれずにエラーを探せる。Verbose は既定では表示されない",
           },
-          { name: "Preserve log", how: "歯車のボタン → Preserve log", desc: "画面が切り替わっても、それまでのログを消さない" },
+          { name: "Keep log", how: "歯車のボタン → Keep log", desc: "画面が切り替わっても、それまでのログを消さない。Chrome のバージョンによっては Preserve log という名前" },
           { name: "選んだ要素を使う", how: "`$0`", desc: "Elements タブで選んでいる要素を指す。`$0.value` で、入力欄のいまの値を確認できる" },
           { name: "値をコピーする", how: "`copy(値)`", desc: "変数やオブジェクトの中身を、クリップボードへコピーする" },
         ],

@@ -113,7 +113,7 @@ export function DevtoolsPage() {
             <TextWithTerms text="ブラウザの開発者ツールで、調査に使える機能をまとめました。前半は症状から引く表、後半はタブごとの一覧です。" />
           </p>
           <p className="cheat-note">
-            <TextWithTerms text="Chrome の英語表示の名前で書いています。Edge もほぼ同じです。日本語表示では、Preserve log が「ログを保持」のように名前が変わります。ショートカットは Windows のものです。Mac では Ctrl を Cmd に読み替えてください。そのまま読み替えられないものは、表に書いています。" />
+            <TextWithTerms text="Chrome の英語表示の名前で書いています。Edge もほぼ同じです。日本語表示では、Keep log が「ログを保持」のように名前が変わります。英語表示の名前も、Chrome のバージョンで変わることがあります。ショートカットは Windows のものです。Mac では Ctrl を Cmd に読み替えてください。そのまま読み替えられないものは、表に書いています。" />
           </p>
 
           {devtools.map((section, sectionIndex) => (
