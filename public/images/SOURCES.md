@@ -15,6 +15,7 @@
 | `screen-history-search-query.jpg` | 上の申請履歴画面から、アドレスバーと検索フォームだけを切り出した画像 |
 | `screen-network-history-search.jpg` | 申請くん GET `http://intranet.example.co.jp:8080/shinsei/requests/history`（クエリに `title=申請` と `status=APPROVED`）の Network タブ |
 | `screen-network-history-search-request.jpg` | 上の Network で検索 GET を開き、Payload の Query String Parameters（`title=申請` と `status=APPROVED`）を切り出した画像 |
+| `screen-create-form.jpg` | 申請くん GET `/shinsei/requests/new`（山田太郎。件名「交通費申請」、承認者 佐藤花子を入力した状態。送信はしない） |
 | `screen-detail.jpg` | 申請くん GET `/shinsei/requests/12` |
 | `screen-detail-path.jpg` | 上の詳細画面から、アドレスバーと申請ID 12 までを切り出した画像 |
 | `screen-not-found.jpg` | 申請くん GET `/shinsei/requests/99999` |

@@ -458,18 +458,30 @@ public String search(@ModelAttribute OrderSearchForm form, Model model) {
       blocks: [
         {
           type: "p",
-          text: "画面のフォームで送信ボタンを押すと、ブラウザは入力欄の値を集めて送ります。`method=\"post\"` のフォームでは、値はリクエストの本文に載ります。登録・更新・承認の画面の多くは、この形です。`method=\"get\"` のフォームでは、同じ値が URL のクエリに載ります（申請くんの申請履歴の検索がこの形）。",
+          text: "画面のフォームを送信すると、ブラウザは入力欄の値を集めて送ります。`method=\"post\"` のフォームでは、値はリクエストの本文に載ります。登録・更新・承認の画面の多くは、この形です。`method=\"get\"` のフォームでは、同じ値が URL のクエリに載ります（申請くんの申請履歴の検索がこの形）。",
         },
         {
           type: "h2",
           text: "申請くんの例：新規申請",
         },
         {
+          type: "figure",
+          kind: "screen",
+          src: "/images/screen-create-form.jpg",
+          alt: "申請くんの新規申請の画面。件名に交通費申請、承認者に佐藤花子が入っている",
+          caption: "新規申請の画面。件名に「交通費申請」を入力し、承認者に佐藤花子を選んだところです。",
+        },
+        {
+          type: "p",
+          text: "新規申請の画面で、ブラウザが受け取った HTML です（元は `request/form.html` のテンプレート）。送られるパラメータ名は、入力欄の `name` で決まります。",
+        },
+        {
           type: "code",
-          title: "request/form.html（申請くん・抜粋）",
+          title: "ブラウザが受け取った HTML（申請くん・抜粋）",
           lang: "html",
-          highlightLines: [1, 4, 8, 13],
-          code: `<form class="stack js-submit-confirm" th:action="@{/requests}" method="post">
+          highlightLines: [1, 2, 5, 9, 12, 15],
+          code: `<form class="stack js-submit-confirm" action="/shinsei/requests" method="post">
+  <input type="hidden" name="_csrf" value="8f3a2b1c-4e5f-6789-abcd-ef0123456789"/>
   <label>
     件名
     <input type="text" name="title" required maxlength="255" placeholder="例: 交通費申請" />
@@ -478,21 +490,22 @@ public String search(@ModelAttribute OrderSearchForm form, Model model) {
     承認者
     <select name="approverId" required>
       <option value="">選択してください</option>
-      <option th:each="person : \${approvers}" th:value="\${person.id}" th:text="\${person.displayName}">佐藤花子</option>
+      <option value="1">管理者</option>
+      <option value="3">佐藤花子</option>
     </select>
   </label>
-  <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
+  <input type="hidden" name="_csrf" value="8f3a2b1c-4e5f-6789-abcd-ef0123456789" />
   <button type="submit">提出</button>
 </form>`,
         },
         {
           type: "diagram",
           name: "form-submission",
-          caption: "入力欄の `name` が本文のキーになり、入力した値や選んだ `<option>` の `value` が値になります。hidden の値も本文に載ります。",
+          caption: "入力欄の `name` が本文のキーになり、入力した値や選んだ `<option>` の `value` が値になります。",
         },
         {
           type: "p",
-          text: "件名に「交通費申請」と入れ、承認者に佐藤花子を選んで提出すると、次のリクエストが送られます。",
+          text: "上の画面のとおりに入力して提出すると、次のリクエストが送られます。",
         },
         {
           type: "code",
@@ -504,15 +517,19 @@ Host: localhost:8080
 Content-Type: application/x-www-form-urlencoded
 Cookie: JSESSIONID=AB12CD34
 
-title=%E4%BA%A4%E9%80%9A%E8%B2%BB%E7%94%B3%E8%AB%8B&approverId=3&_csrf=8f3a2b1c-4e5f-6789-abcd-ef0123456789`,
+_csrf=8f3a2b1c-4e5f-6789-abcd-ef0123456789&title=%E4%BA%A4%E9%80%9A%E8%B2%BB%E7%94%B3%E8%AB%8B&approverId=3&_csrf=8f3a2b1c-4e5f-6789-abcd-ef0123456789`,
         },
         {
           type: "p",
-          text: "本文は、`name=値` を `&` でつないだ形です。この形であることを、`Content-Type: application/x-www-form-urlencoded` のヘッダで示します。日本語や記号は、`%E4%BA%A4...` のように URL エンコードされます。Network タブの Payload の Form Data には、デコードした値が出ます。",
+          text: "本文は、`name=値` を `&` でつないだ形です。ブラウザは、この形であることを `Content-Type: application/x-www-form-urlencoded` のヘッダで伝えます。日本語や記号は、`%E4%BA%A4...` のように URL エンコードされます。Network タブの Payload の Form Data には、デコードした値が出ます。",
         },
         {
           type: "p",
-          text: "例では `_csrf` を 1 つだけ書いています。申請くんの実際の本文には、承認の POST と同じ理由で `_csrf` が 2 つ載ります。",
+          text: "ファイルを添付するフォームでは、`<form>` に `enctype=\"multipart/form-data\"` を書きます。本文の形が変わり、Spring では `MultipartFile` の引数で受け取ります。",
+        },
+        {
+          type: "p",
+          text: "HTML に `_csrf` の hidden が 2 つあるので、`_csrf` も 2 つ送られます。1 つ目は Spring Security が自動で足したもの、2 つ目はテンプレートに書いたものです。承認の POST でも同じように 2 つ送られています。",
           link: { label: "承認の POST", to: "/tracks/web/params" },
         },
         {
@@ -525,26 +542,31 @@ title=%E4%BA%A4%E9%80%9A%E8%B2%BB%E7%94%B3%E8%AB%8B&approverId=3&_csrf=8f3a2b1c-
         },
         {
           type: "p",
-          text: "受け取るのは `RequestController.create` です。本文の `title` と `approverId` が、同じ名前の `@RequestParam` に入ります。`_csrf` は、Controller より手前で Spring Security が確かめるので、引数にはありません。",
+          text: "送信先の `POST /shinsei/requests` は、`RequestController.create` が受け取ります。",
         },
         {
           type: "code",
-          title: "RequestController.create（申請くん・抜粋）",
+          title: "RequestController.java（申請くん・抜粋）",
           lang: "java",
-          highlightLines: [1, 3, 4, 7],
-          code: `@PostMapping
-public String create(
-    @RequestParam String title,
-    @RequestParam Long approverId,
-    @AuthenticationPrincipal LoginUser user
-) {
-  requestService.create(user.getId(), title, approverId);
-  return "redirect:/requests";
+          highlightLines: [2, 4, 6, 7, 11],
+          code: `@Controller
+@RequestMapping("/requests")
+public class RequestController {
+  @PostMapping
+  public String create(
+      @RequestParam String title,
+      @RequestParam Long approverId,
+      @AuthenticationPrincipal LoginUser user
+  ) {
+    requestService.create(user.getId(), title, approverId);
+    return "redirect:/requests";
+  }
 }`,
         },
         {
-          type: "p",
-          text: "ファイルを添付するフォームでは、`<form>` に `enctype=\"multipart/form-data\"` を書きます。本文の形が変わり、Spring では `MultipartFile` の引数で受け取ります。",
+          type: "diagram",
+          name: "form-handler",
+          caption: "コンテキストパスを除いた URL のパスと HTTP メソッドで、受け取る Java メソッドが決まります。本文の値は、同じ名前の `@RequestParam` の引数に入ります。",
         },
         {
           type: "h2",
@@ -552,22 +574,26 @@ public String create(
         },
         {
           type: "p",
-          text: "画面に入力欄があっても、本文に載らないものがあります。値が届かないときは、HTML の書き方を確かめましょう。",
+          text: "画面に入力欄やボタンがあっても、本文に載らないものがあります。値が届かないときは、HTML の書き方を確かめましょう。",
         },
         {
           type: "ul",
           items: [
             "`name` の無い入力欄。値を入れても送られない",
             "`disabled` の入力欄。書き換えられないだけの `readonly` は送られる",
-            "チェックの入っていないチェックボックスとラジオボタン。`false` や空の値が送られるのではなく、キーごと送られない。チェックしたときは `value` の値が送られ、`value` を書いていなければ `on` が送られる",
+            "チェックの入っていないチェックボックスとラジオボタン。`false` や空の値ではなく、キーごと送られない",
             "押されなかった送信ボタンの `name` と `value`。送られるのは、押したボタンの分だけ",
           ],
+        },
+        {
+          type: "p",
+          text: "チェックボックスやラジオボタンをチェックしたときは、`value` の値が送られます。`value` を書いていなければ `on` が送られます。",
         },
         {
           type: "callout",
           kind: "trap",
           title: "チェックを外したのに更新されない",
-          text: "チェックを外して送ると、そのキーは本文に無いので、サーバは「外した」と「項目が無い画面から送った」を区別できません。前の値をそのまま残す実装だと、外しても更新されません。Spring で `@ModelAttribute` で受け取るときは、チェックボックスの `name` の前に `_` を付けた hidden（`active` なら `_active=on`）を一緒に送ると、キーが無いチェックボックスを false として扱います。Thymeleaf の `th:field` は、この hidden を自動で足します。Form Data に、チェックボックスの `name` に `_` を付けたキーがあるかを確認しましょう。",
+          text: "チェックを外して送ると、そのキーは本文に無いので、サーバは「外した」と「項目が無い画面から送った」を区別できません。前の値をそのまま残す実装だと、外しても更新されません。`@ModelAttribute` で受け取る Spring のアプリでは、チェックボックスの `name` の前に `_` を付けた hidden（`active` なら `_active=on`）を一緒に送る方法があります。この hidden があると、Spring はキーの無いチェックボックスを false として扱います。Thymeleaf の `th:field` は、この hidden を自動で足します。`_active` のように `_` で始まるキーが Form Data にあるかを確認しましょう。",
         },
         {
           type: "h2",
@@ -585,14 +611,14 @@ public String create(
         {
           type: "diagram",
           name: "form-redirect",
-          caption: "POST の応答は 302 で、ブラウザは `Location` の URL へ GET を送ります。",
+          caption: "302 を受け取ったブラウザは、利用者の操作を待たずに GET を送ります。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-network-create-post.jpg",
           alt: "新規申請を送信したあとの申請一覧と Network タブ。requests の行が 2 つあり、1 行目が 302、2 行目が 200。どちらも Type は document",
-          caption: "新規申請を送信したあと（Keep log をオン）。1 行目の `requests` が POST の 302、2 行目がリダイレクト先の GET の 200 です。画面の一覧の先頭が、いま登録した申請です。",
+          caption: "新規申請を送信したあと（Keep log をオン）。1 行目の `requests` が POST の 302、2 行目がリダイレクト先の GET の 200 です。",
         },
         {
           type: "p",
@@ -610,7 +636,7 @@ public String create(
         },
         {
           type: "p",
-          text: "`required` を経由せずに空の件名を送り、サーバ側の入力チェックを入口ごとに比べる例を、シナリオ「画面では拒否される空の件名が、API から登録できる」で追っています。",
+          text: "ブラウザの `required` のチェックを通さずに空の件名を送り、サーバ側の入力チェックを入口ごとに比べる例を、シナリオ「画面では拒否される空の件名が、API から登録できる」で追っています。",
           link: { label: "画面では拒否される空の件名が、API から登録できる", to: "/tracks/scenario/validation-paths" },
         },
         {

@@ -149,6 +149,19 @@ async function shotDetail(page, appBase) {
   });
 }
 
+// 「フォームの送信」の本文の例（件名「交通費申請」、承認者 佐藤花子）を入力した状態。送信はしない
+async function shotCreateForm(page, appBase) {
+  const url = `${appBase}/requests/new`;
+  await page.goto(url, { waitUntil: "networkidle0" });
+  await page.type('input[name="title"]', "交通費申請");
+  const approverId = await page.$$eval('select[name="approverId"] option', (options) =>
+    options.find((option) => option.textContent.trim() === "佐藤花子")?.value,
+  );
+  await page.select('select[name="approverId"]', approverId);
+  await page.evaluate(() => document.activeElement?.blur());
+  await shot(page, "screen-create-form.jpg", url);
+}
+
 const browser = await puppeteer.launch({
   executablePath: chrome,
   headless: "new",
@@ -172,6 +185,13 @@ if (process.argv.includes("--detail-only")) {
   const appBase = process.argv.includes("--verify") ? verifyBase : base;
   await login(page, "yamada", "password", appBase);
   await shotDetail(page, appBase);
+  await browser.close();
+  process.exit(0);
+}
+
+if (process.argv.includes("--form-only")) {
+  await login(page, "yamada");
+  await shotCreateForm(page, base);
   await browser.close();
   process.exit(0);
 }
@@ -218,6 +238,7 @@ if (!mocksOnly) {
   await login(page, "yamada");
   await shot(page, "screen-list.jpg", `${base}/requests`);
   await shotHistorySearch(page, base);
+  await shotCreateForm(page, base);
 
   await page.goto(`${base}/requests/12`, { waitUntil: "networkidle0" });
   await shot(page, "screen-detail.jpg", `${base}/requests/12`);

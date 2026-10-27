@@ -109,6 +109,11 @@ export const terms: TermDef[] = [
     body: "ブラウザの開発者ツールで、URL の `?` 以降にあるクエリパラメータを表示する欄です。Network タブの Payload で、送信したパラメータの名前と値を確認できます。",
   },
   {
+    term: "Payload",
+    aliases: ["Payload"],
+    body: "Network タブでリクエストの行を選んだときに開けるタブの一つです。送ったクエリやフォームの値、JSON の本文を表示します。Chrome では、表示がデコードされています。",
+  },
+  {
     term: "CSRF",
     aliases: ["CSRFトークン", "CSRF"],
     body: "Cross-Site Request Forgery。ログイン中の利用者に、別サイトから意図しない POST をさせる攻撃。トークンで防ぎます。",
@@ -990,7 +995,7 @@ export const terms: TermDef[] = [
   {
     term: "Content-Type",
     aliases: ["Content-Type"],
-    body: "本文の種類を示すヘッダ。`text/html` は画面、`application/json` は API のデータです。",
+    body: "本文の種類を示すヘッダ。`text/html` は画面、`application/json` は API のデータ、`application/x-www-form-urlencoded` は HTML のフォームから送った値です。",
   },
   {
     term: "URL エンコード",

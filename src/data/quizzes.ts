@@ -119,7 +119,7 @@ export const quizzes = {
       "`approverId` はキーごと送られない",
     ],
     answer: 0,
-    explanation: "プルダウンで送られるのは、選んだ `<option>` の `value` です。画面に出ている文字ではありません。申請くんでは `th:value` に承認者の ID を入れているので、`approverId=3` が送られ、`RequestController.create` の `@RequestParam Long approverId` に入ります。",
+    explanation: "プルダウンで送られるのは、選んだ `<option>` の `value` です。画面に出ている文字ではありません。申請くんでは、佐藤花子の `<option>` の `value` には承認者の ID（3）が入っているので、`approverId=3` が送られ、`RequestController.create` の `@RequestParam Long approverId` に入ります。",
   },
   "web-params-bind": {
     id: "web-params-bind",

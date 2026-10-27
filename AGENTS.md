@@ -282,7 +282,7 @@ node shinsei-kun/scripts/capture-screens.mjs
 
 ページ画像のアドレスバーは合成（macOS 風の三点）。Network タブは Windows の実 Chrome。枠の見た目は揃えない。
 
-承認の `window.confirm` で puppeteer の遷移待ちが落ちることがある。権限エラー画面はモックで撮る。申請履歴は山田で件名「申請」、ステータス「承認済み」を検索して撮る。PENDING のレコードも出るのが意図どおり。`node shinsei-kun/scripts/capture-screens.mjs --history-only`（検証用ホストなら `--verify`）。
+承認の `window.confirm` で puppeteer の遷移待ちが落ちることがある。権限エラー画面はモックで撮る。申請履歴は山田で件名「申請」、ステータス「承認済み」を検索して撮る。PENDING のレコードも出るのが意図どおり。`node shinsei-kun/scripts/capture-screens.mjs --history-only`（検証用ホストなら `--verify`）。新規申請の画面は、件名「交通費申請」と承認者 佐藤花子を入力した状態で、送信せずに撮る（`--form-only`）。
 
 ### Network タブ
 

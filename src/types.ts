@@ -9,6 +9,7 @@ export type DiagramName =
   | "url-parts"
   | "request-params"
   | "form-submission"
+  | "form-handler"
   | "form-redirect"
   | "get-post"
   | "status-codes"
