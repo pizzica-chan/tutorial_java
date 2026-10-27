@@ -1993,6 +1993,7 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
           type: "code",
           title: "申請くんのコンテナでスレッドダンプを取る",
           lang: "bash",
+          placeholders: ["コンテナ名"],
           code: `docker exec コンテナ名 kill -3 1
 docker logs コンテナ名`,
         },
