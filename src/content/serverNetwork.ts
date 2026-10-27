@@ -537,6 +537,7 @@ SPRING_DATASOURCE_USERNAME=app`,
           type: "code",
           title: "例（Kubernetes の対象の名前空間で Pod の状態とログを確認する）",
           lang: "shell",
+          placeholders: ["名前空間名", "Pod名"],
           code: `kubectl get pods --namespace 名前空間名
 kubectl logs --namespace 名前空間名 Pod名`,
         },
@@ -576,6 +577,7 @@ kubectl logs --namespace 名前空間名 Pod名`,
           type: "code",
           title: "例",
           lang: "shell",
+          placeholders: ["ユーザ名", "ホスト名"],
           code: `ssh ユーザ名@ホスト名`,
         },
         {
@@ -1414,6 +1416,7 @@ curl -I https://notify.example.internal/api/send`,
           type: "code",
           title: "例（MySQL、つながるとき）",
           lang: "shell",
+          placeholders: ["ホスト名", "ユーザ名"],
           code: `$ mysql -h ホスト名 -u ユーザ名 -p -e "SELECT 1"
 Enter password:
 +---+
@@ -1432,6 +1435,7 @@ Enter password:
           highlightKind: "error",
           title: "例（MySQL、つながらないとき）",
           lang: "shell",
+          placeholders: ["ホスト名", "ユーザ名"],
           code: `$ mysql -h ホスト名 -u ユーザ名 -p -e "SELECT 1"
 Enter password:
 ERROR 2003 (HY000): Can't connect to MySQL server on 'ホスト名:3306' (110)`,

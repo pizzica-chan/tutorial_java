@@ -1,5 +1,6 @@
-import { createContext, useContext, useRef, type ReactNode } from "react";
+import { createContext, Fragment, useContext, useRef, type ReactNode } from "react";
 import { splitByChapters } from "../data/chapterRefs";
+import { splitByPlaceholders } from "../lib/codePlaceholders";
 import { splitByTerms } from "../data/terms";
 import { ChapterMark } from "./ChapterMark";
 import { TermMark } from "./TermMark";
@@ -64,15 +65,22 @@ export function TextWithTerms({
         if (span.type === "code") {
           return (
             <code key={`s-${spanIndex}`} className="code-span">
-              {highlight ? (
-                <MarkedText
-                  text={span.value}
-                  isFirst={isFirst}
-                  linkTerms={linkTerms}
-                  linkChapters={false}
-                />
-              ) : (
-                span.value
+              {splitByPlaceholders(span.value).map((segment, segmentIndex) =>
+                segment.placeholder ? (
+                  <span className="cheat-placeholder" key={segmentIndex}>
+                    {segment.value}
+                  </span>
+                ) : highlight ? (
+                  <MarkedText
+                    key={segmentIndex}
+                    text={segment.value}
+                    isFirst={isFirst}
+                    linkTerms={linkTerms}
+                    linkChapters={false}
+                  />
+                ) : (
+                  <Fragment key={segmentIndex}>{segment.value}</Fragment>
+                ),
               )}
             </code>
           );

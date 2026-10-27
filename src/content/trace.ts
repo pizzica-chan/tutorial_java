@@ -65,7 +65,7 @@ FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.
     {
       id: "mybatis",
       title: "MyBatis で探す",
-      minutes: 6,
+      minutes: 8,
       tags: ["MyBatis"],
       blocks: [
         {
@@ -102,12 +102,42 @@ FROM t_request r JOIN t_user a ON a.id = r.applicant_id LEFT JOIN t_user v ON v.
           type: "p",
           text: "上の例では、XML の select の id が `findMine` で、Java の `findMine` メソッドと対応しています。参照検索で、誰がこのメソッドを呼んでいるかを辿りましょう。",
         },
+        {
+          type: "h2",
+          text: "よく出てくる記法",
+        },
+        {
+          type: "p",
+          text: "Mapper の XML には、SQL のほかに MyBatis のタグや記号が混ざります。代表的なものと、ログの SQL から探すときの見方をまとめます。",
+        },
+        {
+          type: "table",
+          headers: ["記法", "意味", "探すときの見方"],
+          rows: [
+            ["`<mapper namespace=\"...\">`", "この XML に対応する Java インタフェースの名前。パッケージ名から書く（例: `jp.co.example.shinsei.mapper.RequestMapper`）", "XML から Java 側を開くときは、この名前で探す"],
+            ["`#{userId}`", "値を渡すプレースホルダ。MyBatis は、SQL 文のこの部分を `?` に置き換え、値は SQL 文とは別に DB へ渡す", "MyBatis のログでは、`Preparing` の行に `?`、`Parameters` の行に値が出る。XML には値ではなく `#{userId}` と書かれている。ログに出た値（7 など）ではなく、カラム名で検索する"],
+            ["`${sortColumn}`", "値を SQL の文字列にそのまま埋め込む", "ログに `ORDER BY created_at` と出ても、XML では `ORDER BY ${sortColumn}` と書かれている。その部分は検索に使わない"],
+            ["`<if test=\"...\">`", "条件が true のときだけ、中の SQL を足す", "XML には、ログと同じ組み合わせの条件は書かれていない。`<if>` の外にある部分で探す"],
+            ["`<where>`", "中の `<if>` のどれかが成り立ったときだけ WHERE を付け、先頭の AND を取り除く", "XML では `AND r.title ...` と書いた条件が、ログでは `WHERE r.title ...` と出ることがある"],
+            ["`<foreach>`", "リストの要素の数だけ繰り返す。`IN (...)` によく使う", "ログでは `IN (?, ?, ?)` のように、要素の数だけ `?` が並ぶ"],
+            ["`<sql id=\"...\">`\n`<include refid=\"...\" />`", "複数の SQL に共通する部分を `<sql>` に書き、`<include>` で差し込む", "カラム名で `<sql>` にヒットしたら、`refid` にその `id` を書いた `<select>` を探す"],
+            ["`@Select(\"...\")`", "XML ではなく、Java のアノテーションに SQL を書く", "XML に無ければ、`.java` も検索の対象にする"],
+          ],
+        },
+        {
+          type: "p",
+          text: "`#{}` と `${}` の違いや、`resultType` とカラムの対応は、「Java アプリの構成」の「mapper.xml の読み方」で説明しています。",
+          link: {
+            label: "mapper.xml の読み方",
+            to: "/tracks/java-map/mapper-xml",
+          },
+        },
       ],
     },
     {
       id: "jpa",
       title: "JPA（Hibernate）で探す",
-      minutes: 8,
+      minutes: 9,
       tags: ["JPA"],
       blocks: [
         {
@@ -172,13 +202,44 @@ public class Request {
           type: "p",
           text: "メソッド名だけ、または JPQL なら、実行された SQL では見つかりません。`t_request` で Entity を見つけ、参照検索で呼び出し元を辿りましょう。`nativeQuery` なら、実行された SQL に近い文で MyBatis と同じように検索できます。",
         },
+        {
+          type: "h2",
+          text: "ほかに知っておきたい記法",
+        },
+        {
+          type: "p",
+          text: "上の例のほかにも、ログの SQL とソースの対応が分かりにくくなる記法があります。",
+        },
+        {
+          type: "table",
+          headers: ["記法", "意味", "探すときの見方"],
+          rows: [
+            ["`@Table(name = \"t_request\")`", "クラスが対応するテーブル", "`@Table` が無いクラスは、クラス名からテーブル名が決まる（Spring Boot の既定では `RequestItem` → `request_item`）。テーブル名でヒットしなければ、クラス名で探す"],
+            ["`@Column(name = \"applicant_id\")`", "フィールドが対応するカラム", "ログのカラム名で探す。`@Column` が無いフィールドは、フィールド名からカラム名が決まる。カラム名でヒットしなければ、`applicantId` のようなフィールド名で探す"],
+            ["`@ManyToOne` / `@OneToMany`\n`@JoinColumn`", "Entity が別の Entity を持つ（例: 申請が申請者の `User` を持つ）。`fetch` で、関連先をいつ読み込むかを指定する", "`fetch = FetchType.EAGER`（`@ManyToOne` の既定）なら、申請を読み込んだ時点で、JOIN か追加の SELECT が発行される。`fetch = FetchType.LAZY` なら、`request.getApplicant().getName()` のように関連先の中身に初めて触れた行で、追加の SELECT が発行される。どちらも、発行した行に SQL は書かれていない"],
+            ["`@SQLRestriction(\"deleted = false\")`", "Entity に、いつも付ける条件を書く（例: 削除済みのレコードを除く）。Hibernate 6.3 より前は `@Where`", "ログの WHERE にこの条件が自動で付く。Repository を探しても、この条件は見つからない"],
+          ],
+        },
+        {
+          type: "p",
+          text: "Hibernate が組み立てた SQL をログに出すには、`application.yml` の `logging.level` で、`org.hibernate.SQL` を DEBUG にしましょう。ただし、SQL の値の部分は `?` のままです。値も確認したいときは、値を記録するロガーを TRACE にしましょう。TRACE は、DEBUG よりさらに詳しいログレベルです。ロガーの名前は、Hibernate のバージョンで違います。",
+        },
+        {
+          type: "code",
+          title: "application.yml（Spring Boot 3 / Hibernate 6 の例）",
+          lang: "yaml",
+          code: `logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE  # Spring Boot 2 / Hibernate 5 では org.hibernate.type.descriptor.sql`,
+        },
         { type: "quiz", id: "trace-sql-source" },
       ],
     },
     {
       id: "jdbc",
       title: "JdbcTemplate で探す",
-      minutes: 7,
+      minutes: 9,
       tags: ["Spring"],
       blocks: [
         {
@@ -223,6 +284,24 @@ public class RequestJdbcRepository {
           kind: "trap",
           title: "バインドした値は、別のログに出る",
           text: "SQL 文の `?` に入った実際の値は、`org.springframework.jdbc.core.StatementCreatorUtils` という別のクラスが TRACE レベルで出します（`Setting SQL statement parameter value: ... parameter value [7] ...` のような 1 行）。DEBUG のままだと値は分からないので、疑わしい値を確認したいときは、このロガーだけ TRACE まで上げましょう。",
+        },
+        {
+          type: "h2",
+          text: "よく出てくる記法",
+        },
+        {
+          type: "p",
+          text: "ただし、SQL の書き方によっては、テーブル名を含む長い文で検索してもヒットしないことがあります。代表的な書き方と、探すときの見方をまとめます。",
+        },
+        {
+          type: "table",
+          headers: ["記法", "意味", "探すときの見方"],
+          rows: [
+            ["`queryForList` / `queryForObject`\n`query` / `update`", "SQL の文字列を渡して実行する。`update` は INSERT・UPDATE・DELETE に使う", "SQL の文字列を見つけたら、それを実行している Java メソッド（上の例の `findMine`）の呼び出し元を、参照検索で辿る"],
+            ["`NamedParameterJdbcTemplate`\n`:userId`", "プレースホルダを `?` ではなく名前で書く", "ログでは `applicant_id = ?`、ソースでは `applicant_id = :userId` と違う。`?` を含めて検索しない"],
+            ["`\"SELECT ... \" + \"FROM t_request ...\"`\nテキストブロック（`\"\"\"` で囲む）", "長い SQL を、複数の行に分けて書く。テキストブロックは、Java 15 以降で使える複数行の文字列", "途中で改行や `+` が入るので、長い文で検索するとヒットしない。テーブル名やカラム名の 1 語で探す"],
+            ["`SimpleJdbcInsert`\n`withTableName(\"t_request\")`", "テーブル名を渡すと、INSERT 文を自動で組み立てる", "ソースに INSERT 文が無い。テーブル名で探すと `withTableName` にヒットする"],
+          ],
         },
         { type: "quiz", id: "trace-jdbc" },
       ],
