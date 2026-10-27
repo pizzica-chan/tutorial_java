@@ -31,7 +31,7 @@ writeFileSync(
       preferences: {
         currentDockState: '"right"',
         "panel-selectedTab": '"network"',
-        // 新規申請は POST（302）とリダイレクト後の GET を並べて撮るので、Preserve log を付ける
+        // 新規申請は POST（302）とリダイレクト後の GET を並べて撮るので、Keep log（旧 Preserve log）を付ける
         "network-log.preserve-log": process.argv.includes("--create-post-only") ? "true" : "false",
         "network-show-overview": "false",
         "disable-locale-info-bar": "true",
