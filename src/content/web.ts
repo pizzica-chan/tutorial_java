@@ -373,8 +373,8 @@ Content-Type: application/json
           rows: [
             ["パス", "`@PathVariable Long id`", "マッピングの `{id}`"],
             ["クエリ・フォーム（1 つずつ）", "`@RequestParam String title`", "`@RequestParam` の value。書いていなければ引数名"],
-            ["クエリ・フォーム（まとめて）", "`@ModelAttribute HistorySearchForm form`", "受け取るクラスのフィールド名"],
-            ["JSON 本文", "`@RequestBody NewRequest body`", "受け取るクラスのフィールド名"],
+            ["クエリ・フォーム（まとめて）", "`@ModelAttribute OrderSearchForm form`", "受け取るクラスのフィールド名"],
+            ["JSON 本文", "`@RequestBody NewRequest body`", "受け取るクラスのフィールド名。`@JsonProperty` があればその名前"],
             ["ヘッダ", "`@RequestHeader(\"X-Request-Id\") String requestId`", "アノテーションに書いたヘッダ名"],
             ["Cookie", "`@CookieValue(\"lang\") String lang`", "アノテーションに書いた Cookie 名"],
           ],
@@ -389,32 +389,36 @@ Content-Type: application/json
         },
         {
           type: "code",
-          title: "HistorySearchForm.java（例。申請くんではありません）",
+          title: "OrderSearchForm.java（例。申請くんではありません）",
           lang: "java",
-          code: `public class HistorySearchForm {
-  private String title;
-  private String status;
+          code: `public class OrderSearchForm {
+  private String customerName;
+  private String orderStatus;
 
-  public String getTitle() { return title; }
-  public void setTitle(String title) { this.title = title; }
-  public String getStatus() { return status; }
-  public void setStatus(String status) { this.status = status; }
+  public String getCustomerName() { return customerName; }
+  public void setCustomerName(String customerName) { this.customerName = customerName; }
+  public String getOrderStatus() { return orderStatus; }
+  public void setOrderStatus(String orderStatus) { this.orderStatus = orderStatus; }
 }`,
         },
         {
           type: "code",
-          title: "RequestController.java（例。申請くんではありません）",
+          title: "OrderController.java（例。申請くんではありません）",
           lang: "java",
           highlightLines: [2],
-          code: `@GetMapping("/history")
-public String history(@ModelAttribute HistorySearchForm form, Model model) {
-  model.addAttribute("results", requestService.searchHistory(form));
-  return "request/history";
+          code: `@GetMapping("/search")
+public String search(@ModelAttribute OrderSearchForm form, Model model) {
+  model.addAttribute("orders", orderService.search(form));
+  return "order/search";
 }`,
         },
         {
           type: "p",
-          text: "`?title=申請&status=APPROVED` が届くと、Spring は同じ名前のフィールドへ、Setter を通して値を入れます。Controller の引数にはパラメータ名が出てこないので、`status` で Controller を検索してもヒットしません。受け取るクラス（ここでは `HistorySearchForm`）を開いて、フィールド名を確かめましょう。",
+          text: "`?customerName=山田&orderStatus=SHIPPED` が届くと、Spring は同じ名前のフィールドへ、Setter を通して値を入れます。Controller の引数にはパラメータ名が出てこないので、`customerName` で Controller を検索してもヒットしません。受け取るクラス（ここでは `OrderSearchForm`）を開いて、フィールド名を確かめましょう。",
+        },
+        {
+          type: "p",
+          text: "申請くんの申請履歴の検索は、この書き方ではありません。`RequestController.history` で、検索項目を 1 つずつ `@RequestParam` で受け取っています。",
         },
         {
           type: "h3",
@@ -422,7 +426,7 @@ public String history(@ModelAttribute HistorySearchForm form, Model model) {
         },
         {
           type: "p",
-          text: "アノテーションを省いても、値は入ります。Spring は、`String` や `Long` のような単純な型の引数を `@RequestParam` と同じように扱い、それ以外のクラスの引数を `@ModelAttribute` と同じように扱います。`Model` のように、Spring が別に用意して渡す型は除きます。`history(HistorySearchForm form, Model model)` と書いても、`form` にフォームの値が入ります。",
+          text: "アノテーションを省いても、値は入ります。Spring は、`String` や `Long` のような単純な型の引数を `@RequestParam` と同じように扱い、それ以外のクラスの引数を `@ModelAttribute` と同じように扱います。`Model` のように、Spring が別に用意して渡す型は除きます。`search(OrderSearchForm form, Model model)` と書いても、`form` にフォームの値が入ります。",
         },
         {
           type: "p",
