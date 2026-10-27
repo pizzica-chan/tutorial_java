@@ -479,7 +479,7 @@ public String search(@ModelAttribute OrderSearchForm form, Model model) {
           type: "code",
           title: "ブラウザが受け取った HTML（申請くん・抜粋）",
           lang: "html",
-          highlightLines: [1, 5, 9, 12],
+          highlightLines: [1, 2, 5, 9, 12, 15],
           code: `<form class="stack js-submit-confirm" action="/shinsei/requests" method="post">
   <input type="hidden" name="_csrf" value="8f3a2b1c-4e5f-6789-abcd-ef0123456789"/>
   <label>
