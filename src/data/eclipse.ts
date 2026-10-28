@@ -67,7 +67,7 @@ export const eclipseSections: EclipseSection[] = [
       },
       {
         id: "go-to-line",
-        name: "ログに出た行番号へ移動する",
+        name: "行番号を指定して移動する",
         how: "ファイルを開いて Ctrl+L → 行へ移動（Go to Line）",
         detail: [
           "`RequestService.java:48` が手がかりなら、そのファイルを開いて 48 を入力しましょう。実行中のアプリと手元のソースの版が違うと、該当する処理の行番号もずれます。",
