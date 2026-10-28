@@ -217,6 +217,17 @@ export function Layout() {
           </span>
           <span>開発者ツールの Tips</span>
         </NavLink>
+        <div className="nav-label">ECLIPSE</div>
+        <NavLink
+          to="/eclipse"
+          className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+          onClick={() => setOpen(false)}
+        >
+          <span className="no">
+            <Icon name="code" size={14} />
+          </span>
+          <span>Eclipse 便利機能集</span>
+        </NavLink>
         <div className="nav-label">GLOSSARY</div>
         <NavLink
           to="/glossary"

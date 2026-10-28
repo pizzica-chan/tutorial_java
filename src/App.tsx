@@ -6,6 +6,7 @@ import { LessonPage } from "./pages/LessonPage";
 import { LabPage } from "./pages/LabPage";
 import { CheatSheetPage } from "./pages/CheatSheetPage";
 import { DevtoolsPage } from "./pages/DevtoolsPage";
+import { EclipsePage } from "./pages/EclipsePage";
 import { GlossaryPage } from "./pages/GlossaryPage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/lab" element={<LabPage />} />
         <Route path="/cheatsheet" element={<CheatSheetPage />} />
         <Route path="/devtools" element={<DevtoolsPage />} />
+        <Route path="/eclipse" element={<EclipsePage />} />
         <Route path="/glossary" element={<GlossaryPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
