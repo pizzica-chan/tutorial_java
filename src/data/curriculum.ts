@@ -81,6 +81,7 @@ export function pageDescription(pathname: string): string {
   if (pathname === "/lab") return "通読とは独立して、申請くんの HTTP とソース、リクエストの区間を確認できます。";
   if (pathname === "/cheatsheet") return "本文で使った Linux・Git・SQL・HTTP の調査コマンドの早見表です。";
   if (pathname === "/devtools") return "ブラウザの開発者ツールで調査に使える機能を、症状からの逆引きとタブごとの一覧でまとめました。";
+  if (pathname === "/eclipse") return "既存の Java Web アプリを読むときや、調査・修正するときに使う Eclipse の便利機能とショートカットの早見表です。";
   if (pathname === "/glossary" || pathname.startsWith("/glossary")) {
     return "HTTP、Java Web アプリ、Spring まわりの用語。本文の点線から飛びます。";
   }
@@ -107,6 +108,7 @@ export function pageTitle(pathname: string): string {
   if (pathname === "/lab") return `ラボ — ${site}`;
   if (pathname === "/cheatsheet") return `チートシート — ${site}`;
   if (pathname === "/devtools") return `開発者ツールの Tips — ${site}`;
+  if (pathname === "/eclipse") return `Eclipse 便利機能集 — ${site}`;
   if (pathname === "/glossary" || pathname.startsWith("/glossary")) return `用語集 — ${site}`;
   const parts = pathname.split("/").filter(Boolean);
   if (parts[0] === "tracks" && parts[1] && parts[2]) {

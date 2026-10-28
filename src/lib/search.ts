@@ -7,6 +7,7 @@ import { httpSample, requestFlow, stackCases } from "../data/labs";
 import { blockAnchorIds, lessonRowAnchor } from "./anchors";
 import { cheatSheet, cheatSheetAnchors } from "../data/cheatsheet";
 import { devtools, devtoolsAnchors, devtoolsRowText } from "../data/devtools";
+import { eclipseSections, eclipseTipText } from "../data/eclipse";
 import { troubleshootMap } from "../data/troubleshootMap";
 
 export type SearchHit = {
@@ -134,6 +135,23 @@ const cheatSheetSearchAnchors = cheatSheetAnchors();
 const devtoolsSearchAnchors = devtoolsAnchors();
 
 const documents: Doc[] = [
+  toDoc(
+    "/eclipse",
+    "Eclipse 便利機能集",
+    "ECLIPSE",
+    [
+      "Eclipse 便利機能集 ショートカット 早見表 IDE JDT",
+      ...eclipseSections.flatMap((section) => [section.title, section.intro, ...section.tips.map(eclipseTipText)]),
+    ].join("\n"),
+    "page",
+    [
+      { text: "Eclipse 便利機能集 ショートカット 早見表 IDE JDT" },
+      ...eclipseSections.flatMap((section) => [
+        { anchor: section.id, text: [section.title, section.intro].join("\n") },
+        ...section.tips.map((tip) => ({ anchor: tip.id, text: eclipseTipText(tip) })),
+      ]),
+    ],
+  ),
   toDoc(
     "/",
     "参画前に知っておきたい Java Web アプリの読み解き方",
