@@ -68,7 +68,7 @@ export const eclipseSections: EclipseSection[] = [
       {
         id: "go-to-line",
         name: "行番号を指定して移動する",
-        how: "ファイルを開いて Ctrl+L → 行へ移動（Go to Line）",
+        how: "ファイルを開いて Ctrl+L → 指定行へジャンプ（Go to Line）",
         detail: [
           "移動したい行番号を入力すると、その行へカーソルが移動します。長いファイルでも、スクロールして探す必要がありません。",
         ],
@@ -197,7 +197,7 @@ export const eclipseSections: EclipseSection[] = [
         how: "停止中にデバッグ・シェル（Debug Shell）ビューへコードを書き、選択して Ctrl+U → 実行（Execute）。結果を表示するなら Ctrl+Shift+D → 表示（Display）",
         detail: [
           "止まっている位置の変数を使って、Java の式や文を実行できます。Java メソッドの戻り値や、条件式の結果を確かめたいときに使いましょう。",
-          "Java エディタで式を選択して Ctrl+Shift+I → インスペクト（Inspect）を押すと、その式の値をポップアップで確認できます。",
+          "Java エディタで式を選択して Ctrl+Shift+I → インスペクション（Inspect）を押すと、その式の値をポップアップで確認できます。",
           "ビューが見当たらないときは、Ctrl+3 で「Debug Shell」と入力して開きましょう。古いバージョンでは表示（Display）ビューという名前です。",
           "書いたコードは実際に実行されます。データを更新する Java メソッドを呼ぶと、DB の内容も変わります。",
         ],
@@ -221,7 +221,7 @@ export const eclipseSections: EclipseSection[] = [
       {
         id: "step-filter",
         name: "ライブラリの中へ入らないようにする",
-        how: "ウィンドウ → 設定 → Java → デバッグ → ステップ・フィルタリング（Window → Preferences → Java → Debug → Step Filtering）で対象のパッケージを追加。オンとオフは Shift+F5 → ステップ・フィルターを使用（Use Step Filters）",
+        how: "ウィンドウ → 設定 → Java → デバッグ → ステップ・フィルター（Window → Preferences → Java → Debug → Step Filtering）で対象のパッケージを追加。オンとオフは Shift+F5 → ステップ・フィルターの使用（Use Step Filters）",
         detail: [
           "`org.springframework.*` のようなパッケージを登録すると、ステップ・インしてもその中では止まらず、自分たちのコードまで進みます。",
           "フィルタしたパッケージの中にも、ブレークポイントを置けば止まります。ライブラリの中を確かめたいときは、Shift+F5 で一時的にオフにしましょう。",
@@ -250,14 +250,14 @@ export const eclipseSections: EclipseSection[] = [
         how: "実行 → Java 例外ブレークポイントの追加（Run → Add Java Exception Breakpoint）で例外のクラスを選ぶ",
         detail: [
           "`NullPointerException` など、例外のクラスを指定すると、その例外が投げられた行で止まります。どの行で起きるか分からないときに使いましょう。",
-          "Web アプリでは、例外の多くをフレームワークが捕まえてエラー画面に変えます。捕捉された例外（Caught）でも止まる設定になっているかを確かめましょう。",
+          "Web アプリでは、例外の多くをフレームワークが捕まえてエラー画面に変えます。例外がキャッチされた時に中断（Suspend on caught exceptions）がオンになっているかを確かめましょう。",
           "よく使われる例外を指定すると、ライブラリの中で何度も止まることがあります。不要になったら、ブレークポイント（Breakpoints）ビューで無効にしましょう。",
         ],
       },
       {
         id: "remote-debug",
         name: "起動中のアプリにデバッガをつなぐ",
-        how: "実行 → デバッグの構成 → リモート Java アプリケーション（Run → Debug Configurations → Remote Java Application）でホストとポートを指定して接続",
+        how: "実行 → デバッグ構成 → リモート Java アプリケーション（Run → Debug Configurations → Remote Java Application）でホストとポートを指定して接続",
         detail: [
           "Tomcat やコンテナで動いているアプリを、Eclipse から起動し直さずにデバッグできます。アプリ側は、`-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005` のようなオプションを付けて起動しておく必要があります。",
           "コンテナで動かすときは、デバッグ用のポートも公開しましょう。接続したアプリのソースと手元のソースの版が違うと、ブレークポイントの行がずれます。",
@@ -348,7 +348,7 @@ export const eclipseSections: EclipseSection[] = [
       {
         id: "switch-editor",
         name: "開いているファイルを切り替える",
-        how: "Ctrl+E → 開いているエディタの一覧（Quick Switch Editor）",
+        how: "Ctrl+E → エディターのクイック切り替え（Quick Switch Editor）",
         detail: [
           "ファイル名を入力して候補を絞れます。タブが多くなり、目的のファイルが隠れたときに使いましょう。",
         ],
@@ -394,7 +394,7 @@ export const eclipseSections: EclipseSection[] = [
         how: "エディタ内を右クリック → チーム → リビジョン情報の表示（Team → Show Revision Information）",
         detail: [
           "エディタの左端に、行ごとに最後に変更したコミットと作成者が出ます。マウスを重ねると、コミットメッセージを確認できます。Git の blame と同じ情報です。",
-          "ファイル全体の変更の流れを見たいときは、チーム → 履歴に表示（Team → Show in History）を使いましょう。",
+          "ファイル全体の変更の流れを見たいときは、チーム → ヒストリーに表示（Team → Show in History）を使いましょう。",
         ],
       },
     ],
