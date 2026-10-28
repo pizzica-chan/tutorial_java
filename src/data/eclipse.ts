@@ -158,7 +158,7 @@ export const eclipseSections: EclipseSection[] = [
   {
     id: "debug",
     title: "3. デバッガで値と分岐を確認する",
-    intro: "デバッグ実行したアプリが対象です。ブレークポイントは、処理を一時停止する位置の印です。止まったときの変数や呼び出し元を確認できます。",
+    intro: "デバッグ実行したアプリか、デバッガをつないだアプリが対象です。ブレークポイントは、処理を一時停止する位置の印です。止まったときの変数や呼び出し元を確認できます。",
     source: {
       title: "Eclipse Help：Stepping Through the Execution of a Java Program",
       href: "https://help.eclipse.org/latest/topic/org.eclipse.jdt.doc.user/tasks/task-stepping.htm",
@@ -180,26 +180,6 @@ export const eclipseSections: EclipseSection[] = [
         detail: [
           "引数やローカル変数の値を確認できます。オブジェクトは展開すると、フィールドの値まで確認できます。",
           "デバッグ（Debug）ビューで選んだ呼び出しの位置によって、表示される変数が変わります。確認したい Java メソッドの位置を選びましょう。",
-        ],
-      },
-      {
-        id: "change-value",
-        name: "変数の値を書き換える",
-        how: "停止中に変数（Variables）ビューで変数を右クリック → 値の変更（Change Value）",
-        detail: [
-          "値を書き換えてから実行を進めると、別の値だったときの分岐を試せます。ソースは変わりません。書き換えた値が効くのは、その実行の間だけです。",
-          "変数ビューの値の欄をクリックして、直接入力することもできます。",
-        ],
-      },
-      {
-        id: "evaluate",
-        name: "停止中に任意のコードを実行する",
-        how: "停止中にデバッグ・シェル（Debug Shell）ビューへコードを書き、選択して Ctrl+U → 実行（Execute）。結果を表示するなら Ctrl+Shift+D → 表示（Display）",
-        detail: [
-          "止まっている位置の変数を使って、Java の式や文を実行できます。Java メソッドの戻り値や、条件式の結果を確かめたいときに使いましょう。",
-          "Java エディタで式を選択して Ctrl+Shift+I → インスペクション（Inspect）を押すと、その式の値をポップアップで確認できます。",
-          "ビューが見当たらないときは、Ctrl+3 で「Debug Shell」と入力して開きましょう。古いバージョンでは表示（Display）ビューという名前です。",
-          "書いたコードは実際に実行されます。データを更新する Java メソッドを呼ぶと、DB の内容も変わります。",
         ],
       },
       {
@@ -236,6 +216,26 @@ export const eclipseSections: EclipseSection[] = [
         ],
       },
       {
+        id: "change-value",
+        name: "変数の値を書き換える",
+        how: "停止中に変数（Variables）ビューで変数を右クリック → 値の変更（Change Value）",
+        detail: [
+          "値を書き換えてから実行を進めると、別の値だったときの分岐を試せます。ソースは変わりません。書き換えた値が効くのは、その実行の間だけです。",
+          "変数ビューの値の欄をクリックして、直接入力することもできます。",
+        ],
+      },
+      {
+        id: "evaluate",
+        name: "停止中に任意のコードを実行する",
+        how: "停止中にデバッグ・シェル（Debug Shell）ビューへコードを書き、選択して Ctrl+U → 実行（Execute）。結果を表示するなら Ctrl+Shift+D → 表示（Display）",
+        detail: [
+          "止まっている位置の変数を使って、Java の式や文を実行できます。Java メソッドの戻り値や、条件式の結果を確かめたいときに使いましょう。",
+          "Java エディタで式を選択して Ctrl+Shift+I → インスペクション（Inspect）を押すと、その式の値をポップアップで確認できます。",
+          "ビューが見当たらないときは、Ctrl+3 で「Debug Shell」と入力して開きましょう。古いバージョンでは表示（Display）ビューという名前です。",
+          "書いたコードは実際に実行されます。データを更新する Java メソッドを呼ぶと、DB の内容も変わります。",
+        ],
+      },
+      {
         id: "conditional-breakpoint",
         name: "特定の値のときだけ止める",
         how: "ブレークポイントを右クリック → ブレークポイント・プロパティー（Breakpoint Properties）で条件を設定",
@@ -259,7 +259,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "起動中のアプリにデバッガをつなぐ",
         how: "実行 → デバッグ構成 → リモート Java アプリケーション（Run → Debug Configurations → Remote Java Application）でホストとポートを指定して接続",
         detail: [
-          "Tomcat やコンテナで動いているアプリを、Eclipse から起動し直さずにデバッグできます。アプリ側は、`-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005` のようなオプションを付けて起動しておく必要があります。",
+          "Tomcat やコンテナで動いているアプリを、Eclipse から起動し直さずにデバッグできます。アプリ側は、`-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005` のようなオプションを付けて起動しておく必要があります。Java 8 では、`address=5005` のようにポート番号だけを書きます。",
           "コンテナで動かすときは、デバッグ用のポートも公開しましょう。接続したアプリのソースと手元のソースの版が違うと、ブレークポイントの行がずれます。",
           "ブレークポイントで止まっている間は、そのリクエストの処理も止まります。ほかの人も使う環境では、つなぐ前に相談しましょう。デバッグ用のポートは、外部から届く場所で開けないようにしましょう。",
         ],
