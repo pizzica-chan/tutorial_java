@@ -28,7 +28,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "ファイル名で開く",
         how: "Ctrl+Shift+R → リソースを開く（Open Resource）",
         detail: [
-          "`RequestMapper.xml` や `application.yml` など、ファイル名を入力して開きましょう。フォルダを順に展開せずに探せます。",
+          "ファイル名を入力して開きましょう。XML や設定ファイルなど、Java 以外のファイルも探せます。フォルダを順に展開する必要はありません。",
           "同名の候補が複数あれば、表示されたパスでプロジェクトやフォルダを区別しましょう。",
         ],
       },
@@ -37,7 +37,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "Java のクラス名で開く",
         how: "Ctrl+Shift+T → 型を開く（Open Type）",
         detail: [
-          "`RequestService` のようなクラス名やインタフェース名で探せます。XML や HTML を開くときは、リソースを開くを使いましょう。",
+          "クラス名やインタフェース名で探せます。XML や HTML を開くときは、リソースを開くを使いましょう。",
         ],
       },
       {
@@ -45,7 +45,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "プロジェクト内の文字列を探す",
         how: "Ctrl+H → ファイル検索（File Search）タブ",
         detail: [
-          "URL の `/requests`、画面の文言、テーブル名の `t_request` などを検索しましょう。Java 以外の XML・HTML・設定ファイルも対象にできます。",
+          "URL の一部、画面の文言、テーブル名などを検索しましょう。Java 以外の XML・HTML・設定ファイルも対象にできます。",
           "ファイル名のパターンを `*.xml` などに絞り、検索範囲も確認しましょう。見つからないときは、対象のファイルやプロジェクトが範囲から外れていないかを確かめましょう。",
         ],
       },
@@ -62,7 +62,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "Java メソッドの一覧から移動する",
         how: "Java エディタで Ctrl+O → クイック・アウトライン（Quick Outline）",
         detail: [
-          "今のクラスの Java メソッドやフィールドが一覧になり、名前を入力して絞れます。長いクラスから `approve` を探すときなどに使いましょう。",
+          "今のクラスの Java メソッドやフィールドが一覧になり、名前を入力して絞れます。長いクラスの中で、目的の Java メソッドへ移動したいときに使いましょう。",
         ],
       },
       {
@@ -89,7 +89,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "呼び出している処理の宣言を開く",
         how: "Java メソッド名や型名にカーソルを置いて F3 → 宣言を開く（Open Declaration）",
         detail: [
-          "`requestService.approve(id, user.getId())` の `approve` から、宣言されている場所へ移動できます。Ctrl を押しながら名前をクリックする方法もあります。",
+          "呼び出している Java メソッドの名前から、宣言されている場所へ移動できます。Ctrl を押しながら名前をクリックする方法もあります。",
         ],
       },
       {
@@ -115,7 +115,7 @@ export const eclipseSections: EclipseSection[] = [
         how: "Java メソッド名にカーソルを置いて Ctrl+Alt+H → 呼び出し階層を開く（Open Call Hierarchy）",
         detail: [
           "呼び出し元をツリーで辿れます。呼び出し階層ビューでは、呼び出し先を表示する方向にも切り替えられます。",
-          "これはソースから分かる呼び出し関係です。今回のリクエストで実際に通った経路は、ログやデバッガで確認しましょう。",
+          "これはソースから分かる呼び出し関係です。実行時にどの経路を通ったかは、ログやデバッガで確認しましょう。",
         ],
       },
       {
@@ -151,7 +151,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "確認したい行で止める",
         how: "Java エディタの左端をダブルクリック、または Ctrl+Shift+B → ブレークポイントの切り替え（Toggle Breakpoint）",
         detail: [
-          "実行できる行に印を付けてから、対象の画面操作を行いましょう。その行を実行する直前に止まります。",
+          "実行できる行に印を付けてから、その行を通る処理を動かしましょう。その行を実行する直前に止まります。",
           "通常の起動では止まりません。デバッグ実行しているかを確かめましょう。",
         ],
       },
@@ -160,7 +160,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "変数の値を確認する",
         how: "停止中に変数へマウスを重ねる、または変数（Variables）ビューを開く",
         detail: [
-          "引数やローカル変数、オブジェクトのフィールドを確認できます。`request` を展開し、`approverId` が null かどうかなどを確かめましょう。",
+          "引数やローカル変数の値を確認できます。オブジェクトは展開すると、フィールドの値まで確認できます。",
           "デバッグ（Debug）ビューで選んだ呼び出しの位置によって、表示される変数が変わります。確認したい Java メソッドの位置を選びましょう。",
         ],
       },
@@ -193,7 +193,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "特定の値のときだけ止める",
         how: "ブレークポイントを右クリック → ブレークポイント・プロパティー（Breakpoint Properties）で条件を設定",
         detail: [
-          "ループの中や何度も呼ばれる処理で、特定の申請だけ調べたいときに使いましょう。条件には、その位置で参照できる変数を使います。",
+          "ループの中や何度も呼ばれる処理で、毎回止まると調べにくいときに使いましょう。条件には、その位置で参照できる変数を使います。",
           "条件式も実行されます。データを更新する Java メソッドを条件から呼び出さないようにしましょう。",
         ],
       },
