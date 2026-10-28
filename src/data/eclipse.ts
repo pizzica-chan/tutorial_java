@@ -28,7 +28,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "ファイル名で開く",
         how: "Ctrl+Shift+R → リソースを開く（Open Resource）",
         detail: [
-          "`RequestMapper.xml` や `application.properties` など、ファイル名を入力して開きましょう。フォルダを順に展開せずに探せます。",
+          "`RequestMapper.xml` や `application.yml` など、ファイル名を入力して開きましょう。フォルダを順に展開せずに探せます。",
           "同名の候補が複数あれば、表示されたパスでプロジェクトやフォルダを区別しましょう。",
         ],
       },
@@ -52,7 +52,7 @@ export const eclipseSections: EclipseSection[] = [
       {
         id: "find-in-editor",
         name: "開いているファイル内を探す",
-        how: "Ctrl+F → 検索（Find）",
+        how: "Ctrl+F → 検索/置換（Find/Replace）",
         detail: [
           "今のファイルだけを検索できます。プロジェクト全体から探したいときは Ctrl+H に切り替えましょう。",
         ],
@@ -70,7 +70,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "ログに出た行番号へ移動する",
         how: "ファイルを開いて Ctrl+L → 行へ移動（Go to Line）",
         detail: [
-          "`RequestService.java:47` が手がかりなら、そのファイルを開いて 47 を入力しましょう。実行中のアプリと手元のソースの版が違うと、該当する処理の行番号もずれます。",
+          "`RequestService.java:48` が手がかりなら、そのファイルを開いて 48 を入力しましょう。実行中のアプリと手元のソースの版が違うと、該当する処理の行番号もずれます。",
         ],
       },
     ],
@@ -89,7 +89,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "呼び出している処理の宣言を開く",
         how: "Java メソッド名や型名にカーソルを置いて F3 → 宣言を開く（Open Declaration）",
         detail: [
-          "`requestService.approve(id)` の `approve` から、宣言されている場所へ移動できます。Ctrl を押しながら名前をクリックする方法もあります。",
+          "`requestService.approve(id, user.getId())` の `approve` から、宣言されている場所へ移動できます。Ctrl を押しながら名前をクリックする方法もあります。",
         ],
       },
       {
@@ -105,7 +105,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "使われている場所を探す",
         how: "対象の名前にカーソルを置いて Ctrl+Shift+G → ワークスペース内の参照（References in Workspace）",
         detail: [
-          "Java メソッドやフィールドを参照している場所を探せます。同じ名前の別の Java メソッドを、文字列検索のようにまとめて拾うことを避けられます。",
+          "Java メソッドやフィールドを参照している場所を探せます。文字列検索と違い、名前が同じだけの別の Java メソッドは結果に入りません。",
           "XML やテンプレートに書かれた名前、実行時に組み立てる呼び出しは拾えないことがあります。変更の影響を調べるときは、ファイル検索も組み合わせましょう。",
         ],
       },
@@ -238,6 +238,7 @@ export const eclipseSections: EclipseSection[] = [
         how: "Ctrl+Shift+F → フォーマット（Format）",
         detail: [
           "Java コードを、設定された規則に合わせて整形します。範囲を選択して使うと、その範囲を整形できます。選択が無い場合はファイル全体が対象です。",
+          "既存のファイルでは、直した範囲だけを選んで整形しましょう。ファイル全体を整形すると、修正と関係ない行まで差分に入ることがあります。",
         ],
       },
       {
@@ -271,7 +272,7 @@ export const eclipseSections: EclipseSection[] = [
       {
         id: "switch-editor",
         name: "開いているファイルを切り替える",
-        how: "Ctrl+E → 開いているエディタの一覧",
+        how: "Ctrl+E → 開いているエディタの一覧（Quick Switch Editor）",
         detail: [
           "ファイル名を入力して候補を絞れます。タブが多くなり、目的のファイルが隠れたときに使いましょう。",
         ],

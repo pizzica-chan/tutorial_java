@@ -136,23 +136,6 @@ const devtoolsSearchAnchors = devtoolsAnchors();
 
 const documents: Doc[] = [
   toDoc(
-    "/eclipse",
-    "Eclipse 便利機能集",
-    "ECLIPSE",
-    [
-      "Eclipse 便利機能集 ショートカット 早見表 IDE JDT",
-      ...eclipseSections.flatMap((section) => [section.title, section.intro, ...section.tips.map(eclipseTipText)]),
-    ].join("\n"),
-    "page",
-    [
-      { text: "Eclipse 便利機能集 ショートカット 早見表 IDE JDT" },
-      ...eclipseSections.flatMap((section) => [
-        { anchor: section.id, text: [section.title, section.intro].join("\n") },
-        ...section.tips.map((tip) => ({ anchor: tip.id, text: eclipseTipText(tip) })),
-      ]),
-    ],
-  ),
-  toDoc(
     "/",
     "参画前に知っておきたい Java Web アプリの読み解き方",
     "トップ",
@@ -257,6 +240,23 @@ const documents: Doc[] = [
           anchor: devtoolsSearchAnchors[sectionIndex].groupIds[groupIndex],
           text: [group.title, group.note ?? "", ...group.rows.map(devtoolsRowText)].join("\n"),
         })),
+      ]),
+    ],
+  ),
+  toDoc(
+    "/eclipse",
+    "Eclipse 便利機能集",
+    "ECLIPSE",
+    [
+      "Eclipse 便利機能集 ショートカット 早見表 IDE JDT",
+      ...eclipseSections.flatMap((section) => [section.title, section.intro, ...section.tips.map(eclipseTipText)]),
+    ].join("\n"),
+    "page",
+    [
+      { text: "Eclipse 便利機能集 ショートカット 早見表 IDE JDT" },
+      ...eclipseSections.flatMap((section) => [
+        { anchor: section.id, text: [section.title, section.intro].join("\n") },
+        ...section.tips.map((tip) => ({ anchor: tip.id, text: eclipseTipText(tip) })),
       ]),
     ],
   ),
