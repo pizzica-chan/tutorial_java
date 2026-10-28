@@ -54,7 +54,7 @@ export const eclipseSections: EclipseSection[] = [
         name: "開いているファイル内を探す",
         how: "Ctrl+F → 検索/置換（Find/Replace）",
         detail: [
-          "今のファイルだけを検索できます。プロジェクト全体から探したいときは Ctrl+H に切り替えましょう。",
+          "エディタで開いて表示しているファイルだけを検索できます。プロジェクト全体から探したいときは Ctrl+H に切り替えましょう。",
         ],
       },
       {
