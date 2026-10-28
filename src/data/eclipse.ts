@@ -73,6 +73,15 @@ export const eclipseSections: EclipseSection[] = [
           "移動したい行番号を入力すると、その行へカーソルが移動します。長いファイルでも、スクロールして探す必要がありません。",
         ],
       },
+      {
+        id: "stack-trace-link",
+        name: "スタックトレースからソースの行を開く",
+        how: "コンソール（Console）ビューで at 行のリンクをクリック。ログからコピーしたものは、コンソールを開く → Java スタック・トレース・コンソール（Open Console → Java Stack Trace Console）に貼り付ける",
+        detail: [
+          "at 行の右端にある、ファイル名と行番号の部分がリンクになります。クリックすると、そのファイルのその行が開きます。",
+          "サーバのログからコピーしたスタックトレースでも、貼り付ければ同じようにリンクになります。ワークスペースにソースが無いクラスの行は、ソースを開けないことがあります。",
+        ],
+      },
     ],
   },
   {
@@ -125,6 +134,15 @@ export const eclipseSections: EclipseSection[] = [
         detail: [
           "宣言を開いても処理の中身が無いときに使いましょう。実装が複数ある場合は、候補から選びます。",
           "MyBatis の Mapper のように、対応する Java の実装クラスをソースに持たない仕組みもあります。その場合は Mapper XML や SQL のアノテーションを確認しましょう。",
+        ],
+      },
+      {
+        id: "quick-type-hierarchy",
+        name: "実装クラスの一覧をすぐ出す",
+        how: "型名や Java メソッド名にカーソルを置いて Ctrl+T → クイック型階層（Quick Type Hierarchy）",
+        detail: [
+          "インタフェースや親クラスの Java メソッドで使うと、それを実装・オーバーライドしているクラスがポップアップで出ます。選ぶと、そのクラスの実装へ移動できます。",
+          "もう一度 Ctrl+T を押すと、親クラスやインタフェースの方向の階層に切り替わります。",
         ],
       },
       {
@@ -215,6 +233,16 @@ export const eclipseSections: EclipseSection[] = [
         detail: [
           "ループの中や何度も呼ばれる処理で、毎回止まると調べにくいときに使いましょう。条件には、その位置で参照できる変数を使います。",
           "条件式も実行されます。データを更新する Java メソッドを条件から呼び出さないようにしましょう。",
+        ],
+      },
+      {
+        id: "exception-breakpoint",
+        name: "例外が投げられた行で止める",
+        how: "実行 → Java 例外ブレークポイントの追加（Run → Add Java Exception Breakpoint）で例外のクラスを選ぶ",
+        detail: [
+          "`NullPointerException` など、例外のクラスを指定すると、その例外が投げられた行で止まります。どの行で起きるか分からないときに使いましょう。",
+          "Web アプリでは、例外の多くをフレームワークが捕まえてエラー画面に変えます。捕捉された例外（Caught）でも止まる設定になっているかを確かめましょう。",
+          "よく使われる例外を指定すると、ライブラリの中で何度も止まることがあります。不要になったら、ブレークポイント（Breakpoints）ビューで無効にしましょう。",
         ],
       },
     ],
@@ -319,6 +347,26 @@ export const eclipseSections: EclipseSection[] = [
         how: "Ctrl+Shift+L → キー・アシスト（Key Assist）",
         detail: [
           "現在の画面で使えるキーの割り当てを表示できます。設定を確認・変更したいときは、ウィンドウ → 設定 → 一般 → キー（Window → Preferences → General → Keys）を開きましょう。",
+        ],
+      },
+    ],
+  },
+  {
+    id: "history",
+    title: "6. 変更の履歴を確認する",
+    intro: "既存のコードを読むときは、いつ、なぜ変わったかが手がかりになります。Git で管理しているプロジェクトが対象です。",
+    source: {
+      title: "EGit User Guide",
+      href: "https://help.eclipse.org/latest/topic/org.eclipse.egit.doc/help/EGit/User_Guide/User-Guide.html",
+    },
+    tips: [
+      {
+        id: "revision-information",
+        name: "その行を誰がいつ変えたかを確認する",
+        how: "エディタ内を右クリック → チーム → リビジョン情報の表示（Team → Show Revision Information）",
+        detail: [
+          "エディタの左端に、行ごとに最後に変更したコミットと作成者が出ます。マウスを重ねると、コミットメッセージを確認できます。Git の blame と同じ情報です。",
+          "ファイル全体の変更の流れを見たいときは、チーム → 履歴に表示（Team → Show in History）を使いましょう。",
         ],
       },
     ],
