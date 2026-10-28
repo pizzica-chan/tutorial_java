@@ -219,6 +219,15 @@ export const eclipseSections: EclipseSection[] = [
         ],
       },
       {
+        id: "step-filter",
+        name: "ライブラリの中へ入らないようにする",
+        how: "ウィンドウ → 設定 → Java → デバッグ → ステップ・フィルタリング（Window → Preferences → Java → Debug → Step Filtering）で対象のパッケージを追加。オンとオフは Shift+F5 → ステップ・フィルターを使用（Use Step Filters）",
+        detail: [
+          "`org.springframework.*` のようなパッケージを登録すると、ステップ・インしてもその中では止まらず、自分たちのコードまで進みます。",
+          "フィルタしたパッケージの中にも、ブレークポイントを置けば止まります。ライブラリの中を確かめたいときは、Shift+F5 で一時的にオフにしましょう。",
+        ],
+      },
+      {
         id: "resume",
         name: "実行を再開する",
         how: "停止中に F8 → 再開（Resume）",
@@ -243,6 +252,16 @@ export const eclipseSections: EclipseSection[] = [
           "`NullPointerException` など、例外のクラスを指定すると、その例外が投げられた行で止まります。どの行で起きるか分からないときに使いましょう。",
           "Web アプリでは、例外の多くをフレームワークが捕まえてエラー画面に変えます。捕捉された例外（Caught）でも止まる設定になっているかを確かめましょう。",
           "よく使われる例外を指定すると、ライブラリの中で何度も止まることがあります。不要になったら、ブレークポイント（Breakpoints）ビューで無効にしましょう。",
+        ],
+      },
+      {
+        id: "remote-debug",
+        name: "起動中のアプリにデバッガをつなぐ",
+        how: "実行 → デバッグの構成 → リモート Java アプリケーション（Run → Debug Configurations → Remote Java Application）でホストとポートを指定して接続",
+        detail: [
+          "Tomcat やコンテナで動いているアプリを、Eclipse から起動し直さずにデバッグできます。アプリ側は、`-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005` のようなオプションを付けて起動しておく必要があります。",
+          "コンテナで動かすときは、デバッグ用のポートも公開しましょう。接続したアプリのソースと手元のソースの版が違うと、ブレークポイントの行がずれます。",
+          "ブレークポイントで止まっている間は、そのリクエストの処理も止まります。ほかの人も使う環境では、つなぐ前に相談しましょう。デバッグ用のポートは、外部から届く場所で開けないようにしましょう。",
         ],
       },
     ],
@@ -296,6 +315,15 @@ export const eclipseSections: EclipseSection[] = [
         detail: [
           "変数・Java メソッド・クラスなどの名前を、参照箇所と合わせて変更できます。単純な文字列の一括置換より、対象を区別しやすくなります。",
           "XML やテンプレート、文字列で書いた名前まで追えるかは構成によって違います。変更後は差分とファイル検索で確認しましょう。",
+        ],
+      },
+      {
+        id: "local-history",
+        name: "保存前の状態と比べる・戻す",
+        how: "ファイルを右クリック → 比較 → ローカル・ヒストリー（Compare With → Local History）。戻すときは 置換 → ローカル・ヒストリー（Replace With → Local History）",
+        detail: [
+          "Eclipse は、ファイルを保存するたびにその時点の内容を手元に残します。Git にコミットする前の変更でも、保存した時点ごとに比べたり戻したりできます。",
+          "残る期間や件数には上限があります。設定は ウィンドウ → 設定 → 一般 → ワークスペース → ローカル・ヒストリー（Window → Preferences → General → Workspace → Local History）で確認しましょう。",
         ],
       },
     ],
