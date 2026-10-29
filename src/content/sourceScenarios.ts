@@ -330,7 +330,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
           "サーバログで、`transactionActive=false`、つまりトランザクションが開始されていないことを確認",
           "Controller が呼ぶ `submitBatch` に、`@Transactional` が付いていないことを確認",
           "`submitBatch` から、同じインスタンスの `saveBatch` を呼んでいることを確認",
-          "内部呼び出しはプロキシを通らず、`saveBatch` の `@Transactional` が効かないことを確認",
+          "内部呼び出しはプロキシを通らず、`saveBatch` の `@Transactional` が適用されないことを確認",
           "`RequestService.create` にもトランザクションが無く、最初の INSERT を取り消す単位が無かったと特定",
         ],
       },
