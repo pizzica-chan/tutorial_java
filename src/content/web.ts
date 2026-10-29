@@ -1097,7 +1097,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "h2",
-          text: "通信があるか、Network タブで見る",
+          text: "Network タブで通信を確認する",
         },
         {
           type: "p",
