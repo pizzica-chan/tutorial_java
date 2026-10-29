@@ -556,6 +556,21 @@ export const terms: TermDef[] = [
     body: "テーブル定義を変える SQL（CREATE / ALTER など）。コードと DB 定義がずれる原因になります。",
   },
   {
+    term: "マイグレーション",
+    aliases: ["マイグレーション", "マイグレーションツール"],
+    body: "DB のテーブル定義などの変更に順番を付けて管理し、その順に適用することです。そのためのツールをマイグレーションツールと呼びます。また、システムやデータの移行を指して使うこともあります。",
+  },
+  {
+    term: "Flyway",
+    aliases: ["Flyway"],
+    body: "Java でよく使われるマイグレーションツールです。`V1__create_tables.sql` のように番号を付けた SQL ファイルを、番号順に DB へ適用します。どこまで適用したかは、既定では DB の `flyway_schema_history` テーブルに記録されます。",
+  },
+  {
+    term: "Liquibase",
+    aliases: ["Liquibase"],
+    body: "Java でよく使われるマイグレーションツールです。変更を changeset という単位で、XML・YAML・JSON・SQL のファイルに書きます。どの changeset を適用したかは、DB の `DATABASECHANGELOG` テーブルに記録されます。",
+  },
+  {
     term: "トリガー",
     aliases: ["トリガー", "TRIGGER"],
     body: "特定の操作（INSERT や UPDATE など）をきっかけに、DB が自動で実行する処理です。Java のソースには現れません。",
