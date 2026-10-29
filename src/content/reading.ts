@@ -522,7 +522,7 @@ mailService.notifyApplicant(request);`,
             [
               "`approve`",
               "そのままの文字",
-              "「`approve`」は行内のこの文字列にヒットする。「`disapprove`」も `approve` を含むのでヒットする",
+              "行内の「`approve`」にヒットする。「`disapprove`」も `approve` を含むのでヒットする",
             ],
             [
               "`request.*approve`",
