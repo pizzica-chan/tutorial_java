@@ -465,7 +465,7 @@ export const terms: TermDef[] = [
   {
     term: "@RequestMapping",
     aliases: ["@RequestMapping"],
-    body: "クラスや Java メソッドに付ける URL の土台。クラスに `/requests` と書くと、配下のメソッドのパスと合成されます。Spring のアノテーションです。",
+    body: "クラスや Java メソッドに付けて、受け持つ URL のパスを書く印です。クラスに `/requests` と書くと、配下のメソッドのパスと合成されます。Spring のアノテーションです。",
   },
   {
     term: "@RequestParam",
@@ -1106,7 +1106,7 @@ export const terms: TermDef[] = [
   {
     term: "JDK",
     aliases: ["JDK"],
-    body: "Java の開発・実行環境。版が違うと起動できないことがあります。",
+    body: "Java の開発・実行環境。バージョンが違うと起動できないことがあります。",
   },
   {
     term: "JVM",
@@ -1914,7 +1914,7 @@ export const terms: TermDef[] = [
   {
     term: "Dockerfile",
     aliases: ["Dockerfile"],
-    body: "Docker のコンテナイメージを作るための手順を書くファイルです。土台にするイメージ、コピーするファイル、コンテナ起動時に実行するコマンドなどを指定します。",
+    body: "Docker のコンテナイメージを作るための手順を書くファイルです。元にするイメージ（ベースイメージ）、コピーするファイル、コンテナ起動時に実行するコマンドなどを指定します。",
   },
   {
     term: "ステージ（Dockerfile）",

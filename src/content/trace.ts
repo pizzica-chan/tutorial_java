@@ -318,7 +318,7 @@ public class RequestJdbcRepository {
         },
         {
           type: "h2",
-          text: "ログの SQL が、ソースのどこにも無い",
+          text: "ログの SQL がソースのどこにも無い",
         },
         {
           type: "p",
