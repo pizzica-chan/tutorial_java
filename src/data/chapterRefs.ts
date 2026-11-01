@@ -53,15 +53,15 @@ const matchers: Matcher[] = tracks
     const aliases = titleAliases(track.title);
     if (track.id === "scenario") aliases.add("シナリオ章");
     const chapterMatchers = toMatchers(aliases, chapterHit);
-    const lessonMatchers = track.lessons
-      .filter((lesson) => !termNames.has(lesson.title))
-      .flatMap((lesson) =>
-        toMatchers(titleAliases(lesson.title), {
-          title: lesson.title,
-          href: `/tracks/${track.id}/${lesson.id}`,
-          kind: "lesson",
-        }),
-      );
+    // 用語と同じ名前のレッスン（「スタックトレース」など）は、「」で囲んだときだけレッスンへのリンクにする
+    const lessonMatchers = track.lessons.flatMap((lesson) => {
+      const aliases = titleAliases(lesson.title);
+      return toMatchers(termNames.has(lesson.title) ? new Set([...aliases].map((alias) => `「${alias}」`)) : aliases, {
+        title: lesson.title,
+        href: `/tracks/${track.id}/${lesson.id}`,
+        kind: "lesson",
+      });
+    });
     return [...chapterMatchers, ...lessonMatchers];
   })
   .sort((a, b) => b.alias.length - a.alias.length);
@@ -84,7 +84,12 @@ export function splitByChapters(text: string): ChapterPart[] {
     }
     const raw = match[0];
     const hit = aliasLookup.get(raw) ?? aliasLookup.get(raw.replace(/\s+/g, ""));
-    if (hit) {
+    if (hit && raw.startsWith("「")) {
+      // 括弧はリンクに含めない
+      parts.push({ type: "text", value: "「" });
+      parts.push({ type: "chapter", value: raw.slice(1, -1), hit });
+      parts.push({ type: "text", value: "」" });
+    } else if (hit) {
       parts.push({ type: "chapter", value: raw, hit });
     } else {
       parts.push({ type: "text", value: raw });
