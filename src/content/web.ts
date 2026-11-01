@@ -1119,7 +1119,7 @@ public String showCart(HttpSession session, Model model) {
     {
       id: "api-json",
       title: "Web API から JSON を受け取る",
-      minutes: 8,
+      minutes: 12,
       tags: ["JavaScript"],
       blocks: [
         {
@@ -1199,6 +1199,72 @@ public String showCart(HttpSession session, Model model) {
         {
           type: "p",
           text: "Web API は画面専用ではありません。同じデータを、ブラウザの画面、モバイルアプリ、ほかのサーバなどから利用できます。",
+        },
+        {
+          type: "h2",
+          text: "別のオリジンの API を呼ぶとき",
+        },
+        {
+          type: "p",
+          text: "ここまでの例では、画面と API が同じオリジンにありました。画面と API のオリジンが違うと、サーバが応答を返しても、fetch が失敗することがあります。",
+        },
+        {
+          type: "h3",
+          text: "応答を読ませない理由",
+        },
+        {
+          type: "p",
+          text: "ブラウザは、開いたページの JavaScript から、ほかのオリジンへもリクエストを送れます。たとえば、利用者がネットバンキングにログインしたまま、悪意のあるサイトを開いたとします。そのページの JavaScript は、ネットバンキングの残高の API を呼べます。",
+        },
+        {
+          type: "p",
+          text: "このリクエストに Cookie が付くと、API はログイン中の利用者からのリクエストとして、残高を返します。応答を読めれば、その JavaScript は残高を悪意のあるサイトへ送れます。",
+        },
+        {
+          type: "diagram",
+          name: "same-origin-none",
+          caption: "例。ブラウザに対策が無かった場合です。",
+        },
+        {
+          type: "p",
+          text: "そこでブラウザは別のオリジンから返った応答を、原則として JavaScript に渡しません。この決まりを同一オリジンポリシーと呼びます。",
+        },
+        {
+          type: "diagram",
+          name: "same-origin-why",
+          caption: "例。リクエストと応答は行き来しますが、ブラウザが応答を JS に渡さないので、残高は外へ送れません。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "Cookie が付かないこともある",
+          text: "別のサイトからのリクエストに Cookie を付けるかどうかは、Cookie の SameSite 属性などで決まります。今のブラウザでは付かないことも多いです。同一オリジンポリシーは、Cookie が付いた場合でも、応答を JavaScript に読ませないための決まりです。",
+        },
+        {
+          type: "h3",
+          text: "API が許可を示す",
+        },
+        {
+          type: "p",
+          text: "画面と API を別のサーバに置く構成もあります。たとえば画面が `https://app.example.com`、API が `https://api.example.com` にあると、ホスト名が違うので別のオリジンです。このようなときは API 側が応答の `Access-Control-Allow-Origin` ヘッダで、読ませてよいオリジンを示します。この仕組みを CORS（Cross-Origin Resource Sharing）と呼びます。守る対象は API のデータなので、許可を出すのも API 側です。",
+        },
+        {
+          type: "diagram",
+          name: "cors-flow",
+        },
+        {
+          type: "p",
+          text: "許可が無いと、Console に `blocked by CORS policy` と出て、fetch は失敗します。ブラウザが止めるのは応答の受け取りなので、リクエストはサーバに届いて処理され、API 側のアクセスログに 200 が残っていることがあります。",
+        },
+        {
+          type: "p",
+          text: "ただし `Content-Type: application/json` を付けた POST などでは、ブラウザは先に、HTTP メソッドが OPTIONS の事前確認のリクエスト（プリフライト）を送ります。プリフライトが許可されなければ、本来のリクエストは送られません。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "curl では再現しない",
+          text: "同一オリジンポリシーと CORS は、ブラウザが守る決まりです。curl やサーバ間の呼び出しはこの制限を受けないので、同じ URL を curl で試すと成功します。fetch の書き方を変えても、応答を読めるようにはなりません。直すのは API 側の応答ヘッダです。",
         },
         {
           type: "h2",

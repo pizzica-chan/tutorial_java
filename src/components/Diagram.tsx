@@ -35,6 +35,9 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "session-store": SessionStore,
   "jwt-flow": JwtFlow,
   "jwt-parts": JwtParts,
+  "same-origin-none": SameOriginNone,
+  "same-origin-why": SameOriginWhy,
+  "cors-flow": CorsFlow,
   layers: Layers,
   "process-threads": ProcessThreads,
   "thread-pool": ThreadPool,
@@ -427,6 +430,144 @@ function JwtFlow() {
               <strong><Icon name="shield" size={18} />署名と期限を確かめる</strong>
               <span className="session-flow-user"><Icon name="user" size={16} />トークンから読んだログイン情報</span>
               <JwtClaims />
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  );
+}
+
+function SameOriginNone() {
+  return <SameOriginMap blocked={false} />;
+}
+
+function SameOriginWhy() {
+  return <SameOriginMap blocked />;
+}
+
+function SameOriginMap({ blocked }: { blocked: boolean }) {
+  return (
+    <div className="sop-map">
+      <div className="sop-site is-evil">
+        <Icon name="globe" size={22} />
+        <strong>悪意のあるサイトの<wbr />サーバ</strong>
+      </div>
+      <div className={`sop-wire is-leak ${blocked ? "" : "is-sent"}`}>
+        <span>{blocked ? "③ 残高を送れない" : "③ 残高を送る"}</span>
+        <i aria-hidden="true" />
+      </div>
+      <div className="sop-browser">
+        <span className="sop-browser-label"><Icon name="browser" size={16} />利用者のブラウザ</span>
+        <div className="sop-row">
+          <div className="sop-page"><Icon name="code" size={16} /><strong>悪意のある<wbr />{"ページの JS"}</strong></div>
+          <div className="sop-cookie">
+            <strong><Icon name="key" size={14} />Cookie</strong>
+            <small>ネットバンキング</small>
+          </div>
+        </div>
+        {blocked ? (
+          <div className="sop-stop"><Icon name="close" size={16} /><strong>応答を JS に渡さない</strong></div>
+        ) : (
+          <div className="sop-page"><Icon name="eye" size={16} /><strong>JS が残高を読む</strong></div>
+        )}
+      </div>
+      <div className="sop-wires">
+        <div className="sop-wire">
+          <span>① リクエスト</span>
+          <i aria-hidden="true" />
+          <small>Cookie 付き</small>
+        </div>
+        <div className="sop-wire is-response">
+          <span>② レスポンス</span>
+          <i aria-hidden="true" />
+          <small>残高</small>
+        </div>
+      </div>
+      <div className="sop-site is-bank">
+        <Icon name="server" size={22} />
+        <strong>ネットバンキングの<wbr />サーバ</strong>
+        <small>Cookie で<wbr />ログインを<wbr />確かめる</small>
+      </div>
+    </div>
+  );
+}
+
+function CorsHeader({ value }: { value: string }) {
+  return (
+    <dl className="session-flow-values is-stacked">
+      <div>
+        <dt>Access-Control-Allow-Origin</dt>
+        <dd>{value}</dd>
+      </div>
+    </dl>
+  );
+}
+
+function CorsFlow() {
+  return (
+    <div className="session-flow">
+      <p className="session-flow-intro">画面と API を別のサーバに置いた例</p>
+      <div className="session-flow-head" aria-hidden="true">
+        <span><Icon name="browser" size={24} />ブラウザ</span>
+        <span><Icon name="server" size={24} />API のサーバ</span>
+      </div>
+      <ol className="session-flow-steps">
+        <li>
+          <div className="session-flow-step"><b>1</b><strong>画面の JavaScript が、別のオリジンの API を呼ぶ</strong></div>
+          <div className="session-flow-row">
+            <div className="session-flow-card">
+              <span className="session-flow-label">画面のオリジン</span>
+              <strong><Icon name="browser" size={18} />画面</strong>
+              <code>https://app.example.com</code>
+            </div>
+            <div className="session-flow-transfer">
+              <span>ブラウザ → サーバ</span>
+              <strong>リクエスト</strong>
+              <code>Origin</code>
+              <i aria-hidden="true" />
+            </div>
+            <div className="session-flow-card is-server">
+              <span className="session-flow-label">API のオリジン</span>
+              <strong><Icon name="server" size={18} />API</strong>
+              <code>https://api.example.com</code>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div className="session-flow-step"><b>2</b><strong>API が応答を返す</strong></div>
+          <p className="session-flow-branch is-ok"><Icon name="check" size={14} />許可のヘッダがある場合</p>
+          <div className="session-flow-row">
+            <div className="session-flow-card">
+              <span className="session-flow-label">ブラウザが確かめる</span>
+              <strong><Icon name="check" size={18} />JavaScript に渡す</strong>
+              <span className="session-flow-user">fetch が成功する</span>
+            </div>
+            <div className="session-flow-transfer is-response">
+              <span>サーバ → ブラウザ</span>
+              <strong>レスポンス</strong>
+              <i aria-hidden="true" />
+            </div>
+            <div className="session-flow-card is-server">
+              <span className="session-flow-label">API の応答ヘッダ</span>
+              <CorsHeader value="https://app.example.com" />
+            </div>
+          </div>
+          <p className="session-flow-branch is-ng"><Icon name="close" size={14} />許可のヘッダが無い場合</p>
+          <div className="session-flow-row">
+            <div className="session-flow-card is-blocked">
+              <span className="session-flow-label">ブラウザが確かめる</span>
+              <strong><Icon name="close" size={18} />JavaScript に渡さない</strong>
+              <span className="session-flow-user">Console に blocked by CORS policy</span>
+            </div>
+            <div className="session-flow-transfer is-response">
+              <span>サーバ → ブラウザ</span>
+              <strong>レスポンス</strong>
+              <i aria-hidden="true" />
+            </div>
+            <div className="session-flow-card is-server">
+              <span className="session-flow-label">API の応答ヘッダ</span>
+              <CorsHeader value="（無し）" />
             </div>
           </div>
         </li>
