@@ -1218,12 +1218,21 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "このリクエストに Cookie が付くと、API はログイン中の利用者からのリクエストとして、残高を返します。応答を読めれば、その JavaScript は残高を悪意のあるサイトへ送れます。そこでブラウザは別のオリジンから返った応答を、原則として JavaScript に渡しません。この決まりを同一オリジンポリシーと呼びます。",
+          text: "このリクエストに Cookie が付くと、API はログイン中の利用者からのリクエストとして、残高を返します。応答を読めれば、その JavaScript は残高を悪意のあるサイトへ送れます。",
+        },
+        {
+          type: "diagram",
+          name: "same-origin-none",
+          caption: "例。ブラウザに対策が無かった場合です。",
+        },
+        {
+          type: "p",
+          text: "そこでブラウザは別のオリジンから返った応答を、原則として JavaScript に渡しません。この決まりを同一オリジンポリシーと呼びます。",
         },
         {
           type: "diagram",
           name: "same-origin-why",
-          caption: "例。「もし応答を読めたら」は、同一オリジンポリシーが無かった場合です。",
+          caption: "例。リクエストと応答は行き来しますが、ブラウザが応答を JS に渡さないので、残高は外へ送れません。",
         },
         {
           type: "callout",
