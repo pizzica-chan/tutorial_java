@@ -1231,12 +1231,11 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "社内ポータルの画面から申請くんの API を呼ぶように、別のオリジンへの呼び出しが必要なこともあります。そのときは API 側が、応答の `Access-Control-Allow-Origin` ヘッダで、読ませてよいオリジンを示します。この仕組みを CORS（Cross-Origin Resource Sharing）と呼びます。守る対象は API のデータなので、許可を出すのも API 側です。",
+          text: "画面と API を別のサーバに置く構成もあります。たとえば画面が `https://app.example.com`、API が `https://api.example.com` にあると、ホスト名が違うので別のオリジンです。このようなときは API 側が、応答の `Access-Control-Allow-Origin` ヘッダで、読ませてよいオリジンを示します。この仕組みを CORS（Cross-Origin Resource Sharing）と呼びます。守る対象は API のデータなので、許可を出すのも API 側です。",
         },
         {
           type: "diagram",
           name: "cors-flow",
-          caption: "例。申請くん自体は、画面と API が同じオリジンにあります。",
         },
         {
           type: "p",

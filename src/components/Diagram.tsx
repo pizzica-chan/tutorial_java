@@ -452,7 +452,7 @@ function SameOriginWhy() {
 function CorsFlow() {
   return (
     <div className="session-flow">
-      <p className="session-flow-intro">社内ポータルの画面から、申請くんの API を呼ぶ例</p>
+      <p className="session-flow-intro">画面と API を別のサーバに置いた例</p>
       <div className="session-flow-head" aria-hidden="true">
         <span><Icon name="browser" size={24} />ブラウザ</span>
         <span><Icon name="server" size={24} />API のサーバ</span>
@@ -463,8 +463,8 @@ function CorsFlow() {
           <div className="session-flow-row">
             <div className="session-flow-card">
               <span className="session-flow-label">画面のオリジン</span>
-              <strong><Icon name="browser" size={18} />社内ポータル</strong>
-              <code>http://portal.example.co.jp</code>
+              <strong><Icon name="browser" size={18} />画面</strong>
+              <code>https://app.example.com</code>
             </div>
             <div className="session-flow-transfer">
               <span>ブラウザ → サーバ</span>
@@ -474,8 +474,8 @@ function CorsFlow() {
             </div>
             <div className="session-flow-card is-server">
               <span className="session-flow-label">API のオリジン</span>
-              <strong><Icon name="server" size={18} />申請くん</strong>
-              <code>http://intranet.example.co.jp:8080</code>
+              <strong><Icon name="server" size={18} />API</strong>
+              <code>https://api.example.com</code>
             </div>
           </div>
         </li>
@@ -496,7 +496,7 @@ function CorsFlow() {
             <div className="session-flow-card is-server">
               <span className="session-flow-label">API が示す</span>
               <strong><Icon name="key" size={18} />読ませてよいオリジン</strong>
-              <code>http://portal.example.co.jp</code>
+              <code>https://app.example.com</code>
             </div>
           </div>
         </li>
