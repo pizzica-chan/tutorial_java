@@ -93,6 +93,19 @@ export const troubleshootMap: ObservableGroup[] = [
           { label: "ネットワークの疎通確認", to: "/tracks/server-network/net-check" },
         ],
       },
+      {
+        symptom: "しばらく待たされたあとで、エラーの画面になる",
+        keywords: ["タイムアウト", "待たされる", "30秒", "コネクションプール", "DBにつながらない", "CannotGetJdbcConnectionException", "504", "gateway timeout"],
+        cause: ["ネットワーク", "サーバ"],
+        causeNote: "通信先までの経路の問題か、通信先そのものの問題かで分かれます",
+        check: "Network タブで、応答までの時間とステータスコードを確認しましょう。そのあと、操作時刻のエラーログで、例外のクラスとメッセージを確認しましょう。",
+        tells: "時間がかかったあとの 5xx は、DB や外部 API の応答を待つ処理がタイムアウトしていることが多いです。DB に接続できなかったことを示す例外なら、設定の接続先と、そこまでの経路を確認しましょう。設定が正しくても、経路が通っているとは限りません。",
+        links: [
+          { label: "[障害調査] 検証用環境で、申請一覧を開くとしばらくしてエラーになる", to: "/tracks/scenario/db-network" },
+          { label: "ネットワークの疎通確認", to: "/tracks/server-network/net-check" },
+          { label: "トラブル例：外部システム / 外部 API", to: "/tracks/troubleshoot/p-external" },
+        ],
+      },
     ],
   },
   {
@@ -135,14 +148,15 @@ export const troubleshootMap: ObservableGroup[] = [
         ],
       },
       {
-        symptom: "一覧は出るが、社員名や部署名など一部の項目だけ空になっている",
-        keywords: ["項目が空", "null", "表示されない", "名前が出ない", "一部だけ欠ける"],
+        symptom: "一覧は出るが、社員名や日時など一部の項目だけ空になっている",
+        keywords: ["項目が空", "null", "表示されない", "名前が出ない", "一部だけ欠ける", "日時が空欄", "resultMap", "カラム名", "フィールド名"],
         cause: ["サーバ"],
-        check: "アプリのログで、その画面の SQL のあとに外部 API を呼んでいる行が無いかを確認しましょう。",
-        tells: "件数やステータスは DB で説明できるのに一部の項目だけ空なら、その値を別システムから取っていることがあります。SQL だけを見続けても見つかりません。",
+        check: "その値が DB に入っているかと、アプリのログの SQL にそのカラムがあるかを確認しましょう。SQL のあとに外部 API を呼んでいる行が無いかも見ましょう。",
+        tells: "DB に値があり、SQL にもそのカラムがあるのに画面で空なら、カラム名とフィールド名の対応がずれていることがあります。MyBatis では、カラムに対応するフィールドが無いと、その値はエラーを出さずに捨てられます。SQL にそのカラムが無く、外部 API を呼ぶ行があれば、その値は外部 API から取っていると考えられます。",
         links: [
+          { label: "[障害調査] 申請履歴の「承認日時」が、承認済みでも空欄になる", to: "/tracks/scenario/history-approved-at" },
+          { label: "mapper.xml の読み方", to: "/tracks/java-map/mapper-xml" },
           { label: "トラブル例：外部システム / 外部 API", to: "/tracks/troubleshoot/p-external" },
-          { label: "アプリのログで処理を追う", to: "/tracks/troubleshoot/log-follow" },
         ],
       },
     ],
@@ -214,6 +228,7 @@ export const troubleshootMap: ObservableGroup[] = [
         tells: "アプリのプロセスやコンテナが無ければ、原因はソースを読んでも見つかりません。起動と停止を繰り返していると、操作したのにログが無いという症状にも見えます。",
         links: [
           { label: "ミドルウェアとコンテナの確認", to: "/tracks/server-network/middleware-check" },
+          { label: "コンテナで動くアプリを調べる", to: "/tracks/server-network/container-investigate" },
           { label: "Linux の基本操作", to: "/tracks/server-network/linux-basics" },
         ],
       },
@@ -225,6 +240,7 @@ export const troubleshootMap: ObservableGroup[] = [
         tells: "デプロイ直後だけ起きるなら、変わったのは資材か設定か権限です。起動時のメッセージに `Permission denied` があれば、原因はコードではなく、ファイルの所有者と権限です。",
         links: [
           { label: "[障害調査] デプロイ後、検証用環境でアプリが起動しなくなった", to: "/tracks/scenario/process-user" },
+          { label: "直近の変更を疑う", to: "/tracks/troubleshoot/recent-change" },
           { label: "Linux の基本操作", to: "/tracks/server-network/linux-basics" },
         ],
       },
@@ -232,7 +248,7 @@ export const troubleshootMap: ObservableGroup[] = [
   },
   {
     id: "after-success",
-    label: "操作は成功したのに、メールが届かない・更新が反映されていない",
+    label: "操作は成功したのに、メールや更新の結果がおかしい",
     leaves: [
       {
         symptom: "承認や登録は画面に反映されたのに、メールや通知だけ届かない",
@@ -243,6 +259,19 @@ export const troubleshootMap: ObservableGroup[] = [
         links: [
           { label: "トラブル例：外部システム / 外部 API", to: "/tracks/troubleshoot/p-external" },
           { label: "[障害調査] 承認は成功するのに、申請者への通知メールが届かない", to: "/tracks/scenario/mail-silent" },
+          { label: "アプリのログで処理を追う", to: "/tracks/troubleshoot/log-follow" },
+        ],
+      },
+      {
+        symptom: "同じ内容のメールや通知が 2 通届く",
+        keywords: ["二重送信", "メールが2通", "重複送信", "2回実行", "ダブルクリック", "連打", "二重登録"],
+        cause: ["クライアント", "サーバ"],
+        causeNote: "同じリクエストが 2 回届いたのか、1 回の処理の中で 2 回送ったのかで分かれます",
+        check: "アプリのログを、操作した申請などの ID で検索し、同じリクエストが何回届いたかを確認しましょう。",
+        tells: "同じリクエストが 2 回届いていれば、二重送信です。そのときは、UPDATE の `WHERE` に更新前の状態の条件（`status = 'PENDING'` など）があるかを確認しましょう。条件が無いと、2 回目も更新とメール送信まで進むことがあります。リクエストが 1 回なら、その処理の中で送信が 2 回呼ばれていないかを見ましょう。",
+        links: [
+          { label: "[障害調査] 承認すると、申請者に確認メールが 2 通届く", to: "/tracks/scenario/duplicate-mail" },
+          { label: "トランザクションと同時実行", to: "/tracks/java-map/transaction" },
           { label: "アプリのログで処理を追う", to: "/tracks/troubleshoot/log-follow" },
         ],
       },
@@ -281,6 +310,7 @@ export const troubleshootMap: ObservableGroup[] = [
         check: "成功する利用者と失敗する利用者で、Network タブのステータスコードを見比べましょう。そのあと、DB のロールや承認者のレコードを確認しましょう。",
         tells: "ステータスコードが利用者で違えば、権限チェックで分かれています。同じなら、コードは通っていて、データで結果が変わっています。",
         links: [
+          { label: "正常なケースと突き合わせる", to: "/tracks/troubleshoot/compare-working" },
           { label: "トラブル例：ログイン画面へ戻される / 権限エラー", to: "/tracks/troubleshoot/p-auth" },
           { label: "トラブル例：件数・更新結果がおかしい", to: "/tracks/troubleshoot/p-data" },
         ],
@@ -292,8 +322,20 @@ export const troubleshootMap: ObservableGroup[] = [
         check: "失敗する ID と成功する ID で、DB のレコードの差を確認しましょう。エラーログにスタックトレースがあれば、その行が見ている値も確認しましょう。",
         tells: "コードは同じなので、差はデータにあります。null や未設定のカラムが `NullPointerException` の原因になっていることがあります。",
         links: [
+          { label: "正常なケースと突き合わせる", to: "/tracks/troubleshoot/compare-working" },
           { label: "スタックトレース", to: "/tracks/troubleshoot/stack" },
           { label: "[障害調査] 申請詳細で承認すると「エラーが発生しました」", to: "/tracks/scenario/back" },
+        ],
+      },
+      {
+        symptom: "昨日まで動いていた操作が、今日から失敗する",
+        keywords: ["急に動かなくなった", "今日から", "デグレ", "リリース後", "設定変更", "証明書の期限", "git log", "何も変えていない"],
+        cause: ["サーバ"],
+        check: "コード・設定・データ・外部要因のうち、症状が出始める前に変わったものを洗い出しましょう。コードの変更は `git log` とデプロイ履歴で確認できます。",
+        tells: "変わったものが見つかれば、原因はその範囲に絞れます。何も変えていないように見えても、条件に当てはまるレコードが初めて入っただけのこともあります。",
+        links: [
+          { label: "直近の変更を疑う", to: "/tracks/troubleshoot/recent-change" },
+          { label: "変更履歴を追う", to: "/tracks/reading/history" },
         ],
       },
       {
