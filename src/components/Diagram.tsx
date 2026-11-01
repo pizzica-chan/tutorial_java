@@ -493,6 +493,17 @@ function SameOriginMap({ blocked }: { blocked: boolean }) {
   );
 }
 
+function CorsHeader({ value }: { value: string }) {
+  return (
+    <dl className="session-flow-values is-stacked">
+      <div>
+        <dt>Access-Control-Allow-Origin</dt>
+        <dd>{value}</dd>
+      </div>
+    </dl>
+  );
+}
+
 function CorsFlow() {
   return (
     <div className="session-flow">
@@ -535,13 +546,11 @@ function CorsFlow() {
             <div className="session-flow-transfer is-response">
               <span>サーバ → ブラウザ</span>
               <strong>レスポンス</strong>
-              <code>Access-Control-Allow-Origin</code>
               <i aria-hidden="true" />
             </div>
             <div className="session-flow-card is-server">
-              <span className="session-flow-label">API が示す</span>
-              <strong><Icon name="key" size={18} />読ませてよいオリジン</strong>
-              <code>https://app.example.com</code>
+              <span className="session-flow-label">API の応答ヘッダ</span>
+              <CorsHeader value="https://app.example.com" />
             </div>
           </div>
           <p className="session-flow-branch is-ng"><Icon name="close" size={14} />許可のヘッダが無い場合</p>
@@ -554,13 +563,11 @@ function CorsFlow() {
             <div className="session-flow-transfer is-response">
               <span>サーバ → ブラウザ</span>
               <strong>レスポンス</strong>
-              <span>許可のヘッダが無い</span>
               <i aria-hidden="true" />
             </div>
             <div className="session-flow-card is-server">
-              <span className="session-flow-label">API の処理</span>
-              <strong><Icon name="check" size={18} />処理は終わっている</strong>
-              <span className="session-flow-user">アクセスログに 200 が残ることもある</span>
+              <span className="session-flow-label">API の応答ヘッダ</span>
+              <CorsHeader value="（無し）" />
             </div>
           </div>
         </li>

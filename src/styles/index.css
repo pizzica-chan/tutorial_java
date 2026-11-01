@@ -4042,6 +4042,11 @@ th {
   gap: 6px;
 }
 
+.session-flow-values.is-stacked div {
+  display: grid;
+  gap: 2px;
+}
+
 .session-flow-values dt {
   color: var(--paper-dim);
 }
