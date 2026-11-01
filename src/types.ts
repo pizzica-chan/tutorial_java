@@ -19,6 +19,8 @@ export type DiagramName =
   | "session-store"
   | "jwt-flow"
   | "jwt-parts"
+  | "same-origin-why"
+  | "cors-flow"
   | "layers"
   | "process-threads"
   | "thread-pool"

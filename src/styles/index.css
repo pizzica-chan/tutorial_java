@@ -3747,6 +3747,11 @@ th {
   background: rgba(79, 176, 165, 0.07);
 }
 
+.session-flow-card.is-blocked {
+  border-color: var(--rose);
+  background: rgba(239, 122, 108, 0.08);
+}
+
 .session-flow-card code {
   width: fit-content;
   overflow-wrap: anywhere;

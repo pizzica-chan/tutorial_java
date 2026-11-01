@@ -35,6 +35,8 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "session-store": SessionStore,
   "jwt-flow": JwtFlow,
   "jwt-parts": JwtParts,
+  "same-origin-why": SameOriginWhy,
+  "cors-flow": CorsFlow,
   layers: Layers,
   "process-threads": ProcessThreads,
   "thread-pool": ThreadPool,
@@ -427,6 +429,95 @@ function JwtFlow() {
               <strong><Icon name="shield" size={18} />署名と期限を確かめる</strong>
               <span className="session-flow-user"><Icon name="user" size={16} />トークンから読んだログイン情報</span>
               <JwtClaims />
+            </div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  );
+}
+
+function SameOriginWhy() {
+  return (
+    <div className="d-row wrap">
+      <IconNode icon="globe" kicker="OTHER SITE" title="悪意のあるサイト" sub="利用者が開いたページ" />
+      <Arrow label="JS が読み込まれる" />
+      <IconNode icon="browser" kicker="CLIENT" title="利用者のブラウザ" sub="社内ネットワークの PC" />
+      <Arrow label="社内の API を呼ぶ" />
+      <IconNode icon="server" kicker="INTRANET" title="申請くんの API" sub="外からは届かない" />
+    </div>
+  );
+}
+
+function CorsFlow() {
+  return (
+    <div className="session-flow">
+      <p className="session-flow-intro">社内ポータルの画面から、申請くんの API を呼ぶ例</p>
+      <div className="session-flow-head" aria-hidden="true">
+        <span><Icon name="browser" size={24} />ブラウザ</span>
+        <span><Icon name="server" size={24} />API のサーバ</span>
+      </div>
+      <ol className="session-flow-steps">
+        <li>
+          <div className="session-flow-step"><b>1</b><strong>画面の JavaScript が、別のオリジンの API を呼ぶ</strong></div>
+          <div className="session-flow-row">
+            <div className="session-flow-card">
+              <span className="session-flow-label">画面のオリジン</span>
+              <strong><Icon name="browser" size={18} />社内ポータル</strong>
+              <code>http://portal.example.co.jp</code>
+            </div>
+            <div className="session-flow-transfer">
+              <span>ブラウザ → サーバ</span>
+              <strong>リクエスト</strong>
+              <code>Origin</code>
+              <i aria-hidden="true" />
+            </div>
+            <div className="session-flow-card is-server">
+              <span className="session-flow-label">API のオリジン</span>
+              <strong><Icon name="server" size={18} />申請くん</strong>
+              <code>http://intranet.example.co.jp:8080</code>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div className="session-flow-step"><b>2</b><strong>応答に許可のヘッダがある</strong></div>
+          <div className="session-flow-row">
+            <div className="session-flow-card">
+              <span className="session-flow-label">ブラウザが確かめる</span>
+              <strong><Icon name="check" size={18} />JavaScript に渡す</strong>
+              <span className="session-flow-user">fetch が成功する</span>
+            </div>
+            <div className="session-flow-transfer is-response">
+              <span>サーバ → ブラウザ</span>
+              <strong>レスポンス</strong>
+              <code>Access-Control-Allow-Origin</code>
+              <i aria-hidden="true" />
+            </div>
+            <div className="session-flow-card is-server">
+              <span className="session-flow-label">API が示す</span>
+              <strong><Icon name="key" size={18} />読ませてよいオリジン</strong>
+              <code>http://portal.example.co.jp</code>
+            </div>
+          </div>
+        </li>
+        <li>
+          <div className="session-flow-step"><b>3</b><strong>応答に許可のヘッダが無い</strong></div>
+          <div className="session-flow-row">
+            <div className="session-flow-card is-blocked">
+              <span className="session-flow-label">ブラウザが確かめる</span>
+              <strong><Icon name="close" size={18} />JavaScript に渡さない</strong>
+              <span className="session-flow-user">Console に blocked by CORS policy</span>
+            </div>
+            <div className="session-flow-transfer is-response">
+              <span>サーバ → ブラウザ</span>
+              <strong>レスポンス</strong>
+              <span>許可のヘッダが無い</span>
+              <i aria-hidden="true" />
+            </div>
+            <div className="session-flow-card is-server">
+              <span className="session-flow-label">API の処理</span>
+              <strong><Icon name="check" size={18} />処理は終わっている</strong>
+              <span className="session-flow-user">アクセスログに 200 が残ることもある</span>
             </div>
           </div>
         </li>

@@ -1119,7 +1119,7 @@ public String showCart(HttpSession session, Model model) {
     {
       id: "api-json",
       title: "Web API から JSON を受け取る",
-      minutes: 8,
+      minutes: 12,
       tags: ["JavaScript"],
       blocks: [
         {
@@ -1201,10 +1201,56 @@ public String showCart(HttpSession session, Model model) {
           text: "Web API は画面専用ではありません。同じデータを、ブラウザの画面、モバイルアプリ、ほかのサーバなどから利用できます。",
         },
         {
+          type: "h2",
+          text: "別のオリジンの API を呼ぶとき",
+        },
+        {
+          type: "p",
+          text: "ここまでの例では、画面と API が同じオリジンにありました。画面と API のオリジンが違うと、サーバが応答を返しても、fetch が失敗することがあります。",
+        },
+        {
+          type: "h3",
+          text: "応答を読ませない理由",
+        },
+        {
+          type: "p",
+          text: "ブラウザは、開いたページの JavaScript から、ほかのオリジンへもリクエストを送れます。もし応答を自由に読めると、悪意のあるサイトを開いただけで、そのページの JavaScript が社内の申請くんの API を呼べてしまいます。",
+        },
+        {
+          type: "diagram",
+          name: "same-origin-why",
+          caption: "例。利用者の PC は社内ネットワークの中にあるので、外からは届かない API にも届きます。",
+        },
+        {
+          type: "p",
+          text: "応答を読めれば、その JavaScript は申請データを悪意のあるサイトへ送れます。そこでブラウザは別のオリジンから返った応答を、原則として JavaScript に渡しません。この決まりを同一オリジンポリシーと呼びます。",
+        },
+        {
+          type: "h3",
+          text: "API が許可を示す",
+        },
+        {
+          type: "p",
+          text: "社内ポータルの画面から申請くんの API を呼ぶように、別のオリジンへの呼び出しが必要なこともあります。そのときは API 側が、応答の `Access-Control-Allow-Origin` ヘッダで、読ませてよいオリジンを示します。この仕組みを CORS（Cross-Origin Resource Sharing）と呼びます。守る対象は API のデータなので、許可を出すのも API 側です。",
+        },
+        {
+          type: "diagram",
+          name: "cors-flow",
+          caption: "例。申請くん自体は、画面と API が同じオリジンにあります。",
+        },
+        {
+          type: "p",
+          text: "許可が無いと、Console に `blocked by CORS policy` と出て、fetch は失敗します。ブラウザが止めるのは応答の受け取りなので、リクエストはサーバに届いて処理され、API 側のアクセスログに 200 が残っていることがあります。",
+        },
+        {
+          type: "p",
+          text: "ただし `Content-Type: application/json` を付けた POST などでは、ブラウザは先に、HTTP メソッドが OPTIONS の事前確認のリクエスト（プリフライト）を送ります。プリフライトが許可されなければ、本来のリクエストは送られません。",
+        },
+        {
           type: "callout",
           kind: "trap",
-          title: "別のオリジンの API を呼ぶとき",
-          text: "画面と API のオリジンが違うと、ブラウザは CORS（Cross-Origin Resource Sharing）という仕組みで、応答を JavaScript に渡してよいかを確かめます。API の応答に、その画面のオリジンを許可する `Access-Control-Allow-Origin` ヘッダが無ければ、Console に `blocked by CORS policy` と出て、fetch は失敗します。このとき、リクエスト自体はサーバに届いて処理され、API 側のアクセスログに 200 が残っていることがあります。ただし `Content-Type: application/json` を付けた POST などでは、ブラウザは先に、HTTP メソッドが OPTIONS の事前確認のリクエスト（プリフライト）を送ります。プリフライトが許可されなければ、本来のリクエストは送られません。どちらの場合も、直すのは API 側の応答ヘッダです。curl やサーバ間の呼び出しはこの制限を受けないので、curl で試すと成功します。",
+          title: "curl では再現しない",
+          text: "同一オリジンポリシーと CORS は、ブラウザが守る決まりです。curl やサーバ間の呼び出しはこの制限を受けないので、同じ URL を curl で試すと成功します。fetch の書き方を変えても、応答を読めるようにはなりません。直すのは API 側の応答ヘッダです。",
         },
         {
           type: "h2",
