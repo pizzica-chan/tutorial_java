@@ -439,12 +439,23 @@ function JwtFlow() {
 
 function SameOriginWhy() {
   return (
-    <div className="d-row wrap">
-      <IconNode icon="globe" kicker="OTHER SITE" title="悪意のあるサイト" sub="利用者が開いたページ" />
-      <Arrow label="JS が読み込まれる" />
-      <IconNode icon="browser" kicker="CLIENT" title="利用者のブラウザ" sub="社内ネットワークの PC" />
-      <Arrow label="社内の API を呼ぶ" />
-      <IconNode icon="server" kicker="INTRANET" title="申請くんの API" sub="外からは届かない" />
+    <div className="sop-compare">
+      <section className="sop-col is-bad">
+        <h4><Icon name="close" size={16} />もし応答を読めたら</h4>
+        <ol>
+          <li><Icon name="server" size={16} />ネットバンキングの API が残高を返す</li>
+          <li><Icon name="browser" size={16} />悪意のあるページの JS が残高を読む</li>
+          <li><Icon name="send" size={16} />残高を悪意のあるサイトへ送る</li>
+        </ol>
+      </section>
+      <section className="sop-col is-good">
+        <h4><Icon name="shield" size={16} />実際のブラウザ</h4>
+        <ol>
+          <li><Icon name="server" size={16} />ネットバンキングの API が残高を返す</li>
+          <li><Icon name="lock" size={16} />ブラウザが JS に渡さない</li>
+          <li><Icon name="check" size={16} />残高は外へ送られない</li>
+        </ol>
+      </section>
     </div>
   );
 }
