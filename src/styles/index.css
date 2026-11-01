@@ -3719,6 +3719,27 @@ th {
   line-height: 26px;
 }
 
+.session-flow-branch {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px 36px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.session-flow-row + .session-flow-branch {
+  margin-top: 18px;
+}
+
+.session-flow-branch.is-ok {
+  color: #287c74;
+}
+
+.session-flow-branch.is-ng {
+  color: #c0564a;
+}
+
 .session-flow-row {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 150px minmax(0, 1fr);

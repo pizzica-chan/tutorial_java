@@ -524,7 +524,8 @@ function CorsFlow() {
           </div>
         </li>
         <li>
-          <div className="session-flow-step"><b>2</b><strong>応答に許可のヘッダがある</strong></div>
+          <div className="session-flow-step"><b>2</b><strong>API が応答を返す</strong></div>
+          <p className="session-flow-branch is-ok"><Icon name="check" size={14} />許可のヘッダがある場合</p>
           <div className="session-flow-row">
             <div className="session-flow-card">
               <span className="session-flow-label">ブラウザが確かめる</span>
@@ -543,9 +544,7 @@ function CorsFlow() {
               <code>https://app.example.com</code>
             </div>
           </div>
-        </li>
-        <li>
-          <div className="session-flow-step"><b>3</b><strong>応答に許可のヘッダが無い</strong></div>
+          <p className="session-flow-branch is-ng"><Icon name="close" size={14} />許可のヘッダが無い場合</p>
           <div className="session-flow-row">
             <div className="session-flow-card is-blocked">
               <span className="session-flow-label">ブラウザが確かめる</span>
