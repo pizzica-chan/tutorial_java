@@ -451,7 +451,7 @@ function SameOriginMap({ blocked }: { blocked: boolean }) {
     <div className="sop-map">
       <div className="sop-site is-evil">
         <Icon name="globe" size={22} />
-        <strong>悪意のあるサイトのサーバ</strong>
+        <strong>悪意のあるサイトの<wbr />サーバ</strong>
       </div>
       <div className={`sop-wire is-leak ${blocked ? "" : "is-sent"}`}>
         <span>{blocked ? "③ 残高を送れない" : "③ 残高を送る"}</span>
@@ -459,7 +459,13 @@ function SameOriginMap({ blocked }: { blocked: boolean }) {
       </div>
       <div className="sop-browser">
         <span className="sop-browser-label"><Icon name="browser" size={16} />利用者のブラウザ</span>
-        <div className="sop-page"><Icon name="code" size={16} /><strong>悪意のあるページの JS</strong></div>
+        <div className="sop-row">
+          <div className="sop-page"><Icon name="code" size={16} /><strong>悪意のある<wbr />{"ページの JS"}</strong></div>
+          <div className="sop-cookie">
+            <strong><Icon name="key" size={14} />Cookie</strong>
+            <small>ネットバンキング</small>
+          </div>
+        </div>
         {blocked ? (
           <div className="sop-stop"><Icon name="close" size={16} /><strong>応答を JS に渡さない</strong></div>
         ) : (
@@ -480,8 +486,8 @@ function SameOriginMap({ blocked }: { blocked: boolean }) {
       </div>
       <div className="sop-site is-bank">
         <Icon name="server" size={22} />
-        <strong>ネットバンキングのサーバ</strong>
-        <small>Cookie でログインを確かめる</small>
+        <strong>ネットバンキングの<wbr />サーバ</strong>
+        <small>Cookie で<wbr />ログインを<wbr />確かめる</small>
       </div>
     </div>
   );

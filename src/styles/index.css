@@ -3749,7 +3749,7 @@ th {
 
 .sop-map {
   display: grid;
-  grid-template-columns: 130px 110px minmax(210px, 1fr) 120px 150px;
+  grid-template-columns: 130px 96px minmax(290px, 1fr) 104px 130px;
   align-items: start;
   gap: 0 8px;
   min-width: 760px;
@@ -3765,6 +3765,12 @@ th {
   border: 1px solid var(--line-strong);
   border-radius: 12px;
   text-align: center;
+}
+
+.sop-site strong,
+.sop-site small,
+.sop-page strong {
+  word-break: keep-all;
 }
 
 .sop-site strong {
@@ -3832,6 +3838,38 @@ th {
 .sop-stop {
   border: 1px dashed var(--line-strong);
   background: var(--panel-2);
+}
+
+.sop-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.sop-cookie {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 2px;
+  min-height: 52px;
+  padding: 4px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: var(--panel-2);
+  text-align: center;
+}
+
+.sop-cookie strong {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--paper);
+  font-size: 12px;
+}
+
+.sop-cookie small {
+  color: var(--quiet);
+  font-size: 10px;
 }
 
 .sop-wires {
