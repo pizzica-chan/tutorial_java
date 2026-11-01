@@ -1337,6 +1337,11 @@ export const terms: TermDef[] = [
     body: "Web で通信元を区別する単位。URL のスキーム（http または https）、ホスト、ポートの組み合わせです。どれか 1 つでも違えば、別のオリジンです。",
   },
   {
+    term: "CORS",
+    aliases: ["Cross-Origin Resource Sharing", "プリフライト", "CORS"],
+    body: "Cross-Origin Resource Sharing。別のオリジンへ送ったリクエストの応答を、JavaScript が読んでよいかをブラウザが確かめる仕組みです。許可は、サーバが `Access-Control-Allow-Origin` などの応答ヘッダで示します。許可が無ければ、ブラウザは応答を JavaScript に渡しません。",
+  },
+  {
     term: "リクエスト",
     aliases: ["リクエスト"],
     body: "ブラウザや API クライアントからサーバへ送る要求です。",

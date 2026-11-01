@@ -1201,6 +1201,12 @@ public String showCart(HttpSession session, Model model) {
           text: "Web API は画面専用ではありません。同じデータを、ブラウザの画面、モバイルアプリ、ほかのサーバなどから利用できます。",
         },
         {
+          type: "callout",
+          kind: "trap",
+          title: "別のオリジンの API を呼ぶとき",
+          text: "画面と API のオリジンが違うと、ブラウザは CORS（Cross-Origin Resource Sharing）という仕組みで、応答を JavaScript に渡してよいかを確かめます。API の応答に、その画面のオリジンを許可する `Access-Control-Allow-Origin` ヘッダが無ければ、Console に `blocked by CORS policy` と出て、fetch は失敗します。このとき、リクエスト自体はサーバに届いて処理され、API 側のアクセスログに 200 が残っていることがあります。ただし `Content-Type: application/json` を付けた POST などでは、ブラウザは先に、HTTP メソッドが OPTIONS の事前確認のリクエスト（プリフライト）を送ります。プリフライトが許可されなければ、本来のリクエストは送られません。どちらの場合も、直すのは API 側の応答ヘッダです。curl やサーバ間の呼び出しはこの制限を受けないので、curl で試すと成功します。",
+        },
+        {
           type: "h2",
           text: "データを送るときは CSRF トークンも送る",
         },

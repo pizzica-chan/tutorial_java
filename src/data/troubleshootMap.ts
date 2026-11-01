@@ -51,6 +51,18 @@ export const troubleshootMap: ObservableGroup[] = [
         ],
       },
       {
+        symptom: "画面の一部のデータが出ず、Console に `blocked by CORS policy` が出ている",
+        keywords: ["CORS", "クロスオリジン", "Access-Control-Allow-Origin", "プリフライト", "preflight", "OPTIONS", "fetch", "Console"],
+        cause: ["クライアント", "サーバ"],
+        causeNote: "fetch で呼んでいる API の URL が、意図どおりかどうかで分かれます",
+        check: "Console のメッセージで、fetch で呼んでいる API の URL と、画面のオリジン（`from origin` のあと）を確認しましょう。",
+        tells: "API の URL が意図と違うオリジン（http と https、ポートの違いなど）を指しているなら、フロント側の設定の誤りです。意図どおりなら、API の応答がその画面のオリジンを許可していません。直すのは API 側の応答ヘッダです。API のアクセスログには、リクエストが残っていることがあります。",
+        links: [
+          { label: "Web API から JSON を受け取る", to: "/tracks/web/api-json" },
+          { label: "どこまで届いたか", to: "/tracks/troubleshoot/divide" },
+        ],
+      },
+      {
         symptom: "リンクやブックマークから、その画面が開かない",
         keywords: ["404", "not found", "ページが無い", "リンク切れ", "URL"],
         cause: ["クライアント", "サーバ"],
