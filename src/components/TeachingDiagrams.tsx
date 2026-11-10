@@ -54,6 +54,33 @@ export function Layers() {
   </div>;
 }
 
+export function DiFlow() {
+  return <div className="teaching-diagram">
+    <p className="td-heading"><code>mailService</code> フィールドの例（<code>requestMapper</code> にも同じ仕組みで値が入る）</p>
+    <div className="td-branch-grid td-two">
+      <div className="td-tx-case">
+        <p className="td-case-label">自分で new する場合</p>
+        <Card icon="cog" title="RequestService">
+          <code>private MailService mailService = new MailService();</code>
+          <span><code>RequestService</code> の中の <code>new</code> で値が入る</span>
+        </Card>
+      </div>
+      <div className="td-tx-case td-case-neutral">
+        <p className="td-case-label">Spring に任せる場合（DI）</p>
+        <Card icon="server" title="Spring" tone="green">
+          <span>起動時に <code>MailService</code> を作る</span>
+        </Card>
+        <Connector>Spring がコンストラクタに渡し、フィールドに入る</Connector>
+        <Card icon="cog" title="RequestService">
+          <code>private final MailService mailService;</code>
+          <span><code>new</code> が無くても値が入っている</span>
+        </Card>
+      </div>
+    </div>
+    <p className="td-footnote">どちらも、フィールドには <code>MailService</code> が入ります。Spring に任せる場合は、Spring が作った 1 つの <code>MailService</code> を、使うクラスすべてに入れます。左のコードは比べるために書いた例です。</p>
+  </div>;
+}
+
 export function ProcessThreads() {
   return <div className="teaching-diagram">
     <div className="td-boundary">

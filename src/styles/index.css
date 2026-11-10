@@ -3406,6 +3406,11 @@ th {
   color: var(--rose);
 }
 
+/* 2 つの列が良し悪しではない比較のときは、2 列目の見出しも通常の色にする */
+.td-tx-case + .td-tx-case.td-case-neutral .td-case-label {
+  color: var(--paper);
+}
+
 .td-bad-label {
   display: inline-block;
   margin-right: 10px;
