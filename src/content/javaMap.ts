@@ -15,7 +15,7 @@ export const javaMapTrack: Track = {
   no: "03",
   title: "Java アプリの構成",
   kicker: "STRUCTURE",
-  description: "リポジトリを開いたとき、ファイルと層の役割に加え、設定ファイル、プロセスとスレッド、トランザクション、共通処理の仕組みまで見渡せるようにします。",
+  description: "リポジトリを開いたとき、ファイルと層の役割に加え、設定ファイル、DI とインタフェース、プロセスとスレッド、トランザクション、共通処理の仕組みまで見渡せるようにします。",
   accent: "#f5cf4d",
   lessons: [
     {
@@ -526,7 +526,200 @@ public class RequestApiController {
             to: "/tracks/web/api-json",
           },
         },
+        {
+          type: "p",
+          text: "上の 2 つの例の `requestService` フィールドには、値を入れる `new` がありません。値を入れているのは Spring です。仕組みは次の項目「DI とインタフェース」で扱います。",
+          link: {
+            label: "DI とインタフェース",
+            to: "/tracks/java-map/di",
+          },
+        },
         { type: "quiz", id: "java-layer" },
+      ],
+    },
+    {
+      id: "di",
+      title: "DI とインタフェース",
+      minutes: 8,
+      tags: ["Java 全般", "Spring", "MyBatis"],
+      blocks: [
+        {
+          type: "p",
+          text: "Controller や Service のソースを読むと、別のクラスを使うためのフィールドに、値を入れる `new` が無いことがよくあります。この項目では、その値の入り方と、フィールドの型がインタフェースのときに実際に動くクラスの探し方を説明します。",
+        },
+        {
+          type: "h2",
+          text: "new が無いのに、フィールドに値が入っている",
+        },
+        {
+          type: "code",
+          title: "RequestService.java（申請くん・抜粋）",
+          lang: "java",
+          highlightLines: [4, 5],
+          code: `@Service
+@RequiredArgsConstructor
+public class RequestService {
+  private final RequestMapper requestMapper;
+  private final MailService mailService;
+
+  public List<RequestEntity> findMine(Long userId) {
+    return requestMapper.findMine(userId);
+  }
+}`,
+        },
+        {
+          type: "p",
+          text: "`requestMapper` に値が入っていなければ、`findMine` は `NullPointerException` になるはずです。実際には動きます。値を入れているのは Spring です。Spring はアプリの起動時にインスタンスを作り、それを使うクラスに渡します。自分で `new` する場合と比べると、次のようになります。",
+        },
+        { type: "diagram", name: "di-flow" },
+        {
+          type: "p",
+          text: "Spring が作って管理するオブジェクトを Bean と呼びます。使うオブジェクトをこのように外から渡す作り方を、DI（依存性の注入）と呼びます。",
+        },
+        {
+          type: "p",
+          text: "Bean は、特に指定しなければ 1 つだけ作られます。図のとおり、使うクラスすべてに同じインスタンスが入り、どのリクエストでもそれが使われます。これをシングルトンと呼びます。",
+        },
+        {
+          type: "p",
+          text: "`RequestService` では、Spring はコンストラクタを使ってフィールドに値を入れます。このコンストラクタは、`@RequiredArgsConstructor`（Lombok というライブラリのアノテーション）がコンパイル時に作ります。そのため、ソースには書かれていません。Spring はこのコンストラクタに値を渡し、コンストラクタが受け取った値をフィールドに入れます。",
+        },
+        {
+          type: "p",
+          text: "古いアプリには、コンストラクタを使わずに、フィールドに直接 `@Autowired` を付けて Bean を受け取る書き方も多いです。この書き方では、Spring はインスタンスを作ったあとで、フィールドに直接 Bean を入れます。",
+        },
+        {
+          type: "code",
+          title: "例（申請くんではありません）",
+          lang: "java",
+          highlightLines: [3, 6],
+          code: `@Service
+public class RequestService {
+  @Autowired
+  private RequestMapper requestMapper;
+
+  @Autowired
+  private MailService mailService;
+}`,
+        },
+        {
+          type: "h2",
+          text: "どのクラスが Bean になるか",
+        },
+        {
+          type: "p",
+          text: "Bean として登録する印のうち、よく使うのは次の 4 つです。",
+        },
+        {
+          type: "table",
+          headers: ["印", "登録されるもの", "申請くんの例"],
+          rows: [
+            ["`@Controller` / `@Service` / `@Component` など", "印の付いたクラス（コンポーネントスキャンで探す）", "`RequestService`、`LoggingJavaMailSender`"],
+            ["`@Configuration` のクラスの中の `@Bean`", "`@Bean` を付けた Java メソッドの戻り値", "`SecurityConfig` の `passwordEncoder`"],
+            ["`@MapperScan`", "指定したパッケージの Mapper インタフェース。実装は MyBatis が作る", "`RequestMapper`"],
+            ["XML の `<bean>`", "XML に書いたクラス", "無い"],
+          ],
+        },
+        {
+          type: "p",
+          text: "Bean のはずのクラスに印が見つからないときは、XML で登録していることがあります。クラス名で XML のファイルも検索しましょう。",
+        },
+        {
+          type: "h2",
+          text: "呼び出し先がインタフェースのとき",
+        },
+        {
+          type: "p",
+          text: "インタフェースは Java メソッドの名前と引数、戻り値を決めた型です。処理の中身はふつう実装クラスに書きます。フィールドの型がインタフェースなら、実際に動くのは実装クラスのどれかです。申請くんの `MailService` で辿ってみましょう。",
+        },
+        {
+          type: "code",
+          title: "MailService.java（申請くん・抜粋）",
+          lang: "java",
+          highlightLines: [4, 8],
+          code: `@Service
+@RequiredArgsConstructor
+public class MailService {
+  private final JavaMailSender mailSender;
+
+  public void notifyApplicant(RequestEntity request) {
+    // （件名や本文を組み立てる処理は省略）
+    mailSender.send(message);
+  }
+}`,
+        },
+        {
+          type: "steps",
+          items: [
+            {
+              title: "定義へジャンプする",
+              text: "`JavaMailSender` で定義へジャンプすると、Spring のインタフェースに着きます。処理の中身はありません。",
+            },
+            {
+              title: "実装クラスを一覧する",
+              text: "`JavaMailSender` にカーソルを置いたまま、実装へジャンプしましょう。一覧には、申請くんの `LoggingJavaMailSender` と、Spring が用意している `JavaMailSenderImpl` の 2 つが出ます。どちらが使われるかは、一覧だけでは分かりません。",
+            },
+            {
+              title: "Bean になっているものを選ぶ",
+              text: "Bean になっているのは、`@Component` が付いた `LoggingJavaMailSender` だけです。`JavaMailSenderImpl` は、申請くんでは Bean になっていないので使われません。",
+            },
+          ],
+        },
+        {
+          type: "p",
+          text: "つまり、`mailSender` に入っているのは `LoggingJavaMailSender` です。開いてみると、メールは送らずに、送信内容をログに出しているだけでした。",
+        },
+        {
+          type: "h2",
+          text: "実装クラスが複数あるとき",
+        },
+        {
+          type: "p",
+          text: "同じ型の Bean が 2 つ以上あるときは、次の印で使うものが決まります。",
+        },
+        {
+          type: "table",
+          headers: ["印", "決まり方"],
+          rows: [
+            ["`@Primary`", "候補が複数あるとき、この印の付いた Bean を渡す"],
+            ["`@Qualifier(\"名前\")`", "受け取る側で、渡してほしい Bean の名前を指定する"],
+            ["`@Profile(\"名前\")`", "指定したプロファイルで起動したときだけ、Bean として登録する"],
+          ],
+        },
+        {
+          type: "p",
+          text: "`@Profile` で、本番と検証用環境の実装を切り替えているアプリもあります。どのプロファイルで起動しているかは、起動ログの `The following 1 profile is active` のような行で確認しましょう。",
+        },
+        {
+          type: "p",
+          text: "どの実装が使われているかをソースから決めきれないときは、デバッガで止めて、フィールドに入っているオブジェクトのクラス名を確認しましょう。",
+        },
+        {
+          type: "h2",
+          text: "Bean が見つからないとき",
+        },
+        {
+          type: "p",
+          text: "コンストラクタに渡す Bean が無いと、アプリは起動しません。起動ログの末尾には次のように出ます。",
+        },
+        {
+          type: "code",
+          title: "例（申請くんの LoggingJavaMailSender を、一時的に Bean にしないで起動したとき）",
+          lang: "text",
+          highlightLines: [7],
+          code: `***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Parameter 0 of constructor in jp.co.example.shinsei.service.MailService required a bean of type 'org.springframework.mail.javamail.JavaMailSender' that could not be found.`,
+        },
+        {
+          type: "p",
+          text: "`MailService` のコンストラクタの最初の引数（`JavaMailSender`）に渡す Bean が無い、という意味です。登録の印が付いているか、`@Profile` の指定で、今のプロファイルでは登録されない設定になっていないか、コンポーネントスキャンの対象のパッケージにあるかを確認しましょう。反対に、候補が 2 つ以上あって 1 つに決まらないときは、`required a single bean, but 2 were found` と出ます。",
+        },
+        { type: "quiz", id: "java-di" },
       ],
     },
     {

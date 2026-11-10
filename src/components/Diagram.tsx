@@ -1,5 +1,5 @@
 import type { ReactElement, ReactNode } from "react";
-import { PageAssets, Layers, Filters, ArchRoles, NPlusOne, ProcessThreads, ThreadPool, SharedField, ThreadReuse, DbTransaction, ContainerNetwork, ContainerIsolation, ContainerRecreate } from "./TeachingDiagrams";
+import { DiFlow, PageAssets, Layers, Filters, ArchRoles, NPlusOne, ProcessThreads, ThreadPool, SharedField, ThreadReuse, DbTransaction, ContainerNetwork, ContainerIsolation, ContainerRecreate } from "./TeachingDiagrams";
 import type { DiagramName } from "../types";
 import { TextWithTerms } from "./TextWithTerms";
 import { Icon, type IconName } from "./Icon";
@@ -39,6 +39,7 @@ const diagrams: Record<DiagramName, () => ReactElement> = {
   "same-origin-why": SameOriginWhy,
   "cors-flow": CorsFlow,
   layers: Layers,
+  "di-flow": DiFlow,
   "process-threads": ProcessThreads,
   "thread-pool": ThreadPool,
   "shared-field": SharedField,

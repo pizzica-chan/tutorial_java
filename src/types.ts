@@ -23,6 +23,7 @@ export type DiagramName =
   | "same-origin-why"
   | "cors-flow"
   | "layers"
+  | "di-flow"
   | "process-threads"
   | "thread-pool"
   | "shared-field"

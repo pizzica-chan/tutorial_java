@@ -38,7 +38,7 @@ export const introTrack: Track = {
           items: [
             "HTTP の基礎（リクエスト、レスポンス、ステータスコード、Cookie など）",
             "フロントエンドとバックエンドの役割分担（HTML/CSS/JavaScript、Ajax、Web API）",
-            "Java Web アプリの層（Controller、Service、DB など）",
+            "Java Web アプリの層（Controller、Service、DB など）と、層どうしをつなぐ DI",
             "ソースの読み方（入口の特定、キーワード検索、正規表現、呼び出しの追跡）",
             "SQL からソースを探す（実行された SQL から、発行したソースを見つける）",
             "ログや Linux の基本操作を使った切り分けの型（Network タブ、プロセス・ポート確認など）",
@@ -125,7 +125,7 @@ export const introTrack: Track = {
           headers: ["章", "内容"],
           rows: [
             ["Web の基礎", "URL、ステータスコード、Cookie など HTTP の読み方に加え、フロントエンドとバックエンドの役割分担や Ajax・JSON の扱いも身につけます。"],
-            ["Java アプリの構成", "リポジトリを開いたとき、ファイルと層の役割に加え、設定ファイル、プロセスとスレッド、トランザクション、共通処理の仕組みまで見渡せるようにします。"],
+            ["Java アプリの構成", "リポジトリを開いたとき、ファイルと層の役割に加え、設定ファイル、DI とインタフェース、プロセスとスレッド、トランザクション、共通処理の仕組みまで見渡せるようにします。"],
             ["サーバ＆ネットワーク", "Java Web アプリが動く環境とリクエストの経路を理解し、コンテナの中と外の違い、Linux の基本操作、HTTP サーバのログ、ネットワークの疎通、ミドルウェアの稼働状態を確認できるようにします。"],
             ["ソースの読み方", "画面と URL を手がかりに処理の入口を特定し、キーワード検索や呼び出しの追跡、変更履歴、デバッガなどでコードを読み解きます。"],
             ["SQL からソースを探す", "実行された SQL から、発行したアプリのソースを見つけ、DB の中身と突き合わせます。"],
@@ -146,7 +146,7 @@ export const introTrack: Track = {
           headers: ["章", "レッスン"],
           rows: [
             ["Web の基礎", "「HTTP のリクエストとレスポンス」\n「URL・HTTP メソッド・ステータスコード」\n「リクエストのパラメータ」\n「フォームの送信」\n「Cookie とセッション」\n「フロントエンドとバックエンド」"],
-            ["Java アプリの構成", "「ディレクトリ構成」\n「application.yml / application.properties」\n「Controller / Service / Repository / Mapper」"],
+            ["Java アプリの構成", "「ディレクトリ構成」\n「application.yml / application.properties」\n「Controller / Service / Repository / Mapper」\n「DI とインタフェース」"],
             ["サーバ＆ネットワーク", "「Linux の基本操作」"],
             ["ソースの読み方", "「URL から処理の入口を探す」\n「処理の入口のあとに読む順番」\n「キーワードで探す」\n「呼び出し元と呼び出し先」"],
             ["SQL からソースを探す", "「SQL を検索する前に」"],

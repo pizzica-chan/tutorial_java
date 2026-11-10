@@ -164,6 +164,20 @@ export const quizzes = {
     answer: 1,
     explanation: "URL と HTTP メソッドの受付口は Controller です。JSON を返す RestController も同じ層です。そこから Service、Repository へ降ります。",
   },
+  "java-di": {
+    id: "java-di",
+    question:
+      "`MailService` のフィールド `private final JavaMailSender mailSender;` の型で定義へジャンプしたら、Java メソッドの宣言だけのインタフェースに着いた。実際に動く処理を確かめるには、次に何をする？",
+    choices: [
+      "`send` という名前で、ソース全体を文字列検索する",
+      "実装へジャンプで実装クラスを一覧し、そのうち Bean として登録されているものを確かめる",
+      "Spring の実装クラスである `JavaMailSenderImpl` を開いて読む",
+      "インタフェースには処理が無いので、メールは送られていないと判断する",
+    ],
+    answer: 1,
+    explanation:
+      "実装クラスが一覧に出ても、Bean として使われているとは限りません。申請くんでは `@Component` の付いた `LoggingJavaMailSender` が使われ、`JavaMailSenderImpl` は登録されていません。決めきれないときは、デバッガでフィールドに入っているオブジェクトのクラス名を確認しましょう。",
+  },
   "java-mapper-xml": {
     id: "java-mapper-xml",
     question:

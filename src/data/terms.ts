@@ -210,6 +210,26 @@ export const terms: TermDef[] = [
     body: "Spring のコンテナが生成・管理するオブジェクトです。`@Service` などを付けたクラスや、`@Bean` を付けた Java メソッドの戻り値を登録します。JavaBeans とは別の概念です。JavaBeans は、getter・setter によるプロパティの読み書きなど、Java の部品を扱うための規約です。Spring の Bean は、その規約に従う必要はありません。",
   },
   {
+    term: "DI（依存性の注入）",
+    aliases: ["DI", "依存性の注入", "Dependency Injection"],
+    body: "クラスが使う別のオブジェクトを、そのクラスの中で `new` せずに、外から渡す作り方です。Dependency Injection の略です。Spring では、起動時に作った Bean を、コンストラクタの引数やフィールドに渡します。",
+  },
+  {
+    term: "コンポーネントスキャン",
+    aliases: ["コンポーネントスキャン", "component-scan"],
+    body: "`@Component` などの印が付いたクラスを、指定したパッケージの配下から探して、Bean として登録する Spring の仕組みです。Spring Boot の既定では、`@SpringBootApplication` を付けたクラスのパッケージと、その配下が対象です。",
+  },
+  {
+    term: "インタフェース（Java）",
+    aliases: ["インタフェース", "インターフェース", "インターフェイス"],
+    body: "Java で、Java メソッドの名前・引数・戻り値を決めた型です。処理の中身はふつう `implements` でそのインタフェースを実装したクラス（実装クラス）に書きます。Java 8 以降は、default メソッドとしてインタフェースに処理の中身を書くこともできます。1 つのインタフェースに、実装クラスが複数あることもあります。",
+  },
+  {
+    term: "コンストラクタ",
+    aliases: ["コンストラクタ"],
+    body: "クラスからインスタンスを作るときに実行される処理です。クラスと同じ名前で書きます。引数で受け取った値を、フィールドに入れることが多いです。",
+  },
+  {
     term: "シングルトン",
     aliases: ["シングルトン", "singleton"],
     body: "一つのインスタンスを共有して使う形です。Spring の singleton は既定のスコープで、同じ Spring のコンテナ内では、Bean の定義ごとに一つのインスタンスを使います。リクエストごとに作られるわけではなく、複数のスレッドから同時に使われることがあります。シングルトンであるだけでは、スレッドセーフにはなりません。",
@@ -426,6 +446,41 @@ export const terms: TermDef[] = [
     term: "@Bean",
     aliases: ["@Bean"],
     body: "メソッドの戻り値を Spring のコンテナに登録する印です。SecurityConfig の `filterChain` などで使います。Spring のアノテーションです。",
+  },
+  {
+    term: "@Autowired",
+    aliases: ["@Autowired"],
+    body: "Bean を渡してほしい場所を Spring に示す印です。フィールド、コンストラクタ、setter に付けます。コンストラクタが 1 つだけのクラスでは、付けなくてもそのコンストラクタに Bean が渡されます。Spring のアノテーションです。",
+  },
+  {
+    term: "@Component",
+    aliases: ["@Component"],
+    body: "このクラスを Bean として登録するよう Spring に伝える印です。`@Controller`、`@Service`、`@Repository` も、この印の一種です。Spring のアノテーションです。",
+  },
+  {
+    term: "@Configuration",
+    aliases: ["@Configuration"],
+    body: "Bean の定義を書くクラスに付ける印です。中の `@Bean` を付けた Java メソッドの戻り値が、Bean として登録されます。Spring のアノテーションです。",
+  },
+  {
+    term: "@Primary",
+    aliases: ["@Primary"],
+    body: "同じ型の Bean が複数あるとき、この印の付いた Bean を優先して渡すよう Spring に伝える印です。Spring のアノテーションです。",
+  },
+  {
+    term: "@Qualifier",
+    aliases: ["@Qualifier"],
+    body: "受け取る側で、渡してほしい Bean の名前を指定する印です。同じ型の Bean が複数あるときに使います。Spring のアノテーションです。",
+  },
+  {
+    term: "@Profile",
+    aliases: ["@Profile"],
+    body: "指定したプロファイルで起動したときだけ、そのクラスや `@Bean` の戻り値を Bean として登録する印です。`@Profile(\"!prod\")` のように `!` を付けると、そのプロファイル以外で登録します。Spring のアノテーションです。",
+  },
+  {
+    term: "@MapperScan",
+    aliases: ["@MapperScan"],
+    body: "指定したパッケージにある MyBatis の Mapper インタフェースを、まとめて Bean として登録する印です。実装クラスは MyBatis が実行時に作ります。MyBatis（mybatis-spring）のアノテーションです。",
   },
   {
     term: "@Value",
@@ -914,7 +969,7 @@ export const terms: TermDef[] = [
   {
     term: "tcpdump",
     aliases: ["tcpdump"],
-    body: "実際に流れているパケットをキャプチャするコマンドです。`tcpdump -i any port 8080` のように、インタフェースや条件を指定します（`-i any` は全インタフェース対象）。root 権限が要ることが多いです。通信の中身やタイミングまで分かりますが、暗号化された HTTPS の本文までは読めません。",
+    body: "実際に流れているパケットをキャプチャするコマンドです。`tcpdump -i any port 8080` のように、ネットワークインタフェースや条件を指定します（`-i any` は、すべてのネットワークインタフェースが対象）。root 権限が要ることが多いです。通信の中身やタイミングまで分かりますが、暗号化された HTTPS の本文までは読めません。",
   },
   {
     term: "strace",
