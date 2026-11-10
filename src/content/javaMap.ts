@@ -661,7 +661,7 @@ public class MailService {
             },
             {
               title: "Bean になっているものを選ぶ",
-              text: "Bean になっているのは、`@Component` が付いた `LoggingJavaMailSender` だけです。`JavaMailSenderImpl` は、申請くんでは Bean になっていないので使われません。",
+              text: "Bean になっているのは、`@Component` が付いた `LoggingJavaMailSender` だけです。`JavaMailSenderImpl` は、申請くんでは Bean になっていないので使われません。`LoggingJavaMailSender` のソースには `@Primary` も付いていますが、`JavaMailSender` の Bean はほかに無いので、使われるクラスは変わりません。",
             },
           ],
         },

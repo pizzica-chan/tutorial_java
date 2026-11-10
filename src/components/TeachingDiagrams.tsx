@@ -61,7 +61,7 @@ export function DiFlow() {
       <div className="td-tx-case">
         <p className="td-case-label">自分で new する場合</p>
         <Card icon="cog" title="RequestService">
-          <code>private MailService mailService = new MailService();</code>
+          <code>private MailService mailService = new MailService(new LoggingJavaMailSender());</code>
           <span><code>RequestService</code> の中の <code>new</code> で値が入る</span>
         </Card>
       </div>
@@ -77,7 +77,7 @@ export function DiFlow() {
         </Card>
       </div>
     </div>
-    <p className="td-footnote">どちらも、フィールドには <code>MailService</code> が入ります。Spring に任せる場合は、Spring が作った 1 つの <code>MailService</code> を、使うクラスすべてに入れます。左のコードは比べるために書いた例です。</p>
+    <p className="td-footnote">どちらも、フィールドには <code>MailService</code> が入ります。Spring に任せる場合は、Spring が作った 1 つの <code>MailService</code> を、使うクラスすべてに入れます。</p>
   </div>;
 }
 
