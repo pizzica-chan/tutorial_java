@@ -15,6 +15,8 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /** 教材のシナリオを再現する不具合を残す。通常の画面とは別の入口で実行する。 */
 @Service
@@ -37,6 +39,32 @@ public class InvestigationService {
 
   // デバッガでここにブレークポイントを置き、別リクエストとの順序を確認する。
   protected void beforeSearch() {}
+
+  // 申請履歴を CSV にする。検索条件なしの履歴検索で全件を読み込んでから組み立てる。
+  public String exportCsv(Long userId) {
+    List<RequestEntity> requests = requestMapper.searchHistory(userId, null, null, null, null);
+    StringBuilder csv = new StringBuilder("id,title,status,applicant,approver,created_at\n");
+    for (RequestEntity request : requests) {
+      csv.append(request.getId()).append(',')
+          .append(request.getTitle()).append(',')
+          .append(request.getStatus()).append(',')
+          .append(request.getApplicantName()).append(',')
+          .append(request.getApproverName()).append(',')
+          .append(request.getCreatedAt()).append('\n');
+    }
+    return csv.toString();
+  }
+
+  // 承認待ちの申請ごとに、承認者へのリマインドを別スレッドで送る。
+  public int remindAll(Long userId) {
+    List<RequestEntity> requests = requestMapper.findMine(userId);
+    for (RequestEntity request : requests) {
+      ExecutorService executor = Executors.newSingleThreadExecutor();
+      executor.submit(() -> log.info("remind requestId={} approverId={}",
+          request.getId(), request.getApproverId()));
+    }
+    return requests.size();
+  }
 
   public List<RequestEntity> listWithNames(Long userId) {
     List<RequestEntity> requests = requestMapper.findMineWithoutNames(userId);

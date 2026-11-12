@@ -214,12 +214,12 @@ export const troubleshootMap: ObservableGroup[] = [
         ],
       },
       {
-        symptom: "アプリのプロセスが急に終了する、または重くなる。エラーログに `OutOfMemoryError` や `Full GC` の記録がある",
-        keywords: ["メモリ不足", "OOM", "クラッシュ", "ダウンする", "GC", "503", "service unavailable"],
+        symptom: "アプリのプロセスが急に終了する、重くなる、または動いたまま応答しなくなる。エラーログに `OutOfMemoryError` や `Full GC` の記録がある",
+        keywords: ["メモリ不足", "OOM", "クラッシュ", "ダウンする", "GC", "503", "service unavailable", "Metaspace", "スレッド数", "unable to create native thread"],
         cause: ["サーバ"],
         check: "エラーログに `OutOfMemoryError` が無いかを確認しましょう。あればメッセージの種類を、無ければ GC の記録があるかを見ましょう。",
         tells: "`OutOfMemoryError` はメッセージによって疑う場所が変わります。`Full GC` が繰り返されているだけなら、プロセスはまだ終了していませんが、その間処理が止まって遅くなります。",
-        links: [{ label: "トラブル例：メモリ不足・GC の当たりをつける", to: "/tracks/troubleshoot/p-memory" }],
+        links: [{ label: "トラブル例：OutOfMemoryError が出る（GC ログ・スレッドダンプ）", to: "/tracks/troubleshoot/p-memory" }],
       },
       {
         symptom: "特定の操作だけ、ずっと応答が返ってこない。ログも途中から出ない",
