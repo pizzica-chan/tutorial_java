@@ -917,6 +917,11 @@ export const terms: TermDef[] = [
     body: "Java のスレッドが、LockSupport.park などの仕組みで実行を休止していることを示す表記です。ロックの解放や、キューに仕事が入るのを待つ場合などに現れます。これだけでは、何を待っているかは分かりません。",
   },
   {
+    term: "on object monitor",
+    aliases: ["on object monitor"],
+    body: "Java のスレッドの待ちが synchronized のロック（モニタ）に関わることを示す表記です。BLOCKED なら、ロックを取るために待っています。WAITING と TIMED_WAITING なら、Object.wait() でほかのスレッドからの通知を待っていて、その間ロックは手放しています。",
+  },
+  {
     term: "synchronized",
     aliases: ["synchronized"],
     body: "Java で、同じロックを使う処理を複数のスレッドが同時に実行しないようにするキーワードです。処理に入るときにロックを取り、抜けるときに解放します。",
