@@ -2077,7 +2077,7 @@ Caused by: java.lang.OutOfMemoryError: Metaspace`,
         },
         {
           type: "p",
-          text: "`Picked up JAVA_TOOL_OPTIONS:` は、環境変数 `JAVA_TOOL_OPTIONS` で JVM のオプションを渡したときに出る行です。`java` コマンドの引数で直接渡したときは出ないので、`ps -ef` でプロセスのコマンドラインを確認しましょう。この環境では、上限が 32MB でした。",
+          text: "`Picked up JAVA_TOOL_OPTIONS:` は、環境変数 `JAVA_TOOL_OPTIONS` で JVM のオプションを渡したときに出る行です。`java` コマンドの引数で直接渡したときは、この行は出ません。この例のようにプロセスがもう終わっているときは、`docker inspect コンテナ名` の `Config.Env`（環境変数）と、`Config.Entrypoint`、`Config.Cmd`（起動したコマンド）を確認しましょう。compose ファイルや起動スクリプトに書かれていることもあります。プロセスが動いているなら、`ps -ef` でコマンドラインを確認できます。この環境では、上限が 32MB でした。",
         },
         {
           type: "h3",
@@ -2209,7 +2209,7 @@ java.lang.OutOfMemoryError: unable to create native thread: possibly out of memo
         },
         {
           type: "p",
-          text: "どのスレッドも `WAITING (parking)` で、`ThreadPoolExecutor.getTask` の中で次の仕事を待っています。プールを閉じない限り、仕事が無くてもスレッドは残ります。このスタックには、プールを作った処理は出ません。作った処理は at 行の `remindAll` で分かります。",
+          text: "どのスレッドも `WAITING (parking)` で、`ThreadPoolExecutor.getTask` の中で次の仕事を待っています。仕事が無くても、プールが閉じられるまでスレッドは残ります。このスタックには、プールを作った処理は出ません。作った処理は at 行の `remindAll` で分かります。",
         },
         {
           type: "h3",
@@ -2233,7 +2233,13 @@ public int remindAll(Long userId) {
         },
         {
           type: "p",
-          text: "原因は `remindAll` です。承認待ちの申請 1 件ごとに `Executors.newSingleThreadExecutor()` でプールを作り、`shutdown()` を呼んでいません。リマインドを送り終えたあとも、プールのスレッドが次の仕事を待ったまま残ります。1,000 件を超える申請でスレッドを作り続け、コンテナのプロセス数の上限に達しました。",
+          text: "原因は `remindAll` です。承認待ちの申請 1 件ごとに `Executors.newSingleThreadExecutor()` でプールを作り、`shutdown()` を呼んでいません。リマインドを送り終えたあとも、プールのスレッドは次の仕事を待ったまま残ります。GC でプールが閉じられる前に、1,000 件を超える申請でスレッドを作り続けたので、コンテナのプロセス数の上限に達しました。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "GC で閉じられることを当てにしない",
+          text: "`newSingleThreadExecutor()` のプールは、参照するものが無くなって GC で回収されると、JDK が `shutdown()` を呼んで閉じます（JDK 17 では `finalize()`、JDK 21 以降では `Cleaner` から）。この例のスレッドダンプに `pool-1` と `pool-2` が無いのも、GC で閉じられたためと考えられます。いつ GC が起きるかは決まっていないので、数えるたびに本数が変わることがあります。`newFixedThreadPool` で作ったプールは GC では閉じられず、`shutdown()` を呼ぶまでスレッドが残ります。どちらでも、使い終わったら `shutdown()` を呼びましょう。",
         },
         {
           type: "p",
