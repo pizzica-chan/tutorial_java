@@ -1020,9 +1020,9 @@ public LocalDate dueDate(Long requestId, Long userId) {
         },
         {
           type: "p",
-          text: "突き合わせた先が `GC Thread#0` や `G1 Conc#0` などの GC のスレッドなら、スレッドダンプには見出し行しか無く、原因の行は分かりません。GC が CPU を使い続けるのは、メモリが足りないときが多いです。GC ログを確認しましょう。読み方は「トラブル例：メモリ不足・GC の当たりをつける」で扱っています。",
+          text: "突き合わせた先が `GC Thread#0` や `G1 Conc#0` などの GC のスレッドなら、スレッドダンプには見出し行しか無く、原因の行は分かりません。GC が CPU を使い続けるのは、メモリが足りないときが多いです。GC ログを確認しましょう。読み方は「トラブル例：OutOfMemoryError が出る（GC ログ・スレッドダンプ）」で扱っています。",
           link: {
-            label: "トラブル例：メモリ不足・GC の当たりをつける",
+            label: "トラブル例：OutOfMemoryError が出る（GC ログ・スレッドダンプ）",
             to: "/tracks/troubleshoot/p-memory",
           },
         },
@@ -1832,13 +1832,17 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
     },
     {
       id: "p-memory",
-      title: "トラブル例：メモリ不足・GC の当たりをつける",
-      minutes: 9,
-      tags: ["Java 全般"],
+      title: "トラブル例：OutOfMemoryError が出る（GC ログ・スレッドダンプ）",
+      minutes: 21,
+      tags: ["Java 全般", "Spring", "Docker"],
       blocks: [
         {
           type: "p",
-          text: "アプリのプロセスが急に終了する、動きが重くなるといった症状のときは、メモリと GC（ガベージコレクション）も疑いましょう。エラーログに `OutOfMemoryError` が出ていれば、メモリ不足の可能性が高いです。出ていなくても、`Full GC` が短い間隔で繰り返されていると、そのあいだ処理が止まり、遅く感じられることがあります。",
+          text: "アプリのプロセスが急に終了する、動きが重くなる、応答しなくなるといった症状のときは、メモリと GC（ガベージコレクション）も疑いましょう。エラーログに `OutOfMemoryError` が出ていれば、メモリ不足の可能性が高いです。出ていなくても、`Full GC` が短い間隔で繰り返されていると、そのあいだ処理が止まり、遅く感じられることがあります。",
+        },
+        {
+          type: "p",
+          text: "このレッスンでは申請くんで起きた 3 つの例を原因まで追います。1 つ目は申請履歴の CSV 出力でヒープが足りなくなる例です。2 つ目は起動オプションの指定のせいで、起動の途中で Metaspace が足りなくなる例です。3 つ目はメモリではなく、スレッドの数が上限に達して `OutOfMemoryError` になる例です。申請くんで試す手順は末尾の「手元で再現するには」にあります。",
         },
         {
           type: "h2",
@@ -1849,22 +1853,13 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
           text: "`OutOfMemoryError` は、メッセージによって疑う場所が変わります。まずメッセージを読みましょう。",
         },
         {
-          type: "code",
-          title: "例（申請くんの実ログではない）",
-          lang: "text",
-          highlightLines: [1],
-          highlightKind: "error",
-          code: `java.lang.OutOfMemoryError: Java heap space
-    at jp.co.example.shinsei.service.RequestService.searchHistory(RequestService.java:66)`,
-        },
-        {
           type: "table",
           headers: ["メッセージ", "疑うこと"],
           rows: [
             ["`Java heap space`", "ヒープが足りない。一度に大量のレコードをメモリに載せていないか、参照を持ち続けて解放されていないか（メモリリーク）"],
             ["`GC overhead limit exceeded`", "GC を繰り返しても十分に回収できていない。ヒープ不足かメモリリークの兆候"],
-            ["`Metaspace`", "クラス情報を置く領域の不足。動的にクラスを生成するライブラリや、クラスローダーが解放されない構成で起きることがある"],
-            ["`unable to create new native thread`", "OS が許すスレッド数の上限に達している。スレッドが増え続けていないか"],
+            ["`Metaspace`", "クラス情報を置く領域の不足。起動オプションの上限が小さすぎないか。動的にクラスを生成するライブラリや、クラスローダーが解放されない構成でも起きることがある"],
+            ["`unable to create native thread`（JDK 8 などの古い JDK では `unable to create new native thread`）", "メモリではなく、OS がスレッドを作れない。プロセス数などの上限に達していないか。スレッドが増え続けていないか"],
           ],
         },
         {
@@ -1875,29 +1870,424 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
         },
         {
           type: "h2",
-          text: "GC の頻度を見る",
+          text: "例 1：CSV 出力で `Java heap space`",
         },
         {
           type: "p",
-          text: "プロセスが終了するまでには至らなくても、`Full GC` が短い間隔で繰り返されていると、その間アプリの処理が止まります。GC の記録を出す設定があれば見ましょう。",
+          text: "検証環境で、山田が申請履歴の CSV 出力を開いたところ、12 秒ほど待たされたあと、ステータスコード 500 が返りました。そのあと、ログイン画面も開かなくなりました。この環境の申請くんはヒープの上限を `-Xmx256m` にして動いています。",
+        },
+        {
+          type: "h3",
+          text: "ERROR の行を読む",
         },
         {
           type: "code",
-          title: "GC ログの例（設定と JDK のバージョンで書式は変わる）",
+          title: "CSV 出力のあとに出た ERROR（申請くん・抜粋）",
           lang: "text",
-          code: `[12.345s][info][gc] GC(42) Pause Full (Allocation Failure) 1900M->1850M(2048M) 3210.123ms`,
+          highlightLines: [2],
+          highlightKind: "error",
+          code: `15:27:08.118 ERROR [nio-8080-exec-5] o.a.c.c.C.[.[.[.[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] in context with path [/shinsei] threw exception [Handler dispatch failed; nested exception is java.lang.OutOfMemoryError: Java heap space] with root cause
+java.lang.OutOfMemoryError: Java heap space`,
         },
         {
           type: "p",
-          text: "`->` の前後がヒープの使用量（回収前 → 回収後）で、括弧の中はそのときのコミット済みヒープサイズ（今 OS から確保している大きさ）です。回収してもほとんど減っていなければ、解放できるはずのオブジェクトが残っている、つまりメモリリークの兆候です。",
+          text: "メッセージは `Java heap space` なので、ヒープが足りなくなっています。ただし、スタックトレースの at 行が 1 行もありません。どの処理がメモリを使ったかは、この ERROR からは分かりません。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "`OutOfMemoryError` の at 行は、使い込んだ場所とは限らない",
+          text: "メモリが足りない状態で投げられるので、at 行が出ないことがあります。at 行が出ても、それは最後にメモリを確保しようとした場所です。メモリを使い込んだ処理とは限りません。別のスレッドが使い込んでいて、たまたまメモリを確保しようとした無関係のスレッドで出ることもあります。",
+        },
+        {
+          type: "h3",
+          text: "同じスレッドのログを並べる",
+        },
+        {
+          type: "p",
+          text: "ERROR を出したスレッドは `nio-8080-exec-5` です。同じスレッド名で、その前のログを拾いましょう。拾い方は「アプリのログで処理を追う」で扱っています。",
+          link: {
+            label: "アプリのログで処理を追う",
+            to: "/tracks/troubleshoot/log-follow",
+          },
+        },
+        {
+          type: "code",
+          title: "nio-8080-exec-5 のログ（申請くん・抜粋）",
+          lang: "text",
+          highlightLines: [3],
+          code: `15:26:56.021 DEBUG [nio-8080-exec-5] j.c.e.s.aspect.ServiceLoggingAspect : start InvestigationService.exportCsv(..)
+15:26:56.055 DEBUG [nio-8080-exec-5] j.c.e.s.m.R.searchHistory : ==>  Preparing: SELECT ... FROM t_request r ... WHERE (r.applicant_id = ? OR r.approver_id = ?) ORDER BY r.created_at DESC
+15:26:56.057 DEBUG [nio-8080-exec-5] j.c.e.s.m.R.searchHistory : ==> Parameters: 7(Long), 7(Long)
+（中略：GC のログなど）
+15:27:08.113 DEBUG [nio-8080-exec-5] j.c.e.s.aspect.ServiceLoggingAspect : end InvestigationService.exportCsv(..)
+15:27:08.118 ERROR [nio-8080-exec-5] o.a.c.c.C.[.[.[.[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] ...`,
+        },
+        {
+          type: "p",
+          text: "`InvestigationService.exportCsv` が始まり、`searchHistory` の SQL を実行しています。ところが、`Parameters` のあとに、取得した件数を示す `<==      Total:` の行がありません。12 秒後に、`Total` が出ないまま `exportCsv` が終わり、ERROR になっています。SQL の結果を受け取っている途中で、ヒープが足りなくなったと読めます。",
+        },
+        {
+          type: "h3",
+          text: "GC のログを読む",
+        },
+        {
+          type: "p",
+          text: "この環境では起動オプションに `-Xlog:gc` を付けて、GC のログを出しています（JDK 9 以降の書き方です）。同じ時間帯の GC のログを確認しましょう。",
+        },
+        {
+          type: "code",
+          title: "GC のログ（申請くん・抜粋）",
+          lang: "text",
+          highlightLines: [4, 9],
+          code: `[10.956s][info][gc] GC(72) Pause Full (G1 Compaction Pause) 254M->234M(256M) 65.998ms
+（中略：約 1.4 秒の間に、Pause Full がさらに 19 回）
+[12.388s][info][gc] GC(156) Pause Full (G1 Compaction Pause) 254M->253M(256M) 58.693ms
+[12.493s][info][gc] GC(158) Pause Full (G1 Compaction Pause) 253M->253M(256M) 105.164ms
+java.lang.OutOfMemoryError: Java heap space
+Dumping heap to /app/logs/java_pid1.hprof ...
+Heap dump file created [352809941 bytes in 6.361 secs]
+（中略）
+[21.141s][info][gc] GC(212) Pause Full (G1 Compaction Pause) 253M->142M(256M) 41.923ms`,
+        },
+        {
+          type: "p",
+          text: "先頭の `[10.956s]` は、JVM が起動してからの秒数です。`->` の前後が GC の前と後のヒープの使用量で、括弧の中はコミット済みヒープサイズ（今 OS から確保している大きさ）です。上限の 256M まで広がっていて、`Full GC` を繰り返しても 253M からほとんど減りません。回収できないオブジェクトでヒープが埋まり、`OutOfMemoryError` になりました。",
+        },
+        {
+          type: "p",
+          text: "最後の行では 253M から 142M まで減っています。`OutOfMemoryError` で `exportCsv` が中断され、読み込みかけの結果を参照するものが無くなったためです。リクエストが終わると回収できたので、ずっと残り続けるメモリリークではありません。1 回のリクエストが一度に多くのメモリを使ったと分かります。",
+        },
+        {
+          type: "p",
+          text: "`Dumping heap` の行は起動オプションの `-XX:+HeapDumpOnOutOfMemoryError` で、ヒープダンプ（ヒープの中身を書き出したファイル）を書き出した記録です。この例ではログと件数で原因まで辿れるので、ヒープダンプは開きません。",
+        },
+        {
+          type: "h3",
+          text: "件数とソースを確かめる",
+        },
+        {
+          type: "p",
+          text: "Mapper のログの SQL と `Parameters` から、同じ条件のレコードの件数を数えましょう。",
+        },
+        {
+          type: "code",
+          title: "取得しようとした件数（申請くん・検証環境）",
+          lang: "text",
+          code: `mysql> SELECT COUNT(*) FROM t_request WHERE applicant_id = 7 OR approver_id = 7;
++----------+
+| COUNT(*) |
++----------+
+|   300005 |
++----------+`,
+        },
+        {
+          type: "p",
+          text: "30 万件を超えています。`exportCsv` のソースも確認しましょう。",
+        },
+        {
+          type: "code",
+          title: "InvestigationService.java（申請くん・再現用、抜粋）",
+          lang: "java",
+          highlightLines: [3, 4],
+          code: `// 申請履歴を CSV にする。検索条件なしの履歴検索で全件を読み込んでから組み立てる。
+public String exportCsv(Long userId) {
+  List<RequestEntity> requests = requestMapper.searchHistory(userId, null, null, null, null);
+  StringBuilder csv = new StringBuilder("id,title,status,applicant,approver,created_at\\n");
+  for (RequestEntity request : requests) {
+    csv.append(request.getId()).append(',')
+        .append(request.getTitle()).append(',')
+        .append(request.getStatus()).append(',')
+        .append(request.getApplicantName()).append(',')
+        .append(request.getApproverName()).append(',')
+        .append(request.getCreatedAt()).append('\\n');
+  }
+  return csv.toString();
+}`,
+        },
+        {
+          type: "p",
+          text: "原因は `exportCsv` です。検索条件なしの `searchHistory` で、30 万件のレコードを 1 つの List に読み込もうとしています。読み込めたとしても、そのあと CSV 全体を 1 つの文字列に組み立てます。ヒープの上限の 256MB に収まりませんでした。",
+        },
+        {
+          type: "p",
+          text: "直すなら、全件を一度に読まず、読んだ分から書き出す形にします。MyBatis なら、`Cursor` や `ResultHandler` で 1 件ずつ受け取れます。MySQL の JDBC ドライバは既定では結果を全部受け取ってから返すので、ドライバ側の設定（`useCursorFetch` と `fetchSize` など）も要ります。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "`-Xmx` を上げても、件数が増えればまた落ちる",
+          text: "上限を上げれば、この件数では通るかもしれません。ただ、必要なメモリは件数に比例して増えるので、履歴が増えればまた同じことが起きます。",
+        },
+        {
+          type: "callout",
+          kind: "warn",
+          title: "落ちたあと、プロセスが動いたまま応答しなくなることがある",
+          text: "この例では、`OutOfMemoryError` のあともコンテナは動いたままでしたが、ログイン画面も開かなくなりました。ログには接続を受け付ける Tomcat のスレッド（`http-nio-8080-Poller`）でも `OutOfMemoryError` が出ていました。メモリが足りない間は、リクエストと関係の無いスレッドも止まることがあります。`OutOfMemoryError` が出たら、ログとヒープダンプを残してから、アプリを再起動しましょう。`-XX:+ExitOnOutOfMemoryError` を付けて、`OutOfMemoryError` のときにプロセスを終了させる現場もあります。",
         },
         {
           type: "h2",
-          text: "簡単に確認できるコマンド",
+          text: "例 2：起動の途中で `Metaspace`",
         },
         {
           type: "p",
-          text: "サーバに入れるなら、次のコマンドで今の状態を確認できます。対象は Java プロセスの PID（プロセス ID）です。PID は「Linux の基本操作」で見た `ps` で調べられます。",
+          text: "別の検証環境で、起動オプションを見直したあと、申請くんが起動の途中で終了するようになりました。コンテナは終了コード 1 で止まります。",
+        },
+        {
+          type: "h3",
+          text: "起動ログの WARN を最後まで読む",
+        },
+        {
+          type: "code",
+          title: "起動ログ（申請くん・抜粋）",
+          lang: "text",
+          highlightLines: [1, 6],
+          code: `15:28:37.983 WARN  [main] o.s.b.w.s.c.AnnotationConfigServletWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'requestApiController' defined in URL [...]: Unsatisfied dependency expressed through constructor parameter 0; nested exception is （中略） nested exception is java.lang.OutOfMemoryError: Metaspace
+（中略）
+Exception in thread "main" java.lang.reflect.InvocationTargetException
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+（中略）
+Caused by: java.lang.OutOfMemoryError: Metaspace`,
+        },
+        {
+          type: "p",
+          text: "WARN の行は `UnsatisfiedDependencyException` で始まるので、Bean の注入に失敗したように見えます。しかし、`nested exception is` で入れ子になった例外を最後まで読むと、`java.lang.OutOfMemoryError: Metaspace` です。最後の `Caused by:` の行も同じです。Bean の定義の誤りではなく、Bean を作る途中で Metaspace が足りなくなっています。Bean が見つからないときの起動エラーは、「DI とインタフェース」で扱っています。",
+          link: {
+            label: "DI とインタフェース",
+            to: "/tracks/java-map/di",
+          },
+        },
+        {
+          type: "h3",
+          text: "Metaspace の上限を確かめる",
+        },
+        {
+          type: "p",
+          text: "Metaspace は読み込んだクラスの情報を置く領域で、ヒープとは別です。`-Xmx` を変えても大きさは変わりません。既定では上限が無く、必要な分だけ増えます。そのため、起動の途中で足りなくなったら、まず `-XX:MaxMetaspaceSize` で上限を指定していないかを確認しましょう。",
+        },
+        {
+          type: "p",
+          text: "この環境では、起動ログの 1 行目に指定が出ていました。",
+        },
+        {
+          type: "code",
+          title: "起動ログの 1 行目（申請くん）",
+          lang: "text",
+          code: `Picked up JAVA_TOOL_OPTIONS: -XX:MaxMetaspaceSize=32m`,
+        },
+        {
+          type: "p",
+          text: "`Picked up JAVA_TOOL_OPTIONS:` は、環境変数 `JAVA_TOOL_OPTIONS` で JVM のオプションを渡したときに出る行です。`java` コマンドの引数で直接渡したときは出ないので、`ps -ef` でプロセスのコマンドラインを確認しましょう。この環境では、上限が 32MB でした。",
+        },
+        {
+          type: "h3",
+          text: "必要な大きさを確かめる",
+        },
+        {
+          type: "p",
+          text: "申請くんが Metaspace をどれだけ使うかは、上限を外して起動し、`kill -3` の出力の末尾で確認できます。スレッドダンプのあとに、ヒープと Metaspace の使用量が出ます。",
+        },
+        {
+          type: "code",
+          title: "kill -3 の出力の末尾（申請くん・上限なしで起動し、ログイン画面を開いたあと）",
+          lang: "text",
+          highlightLines: [4],
+          code: `Heap
+ garbage-first heap   total 92160K, used 45353K [0x0000000707000000, 0x0000000800000000)
+  region size 2048K, 14 young (28672K), 2 survivors (4096K)
+ Metaspace       used 48911K, committed 49280K, reserved 1114112K
+  class space    used 6244K, committed 6400K, reserved 1048576K`,
+        },
+        {
+          type: "p",
+          text: "`Metaspace` の行の `used` が使っている大きさです。起動してログイン画面を開いただけで、約 48MB 使っています。ほかの画面も開くと、約 51MB に増えました。上限の 32MB では起動の途中で足りなくなります。",
+        },
+        {
+          type: "p",
+          text: "原因は起動オプションの `-XX:MaxMetaspaceSize=32m` です。アプリが使う大きさより小さい上限を指定していました。指定を外すか、`used` の値より十分大きい上限にしましょう。",
+        },
+        {
+          type: "callout",
+          kind: "tip",
+          title: "取るたびに `used` が増えるなら、別の原因",
+          text: "時間をあけて `kill -3` を何度か取り、`Metaspace` の `used` が増え続けるなら、クラスを作り続ける処理か、解放されないクラスローダーを疑いましょう。外部の Tomcat で、再起動せずにアプリを何度も入れ替えたときに起きることがあります。",
+        },
+        {
+          type: "h2",
+          text: "例 3：まとめてリマインドで `unable to create native thread`",
+        },
+        {
+          type: "p",
+          text: "検証環境で、山田が「承認待ちの申請をまとめてリマインド」を押したところ、すぐにステータスコード 500 が返りました。山田の承認待ちの申請は 1,000 件を超えています。",
+        },
+        {
+          type: "h3",
+          text: "メッセージと at 行を読む",
+        },
+        {
+          type: "code",
+          title: "リマインドのあとに出た ERROR（申請くん・抜粋）",
+          lang: "text",
+          highlightLines: [2, 9],
+          highlightKind: "error",
+          code: `15:42:26.299 ERROR [nio-8080-exec-7] o.a.c.c.C.[.[.[.[dispatcherServlet] : Servlet.service() for servlet [dispatcherServlet] in context with path [/shinsei] threw exception [Handler dispatch failed; nested exception is java.lang.OutOfMemoryError: unable to create native thread: possibly out of memory or process/resource limits reached] with root cause
+java.lang.OutOfMemoryError: unable to create native thread: possibly out of memory or process/resource limits reached
+	at java.base/java.lang.Thread.start0(Native Method)
+	at java.base/java.lang.Thread.start(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.addWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.execute(Unknown Source)
+	at java.base/java.util.concurrent.AbstractExecutorService.submit(Unknown Source)
+	at java.base/java.util.concurrent.Executors$DelegatedExecutorService.submit(Unknown Source)
+	at jp.co.example.shinsei.service.InvestigationService.remindAll(InvestigationService.java:63)
+	（中略）
+	at jp.co.example.shinsei.controller.InvestigationController.remind(InvestigationController.java:38)
+	（以下略）`,
+        },
+        {
+          type: "p",
+          text: "名前は `OutOfMemoryError` ですが、メッセージは `unable to create native thread` です。ヒープではなく、OS のスレッドを作れなかったことを示します。メッセージの後半のとおり、OS のメモリ不足か、プロセス数などの上限に達したときに出ます。",
+        },
+        {
+          type: "p",
+          text: "例 1 と違って、at 行が出ています。最上段の `Thread.start0` で、新しいスレッドを起動しようとして失敗しています。自分たちが書いたコードで最初に出る行は、`InvestigationService.remindAll` の 63 行目です。直前には JVM の警告として `pthread_create failed (EAGAIN)` も出ていました。OS がスレッドの作成を断ったという意味です。",
+        },
+        {
+          type: "p",
+          text: "ただし、例 1 で見たとおり、at 行は最後に失敗した場所です。スレッドを増やした処理と同じかは、スレッドを数えて確かめましょう。",
+        },
+        {
+          type: "h3",
+          text: "スレッドを数える",
+        },
+        {
+          type: "p",
+          text: "コンテナの中のプロセス数は `docker stats` の `PIDS` に出ます。Java のスレッドも 1 本ずつ数に入ります。",
+        },
+        {
+          type: "code",
+          title: "コンテナのプロセス数（申請くん・検証環境）",
+          lang: "bash",
+          code: `docker stats --no-stream --format "{{.PIDs}}" shinsei-threads`,
+        },
+        {
+          type: "p",
+          text: "起動した直後は 50 ほどでした。リマインドのあとは 199 です。この環境はコンテナのプロセス数の上限を 200 にしていたので（`docker update --pids-limit 200`）、上限の手前で止まっています。",
+        },
+        {
+          type: "p",
+          text: "次に、スレッドダンプを取り、どんな名前のスレッドが増えたかを確認しましょう。",
+        },
+        {
+          type: "code",
+          title: "スレッドダンプの中のスレッド名（申請くん・抜粋）",
+          lang: "text",
+          code: `"pool-3-thread-1" #39 prio=5 os_prio=0 cpu=0.73ms elapsed=18.04s tid=0x00007e10b0044fd0 nid=0x3f waiting on condition  [0x00007e114dcfd000]
+"pool-4-thread-1" #40 prio=5 os_prio=0 cpu=0.87ms elapsed=18.04s tid=0x00007e10b00464d0 nid=0x40 waiting on condition  [0x00007e114dbfd000]
+"pool-5-thread-1" #41 prio=5 os_prio=0 cpu=0.57ms elapsed=18.04s tid=0x00007e10b00284b0 nid=0x41 waiting on condition  [0x00007e114dafd000]
+（中略）
+"pool-152-thread-1" #188 prio=5 os_prio=0 cpu=0.54ms elapsed=18.00s tid=0x00007e10b00d75f0 nid=0xd4 waiting on condition  [0x00007e0fe08fe000]
+"pool-153-thread-1" #189 prio=5 os_prio=0 cpu=0.41ms elapsed=18.00s tid=0x00007e10b00d89e0 nid=0xd5 waiting on condition  [0x00007e0fe07fe000]`,
+        },
+        {
+          type: "p",
+          text: "スレッドダンプのスレッドは 197 本で、そのうち 151 本が `pool-` で始まります。`pool-N-thread-M` は、`Executors` でスレッドプールを作ったときに、名前を指定しなければ付く名前です。N がプールの番号、M がそのプールの中のスレッドの番号です。M はどれも 1 で、N だけが 153 まで増えています。スレッドが 1 本だけのプールを、150 個以上作ったと分かります。",
+        },
+        {
+          type: "code",
+          title: "pool-153-thread-1 の塊（申請くん・抜粋）",
+          lang: "text",
+          highlightLines: [6],
+          code: `"pool-153-thread-1" #189 prio=5 os_prio=0 cpu=0.41ms elapsed=18.00s tid=0x00007e10b00d89e0 nid=0xd5 waiting on condition  [0x00007e0fe07fe000]
+   java.lang.Thread.State: WAITING (parking)
+	at jdk.internal.misc.Unsafe.park(java.base@17.0.20/Native Method)
+	（中略）
+	at java.util.concurrent.LinkedBlockingQueue.take(java.base@17.0.20/Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.getTask(java.base@17.0.20/Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(java.base@17.0.20/Unknown Source)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(java.base@17.0.20/Unknown Source)
+	at java.lang.Thread.run(java.base@17.0.20/Unknown Source)`,
+        },
+        {
+          type: "p",
+          text: "どのスレッドも `WAITING (parking)` で、`ThreadPoolExecutor.getTask` の中で次の仕事を待っています。プールを閉じない限り、仕事が無くてもスレッドは残ります。このスタックには、プールを作った処理は出ません。作った処理は at 行の `remindAll` で分かります。",
+        },
+        {
+          type: "h3",
+          text: "ソースを確かめる",
+        },
+        {
+          type: "code",
+          title: "InvestigationService.java（申請くん・再現用、抜粋）",
+          lang: "java",
+          highlightLines: [5, 6],
+          code: `// 承認待ちの申請ごとに、承認者へのリマインドを別スレッドで送る。
+public int remindAll(Long userId) {
+  List<RequestEntity> requests = requestMapper.findMine(userId);
+  for (RequestEntity request : requests) {
+    ExecutorService executor = Executors.newSingleThreadExecutor();
+    executor.submit(() -> log.info("remind requestId={} approverId={}",
+        request.getId(), request.getApproverId()));
+  }
+  return requests.size();
+}`,
+        },
+        {
+          type: "p",
+          text: "原因は `remindAll` です。承認待ちの申請 1 件ごとに `Executors.newSingleThreadExecutor()` でプールを作り、`shutdown()` を呼んでいません。リマインドを送り終えたあとも、プールのスレッドが次の仕事を待ったまま残ります。1,000 件を超える申請でスレッドを作り続け、コンテナのプロセス数の上限に達しました。",
+        },
+        {
+          type: "p",
+          text: "直すなら、プールは 1 つだけ作って使い回します。Spring なら、スレッド数を決めた `ThreadPoolTaskExecutor` と `@Async` を使う方法があります。上限を上げても、リマインドのたびにスレッドが増えるので、いずれまた達します。",
+        },
+        {
+          type: "callout",
+          kind: "note",
+          title: "スレッド数の上限は環境で決まる",
+          text: "上限がどこで決まるかは、環境によって違います。この例はコンテナのプロセス数の上限でした。ほかに、OS のユーザーごとの上限（`ulimit -u`）や、OS のメモリ不足で出ることもあります。どれでも、同じメッセージの `OutOfMemoryError` になります。",
+        },
+        {
+          type: "h2",
+          text: "3 つの例を見比べる",
+        },
+        {
+          type: "table",
+          headers: ["メッセージ", "最初に確かめたこと", "原因に辿り着いた手がかり"],
+          rows: [
+            ["`Java heap space`", "ERROR の at 行（出なかった）", "同じスレッドのログで `Total` が出ていない。GC のログで、回収しても減らない。同じ条件のレコードの件数"],
+            ["`Metaspace`", "起動ログの WARN の、入れ子の最後の例外", "起動オプションの `-XX:MaxMetaspaceSize`。`kill -3` の出力の末尾の `used`"],
+            ["`unable to create native thread`", "ERROR の at 行（`remindAll` が出た）", "`docker stats` の `PIDS`。スレッドダンプの `pool-N-thread-1` の数"],
+          ],
+        },
+        {
+          type: "p",
+          text: "どの例もメッセージで疑う場所を決め、別の記録と突き合わせて原因を確かめています。",
+        },
+        {
+          type: "h2",
+          text: "調べるときに使う道具",
+        },
+        {
+          type: "p",
+          text: "3 つの例で使った道具は、JDK が入っていないコンテナでも使えます。申請くんの Docker イメージ（`eclipse-temurin:17-jre`）は JRE だけで、`jstat` などのコマンドは入っていません。",
+        },
+        {
+          type: "table",
+          headers: ["道具", "分かること", "使った例"],
+          rows: [
+            ["起動オプションの `-Xlog:gc`", "GC ごとの、ヒープの使用量の変化。JDK 8 では書き方が違う（`-XX:+PrintGCDetails` など）", "例 1"],
+            ["起動オプションの `-XX:+HeapDumpOnOutOfMemoryError`", "`OutOfMemoryError` のときに、ヒープダンプを書き出す。書き出す場所は `-XX:HeapDumpPath` で決める", "例 1"],
+            ["`kill -3 PID` の出力の末尾", "ヒープと Metaspace の使用量", "例 2"],
+            ["`kill -3 PID` のスレッドダンプ", "スレッドの名前と数、それぞれが何を待っているか", "例 3"],
+            ["`docker stats` の `PIDS`", "コンテナの中のプロセスとスレッドの数", "例 3"],
+          ],
+        },
+        {
+          type: "p",
+          text: "起動オプションの 2 つは、JDK のコマンドが無い環境では、起動し直さないと付けられません。落ちる前から付けておくと、落ちたときに調べる材料が残ります。",
+        },
+        {
+          type: "p",
+          text: "JDK が入っている環境なら、次のコマンドで、動いている Java プロセスの状態を確認できます。対象は Java プロセスの PID（プロセス ID）です。PID は「Linux の基本操作」で見た `ps` で調べられます。",
         },
         {
           type: "table",
@@ -1915,12 +2305,6 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
           text: "ヒープダンプの取得中は、アプリの処理が止まることがあります。本番環境で取るときは、影響とタイミングを確認してから実行しましょう。",
         },
         {
-          type: "callout",
-          kind: "trap",
-          title: "これらのコマンドが無いコンテナもある",
-          text: "軽量化のため、コンテナは JRE だけ（JDK 抜き）で作られていることがあります。申請くんの Docker イメージ（`eclipse-temurin:17-jre`）もこの構成で、`jstat` / `jcmd` / `jmap` は入っていません。ヒープの大まかな使用量だけなら、「トラブル例：処理が返ってこない（スレッドダンプ）」で見る `kill -3 PID` の出力の末尾にも出ます。GC の頻度の推移や、MAT などで開けるヒープダンプ本体が必要なときは、簡単な代替が無いため、詳しい人や運用担当に相談しましょう。",
-        },
-        {
           type: "p",
           text: "ダンプを開いて中身を見るには、VisualVM や Eclipse Memory Analyzer (MAT) のようなツールを使います。読み方はツールの資料を見ましょう。",
         },
@@ -1929,6 +2313,89 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
           text: "ここで見たのは、当たりをつけるまでの最低限です。GC アルゴリズムの選び方や、ヒープサイズの細かい調整は、この教材の範囲外です。メモリ不足やリークの疑いが強まったら、詳しい人に相談するか、専門の資料を見ましょう。",
         },
         { type: "quiz", id: "ts-memory" },
+        { type: "quiz", id: "ts-memory-metaspace" },
+        { type: "quiz", id: "ts-memory-thread" },
+        {
+          type: "h2",
+          text: "手元で再現するには",
+          aside: "hands-on",
+        },
+        {
+          type: "p",
+          text: "ここからは、申請くんを手元で動かして、3 つの例を試すための手順です。CSV 出力とまとめてリマインドは `investigation` プロファイルを指定して起動したときだけ有効です。",
+        },
+        {
+          type: "p",
+          text: "Docker を起動し、端末で `shinsei-kun` ディレクトリへ移動しましょう。通常の app コンテナが起動している場合は、先に `docker compose stop app` で 8080 番ポートを空けます。",
+        },
+        {
+          type: "p",
+          text: "例 1 では先に DB へ山田の申請を 30 万件足します。そのあと、ヒープの上限を 256MB にして、再現用の申請くんを起動します。",
+        },
+        {
+          type: "code",
+          title: "申請を 30 万件足して、再現用の申請くんを起動する",
+          lang: "bash",
+          code: `docker compose up -d db
+docker compose cp scripts/seed-export-requests.sql db:/tmp/seed.sql
+docker compose exec db sh -c "mysql -uapp -papp --default-character-set=utf8mb4 shinsei_dev < /tmp/seed.sql"
+docker compose run --build --service-ports --name shinsei-oom -e SPRING_PROFILES_ACTIVE=dev,investigation -e "JAVA_TOOL_OPTIONS=-Xmx256m -Xlog:gc -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/app/logs" app`,
+        },
+        {
+          type: "p",
+          text: "ブラウザで `http://localhost:8080/shinsei/login` を開き、山田（`yamada`）でログインしましょう。パスワードは `password` です。`http://localhost:8080/shinsei/investigation` を開き、「申請履歴の CSV 出力」を押すと、10 秒あまりでステータスコード 500 が返ります。端末には、GC のログと `OutOfMemoryError` が出ます。そのあとはログイン画面も開かなくなります。",
+        },
+        {
+          type: "p",
+          text: "終わったら、`docker rm -f shinsei-oom` で止めましょう。ヒープダンプ（約 350MB）が `logs/java_pid1.hprof` に残るので、要らなければ消しましょう。足した申請は次のコマンドで消します。初期データの申請は ID 16 までです。",
+        },
+        {
+          type: "code",
+          title: "足した申請を消す",
+          lang: "bash",
+          code: `docker compose exec db mysql -uapp -papp shinsei_dev -e "DELETE FROM t_request WHERE id > 16"`,
+        },
+        {
+          type: "p",
+          text: "例 2 はデータを足さずに試せます。次を実行すると、起動の途中で終了します。",
+        },
+        {
+          type: "code",
+          title: "Metaspace の上限を 32MB にして起動する",
+          lang: "bash",
+          code: `docker compose run --rm -e "JAVA_TOOL_OPTIONS=-XX:MaxMetaspaceSize=32m" app`,
+        },
+        {
+          type: "p",
+          text: "Metaspace の使用量を確かめるときは、`docker compose up -d app` で通常どおり起動し、ログイン画面を開いてから `docker compose exec app kill -3 1` を実行しましょう。出力は `docker compose logs app` の末尾に出ます。",
+        },
+        {
+          type: "p",
+          text: "例 3 では先に DB へ山田の承認待ちの申請を 1,000 件足します。そのあと、再現用の申請くんを起動します。",
+        },
+        {
+          type: "code",
+          title: "承認待ちの申請を 1,000 件足して、再現用の申請くんを起動する",
+          lang: "bash",
+          code: `docker compose up -d db
+docker compose cp scripts/seed-pending-requests.sql db:/tmp/seed.sql
+docker compose exec db sh -c "mysql -uapp -papp --default-character-set=utf8mb4 shinsei_dev < /tmp/seed.sql"
+docker compose run --build --service-ports --name shinsei-threads -e SPRING_PROFILES_ACTIVE=dev,investigation app`,
+        },
+        {
+          type: "p",
+          text: "起動が終わったら、別の端末でコンテナのプロセス数の上限を 200 にしましょう。`docker compose run` には上限を指定するオプションが無いので、起動したあとで `docker update` でかけます。",
+        },
+        {
+          type: "code",
+          title: "別の端末で、プロセス数の上限をかける",
+          lang: "bash",
+          code: `docker update --pids-limit 200 shinsei-threads`,
+        },
+        {
+          type: "p",
+          text: "山田でログインし、`http://localhost:8080/shinsei/investigation` で「承認待ちの申請をまとめてリマインド」を押すと、ステータスコード 500 が返ります。スレッドダンプは `docker exec shinsei-threads kill -3 1` で取り、`docker logs shinsei-threads` で読みましょう。終わったら `docker rm -f shinsei-threads` で止め、例 1 と同じコマンドで足した申請を消します。",
+        },
       ],
     },
     {

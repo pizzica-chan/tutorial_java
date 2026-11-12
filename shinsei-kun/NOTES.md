@@ -12,6 +12,8 @@
 - **再現用の承認は、通知 API の応答を待ち続ける。** `/investigation/approve/{id}` は、`InvestigationService.approveAndNotify` でステータスを更新したあと、`NotificationClient` で通知 API へ POST します。`NotificationClient` は `new RestTemplate()` のままなので、接続と読み取りのタイムアウトがありません。通知 API の代役（Compose の `notify` サービス、`scripts/notify-stub.py`）は接続を受け付けるだけで応答を返さないため、POST が返りません。`@Transactional` の中なので、DB のコネクションを持ったまま止まります。教材「トラブル例：処理が返ってこない（スレッドダンプ）」用の意図した不具合です。タイムアウトを足して直してはいけません。止まったリクエストは確定しません。アプリを再起動すると、`data.sql` が ID 12・13 を PENDING に戻します。
 - **一覧まで止まる見え方は、コネクションの上限を 2 本にして撮る。** HikariCP の既定は 10 本です。起動時に `-e SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE=2` を付け、ID 12 と 13 を承認すると、一覧の `findMine` がコネクションを待ち、30 秒後に `SQLTransientConnectionException` で 500 になります。`application.yml` は変えていません。
 - **再現用の期限日は、土日に当たると返らない。** `/investigation/{id}/due-date` は申請日の 1 週間後を返し、土日なら次の平日にずらすつもりの処理です。`due.plusDays(1)` の戻り値を捨てているので、`due` が変わらず、ループが終わりません。ID 13（申請日 2026-04-12、1 週間後は日曜）でリクエストのスレッドが CPU を使い続けます。ID 12（1 週間後は金曜）は返ります。止めるにはアプリを再起動します。教材「スレッドダンプの読み方」の CPU の例です。直してはいけません。
+- **再現用の CSV 出力は、全件を 1 つの List に読み込む。** `/investigation/export` は、`InvestigationService.exportCsv` で、検索条件なしの `searchHistory` を呼び、結果の全件から CSV の文字列を組み立てます。教材「トラブル例：OutOfMemoryError が出る（GC ログ・スレッドダンプ）」の例 1 用の意図した不具合です。件数を区切って読む形に直してはいけません。初期データの 5 件では落ちません。`scripts/seed-export-requests.sql` で山田の申請を 30 万件足し、`-Xmx256m` で起動すると `OutOfMemoryError: Java heap space` になります。
+- **再現用のまとめてリマインドは、申請ごとにスレッドプールを作って閉じない。** `/investigation/remind` は、`InvestigationService.remindAll` で、承認待ちの申請 1 件ごとに `Executors.newSingleThreadExecutor()` を作り、`shutdown()` を呼びません。プールのスレッドが残り続けます。教材「トラブル例：OutOfMemoryError が出る（GC ログ・スレッドダンプ）」の例 3 用の意図した不具合です。プールを使い回す形や `@Async` に直してはいけません。教材の at 行の `InvestigationService.java:63`（`executor.submit`）と `InvestigationController.java:38` は実ファイルの行番号です。
 - **再現用のフォームと API で件名の検証が違う。** `/investigation/form` は空白を拒否し、`/investigation/api` は共通の `create` へそのまま渡します。NOT NULL は空文字を拒否しません。CSRF とログインは通常どおり有効です。これらは原因を読むための不具合なので、共通チェックを足して消さないでください。
 
 ### 追加シナリオの起動
@@ -27,6 +29,12 @@ docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investi
 山田の ID は 7、佐藤の ID は 3 です。`/shinsei/investigation` を開きます。POST の Console 例は教材本文にあります。一括登録や空文字の登録を再実行するとレコードが増えるため、レスポンスや SQL で ID を記録してください。
 
 「処理が返ってこない」と「スレッドダンプの読み方」は、先に `docker compose --profile investigation up -d notify` で通知 API の代役を起動し、run に `--name shinsei-hang -e SPRING_DATASOURCE_HIKARI_MAXIMUMPOOLSIZE=2` を足します。スレッドダンプは `docker exec shinsei-hang kill -3 1` で取り、`docker logs shinsei-hang` で読みます。コンテナは JRE だけなので `jstack` はありません。`top` と `ps` はあります。教材のダンプとログは、2026-10-18 にこの手順で撮った実物です。スレッド名の番号、`nid`、アドレス、時刻は実行ごとに変わります。ロック待ちとデッドロックの例だけは、申請くんではなく JDK 17 の小さなプログラムで撮った出力です（クラス名だけ置き換えています）。
+
+「OutOfMemoryError が出る」の例 1 は、先に `scripts/seed-export-requests.sql` を DB で実行し、run に `--name shinsei-oom -e "JAVA_TOOL_OPTIONS=-Xmx256m -Xlog:gc -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/app/logs"` を足します。手順は教材の「手元で再現するには」にあります。教材のログは、2026-11-12 にこの手順で撮った実物です（2 回目の実行）。1 回目は、ERROR のメッセージが `Java heap space: failed reallocation of scalar replaced objects` でした。どちらの回も at 行は出ず、`http-nio-8080-Poller` などのスレッドでも `OutOfMemoryError` が出て、そのあとはログイン画面も返らなくなりました。撮ったあとは `DELETE FROM t_request WHERE id > 16` で足した申請を消し、`logs/java_pid1.hprof`（約 350MB）を消します。
+
+例 2 の Metaspace は、ソースを変えず、`JAVA_TOOL_OPTIONS=-XX:MaxMetaspaceSize=32m` だけで再現します。上限なしで起動してログイン画面を開いたときの `used` は 48911K、`-XX:MaxMetaspaceSize=64m` で主な画面を開いたあとは 52140K でした。64MB では起動できるので、教材では 32MB にしています。
+
+例 3 のスレッドの上限は、`scripts/seed-pending-requests.sql` で山田の承認待ちの申請を 1,000 件足し、起動したあとで `docker update --pids-limit 200 shinsei-threads` を実行して再現します（`docker compose run` には上限のオプションが無いため）。教材のログとスレッドダンプは、2026-11-12 に撮った実物です。起動直後の `PIDS` は 50、リマインドのあとは 199 でした。`pool-` で始まるスレッドは 151 本（`pool-3` から `pool-153`）で、`pool-1` と `pool-2` はスレッドダンプにありませんでした。上限の手前で止まるので、`docker exec` も、ログイン画面も動きました。
 
 デバッガを使う場合は、run のオプションに `-e "JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005" -p 127.0.0.1:5005:5005` を追加します。IDE から localhost:5005 に接続します。
 

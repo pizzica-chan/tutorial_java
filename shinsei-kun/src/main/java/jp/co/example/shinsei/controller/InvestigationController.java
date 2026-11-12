@@ -28,6 +28,16 @@ public class InvestigationController {
         .map(RequestResponse::from).toList();
   }
 
+  @GetMapping(value = "/export", produces = "text/csv;charset=UTF-8")
+  public String export(@AuthenticationPrincipal LoginUser user) {
+    return investigationService.exportCsv(user.getId());
+  }
+
+  @PostMapping("/remind")
+  public Map<String, Object> remind(@AuthenticationPrincipal LoginUser user) {
+    return Map.of("reminded", investigationService.remindAll(user.getId()));
+  }
+
   @GetMapping("/list")
   public List<NamedRequest> list(@AuthenticationPrincipal LoginUser user) {
     return investigationService.listWithNames(user.getId()).stream()

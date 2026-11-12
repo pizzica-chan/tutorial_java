@@ -492,6 +492,30 @@ export const quizzes = {
     answer: 1,
     explanation: "`Java heap space` はヒープ不足を示すメッセージです（`Metaspace` 不足は別のメッセージで出ます）。一度に大量のデータを読み込んでいないか、不要になったオブジェクトの参照を持ち続けていないか（メモリリーク）を疑います。`-Xmx` を上げるだけでは、リークが原因なら根本的な解決になりません。",
   },
+  "ts-memory-thread": {
+    id: "ts-memory-thread",
+    question: "`java.lang.OutOfMemoryError: unable to create native thread` が出た。スレッドダンプには `pool-12-thread-1`、`pool-13-thread-1` …と番号だけ違うスレッドが 150 本以上並び、どれも `ThreadPoolExecutor.getTask` で次の仕事を待っている。最も疑わしいのは？",
+    choices: [
+      "`-Xmx` が小さすぎて、ヒープが足りない",
+      "処理のたびにスレッドプールを作り、閉じていない",
+      "DB のコネクションが足りず、スレッドが待たされている",
+      "スレッド同士がロックを待ち合って、デッドロックしている",
+    ],
+    answer: 1,
+    explanation: "`unable to create native thread` は、ヒープではなく、OS のスレッドを作れなかったことを示します。`pool-N-thread-M` は `Executors` が付ける既定の名前で、N はプールの番号です。M が 1 のまま N だけが増えているので、スレッドが 1 本のプールを作り続けています。どのスレッドも仕事を待っているだけなので、ロックやコネクションの待ちではありません。",
+  },
+  "ts-memory-metaspace": {
+    id: "ts-memory-metaspace",
+    question: "起動の途中でアプリが終了した。起動ログの WARN は `UnsatisfiedDependencyException` で始まり、入れ子の最後の例外は `java.lang.OutOfMemoryError: Metaspace` だった。まず確認するのは？",
+    choices: [
+      "Bean にするクラスに `@Component` などを付け忘れていないか",
+      "`-Xmx` でヒープの上限が小さすぎないか",
+      "起動オプションに `-XX:MaxMetaspaceSize` で上限を指定していないか",
+      "DB に接続できているか",
+    ],
+    answer: 2,
+    explanation: "入れ子の最後の例外が起動に失敗した原因です。`UnsatisfiedDependencyException` は、Bean を作る途中で起きた `OutOfMemoryError` を包んでいるだけです。Metaspace はヒープとは別の領域で、`-Xmx` を変えても大きさは変わりません。既定では上限が無いので、起動の途中で足りなくなったら、`-XX:MaxMetaspaceSize` で小さい上限を指定していないかを確認しましょう。",
+  },
   "ts-hang": {
     id: "ts-hang",
     question: "承認の応答が返ってこない。5 秒あけて取った 2 回のスレッドダンプで、そのリクエストのスレッドは 2 回とも `RUNNABLE`、最上段は `SocketDispatcher.read0`、`cpu=` は変わらず、自分たちが書いたコードの最初の行は `NotificationClient.send` だった。最も疑わしいのは？",

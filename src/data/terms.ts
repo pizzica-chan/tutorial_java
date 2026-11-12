@@ -836,6 +836,16 @@ export const terms: TermDef[] = [
     body: "Java がオブジェクトを置くメモリ領域です。起動時に `-Xmx` などで上限を設定します。ここが足りなくなると `OutOfMemoryError` になることがあります。",
   },
   {
+    term: "Metaspace",
+    aliases: ["Metaspace", "メタスペース"],
+    body: "JVM が読み込んだクラスの情報を置くメモリ領域です。ヒープとは別で、`-Xmx` では大きさが変わりません。既定では上限が無く、`-XX:MaxMetaspaceSize` で上限を指定できます。足りなくなると `OutOfMemoryError: Metaspace` になります。",
+  },
+  {
+    term: "ヒープダンプ",
+    aliases: ["ヒープダンプ", "heap dump"],
+    body: "ある時点のヒープの中身を、ファイルに書き出したものです。拡張子は `.hprof` が多く、Eclipse Memory Analyzer（MAT）や VisualVM で開くと、どのオブジェクトがメモリを占めているかを調べられます。書き出す間、アプリの処理が止まることがあります。",
+  },
+  {
     term: "ガベージコレクション",
     aliases: ["ガベージコレクション", "GC", "Full GC"],
     body: "もう使われなくなったオブジェクトを、JVM が自動でヒープから回収する仕組みです。回収中は処理が一時的に止まることがあります。`Full GC` はヒープ全体を対象にした回収で、時間がかかりやすいです。",
