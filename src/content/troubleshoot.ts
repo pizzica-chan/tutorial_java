@@ -1854,12 +1854,12 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
         },
         {
           type: "table",
-          headers: ["メッセージ", "疑うこと"],
+          headers: ["メッセージ", "何が起きたか", "疑う原因"],
           rows: [
-            ["`Java heap space`", "ヒープが足りない。一度に大量のレコードをメモリに載せていないか、参照を持ち続けて解放されていないか（メモリリーク）"],
-            ["`GC overhead limit exceeded`", "GC を繰り返しても十分に回収できていない。ヒープ不足かメモリリークの兆候"],
-            ["`Metaspace`", "クラス情報を置く領域の不足。起動オプションの上限が小さすぎないか。動的にクラスを生成するライブラリや、クラスローダーが解放されない構成でも起きることがある"],
-            ["`unable to create native thread`（JDK 8 などの古い JDK では `unable to create new native thread`）", "メモリではなく、OS がスレッドを作れない。プロセス数などの上限に達していないか。スレッドが増え続けていないか"],
+            ["`Java heap space`", "ヒープが上限まで埋まり、新しいオブジェクトを置けなかった", "一度に大量のレコードをメモリに載せていないか。参照を持ち続けて解放されていないか（メモリリーク）"],
+            ["`GC overhead limit exceeded`", "GC にほとんどの時間を使っても、ヒープをわずかしか空けられなかった", "ヒープ不足やメモリリーク。`Java heap space` と同じ原因を疑う"],
+            ["`Metaspace`", "クラスの情報を置く領域（Metaspace）が上限に達した", "起動オプションの上限が小さすぎないか。クラスを動的に生成するライブラリや、クラスローダーが解放されない構成で、クラスが増え続けていないか"],
+            ["`unable to create native thread`（JDK 8 などの古い JDK では `unable to create new native thread`）", "OS がスレッドを作れなかった。ヒープの不足ではない", "プロセス数などの上限に達していないか。スレッドが増え続けていないか"],
           ],
         },
         {
