@@ -845,11 +845,16 @@ docker logs コンテナ名`,
           type: "table",
           headers: ["スレッド名の例", "何をするスレッドか", "扱い"],
           rows: [
-            ["`http-nio-8080-exec-7`", "Tomcat がリクエストを処理する", "最初に見る"],
+            ["`http-nio-8080-exec-7`、`ajp-nio-8009-exec-7`", "Tomcat がリクエストを処理する", "最初に見る"],
             ["`http-nio-8080-Acceptor`、`http-nio-8080-Poller`", "Tomcat が接続を受け付ける", "飛ばす"],
-            ["`HikariPool-1 housekeeper`", "DB のコネクションプールを管理する", "飛ばす"],
+            ["`HikariPool-1 housekeeper`、`HikariPool-1 connection adder`（HikariCP）、`PoolCleaner[` で始まる名前（Tomcat JDBC Pool）、`commons-pool-evictor`（Commons DBCP）", "DB のコネクションプールを管理する。名前はコネクションプールのライブラリで変わる", "飛ばす"],
+            ["`mysql-cj-abandoned-connection-cleanup`（MySQL）、`OracleTimeoutPollingThread`（Oracle）", "JDBC ドライバが、閉じ忘れたコネクションの片付けや、SQL のタイムアウトの監視をする", "飛ばす"],
             ["`GC Thread#0`、`C2 CompilerThread0`、`Reference Handler`", "JVM 自身の仕事（GC、コンパイルなど）", "飛ばす"],
           ],
+        },
+        {
+          type: "p",
+          text: "手前の Apache と Tomcat を AJP という方式でつないでいる構成では、`ajp-` で始まる exec のスレッドがリクエストを処理します。申請くんは AJP を使っていないので、リクエストを処理するスレッドは `http-nio-8080-exec-` で始まるものだけです。",
         },
         {
           type: "p",
