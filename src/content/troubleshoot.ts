@@ -1857,7 +1857,7 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
           headers: ["メッセージ", "何が起きたか", "疑う原因"],
           rows: [
             ["`Java heap space`", "ヒープが上限まで埋まり、新しいオブジェクトを置けなかった", "一度に大量のレコードをメモリに載せていないか。参照を持ち続けて解放されていないか（メモリリーク）"],
-            ["`GC overhead limit exceeded`", "GC にほとんどの時間を使っても、ヒープをわずかしか空けられなかった。JDK 26 より前の G1（JDK 17 の既定の GC）では、同じ状況でも `Java heap space` になる", "ヒープ不足やメモリリーク。`Java heap space` と同じ原因を疑う"],
+            ["`GC overhead limit exceeded`", "GC にほとんどの時間を使っても、ヒープをわずかしか空けられなかった。G1（JDK 17 からの既定の GC）でこのメッセージが出るのは、JDK 26 と一部の更新版からで、それより古い G1 では `Java heap space` になる", "ヒープ不足やメモリリーク。`Java heap space` と同じ原因を疑う"],
             ["`Metaspace`", "クラスの情報を置く領域（Metaspace）が上限に達した", "起動オプションの上限が小さすぎないか。クラスを動的に生成するライブラリや、クラスローダーが解放されない構成で、クラスが増え続けていないか"],
             ["`unable to create native thread`（JDK 8 などの古い JDK では `unable to create new native thread`）", "OS がスレッドを作れなかった。ヒープの不足ではない", "プロセス数などの上限に達していないか。スレッドが増え続けていないか。OS やコンテナのメモリが足りていないか"],
           ],
