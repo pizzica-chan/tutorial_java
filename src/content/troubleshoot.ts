@@ -897,6 +897,7 @@ docker logs コンテナ名`,
             ["`TIMED_WAITING (parking)`", "`HikariPool.getConnection`", "DB のコネクションが空くのを待っている。待つ時間には上限がある"],
             ["`WAITING (parking)`", "`TaskQueue.take`", "次のリクエストを待っている"],
             ["`BLOCKED (on object monitor)`", "`- waiting to lock <0x...>`", "ほかのスレッドが持つロック（`synchronized`）の解放を待っている"],
+            ["`WAITING (on object monitor)`", "`Object.wait` と、その下の `- waiting on` の行", "`synchronized` の中で `Object.wait()` を呼び、ほかのスレッドからの通知（`notify`）を待っている。待つ時間を指定した `wait` なら `TIMED_WAITING (on object monitor)` になる"],
             ["`WAITING (parking)`", "`- parking to wait for <0x...> (a java.util.concurrent.locks.ReentrantLock$NonfairSync)`", "ほかのスレッドが持つ `ReentrantLock` の解放を待っている"],
             ["`TIMED_WAITING (sleeping)`", "`Thread.sleep`", "決めた時間だけ待っている"],
           ],
@@ -1084,6 +1085,12 @@ public LocalDate dueDate(Long requestId, Long userId) {
 "worker-2":
   waiting to lock monitor 0x00007ef970000ff0 (object 0x0000000716819950, a java.lang.Object),
   which is held by "worker-1"`,
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "`wait` で待っているスレッドの `- locked` は、持ち主ではない",
+          text: "`Object.wait()` を呼んだスレッドは待っている間、そのロックを手放しています。それでもスタックには `Object.wait` の at 行、`- waiting on` の行、`wait` を呼んだメソッドの at 行、`- locked <0x...>` の行が順に出ます。この `- locked` のロックは持っていません。`- locked` で探して見つけたスレッドがこの並びなら、ほかに同じアドレスの `- locked` を持つスレッドを探しましょう。同じスレッドでも、もっと下にある別のアドレスの `- locked` のロックは、持ったままです。申請くんでは、`Finalizer` のスレッドがこの形で出ます。",
         },
         {
           type: "callout",
