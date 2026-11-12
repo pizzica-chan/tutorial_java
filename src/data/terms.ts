@@ -1128,6 +1128,11 @@ export const terms: TermDef[] = [
     body: "HTTP サーバのひとつです。Tomcat とは別物です。",
   },
   {
+    term: "AJP",
+    aliases: ["AJP"],
+    body: "Apache JServ Protocol。手前の HTTP サーバ（Apache など）から Tomcat へ、リクエストを中継するための通信方式です。Tomcat では、ポート 8009 で受ける設定が多いです。",
+  },
+  {
     term: "nginx",
     aliases: ["nginx", "Nginx"],
     body: "HTTP サーバのひとつです。リバースプロキシや静的ファイルの配信でよく使います。",
