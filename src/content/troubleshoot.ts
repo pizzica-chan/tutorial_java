@@ -1317,7 +1317,7 @@ docker logs shinsei-hang`,
           headers: ["状況", "確認"],
           rows: [
             ["HTML ごと 404（Controller に入っていない）", "Controller のパス、`context-path`、末尾スラッシュ"],
-            ["Controller に入ってから 404（画面・Web API とも）", "その ID のレコードが DB にあるか。アプリが 404 を返す条件（申請くんでは、見る権限の条件も）"],
+            ["画面・Web API が 404（Controller に入っている）", "その ID のレコードが DB にあるか。アプリが 404 を返す条件（申請くんでは、見る権限の条件も）"],
             ["Web API が 404（Controller に入っていない）", "パス、HTTP メソッド、Spring の `@RestController` のプレフィックス"],
             ["画面は出るが CSS/JS だけ 404", "static の置き場所、許可パス、`context-path`"],
             ["GET では出るが POST で 404", "HTTP メソッドのマッピング。Spring の `@GetMapping` しか無いなど"],
