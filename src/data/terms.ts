@@ -142,7 +142,7 @@ export const terms: TermDef[] = [
     term: "処理の入口",
     kana: "しょりのいりぐち",
     aliases: ["処理の入口"],
-    body: "調べたい画面や機能で、サーバ側の処理が始まる場所です。多くは、URL に対応する Controller の Java メソッドです。",
+    body: "調べたい画面や機能で、サーバ側の処理が始まる場所です。多くは、URL に対応する Controller の Java メソッドです。Spring MVC では、この Java メソッドをハンドラメソッドと呼びます。",
   },
   {
     term: "RestController",
