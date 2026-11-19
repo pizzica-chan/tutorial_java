@@ -1303,7 +1303,7 @@ docker logs shinsei-hang`,
         { type: "diagram", name: "not-found" },
         {
           type: "p",
-          text: "404 には、URL に対応するもの（Java メソッドや静的ファイル）が無い場合と、Controller の Java メソッドに入ってからアプリが 404 を返す場合があります。アプリのログで、その操作のときに Controller に入ったかを確認しましょう。申請くんでは、Mapper の SQL がログに出ていれば Controller に入っています。そのあとの `Total: 0` の行は、条件に合うレコードが無かったことを示します。",
+          text: "404 には、URL に対応するもの（Java メソッドや静的ファイル）が無い場合と、Controller の Java メソッドに入ってからアプリが 404 を返す場合があります。アプリのログで、その操作のときに Controller に入ったかを確認しましょう。申請くんでは、Mapper の SQL がログに出ていれば Controller に入っています。`AccessLogInterceptor` の行は、マッピングの無い URL でも出るので手がかりになりません。SQL のあとの `Total: 0` の行は、条件に合うレコードが無かったことを示します。",
         },
         {
           type: "figure",
