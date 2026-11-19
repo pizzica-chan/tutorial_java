@@ -569,7 +569,7 @@ public class RequestService {
         },
         {
           type: "p",
-          text: "`requestMapper` に値が入っていなければ、`findMine` は `NullPointerException` になるはずです。それでも動くのは、Spring が値を入れているからです。Spring はアプリの起動時にインスタンスを作り、それを使うクラスに渡します。自分で `new` する場合と比べると、次のようになります。",
+          text: "ソースに代入が無いので、`requestMapper` には値が入っていないように見えます。それなら `findMine` は `NullPointerException` になるはずですが、実際には動きます。値を入れているのは Spring です。Spring はアプリの起動時にインスタンスを作り、それを使うクラスに渡します。自分で `new` する場合と比べると、次のようになります。",
         },
         { type: "diagram", name: "di-flow" },
         {
