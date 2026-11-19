@@ -907,7 +907,7 @@ function NotFound() {
   return (
     <div className="d-cols">
       <ColCard icon="search" title="404">
-        行き先が無い。URL と実体がずれている
+        行き先が無い。URL と実体がずれていることが多い
       </ColCard>
       <ColCard icon="warn" title="500">
         行き先はある。処理の途中でサーバ側の失敗

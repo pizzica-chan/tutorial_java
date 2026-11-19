@@ -1283,26 +1283,41 @@ docker logs shinsei-hang`,
     {
       id: "p-404",
       title: "トラブル例：指定の画面が開かない",
-      minutes: 7,
+      minutes: 8,
       tags: ["Spring"],
       blocks: [
         {
           type: "p",
-          text: "指定した画面が開かないときは、まず Network タブでステータスコードを確認しましょう。404 は「その URL に対応する資源が無い」というステータスコードです。",
+          text: "指定した画面が開かないときは、まず Network タブに、その画面へのリクエストがあるかを確認しましょう。リクエストが無ければ、サーバには届いていません。リンクの `href` や、画面を開く JS を確認しましょう。",
+        },
+        {
+          type: "callout",
+          kind: "trap",
+          title: "リクエストが見つからないとき",
+          text: "開発者ツールを表示する前の通信は、記録されません。開発者ツールを表示したまま、同じ操作をもう一度しましょう。新しいタブで開くリンクでは、リクエストは新しいタブの開発者ツールに出ます。",
+        },
+        {
+          type: "p",
+          text: "リクエストがあれば、ステータスコードを確認しましょう。404 は「その URL に対応する資源が無い」というステータスコードです。",
         },
         {
           type: "figure",
           kind: "screen",
           src: "/images/screen-not-found.jpg",
           alt: "申請がありませんと出た申請くんの画面",
-          caption: "存在しない申請 ID を開いた例です。HTML ごと 404 のときは、パスとマッピングを先に見ましょう。",
+          caption: "存在しない申請 ID を開いた例です。URL のマッピングは合っています。申請くんは、指定した申請が無いときや、見る権限が無いときに、404 とこの画面を返します。",
         },
         { type: "diagram", name: "not-found" },
+        {
+          type: "p",
+          text: "404 には、URL に対応するもの（Java メソッドや静的ファイル）が無い場合と、Controller の Java メソッドに入ってからアプリが 404 を返す場合があります。アプリのログで、その操作のときに Controller に入ったかを確認しましょう。申請くんでは、Mapper の SQL がログに出ていれば Controller に入っています。そのあとの `Total: 0` の行は、条件に合うレコードが無かったことを示します。",
+        },
         {
           type: "table",
           headers: ["状況", "確認"],
           rows: [
-            ["HTML ごと 404", "Controller のパス、`context-path`、末尾スラッシュ"],
+            ["HTML ごと 404（Controller に入っていない）", "Controller のパス、`context-path`、末尾スラッシュ"],
+            ["HTML ごと 404（Controller に入っている）", "その ID のレコードが DB にあるか。アプリが 404 を返す条件（申請くんでは、見る権限の条件も）"],
             ["Web API が 404", "パス、HTTP メソッド、Spring の `@RestController` のプレフィックス"],
             ["画面は出るが CSS/JS だけ 404", "static の置き場所、許可パス、`context-path`"],
             ["GET では出るが POST で 404", "HTTP メソッドのマッピング。Spring の `@GetMapping` しか無いなど"],
