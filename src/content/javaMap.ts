@@ -528,7 +528,7 @@ public class RequestApiController {
         },
         {
           type: "p",
-          text: "上の 2 つの例の `requestService` フィールドには、値を入れる `new` がありません。値を入れているのは Spring です。仕組みは次の項目「DI とインタフェース」で扱います。",
+          text: "上の 2 つの例の `requestService` フィールドには、値を代入する行がありません。値を入れているのは Spring です。仕組みは次の項目「DI とインタフェース」で扱います。",
           link: {
             label: "DI とインタフェース",
             to: "/tracks/java-map/di",
@@ -545,11 +545,11 @@ public class RequestApiController {
       blocks: [
         {
           type: "p",
-          text: "Controller や Service のソースを読むと、別のクラスを使うためのフィールドに、値を入れる `new` が無いことがよくあります。この項目では、その値の入り方と、フィールドの型がインタフェースのときに実際に動くクラスの探し方を説明します。",
+          text: "Controller や Service のソースを読むと、別のクラスを使うためのフィールドに、値を代入する行が無いことがよくあります。この項目では、その値の入り方と、フィールドの型がインタフェースのときに実際に動くクラスの探し方を説明します。",
         },
         {
           type: "h2",
-          text: "new が無いのに、フィールドに値が入っている",
+          text: "代入が無いのに、フィールドに値が入っている",
         },
         {
           type: "code",
@@ -582,7 +582,7 @@ public class RequestService {
         },
         {
           type: "p",
-          text: "`RequestService` では、Spring はコンストラクタを使ってフィールドに値を入れます。このコンストラクタは、`@RequiredArgsConstructor`（Lombok というライブラリのアノテーション）がコンパイル時に作ります。そのため、ソースには書かれていません。Spring はこのコンストラクタに値を渡し、コンストラクタが受け取った値をフィールドに入れます。",
+          text: "`RequestService` で、フィールドに値を代入しているのはコンストラクタです。このコンストラクタは、`@RequiredArgsConstructor`（Lombok というライブラリのアノテーション）がコンパイル時に作ります。そのため、コンストラクタも代入もソースには書かれていません。Spring はこのコンストラクタを呼ぶときに Bean を渡します。",
         },
         {
           type: "p",
@@ -688,7 +688,7 @@ public class MailService {
         },
         {
           type: "p",
-          text: "`@Profile` で、本番と検証用環境の実装を切り替えているアプリもあります。どのプロファイルで起動しているかは、起動ログの `The following 1 profile is active` のような行で確認しましょう。",
+          text: "`@Profile` を使って、本番環境と検証用環境で実装を切り替えているアプリもあります。どのプロファイルで起動しているかは、起動ログの `The following 1 profile is active` のような行で確認しましょう。",
         },
         {
           type: "p",
@@ -717,7 +717,7 @@ Parameter 0 of constructor in jp.co.example.shinsei.service.MailService required
         },
         {
           type: "p",
-          text: "`MailService` のコンストラクタの最初の引数（`JavaMailSender`）に渡す Bean が無い、という意味です。登録の印が付いているか、`@Profile` の指定で、今のプロファイルでは登録されない設定になっていないか、コンポーネントスキャンの対象のパッケージにあるかを確認しましょう。反対に、候補が 2 つ以上あって 1 つに決まらないときは、`required a single bean, but 2 were found` と出ます。",
+          text: "`MailService` のコンストラクタの最初の引数（`JavaMailSender`）に渡す Bean が無いという意味です。まず、Bean にしたいクラス（ここでは `LoggingJavaMailSender`）に登録の印が付いているかを確認しましょう。印が付いていても、`@Profile` の指定で、今のプロファイルでは登録されないことがあります。コンポーネントスキャンの対象のパッケージの外にあるクラスも登録されません。反対に、候補が 2 つ以上あって 1 つに決まらないときは、`required a single bean, but 2 were found` と出ます。",
         },
         { type: "quiz", id: "java-di" },
       ],
