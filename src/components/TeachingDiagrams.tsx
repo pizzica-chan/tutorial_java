@@ -62,7 +62,7 @@ export function DiFlow() {
         <p className="td-case-label">自分で new する場合</p>
         <Card icon="cog" title="RequestService">
           <code>private MailService mailService = new MailService(new LoggingJavaMailSender());</code>
-          <span><code>RequestService</code> の中の <code>new</code> で値が入る</span>
+          <span><code>RequestService</code> の中で <code>new</code> した値を代入する</span>
         </Card>
       </div>
       <div className="td-tx-case td-case-neutral">
@@ -73,7 +73,7 @@ export function DiFlow() {
         <Connector>Spring がコンストラクタに渡し、フィールドに入る</Connector>
         <Card icon="cog" title="RequestService">
           <code>private final MailService mailService;</code>
-          <span><code>new</code> が無くても値が入っている</span>
+          <span>代入が無くても値が入っている</span>
         </Card>
       </div>
     </div>
