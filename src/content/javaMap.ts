@@ -569,7 +569,7 @@ public class RequestService {
         },
         {
           type: "p",
-          text: "ソースに代入が無いので、`requestMapper` には値が入っていないように見えます。それなら `findMine` は `NullPointerException` になるはずですが、実際には動きます。値を入れているのは Spring です。Spring はアプリの起動時にインスタンスを作り、それを使うクラスに渡します。自分で `new` する場合と比べると、次のようになります。",
+          text: "ソースに代入が無いので、`requestMapper` には値が入っていないように見えます。それなら `findMine` は `NullPointerException` になるはずですが、実際には動きます。値を入れているのは Spring です。アプリの起動時にインスタンスを作り、それを使うクラスに渡します。自分で `new` する場合と比べると、次のようになります。",
         },
         { type: "diagram", name: "di-flow" },
         {
@@ -578,15 +578,15 @@ public class RequestService {
         },
         {
           type: "p",
-          text: "Bean は、特に指定しなければ 1 つだけ作られます。図のとおり、使うクラスすべてに同じインスタンスが入り、どのリクエストでもそれが使われます。これをシングルトンと呼びます。",
+          text: "Bean は、特に指定しなければ 1 つだけ作られます。図のとおり、使うクラスすべてに同じインスタンスが入り、どのリクエストでもそれが使われます。このように、1 つのインスタンスを共有する作り方をシングルトンと呼びます。",
         },
         {
           type: "p",
-          text: "`RequestService` で、フィールドに値を代入しているのはコンストラクタです。このコンストラクタは、`@RequiredArgsConstructor`（Lombok というライブラリのアノテーション）がコンパイル時に作ります。そのため、コンストラクタも代入もソースには書かれていません。Spring はこのコンストラクタを呼ぶときに Bean を渡します。",
+          text: "では、`RequestService` のフィールドにはどこで値が代入されているのでしょうか。代入しているのはコンストラクタです。このコンストラクタは、`@RequiredArgsConstructor`（Lombok というライブラリのアノテーション）がコンパイル時に作ります。そのため、コンストラクタも代入もソースには書かれていません。Spring はこのコンストラクタを呼ぶときに Bean を渡します。",
         },
         {
           type: "p",
-          text: "古いアプリには、コンストラクタを使わずに、フィールドに直接 `@Autowired` を付けて Bean を受け取る書き方も多いです。この書き方では、Spring はインスタンスを作ったあとで、フィールドに直接 Bean を入れます。",
+          text: "古いアプリには、コンストラクタを使わずに、フィールドに直接 `@Autowired` を付けて Bean を受け取る書き方も多いです。この書き方では、Spring はインスタンスを作ったあとで、フィールドに Bean を入れます。",
         },
         {
           type: "code",
@@ -661,7 +661,7 @@ public class MailService {
             },
             {
               title: "Bean になっているものを選ぶ",
-              text: "Bean になっているのは、`@Component` が付いた `LoggingJavaMailSender` だけです。`JavaMailSenderImpl` は、申請くんでは Bean になっていないので使われません。`LoggingJavaMailSender` のソースには `@Primary` も付いていますが、`JavaMailSender` の Bean はほかに無いので、使われるクラスは変わりません。",
+              text: "Bean になっているのは、`@Component` が付いた `LoggingJavaMailSender` だけです。`JavaMailSenderImpl` は使われません。`LoggingJavaMailSender` のソースには `@Primary` も付いていますが、`JavaMailSender` の Bean はほかに無いので、使われるクラスは変わりません。",
             },
           ],
         },
