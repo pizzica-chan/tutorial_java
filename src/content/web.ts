@@ -1656,7 +1656,7 @@ console.log(claims, new Date(claims.exp * 1000));`,
           code: `@Bean
 SecurityFilterChain apiFilterChain(HttpSecurity http) throws Exception {
   http.authorizeHttpRequests(auth -> auth
-      .antMatchers("/api/login").permitAll()
+      .antMatchers("/api/login").permitAll()  // Spring Boot 3.x では antMatchers ではなく requestMatchers を使う
       .anyRequest().authenticated()
     )
     .sessionManagement(session -> session
@@ -1724,7 +1724,7 @@ public List<RequestSummary> list(@AuthenticationPrincipal Jwt jwt) {
         },
         {
           type: "p",
-          text: "3 つとも問題が無いのに認証エラーになるなら、サーバ側を疑います。上の例のように Spring Security で検証しているアプリなら、`oauth2ResourceServer` や `JwtDecoder` の設定と、検証に使う鍵が発行側と同じかを確認しましょう。",
+          text: "3 つとも問題が無いのに認証エラーになるなら、サーバ側を疑いましょう。上の例のように Spring Security で検証しているアプリなら、`oauth2ResourceServer` や `JwtDecoder` の設定と、検証に使う鍵が発行側と同じかを確認しましょう。",
         },
         {
           type: "p",
