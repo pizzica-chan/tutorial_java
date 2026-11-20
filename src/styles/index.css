@@ -3621,6 +3621,7 @@ th {
   color: var(--paper);
   text-align: center;
   font-size: 12px;
+  word-break: keep-all;
 }
 
 .form-redirect-end:empty { visibility: hidden; }

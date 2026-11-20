@@ -78,10 +78,10 @@ export function FormHandler() {
 
 export function FormRedirect() {
   const steps = [
-    { method: "POST", detail: "/shinsei/requests", isCode: true, browser: "提出", server: "申請を登録", response: false },
-    { method: "302", detail: "Location: http://localhost:8080/shinsei/requests", isCode: true, browser: "一覧の URL を受け取る", server: "", response: true },
-    { method: "GET", detail: "/shinsei/requests", isCode: true, browser: "一覧を要求", server: "一覧を取得", response: false },
-    { method: "200", detail: "一覧の HTML", isCode: false, browser: "一覧を表示", server: "", response: true },
+    { method: "POST", detail: "/shinsei/requests", isCode: true, browser: "提出", server: <>申請を<wbr />登録</>, response: false },
+    { method: "302", detail: "Location: http://localhost:8080/shinsei/requests", isCode: true, browser: <>一覧の URL を<wbr />受け取る</>, server: "", response: true },
+    { method: "GET", detail: "/shinsei/requests", isCode: true, browser: <>一覧を<wbr />要求</>, server: <>一覧を<wbr />取得</>, response: false },
+    { method: "200", detail: "一覧の HTML", isCode: false, browser: <>一覧を<wbr />表示</>, server: "", response: true },
   ];
   return <div className="teaching-diagram form-redirect">
     <p className="td-heading">申請くん：提出してから一覧が表示されるまで</p>
