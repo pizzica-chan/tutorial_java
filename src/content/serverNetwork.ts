@@ -58,7 +58,7 @@ export const serverNetworkTrack: Track = {
             },
             {
               title: "手前に Apache / nginx を置く",
-              text: "ブラウザからの HTTP リクエストは、まず Apache か nginx が受けます。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです（SSL オフロード）。静的ファイルの配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろの Tomcat などは、内蔵でも、外部に WAR を載せる形でも構いません。",
+              text: "ブラウザからの HTTP リクエストは、まず Apache か nginx が受けます。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです（SSL オフロード）。静的ファイルの配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろの Tomcat などはアプリに内蔵したものでも、外部で動かして WAR を載せたものでも構いません。",
             },
           ],
         },

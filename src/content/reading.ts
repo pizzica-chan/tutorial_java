@@ -587,7 +587,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "ドットや空白を特別扱いしないで探すときに使います。",
+          text: "ドットを文字として探すときや、どの空白・どの数字にもヒットさせたいときの書き方です。",
         },
         {
           type: "table",
@@ -1386,8 +1386,8 @@ if (!"PENDING".equals(request.getStatus())) {
           lang: "html",
           highlightLines: [1, 5],
           code: `<form class="stack js-submit-confirm" th:action="@{/requests}" method="post">
-  <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
   ...
+  <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
 </form>
 <script th:src="@{/js/form.js}"></script>`,
         },
