@@ -164,7 +164,7 @@ public List<RequestEntity> search(Long userId, String title) {
       },
       {
         type: "p",
-        text: "このシナリオでは、二つの検索を重ねる必要があります。別の Chrome プロファイルで佐藤をログインさせ、Cookie を分けましょう。同じプロファイルのタブを増やすだけでは、ログイン状態を分けられません。手動では、二つの検索が重なる瞬間を偶然にしか作れません。確実に再現するには、デバッガを使います。",
+        text: "このシナリオでは、2 つの検索を重ねる必要があります。別の Chrome プロファイルで佐藤をログインさせ、Cookie を分けましょう。同じプロファイルのタブを増やすだけでは、ログイン状態を分けられません。手動では、2 つの検索が重なる瞬間を偶然にしか作れません。確実に再現するには、デバッガを使います。",
       },
       {
         type: "p",
@@ -305,7 +305,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       {
         type: "callout",
         kind: "trap",
-        title: "内部呼び出しでも、既に始まったトランザクションは続く",
+        title: "内部呼び出しでも、すでに始まったトランザクションは続く",
         text: "呼び出し元にトランザクションがあれば、その中で内部の Java メソッドも動きます。「内部呼び出しは常にトランザクションの外」ではありません。この例では、入口の `submitBatch` にもトランザクションが無いことを確認しました。",
       },
       {
@@ -389,7 +389,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
           "申請が多い利用者の一覧だけが遅い。申請が少ない利用者は遅くない",
           "画面にエラーは出ておらず、申請者名も正しく表示されている",
           "一覧を開くたびに再現する",
-          "SQL の回数が増えているのか、一つの SQL が遅いのかはまだ分からない",
+          "SQL の回数が増えているのか、1 つの SQL が遅いのかはまだ分からない",
         ],
       },
       {
@@ -398,7 +398,7 @@ public void saveBatch(Long userId, Long approverId, List<String> titles) {
       },
       {
         type: "p",
-        text: "一覧が遅い原因は、Java の処理や JSON への変換などにもあります。DB が原因なら、一つの SQL が遅いのか、SQL の回数が多いのかを切り分けます。Network タブで GET の所要時間を確認し、操作時刻の MyBatis の DEBUG ログで、SQL の文と実行回数を確認しましょう。",
+        text: "一覧が遅い原因は、Java の処理や JSON への変換などにもあります。DB が原因なら、1 つの SQL が遅いのか、SQL の回数が多いのかを切り分けます。Network タブで GET の所要時間を確認し、操作時刻の MyBatis の DEBUG ログで、SQL の文と実行回数を確認しましょう。",
       },
       {
         type: "p",
@@ -463,7 +463,7 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
       },
       {
         type: "p",
-        text: "この例の名前検索は主キーで絞ります。一つの SQL の実行計画だけを見ても、301 回の往復は分かりません。同じ操作に属する SQL の回数と、Java のループを突き合わせることが原因の特定につながります。",
+        text: "この例の名前検索は主キーで絞ります。1 つの SQL の実行計画だけを見ても、301 回の往復は分かりません。同じ操作に属する SQL の回数と、Java のループを突き合わせることが原因の特定につながります。",
       },
       {
         type: "callout",
@@ -600,7 +600,7 @@ j.c.e.s.mapper.UserMapper.findById : ==> Parameters: 7(Long)
       },
       {
         type: "p",
-        text: "次に、この画面の開発者ツールの Console で次のコードを実行しましょう。このコードは、`required` のチェックを経由せずに、空の件名をフォームの送信先と API に送ります。Console に表示された二つのステータスコードを比べましょう。",
+        text: "次に、この画面の開発者ツールの Console で次のコードを実行しましょう。このコードは、`required` のチェックを経由せずに、空の件名をフォームの送信先と API に送ります。Console に表示された 2 つのステータスコードを比べましょう。",
       },
       {
         type: "code",
@@ -628,7 +628,7 @@ console.log(formResult.status, apiResult.status);`,
       },
       {
         type: "h3",
-        text: "二つの入口から共通処理まで比較する",
+        text: "2 つの入口から共通処理まで比較する",
       },
       {
         type: "code",
@@ -696,8 +696,8 @@ public RequestResponse api(@RequestBody NewRequest body,
         type: "investigation-flow",
         items: [
           "フォームは空の件名を拒否し、API は受け付けて DB にレコードが残ることを確認",
-          "同じ空文字を、Console から二つの POST で比較し、応答が 400 と 200 で違うことを確認",
-          "二つの Controller のメソッドを比べ、フォーム側にだけ `title.isBlank()` の判定があることを確認",
+          "同じ空文字を、Console から 2 つの POST で比較し、応答が 400 と 200 で違うことを確認",
+          "2 つの Controller のメソッドを比べ、フォーム側にだけ `title.isBlank()` の判定があることを確認",
           "両方が呼ぶ `RequestService.create` に、同じ判定が無いことを確認",
           "NOT NULL が空文字を拒否しないことを確認",
           "件名必須の判定が、フォーム側の入口にしか無かったと特定",

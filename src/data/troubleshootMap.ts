@@ -245,7 +245,7 @@ export const troubleshootMap: ObservableGroup[] = [
         ],
       },
       {
-        symptom: "デプロイした直後から、その環境の画面が一つも開かない",
+        symptom: "デプロイした直後から、その環境の画面が 1 つも開かない",
         keywords: ["デプロイ後に起動しない", "リリース後", "起動失敗", "Permission denied", "502", "bad gateway"],
         cause: ["サーバ"],
         check: "アプリのプロセスが起動しているかを `ps` で確認しましょう。起動していなければ、アプリの実行ユーザで手動起動して、出るメッセージを読みましょう。",

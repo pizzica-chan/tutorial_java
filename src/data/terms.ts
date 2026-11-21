@@ -111,7 +111,7 @@ export const terms: TermDef[] = [
   {
     term: "Payload",
     aliases: ["Payload"],
-    body: "Network タブでリクエストの行を選んだときに開けるタブの一つです。送ったクエリやフォームの値、JSON の本文を表示します。Chrome では、表示がデコードされています。",
+    body: "Network タブでリクエストの行を選んだときに開けるタブのひとつです。送ったクエリやフォームの値、JSON の本文を表示します。Chrome では、表示がデコードされています。",
   },
   {
     term: "CSRF",
@@ -232,7 +232,7 @@ export const terms: TermDef[] = [
   {
     term: "シングルトン",
     aliases: ["シングルトン", "singleton"],
-    body: "一つのインスタンスを共有して使う形です。Spring の singleton は既定のスコープで、同じ Spring のコンテナ内では、Bean の定義ごとに一つのインスタンスを使います。リクエストごとに作られるわけではなく、複数のスレッドから同時に使われることがあります。シングルトンであるだけでは、スレッドセーフにはなりません。",
+    body: "1 つのインスタンスを共有して使う形です。Spring の singleton は既定のスコープで、同じ Spring のコンテナ内では、Bean の定義ごとに 1 つのインスタンスを使います。リクエストごとに作られるわけではなく、複数のスレッドから同時に使われることがあります。シングルトンであるだけでは、スレッドセーフにはなりません。",
   },
   {
     term: "スコープ（Spring）",
@@ -1075,7 +1075,7 @@ export const terms: TermDef[] = [
   {
     term: "Slack",
     aliases: ["Slack"],
-    body: "社内のチャットツールの一つです。Incoming Webhook という仕組みを使うと、登録した URL へ決まった形式（JSON）でリクエストを送るだけで、指定したチャンネルに通知を投稿できます。",
+    body: "社内のチャットツールのひとつです。Incoming Webhook という仕組みを使うと、登録した URL へ決まった形式（JSON）でリクエストを送るだけで、指定したチャンネルに通知を投稿できます。",
   },
   {
     term: "Content-Type",
@@ -1759,7 +1759,7 @@ export const terms: TermDef[] = [
     term: "空文字",
     kana: "からもじ",
     aliases: ["空文字", "空文字列"],
-    body: "文字が一つも無い、長さ 0 の文字列です。Java や JavaScript では `\"\"` と書きます。スペースを含む文字列とは異なります。文字列の値そのものが無い null とも異なります。",
+    body: "文字が 1 つも無い、長さ 0 の文字列です。Java や JavaScript では `\"\"` と書きます。スペースを含む文字列とは異なります。文字列の値そのものが無い null とも異なります。",
   },
   {
     term: "isBlank",

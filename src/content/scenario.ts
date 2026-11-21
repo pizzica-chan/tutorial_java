@@ -374,7 +374,7 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "ID 11 は既に APPROVED です。PENDING ではないため Controller の分岐に入り、flash メッセージを設定して詳細へ戻ります。throw しておらず、承認処理の本体にも入らないため、例外ログは出ません。",
+          text: "ID 11 はすでに APPROVED です。PENDING ではないため Controller の分岐に入り、flash メッセージを設定して詳細へ戻ります。throw しておらず、承認処理の本体にも入らないため、例外ログは出ません。",
         },
         {
           type: "callout",
@@ -1577,7 +1577,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "`possible_keys` が `NULL` なのは、インデックスが一つも無いという意味ではありません。この検索は `applicant_id` と `approver_id` で探すため、`PRIMARY KEY` の `id` は候補になりません。",
+          text: "`possible_keys` が `NULL` なのは、インデックスが 1 つも無いという意味ではありません。この検索は `applicant_id` と `approver_id` で探すため、`PRIMARY KEY` の `id` は候補になりません。",
         },
         {
           type: "p",
@@ -2755,7 +2755,7 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "p",
-          text: "DB の定義の修正が必要です。修正案は複数あり、案によって修正規模が変わります。例えば、部署マスタ（`t_department`）を新設して `t_user.department_id` に外部キーを足す案、`t_user` に部署名だけを持たせる案、集計のため `t_request` にも部署を複製する案などがあります。マスタを増やすほど正規化はできますが、既存データの移行や結合が増えます。",
+          text: "DB の定義の修正が必要です。修正案は複数あり、案によって修正規模が変わります。たとえば、部署マスタ（`t_department`）を新設して `t_user.department_id` に外部キーを足す案、`t_user` に部署名だけを持たせる案、集計のため `t_request` にも部署を複製する案などがあります。マスタを増やすほど正規化はできますが、既存データの移行や結合が増えます。",
         },
         {
           type: "h3",
@@ -2938,7 +2938,7 @@ CREATE TABLE IF NOT EXISTS t_request (
         },
         {
           type: "p",
-          text: "`role` は `t_user.role` から来ています。ただし今の値は `ADMIN` と `USER` の 2 種類だけで、`data.sql` にも部長職に当たる値はありません。新しいロール（例えば `MANAGER`）を追加する DB の変更が要ります。",
+          text: "`role` は `t_user.role` から来ています。ただし今の値は `ADMIN` と `USER` の 2 種類だけで、`data.sql` にも部長職に当たる値はありません。新しいロール（たとえば `MANAGER`）を追加する DB の変更が要ります。",
         },
         {
           type: "callout",
@@ -3457,7 +3457,7 @@ public class SlackNotificationService {
         {
           type: "ul",
           items: [
-            "似た処理（メール通知）が既にあれば、その設計方針をそのまま踏襲できるか、変えるべきかを考える",
+            "似た処理（メール通知）がすでにあれば、その設計方針をそのまま踏襲できるか、変えるべきかを考える",
             "外部呼び出しの設定は、ソースに埋め込まず `@Value` などで持たせる",
             "`@Transactional` の中で遅い外部呼び出しをすると、DB コネクションを長く占有する。タイムアウトの設定が要る",
             "失敗時の扱い（握りつぶす／リトライする）は仕様なので、依頼者へ確認する",

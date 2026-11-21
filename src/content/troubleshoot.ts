@@ -1900,7 +1900,7 @@ t_request  ALL   NULL           NULL  850234  Using where; Using filesort`,
         },
         {
           type: "p",
-          text: "検証環境で、山田が申請履歴の CSV 出力を開いたところ、12 秒ほど待たされたあと、ステータスコード 500 が返りました。そのあと、ログイン画面も開かなくなりました。この環境の申請くんはヒープの上限を `-Xmx256m` にして動いています。",
+          text: "検証用環境で、山田が申請履歴の CSV 出力を開いたところ、12 秒ほど待たされたあと、ステータスコード 500 が返りました。そのあと、ログイン画面も開かなくなりました。この環境の申請くんはヒープの上限を `-Xmx256m` にして動いています。",
         },
         {
           type: "h3",
@@ -1998,7 +1998,7 @@ Heap dump file created [352809941 bytes in 6.361 secs]
         },
         {
           type: "code",
-          title: "取得しようとした件数（申請くん・検証環境）",
+          title: "取得しようとした件数（申請くん・検証用環境）",
           lang: "text",
           code: `mysql> SELECT COUNT(*) FROM t_request WHERE applicant_id = 7 OR approver_id = 7;
 +----------+
@@ -2057,7 +2057,7 @@ public String exportCsv(Long userId) {
         },
         {
           type: "p",
-          text: "別の検証環境で、起動オプションを見直したあと、申請くんが起動の途中で終了するようになりました。コンテナは終了コード 1 で止まります。",
+          text: "別の検証用環境で、起動オプションを見直したあと、申請くんが起動の途中で終了するようになりました。コンテナは終了コード 1 で止まります。",
         },
         {
           type: "h3",
@@ -2144,7 +2144,7 @@ Caused by: java.lang.OutOfMemoryError: Metaspace`,
         },
         {
           type: "p",
-          text: "検証環境で、山田が「承認待ちの申請をまとめてリマインド」を押したところ、すぐにステータスコード 500 が返りました。山田の承認待ちの申請は 1,000 件を超えています。",
+          text: "検証用環境で、山田が「承認待ちの申請をまとめてリマインド」を押したところ、すぐにステータスコード 500 が返りました。山田の承認待ちの申請は 1,000 件を超えています。",
         },
         {
           type: "h3",
@@ -2191,7 +2191,7 @@ java.lang.OutOfMemoryError: unable to create native thread: possibly out of memo
         },
         {
           type: "code",
-          title: "コンテナのプロセス数（申請くん・検証環境）",
+          title: "コンテナのプロセス数（申請くん・検証用環境）",
           lang: "bash",
           code: `docker stats --no-stream --format "{{.PIDs}}" shinsei-threads`,
         },

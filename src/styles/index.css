@@ -1423,9 +1423,27 @@ th {
   background: var(--panel);
 }
 
-.quiz h3 {
+/* 問いは p だが、本文の h3 と同じ見た目にする */
+.quiz .quiz-question {
+  position: relative;
   margin: 0 0 12px;
+  padding-left: calc(0.28em + 10px);
+  color: var(--paper);
+  font-family: var(--sans);
   font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+}
+
+.quiz .quiz-question::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.28em;
+  height: 0.28em;
+  background: var(--teal);
 }
 
 .choice {
@@ -3095,7 +3113,8 @@ th {
     font-size: 20px;
   }
 
-  .article h3 {
+  .article h3,
+  .quiz .quiz-question {
     font-size: 16px;
   }
 
