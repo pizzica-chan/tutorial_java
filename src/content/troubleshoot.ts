@@ -2275,7 +2275,7 @@ public int remindAll(Long userId) {
           type: "callout",
           kind: "note",
           title: "スレッド数の上限は環境で決まる",
-          text: "上限がどこで決まるかは、環境によって違います。この例はコンテナのプロセス数の上限でした。ほかに、OS のユーザーごとの上限（`ulimit -u`）や、OS のメモリ不足で出ることもあります。どれでも、同じメッセージの `OutOfMemoryError` になります。",
+          text: "上限がどこで決まるかは、環境によって違います。この例はコンテナのプロセス数の上限でした。ほかに、OS のユーザごとの上限（`ulimit -u`）や、OS のメモリ不足で出ることもあります。どれでも、同じメッセージの `OutOfMemoryError` になります。",
         },
         {
           type: "h2",

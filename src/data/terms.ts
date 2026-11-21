@@ -1088,6 +1088,11 @@ export const terms: TermDef[] = [
     body: "URL やフォームの本文に入れられない文字を、`%` と 16 進数の並びに置き換えることです。UTF-8 なら「交」は `%E4%BA%A4` になります。フォームの本文では、空白が `+` になることがあります。",
   },
   {
+    term: "エスケープ",
+    aliases: ["エスケープ", "escape"],
+    body: "特別な意味を持つ記号を、ただの文字として扱わせるために書き換えることです。正規表現では、記号の前に `\\` を付けます（`\\.` はドットそのもの）。HTML では、`<` を `&lt;` のように書き換えます。",
+  },
+  {
     term: "Ajax",
     aliases: ["Ajax"],
     body: "Asynchronous JavaScript and XML。ページ全体を読み直さず、JavaScript から HTTP 通信する方法です。名前に XML とありますが、JSON も扱えます。",

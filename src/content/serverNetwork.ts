@@ -1297,15 +1297,13 @@ curl -vk https://intranet.example.co.jp/shinsei/requests`,
         },
         {
           type: "code",
-          highlightLines: [3, 10],
+          highlightLines: [3, 8],
           title: "結果の例（curl -I。ヘッダは抜粋）",
           lang: "shell",
-          code: `# 申請一覧（ログインしていないので、ログイン画面へ 302）
+          code: `# 申請一覧（ログインしていないので 401）
 $ curl -I http://intranet.example.co.jp:8080/shinsei/requests
-HTTP/1.1 302
+HTTP/1.1 401
 Set-Cookie: JSESSIONID=3F2A9C1E7B4D8A05C6E1F0B29D7A4C18; Path=/shinsei; HttpOnly
-Location: http://intranet.example.co.jp:8080/shinsei/login
-Content-Length: 0
 
 # コンテキストパスの打ち間違い（shinse）
 $ curl -I http://intranet.example.co.jp:8080/shinse/requests
@@ -1315,12 +1313,12 @@ Content-Language: en`,
         },
         {
           type: "p",
-          text: "レスポンスの 1 行目のステータスコードで、HTTP まで届いたかが分かります。申請くんでは、ログインしていないと 302 でログイン画面へ転送されます。302 が返れば、アプリまでは届いています。",
+          text: "レスポンスの 1 行目のステータスコードで、HTTP まで届いたかが分かります。申請くんでは、ログインしていないとき、ブラウザで開くと 302 でログイン画面へ転送されます。curl は HTML を求める `Accept` ヘッダを付けずに送るので、同じ URL でも 401 が返ります。302 と 401 のどちらが返っても、アプリまでは届いています。",
         },
         {
           type: "ul",
           items: [
-            "200 や 302 … HTTP までは届き、アプリか前段の HTTP サーバが応答した",
+            "200、302、401 など … HTTP までは届き、アプリか前段の HTTP サーバが応答した",
             "404 … 届いているがパスやマッピングが違う",
             "接続できない / タイムアウト … TCP 以前、または TLS・プロキシの手前。curl 自身のエラーメッセージも手がかりになる",
             "ブラウザだけ失敗 … Cookie、プロキシ設定、別ネットワークからのアクセス制限も疑う",

@@ -288,7 +288,7 @@ Content-Type: application/json
           kind: "screen",
           src: "/images/screen-detail-path.jpg",
           alt: "申請詳細のアドレスバーが /shinsei/requests/12。画面の申請IDも 12",
-          caption: "申請詳細。アドレスバーの `/12` が申請IDです。",
+          caption: "申請詳細。アドレスバーの `/12` が申請 ID です。",
         },
         {
           type: "h3",
@@ -645,7 +645,7 @@ public class RequestController {
         },
         {
           type: "p",
-          text: "HTML のフォームが送れる HTTP メソッドは、GET と POST だけです。`@PutMapping` や `@DeleteMapping` の Java メソッドをフォームから呼ぶアプリでは、hidden の `_method`（`_method=delete` など）を付けて POST で送ります。サーバのフィルタ（Spring なら `HiddenHttpMethodFilter`）が、それを DELETE などとして扱います。Thymeleaf の `th:method=\"delete\"` は、この hidden を自動で足します。Network タブでは POST と表示されるので、Form Data の `_method` の値で Java メソッドを探しましょう。",
+          text: "HTML のフォームが送れる HTTP メソッドは、GET と POST だけです。`@PutMapping` や `@DeleteMapping` の Java メソッドをフォームから呼ぶアプリでは、hidden の `_method`（`_method=delete` など）を付けて POST で送ります。サーバのフィルタ（Spring なら `HiddenHttpMethodFilter`）が、それを DELETE などとして扱います。Spring Boot 2.2 以降では、このフィルタは既定で無効です。`spring.mvc.hiddenmethod.filter.enabled=true` を設定したときだけ動きます。Thymeleaf の `th:method=\"delete\"` はこの hidden を自動で足します。Network タブでは POST と表示されるので、Form Data の `_method` の値で Java メソッドを探しましょう。",
         },
         {
           type: "p",
@@ -727,7 +727,7 @@ public class RequestController {
           title: "ログイン成功の応答（例）",
           highlightLines: [3],
           code: `HTTP/1.1 302 Found
-Location: /shinsei/requests
+Location: http://intranet.example.co.jp:8080/shinsei/requests
 Set-Cookie: JSESSIONID=AB12CD34; Path=/shinsei; HttpOnly`,
         },
         {
@@ -918,7 +918,7 @@ public String showCart(HttpSession session, Model model) {
         },
         {
           type: "p",
-          text: "申請くんでは、サーバが Thymeleaf テンプレートから HTML を組み立てます。フォームの送信先や、ボタンを表示する条件を追うときは、Java のコードとテンプレートの両方を確認します。Thymeleaf の基本は、「テンプレートの読み方」で説明しています。",
+          text: "申請くんでは、サーバが Thymeleaf テンプレートから HTML を組み立てます。フォームの送信先や、ボタンを表示する条件を追うときは、Java のコードとテンプレートの両方を確認しましょう。Thymeleaf の基本は、「テンプレートの読み方」で説明しています。",
           link: {
             label: "テンプレートの読み方",
             to: "/tracks/java-map/template-read",
