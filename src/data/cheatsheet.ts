@@ -95,7 +95,7 @@ export const cheatSheet: CheatSection[] = [
           { cmd: "`free -h`", env: "Linux", desc: "メモリの空き容量を見る" },
           { cmd: "`du -sh * | sort -rh | head`", env: "Linux", desc: "今いるディレクトリの中で、容量を多く使っている項目を上位から見る" },
           { cmd: "`find /var/log -name \"*.log\" -mtime -1`", env: "Linux", desc: "直近 1 日以内に更新されたログファイルを探す" },
-          { cmd: "`find / -xdev -type f -size +100M`", env: "Linux", desc: "100MB を超えるファイルを、マウント境界（`-xdev`）を越えずに再帰的に探す。`du` は今いる階層しか見ないので、原因がどこにあるか分からないときに使う" },
+          { cmd: "`find / -xdev -type f -size +100M`", env: "Linux", desc: "100MB を超えるファイルを、マウント境界（`-xdev`）を越えずに再帰的に探す。`du -sh *` の一覧に出るのは今いる階層の項目だけなので、原因がどこにあるか分からないときに使う" },
           { cmd: "`find . -type f -name \"*.log\" | xargs du -h | sort -rh | head`", env: "Linux", desc: "見つけたログファイルをまとめてサイズ順に並べる（`find` と `du`・`sort` の組み合わせ）" },
         ],
       },

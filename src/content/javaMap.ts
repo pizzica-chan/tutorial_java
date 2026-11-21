@@ -415,7 +415,7 @@ public class RegionInfo {
       blocks: [
         {
           type: "p",
-          text: "画面や API の URL からソースを追うときは、Controller → Service → DB アクセスの層、の順で開きます。",
+          text: "画面や API の URL からソースを追うときは、Controller → Service → DB アクセスの層の順で開きます。",
         },
         {
           type: "h2",
@@ -643,7 +643,7 @@ public class MailService {
   private final JavaMailSender mailSender;
 
   public void notifyApplicant(RequestEntity request) {
-    // （件名や本文を組み立てる処理は省略）
+    // （件名や本文の組み立てと、例外の処理は省略）
     mailSender.send(message);
   }
 }`,
@@ -1526,7 +1526,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "申請くんの `findMine`・`findById`・`searchHistory` は、SELECT するカラムと FROM・JOIN が同じです。共通化されておらず、同じ書き方が 3 か所に散らばっています。1 か所だけ直すと、残り 2 か所とずれることがあります。",
+          text: "申請くんの `findMine`・`findById`・`searchHistory` は、FROM・JOIN が同じです。SELECT するカラムも `searchHistory` に `r.updated_at` があるほかは同じです。共通化されておらず、同じ書き方が 3 か所に散らばっています。1 か所だけ直すと、残り 2 か所とずれることがあります。",
         },
         {
           type: "p",
@@ -1556,7 +1556,7 @@ public ModelAndView list(@AuthenticationPrincipal LoginUser user) {
         },
         {
           type: "p",
-          text: "`<sql id=\"requestSelect\">` が断片の名前で、`<include refid=\"requestSelect\" />` はその中身をそのまま差し込むという意味です。`findById` と `searchHistory` も同じ断片を `<include>` すれば、3 か所の重複が無くなります。",
+          text: "`<sql id=\"requestSelect\">` が断片の名前で、`<include refid=\"requestSelect\" />` はその中身をそのまま差し込むという意味です。`findById` も同じ断片を `<include>` すれば、`findMine` との重複は無くなります。`searchHistory` は `r.updated_at` も読むので、この断片をそのまま差し込むと、そのカラムが SELECT から抜けます。",
         },
         {
           type: "callout",

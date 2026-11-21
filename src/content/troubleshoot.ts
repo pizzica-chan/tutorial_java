@@ -795,9 +795,9 @@ docker logs コンテナ名`,
 	（中略）
 	at org.springframework.web.client.RestTemplate.postForObject(RestTemplate.java:443)
 	at jp.co.example.shinsei.client.NotificationClient.send(NotificationClient.java:25)
-	at jp.co.example.shinsei.service.InvestigationService.approveAndNotify(InvestigationService.java:64)
+	at jp.co.example.shinsei.service.InvestigationService.approveAndNotify(InvestigationService.java:92)
 	（中略）
-	at jp.co.example.shinsei.controller.InvestigationController.approve(InvestigationController.java:59)
+	at jp.co.example.shinsei.controller.InvestigationController.approve(InvestigationController.java:69)
 	（以下略）`,
         },
         {
@@ -985,22 +985,22 @@ docker logs コンテナ名`,
           highlightLines: [3, 9],
           code: `"http-nio-8080-exec-7" #30 daemon prio=5 os_prio=0 cpu=8693.42ms elapsed=10.33s tid=0x00007243fce26050 nid=0x36 runnable  [0x00007243817ee000]
    java.lang.Thread.State: RUNNABLE
-	at jp.co.example.shinsei.service.InvestigationService.dueDate(InvestigationService.java:72)
+	at jp.co.example.shinsei.service.InvestigationService.dueDate(InvestigationService.java:100)
 	（中略）
-	at jp.co.example.shinsei.controller.InvestigationController.dueDate(InvestigationController.java:65)
+	at jp.co.example.shinsei.controller.InvestigationController.dueDate(InvestigationController.java:75)
 	（以下略）
 "http-nio-8080-exec-7" #30 daemon prio=5 os_prio=0 cpu=13968.34ms elapsed=15.63s tid=0x00007243fce26050 nid=0x36 runnable  [0x00007243817ee000]
    java.lang.Thread.State: RUNNABLE
-	at jp.co.example.shinsei.service.InvestigationService.dueDate(InvestigationService.java:72)
+	at jp.co.example.shinsei.service.InvestigationService.dueDate(InvestigationService.java:100)
 	（以下略）`,
         },
         {
           type: "p",
-          text: "2 回とも、最上段は自分たちが書いたコードの `InvestigationService.java:72` です。5.3 秒の間に、`cpu=` も約 5.3 秒増えています。CPU のコアを 1 つ使い切って、同じ場所を回り続けていると読めます。72 行目は、承認の期限日を求めるループの中の `due.plusDays(1);` です。",
+          text: "2 回とも、最上段は自分たちが書いたコードの `InvestigationService.java:100` です。5.3 秒の間に、`cpu=` も約 5.3 秒増えています。CPU のコアを 1 つ使い切って、同じ場所を回り続けていると読めます。100 行目は、承認の期限日を求めるループの中の `due.plusDays(1);` です。",
         },
         {
           type: "code",
-          title: "InvestigationService.java（申請くん・再現用、67〜75 行目）",
+          title: "InvestigationService.java（申請くん・再現用、95〜103 行目）",
           lang: "java",
           highlightLines: [6],
           highlightKind: "error",
@@ -1175,9 +1175,9 @@ docker logs shinsei-hang`,
         },
         {
           type: "p",
-          text: "実際にこの考え方で原因を特定した例が、シナリオ「申請詳細で承認すると「エラーが発生しました」」にあります。山田（yamada）は ID 15「出張旅費」は承認できるのに、ID 16「研修参加」だけ 500 になるというケースで、DB のレコードを見比べると `approver_id` だけ ID 16 が NULL でした。",
+          text: "実際にこの考え方で原因を特定した例が、シナリオ「申請詳細で承認すると『エラーが発生しました』」にあります。山田（yamada）は ID 15「出張旅費」は承認できるのに、ID 16「研修参加」だけ 500 になるというケースで、DB のレコードを見比べると `approver_id` だけ ID 16 が NULL でした。",
           link: {
-            label: "申請詳細で承認すると「エラーが発生しました」",
+            label: "申請詳細で承認すると『エラーが発生しました』",
             to: "/tracks/scenario/back",
           },
         },
@@ -2533,7 +2533,7 @@ docker logs コンテナ名`,
 	（中略：JDK のソケットと HTTP の行）
 	at org.springframework.web.client.RestTemplate.postForObject(RestTemplate.java:443)
 	at jp.co.example.shinsei.client.NotificationClient.send(NotificationClient.java:25)
-	at jp.co.example.shinsei.service.InvestigationService.approveAndNotify(InvestigationService.java:64)
+	at jp.co.example.shinsei.service.InvestigationService.approveAndNotify(InvestigationService.java:92)
 	（以下略）`,
         },
         {
