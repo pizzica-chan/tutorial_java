@@ -117,7 +117,7 @@ export const scenarioTrack: Track = {
         },
         {
           type: "p",
-          text: "次は、一覧の HTML に `id=\"csrfToken\"` があるかを見ます。",
+          text: "次は、一覧の HTML に `id=\"csrfToken\"` があるかを見ましょう。",
         },
         {
           type: "code",
@@ -642,7 +642,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "p",
-          text: "操作時刻のアプリログを見ます。",
+          text: "操作時刻のアプリログを見ましょう。",
         },
         {
           type: "code",
@@ -1035,7 +1035,7 @@ ORDER BY created_at DESC;`,
         },
         {
           type: "p",
-          text: "Mapper の XML を開き、SQL に `status` の絞り込み条件を足している箇所を見ます。",
+          text: "Mapper の XML を開き、SQL に `status` の絞り込み条件を足している箇所を見ましょう。",
         },
         {
           type: "code",
@@ -1050,7 +1050,7 @@ ORDER BY created_at DESC;`,
   AND r.status = #{requestStatus}
 </if>
 <if test="createdFrom != null and createdFrom != ''">
-  AND r.created_at >= #{createdFrom}
+  AND r.created_at &gt;= #{createdFrom}
 </if>`,
         },
         {
@@ -1514,7 +1514,7 @@ private LocalDateTime approvedAt;`,
         },
         {
           type: "p",
-          text: "操作時刻のログで、`searchHistory` の Mapper を見ます。`Preparing` から `Total` まで約 6 秒空いています。SQL の実行が遅いです。",
+          text: "操作時刻のログで、`searchHistory` の Mapper を見ましょう。`Preparing` から `Total` まで約 6 秒空いています。SQL の実行が遅いです。",
         },
         {
           type: "code",
@@ -1589,7 +1589,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "直すときは、絞り込みと並べ替えの両方を見ます。この SQL では、絞り込みが `applicant_id` と `approver_id` の `OR` で、並べ替えは `created_at` です。`INDEX` を 1 本足すだけでは両方を満たせないことが多いです。",
+          text: "直すときは、絞り込みと並べ替えの両方を見ましょう。この SQL では、絞り込みが `applicant_id` と `approver_id` の `OR` で、並べ替えは `created_at` です。`INDEX` を 1 本足すだけでは両方を満たせないことが多いです。",
         },
         {
           type: "h3",
@@ -1597,7 +1597,7 @@ v      eq_ref PRIMARY       PRIMARY  1    Using where`,
         },
         {
           type: "p",
-          text: "`schema.sql` の `t_request` を見ます。`PRIMARY KEY` の `id` はあります。`INDEX` の定義も、外部キー制約もありません。",
+          text: "`schema.sql` の `t_request` を見ましょう。`PRIMARY KEY` の `id` はあります。`INDEX` の定義も、外部キー制約もありません。",
         },
         {
           type: "code",
@@ -2447,13 +2447,14 @@ requestMapper.update(request);`,
             ["`CANCELLED` にする処理", "メソッドが無い", "依頼者へ確認"],
             ["`schema.sql`", "`VARCHAR(32) NOT NULL`", "長さは不要。制約の追加は依頼者へ確認"],
             ["`RequestResponse`", "status を文字列で返す", "不要"],
+            ["`InvestigationService`（再現用）", "承認の判定は PENDING 以外を拒否する。CSV 出力は status を文字列のまま書く", "不要。ほかのシナリオを再現するための処理で、`investigation` プロファイルで起動したときだけ動く。業務の画面や API ではない"],
           ],
         },
         {
           type: "callout",
           kind: "note",
           title: "申請くんに無いもの",
-          text: "enum、DB の CHECK、夜間バッチ、CSV エクスポートは、申請くんにはありません。同じ語で検索してヒットしなければ、見積もりに「無い」と書けます。現場のアプリではヒットすることがあります。",
+          text: "enum、DB の CHECK、夜間バッチは、申請くんにはありません。CSV エクスポートがあるのは、ほかのシナリオを再現するための `InvestigationService` だけです。同じ語で検索してヒットしなければ、見積もりに「無い」と書けます。現場のアプリではヒットすることがあります。",
         },
         {
           type: "h2",
@@ -2777,6 +2778,7 @@ CREATE TABLE IF NOT EXISTS t_request (
             ["`RequestMapper.xml` の searchHistory", "ユーザと任意の件名など", "WHERE に部署を追加する"],
             ["`history.html`", "件名・ステータス・申請日", "プルダウンを追加する。`name` を Controller と揃える"],
             ["`RequestApiController.list`", "同じ `findMine`", "画面だけ直すと JSON は絞られない"],
+            ["`InvestigationService`（再現用）", "`RequestMapper` の `findMine` と `searchHistory` を直接呼ぶ", "Mapper に引数を足すと、ここの呼び出しがコンパイルエラーになる。呼び出しにも引数を足す。ほかのシナリオを再現するための処理で、`investigation` プロファイルで起動したときだけ動く。絞り込みの対象ではない"],
             ["`schema.sql`", "部署のカラムが無い", "DB の定義を直す。修正案は複数あり、案によって修正規模が変わる"],
           ],
         },
@@ -2784,7 +2786,7 @@ CREATE TABLE IF NOT EXISTS t_request (
           type: "callout",
           kind: "note",
           title: "申請くんに無いもの",
-          text: "CSV エクスポートは、申請くんにはありません。同じ一覧を出す別経路としてヒットしたのは、JSON の API です。",
+          text: "CSV エクスポートがあるのは、ほかのシナリオを再現するための `InvestigationService` だけです。業務の画面や API のうち、同じ一覧を出す別経路としてヒットしたのは JSON の API です。",
         },
         {
           type: "h2",
@@ -3242,6 +3244,7 @@ ORDER BY r.created_at DESC`,
             ["`buildHistoryBackUrl`", "4 つの `queryParamIfPresent`", "要修正。足し忘れると詳細から戻ったときだけ条件が消える"],
             ["`RequestService.searchHistory`", "4 つの引数を Mapper へ渡す", "要修正。引数を追加して渡す"],
             ["`RequestMapper.xml` の `searchHistory`", "件名などの `<if>`", "要修正。`v.display_name` への `<if>` を追加"],
+            ["`InvestigationService`（再現用）", "`RequestMapper.searchHistory` を直接呼ぶ", "要修正。Mapper に引数を足すと、ここの呼び出しがコンパイルエラーになる。呼び出しにも引数を足す。ほかのシナリオを再現するための処理で、`investigation` プロファイルで起動したときだけ動く。業務の画面や API ではない"],
             ["承認者未定の申請の扱い", "一覧には出る", "絞り込むと消える。意図どおりか依頼者へ確認"],
           ],
         },

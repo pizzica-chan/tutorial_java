@@ -318,17 +318,21 @@ public class LoginController {
     path: "src/main/java/.../service/MailService.java",
     note: "メール送信",
     why: "承認後の通知など、画面に出ない処理がここにあります。DB 更新は成功したのにメールが来ないときは、Service のログのあとにこのクラスの行があるかを確認しましょう。",
-    code: `@Service
+    code: `@Slf4j
+@Service
 @RequiredArgsConstructor
 public class MailService {
   private final JavaMailSender mailSender;
 
   public void notifyApplicant(RequestEntity request) {
-    SimpleMailMessage message = new SimpleMailMessage();
-    message.setTo(request.getApplicantEmail());
-    message.setSubject("申請が承認されました");
-    message.setText(request.getTitle() + " が承認されました。");
-    mailSender.send(message);
+    try {
+      SimpleMailMessage message = new SimpleMailMessage();
+      message.setTo(request.getApplicantEmail());
+      // （件名や本文を組み立てる処理は省略）
+      mailSender.send(message);
+    } catch (Exception e) {
+      log.warn("通知メールの送信に失敗しました requestId={}", request.getId());
+    }
   }
 }`,
   },
@@ -544,11 +548,16 @@ CREATE TABLE IF NOT EXISTS t_request (
     code: `@Bean
 SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
   http.authorizeHttpRequests(auth -> auth
-      .antMatchers("/login", "/css/**", "/js/**").permitAll()
+      .antMatchers("/login", "/css/**", "/js/**", "/error", "/demo/**").permitAll()
       .antMatchers("/admin/**").hasRole("ADMIN")
       .anyRequest().authenticated()
     )
-    .formLogin(login -> login.loginPage("/login").defaultSuccessUrl("/requests"))
+    .formLogin(login -> login
+      .loginPage("/login")
+      .defaultSuccessUrl("/requests", true)
+      .failureUrl("/login?error")
+      .permitAll()
+    )
     .logout(logout -> logout.logoutSuccessUrl("/login"))
     .exceptionHandling(ex -> ex
       .defaultAuthenticationEntryPointFor(
