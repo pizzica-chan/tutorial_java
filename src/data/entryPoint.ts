@@ -17,7 +17,7 @@ export const requestListEntryPointReadingSnippet = `// 申請一覧: ブラウ�
 public class RequestController {
   private final RequestService requestService;
 
-  // → URL マッピング: @RequestMapping + @GetMapping で GET /shinsei/requests がこのメソッドへ
+  // → URL マッピング: @RequestMapping + @GetMapping で GET /shinsei/requests がこの Java メソッドへ
   @GetMapping
   public String list(Model model, @AuthenticationPrincipal LoginUser user) {
     // → Service 呼び出し: ここから RequestService.findMine へ降りる

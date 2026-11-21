@@ -2722,6 +2722,11 @@ th {
   font-family: var(--serif);
 }
 
+/* 重ね方の図の見出しは、語の区切り（空白と <wbr>）でだけ折り返す */
+.arch-patterns h4 {
+  word-break: keep-all;
+}
+
 .d-col p {
   margin: 0;
   color: var(--muted);

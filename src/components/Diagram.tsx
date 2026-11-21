@@ -1097,9 +1097,9 @@ function Layer({ icon, children, accent }: { icon: IconName; children: string; a
 function ArchPatterns() {
   return (
     <div>
-      <div className="d-cols">
+      <div className="d-cols arch-patterns">
         <div className="d-col">
-          <h4>パターン 1: 内蔵だけ</h4>
+          <h4>パターン 1: Tomcat などを<wbr />内蔵する</h4>
           <div className="d-stack">
             <Layer icon="browser">ブラウザ</Layer>
             <Arrow down label="HTTP/HTTPS リクエスト" />
@@ -1111,7 +1111,7 @@ function ArchPatterns() {
           </div>
         </div>
         <div className="d-col">
-          <h4>パターン 2: 外部 WAR</h4>
+          <h4>パターン 2: 外部の Tomcat などに WAR を<wbr />載せる</h4>
           <div className="d-stack">
             <Layer icon="browser">ブラウザ</Layer>
             <Arrow down label="HTTP/HTTPS リクエスト" />
@@ -1123,7 +1123,7 @@ function ArchPatterns() {
           </div>
         </div>
         <div className="d-col">
-          <h4>パターン 3: 手前に HTTP サーバ</h4>
+          <h4>パターン 3: 手前に Apache&nbsp;/&nbsp;nginx を<wbr />置く</h4>
           <div className="d-stack">
             <Layer icon="browser">ブラウザ</Layer>
             <Arrow down label="HTTP/HTTPS リクエスト" />

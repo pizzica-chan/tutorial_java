@@ -49,16 +49,16 @@ export const serverNetworkTrack: Track = {
           type: "steps",
           items: [
             {
-              title: "内蔵だけ",
-              text: "Spring Boot を IDE や java -jar で起動すると、同じプロセスの中で Tomcat や Jetty が動きます。別途 Tomcat を入れる必要はありません。",
+              title: "Tomcat などを内蔵する",
+              text: "Spring Boot を IDE や `java -jar` で起動すると、同じプロセスの中で Tomcat や Jetty が動きます。別途 Tomcat を入れる必要はありません。",
             },
             {
-              title: "外部に WAR",
+              title: "外部の Tomcat などに WAR を載せる",
               text: "アプリを WAR にして、すでに動いている Tomcat や Jetty に載せます。",
             },
             {
-              title: "手前に Apache / nginx",
-              text: "ブラウザからの HTTP リクエストは、まず Apache か nginx が受けます。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです（SSL オフロード）。静的ファイルの配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろは内蔵でも外部 WAR でも構いません。",
+              title: "手前に Apache / nginx を置く",
+              text: "ブラウザからの HTTP リクエストは、まず Apache か nginx が受けます。ブラウザとの HTTPS はここで解き、後ろの Tomcat / Jetty へは HTTP で渡すことが多いです（SSL オフロード）。静的ファイルの配信やパスの振り分けもここで行い、動的な処理だけ後ろへ渡します。後ろの Tomcat などはアプリに内蔵したものでも、外部で動かして WAR を載せたものでも構いません。",
             },
           ],
         },
@@ -75,9 +75,9 @@ export const serverNetworkTrack: Track = {
           type: "table",
           headers: ["パターン", "気をつけること"],
           rows: [
-            ["1: 内蔵だけ", "手前の HTTP サーバが無いので、手前と後ろでパスがずれることはありません。コンテキストパスは `server.servlet.context-path` で決まります。"],
-            ["2: 外部 WAR", "手前の HTTP サーバが無いので、手前と後ろでパスがずれることはありません。ただし、コンテキストパスは WAR のファイル名や Tomcat の設定で決まり、`server.servlet.context-path` は使われません。`shinsei.war` なら `/shinsei` です。"],
-            ["3: 手前に Apache / nginx", "静的ファイルの 404 は、手前のパス設定のことがあります。コンテキストパスが、手前と後ろの両方に付いていることもあります。"],
+            ["1: Tomcat などを内蔵する","手前の HTTP サーバが無いので、手前と後ろでパスがずれることはありません。コンテキストパスは `server.servlet.context-path` で決まります。"],
+            ["2: 外部の Tomcat などに WAR を載せる","手前の HTTP サーバが無いので、手前と後ろでパスがずれることはありません。ただし、コンテキストパスは WAR のファイル名や Tomcat の設定で決まり、`server.servlet.context-path` は使われません。`shinsei.war` なら `/shinsei` です。"],
+            ["3: 手前に Apache / nginx を置く","静的ファイルの 404 は、手前のパス設定のことがあります。コンテキストパスが、手前と後ろの両方に付いていることもあります。"],
           ],
         },
         {
@@ -675,7 +675,7 @@ kubectl logs --namespace 名前空間名 Pod名`,
           type: "callout",
           kind: "note",
           title: "SELinux が原因のこともある",
-          text: "`ls -l` の権限も所有者も正しいのに `Permission denied` になるときは、SELinux が原因のこともあります。RHEL 系でよく有効です。`getenforce` で `Enforcing` なら疑い、`ls -Z` でファイルのセキュリティコンテキストも確認しましょう。",
+          text: "`ls -l` の権限も所有者も正しいのに `Permission denied` になるときは、SELinux が原因のこともあります。RHEL（Red Hat Enterprise Linux）系でよく有効です。`getenforce` で `Enforcing` なら疑い、`ls -Z` でファイルのセキュリティコンテキストも確認しましょう。",
         },
         {
           type: "h3",
@@ -975,8 +975,8 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
         {
           type: "ul",
           items: [
-            "access.log（アクセスログ）… 届いた URL、ステータスコード、時刻。静的ファイルの 404 もここに残ることが多い",
-            "error.log（エラーログ）… 設定ミス、後ろの Tomcat への接続失敗、SSL の問題",
+            "`access.log`（アクセスログ）… 届いた URL、ステータスコード、時刻。静的ファイルの 404 もここに残ることが多い",
+            "`error.log`（エラーログ）… 設定ミス、後ろの Tomcat への接続失敗、SSL の問題",
           ],
         },
         {
@@ -1026,7 +1026,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
           type: "callout",
           kind: "note",
           title: "内蔵 Tomcat だけのとき",
-          text: "Spring Boot を java -jar だけで動かし、手前に Apache / nginx が無い環境では、HTTP サーバ用のログはありません。静的ファイルもアプリが返すことが多く、切り分けは Network タブとアプリログで足りることが多いです。",
+          text: "Spring Boot を `java -jar` だけで動かし、手前に Apache / nginx が無い環境では、HTTP サーバ用のログはありません。静的ファイルもアプリが返すことが多く、切り分けは Network タブとアプリログで足りることが多いです。",
         },
         {
           type: "callout",
