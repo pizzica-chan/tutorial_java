@@ -60,9 +60,10 @@ export function QuizBlock({ id, anchorId }: { id: string; anchorId?: string }) {
         <Icon name="quiz" size={14} />
         CHECK
       </p>
-      <h3 id={questionId}>
+      {/* 問いは文なので見出しにしない。見出しにすると、h2 の無いレッスンで h1 の次が h3 になる */}
+      <p id={questionId} className="quiz-question">
         <TextWithTerms text={quiz.question} />
-      </h3>
+      </p>
       <div
         ref={groupRef}
         role="radiogroup"

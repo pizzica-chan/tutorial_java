@@ -42,7 +42,10 @@ export function TrackPage() {
               <strong>
                 {String(index + 1).padStart(2, "0")} <LessonTitle title={lesson.title} />
               </strong>
-              <p className="lesson-lead">{lessonLead(lesson)}</p>
+              <p className="lesson-lead">
+                {/* 行全体がリンクなので、用語ヒントや章へのリンクは付けない */}
+                <TextWithTerms highlight={false} text={lessonLead(lesson)} />
+              </p>
             </div>
             <span className="lesson-mins">
               <Icon name="clock" size={14} />

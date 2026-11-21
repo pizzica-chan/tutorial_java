@@ -26,7 +26,15 @@ export function lessonLead(lesson: Lesson, max = 72): string {
   const sentence = block.text.split("。")[0] ?? block.text;
   const lead = block.text.includes("。") ? `${sentence}。` : sentence;
   if (lead.length <= max) return lead;
-  return `${lead.slice(0, max)}…`;
+  let cut = lead.slice(0, max);
+  // コードスパンの途中で切ると、閉じていないバッククォートがそのまま表示されるので、その手前で切る
+  if ((cut.match(/`/g)?.length ?? 0) % 2 === 1) cut = cut.slice(0, cut.lastIndexOf("`"));
+  return `${cut.trimEnd()}…`;
+}
+
+/** meta の説明文には書式が効かないので、コードスパンの記号を外す */
+function plainText(text: string): string {
+  return text.replaceAll("`", "");
 }
 
 export type LessonNav = {
@@ -88,15 +96,15 @@ export function pageDescription(pathname: string): string {
   const parts = pathname.split("/").filter(Boolean);
   if (parts[0] === "tracks" && parts[1] && parts[2]) {
     const found = getLesson(parts[1], parts[2]);
-    if (found) return lessonLead(found.lesson, 110);
+    if (found) return plainText(lessonLead(found.lesson, 110));
     return fallback;
   }
   if (parts[0] === "tracks" && parts[1]) {
     const track = getTrack(parts[1]);
     if (track) {
-      if (track.description) return track.description;
+      if (track.description) return plainText(track.description);
       const first = track.lessons[0];
-      if (first) return lessonLead(first, 110);
+      if (first) return plainText(lessonLead(first, 110));
     }
   }
   return fallback;

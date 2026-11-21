@@ -1059,7 +1059,7 @@ if (updated == 0) {
         },
         {
           type: "p",
-          text: "HTML は `src/main/resources/templates` 配下に置きます。Controller が名前で指定したテンプレートを組み立てて、その HTML をブラウザへ届けます。例えば `return \"request/list\"` なら `templates/request/list.html` を組み立てます。",
+          text: "HTML は `src/main/resources/templates` 配下に置きます。Controller が名前で指定したテンプレートを組み立てて、その HTML をブラウザへ届けます。たとえば `return \"request/list\"` なら `templates/request/list.html` を組み立てます。",
         },
         {
           type: "code",

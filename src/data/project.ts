@@ -238,7 +238,7 @@ logging:
   {
     path: "src/main/resources/application-stg.yml",
     note: "stg プロファイル用の追加分",
-    why: "`spring.profiles.active` が `stg` のとき、`application.yml` のあとにこのファイルが読み込まれます。同じ項目はこちらの設定が優先されます。検証環境の DB 接続先やログ量をまとめて書くという使い方が多いです。password の `${DB_PASSWORD}` は、起動時に環境変数 `DB_PASSWORD` の値に差し替わる書き方です。yml にパスワードを直書きしないときに使います。",
+    why: "`spring.profiles.active` が `stg` のとき、`application.yml` のあとにこのファイルが読み込まれます。同じ項目はこちらの設定が優先されます。検証用環境の DB 接続先やログ量をまとめて書くという使い方が多いです。password の `${DB_PASSWORD}` は、起動時に環境変数 `DB_PASSWORD` の値に差し替わる書き方です。yml にパスワードを直書きしないときに使います。",
     code: `spring:
   datasource:
     url: jdbc:mysql://stg-db.example.internal:3306/shinsei

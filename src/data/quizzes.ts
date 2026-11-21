@@ -472,7 +472,7 @@ export const quizzes = {
     id: "ts-slow-explain",
     question: "遅い SQL を検証用 DB で `EXPLAIN` すると、`type` が `ALL`、`possible_keys` が `NULL`、`rows` が数十万だった。ここから言えるのは？",
     choices: [
-      "`possible_keys` が `NULL` なので、このテーブルにはインデックスが一つも無い",
+      "`possible_keys` が `NULL` なので、このテーブルにはインデックスが 1 つも無い",
       "条件に使っているカラムに、使えるインデックスが無く、テーブルをほぼ全件読んでいる",
       "その SQL の文法が間違っている",
       "`rows` は、実際に読んだ件数の実測値である",
@@ -899,7 +899,7 @@ export const quizzes = {
   },
   "sc-shared-state": {
     id: "sc-shared-state",
-    question: "Service の引数は「休暇」なのに SQL には「交通費」が渡った。二つのリクエストが同じ searchTitle フィールドを使っていた。原因に対応する修正は？",
+    question: "Service の引数は「休暇」なのに SQL には「交通費」が渡った。2 つのリクエストが同じ searchTitle フィールドを使っていた。原因に対応する修正は？",
     choices: ["検索条件をフィールドに保存せず、引数のまま Mapper へ渡す", "フィールドを volatile にするだけ", "SQL のインデックスを追加する", "フォームの name を変える"],
     answer: 0,
     explanation: "共有フィールドが別のリクエストで上書きされたことが原因です。リクエストごとの引数を直接渡せば、この上書きを避けられます。volatile はリクエストごとに値を分ける指定ではありません。",
