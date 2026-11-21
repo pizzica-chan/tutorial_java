@@ -583,7 +583,7 @@ mailService.notifyApplicant(request);`,
         },
         {
           type: "h3",
-          text: "そのまま探す・数字",
+          text: "ドット・空白・数字を表す",
         },
         {
           type: "p",
@@ -1384,8 +1384,9 @@ if (!"PENDING".equals(request.getStatus())) {
           type: "code",
           title: "request/form.html（申請くん・抜粋）",
           lang: "html",
-          highlightLines: [1, 4],
+          highlightLines: [1, 5],
           code: `<form class="stack js-submit-confirm" th:action="@{/requests}" method="post">
+  <input type="hidden" th:name="\${_csrf.parameterName}" th:value="\${_csrf.token}" />
   ...
 </form>
 <script th:src="@{/js/form.js}"></script>`,
@@ -1541,7 +1542,7 @@ if (!"PENDING".equals(request.getStatus())) {
           type: "callout",
           kind: "trap",
           title: "関数名で検索してもヒットしない",
-          text: "`confirmAction` のような関数名は、ビルド時に `n` のような短い名前へ書き換えられます。もとの名前で検索しても、この JavaScript の中にはヒットしません。一方、`.js-submit-confirm` のような HTML の `class` や `id` は、実行時に実際の DOM と一致させる必要があるため、文字列としてそのまま残ります。名前がヒットしないときは、関数名ではなくクラス名や `id`、画面の文言で検索し直しましょう。",
+          text: "`confirmAction` のような関数名は、ビルド時に `n` のような短い名前へ書き換えられます。もとの名前で検索しても、この JavaScript の中にはヒットしません。一方、`.js-submit-confirm` のような HTML の `class` や `id` は、実行時に画面の HTML の要素と一致させる必要があるため、文字列としてそのまま残ります。名前がヒットしないときは、関数名ではなくクラス名や `id`、画面の文言で検索し直しましょう。",
         },
         {
           type: "p",

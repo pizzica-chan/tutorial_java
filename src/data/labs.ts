@@ -154,7 +154,7 @@ export const stackCases: StackCase[] = [
       {
         kind: "app",
         text: "    at jp.co.example.shinsei.controller.RequestController.approve(RequestController.java:102)",
-        note: "業務の呼び出し元は、この Controller の行です。画面のどの操作から来たか（POST /requests/{id}/approve）を特定できます。",
+        note: "業務の呼び出し元は、この Controller の行です。画面のどの操作から来たか（`POST /requests/{id}/approve`）を特定できます。",
       },
       {
         kind: "hint",

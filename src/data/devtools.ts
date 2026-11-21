@@ -228,7 +228,7 @@ export const devtools: DevtoolsSection[] = [
     kind: "tips",
     groups: [
       {
-        title: "開く・全体",
+        title: "開き方と全体の操作",
         rows: [
           { name: "開発者ツールを開く", how: "F12、または Ctrl+Shift+I", desc: "Mac は Cmd+Option+I。Network タブに出るのは、開発者ツールを開いたブラウザのタブの通信だけ" },
           { name: "要素を選んで開く", how: "Ctrl+Shift+C、または要素を右クリック → 検証", desc: "画面でクリックした要素の HTML が、Elements タブで選ばれた状態で開く" },

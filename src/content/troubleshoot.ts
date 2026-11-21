@@ -347,7 +347,7 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
           type: "table",
           headers: ["よくある出力先", "見るとき"],
           rows: [
-            ["起動コンソール", "ローカルで java -jar や IDE から起動している"],
+            ["起動コンソール", "ローカルで `java -jar` や IDE から起動している"],
             ["Tomcat の logs/、catalina.out", "外部 Tomcat に WAR を載せている"],
             ["日付で分かれた .log ファイル", "logback などでローテートしている"],
             ["コンテナの標準出力", "Docker や Kubernetes。docker logs や同等のコマンド"],
@@ -1496,7 +1496,7 @@ docker logs shinsei-hang`,
             ],
             [
               "画面だけ崩れる、CSS や JS だけ 404",
-              "返ってきた HTML の中の参照パスと、手前の HTTP サーバの access.log",
+              "返ってきた HTML の中の参照パスと、手前の HTTP サーバの `access.log`",
               "コンテキストパスや HTTPS の扱いが環境で違うと、パスがずれる",
             ],
             [
@@ -2675,7 +2675,7 @@ docker compose run --build --service-ports --name shinsei-hang -e SPRING_PROFILE
         },
         {
           type: "p",
-          text: "外部 API とは、自社アプリの外にある HTTP API や、SMTP・SFTP のような別プロセスへの接続の総称です。社内の人事マスタ API も、クラウドの通知 API も、これに含まれます。",
+          text: "外部 API とは、自社アプリの外にある HTTP API や、SMTP（メールの送信）・SFTP（ファイルの転送）のような別プロセスへの接続の総称です。社内の人事マスタ API も、クラウドの通知 API も、これに含まれます。",
         },
         {
           type: "table",

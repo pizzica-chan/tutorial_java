@@ -177,7 +177,7 @@ export const terms: TermDef[] = [
   {
     term: "DataSource",
     aliases: ["DataSource"],
-    body: "DB への接続をまとめて管理する部品です。実体はコネクションプールで、そこから接続を借りて使います。application.yml の設定から作られることも、サーブレットコンテナ側の設定（JNDI）から受け取ることもあります。",
+    body: "DB への接続をまとめて管理する部品です。実体はコネクションプールで、そこから接続を借りて使います。`application.yml` の設定から作られることも、サーブレットコンテナ側の設定（JNDI）から受け取ることもあります。",
   },
   {
     term: "JNDI",
@@ -495,7 +495,7 @@ export const terms: TermDef[] = [
   {
     term: "@PropertySource",
     aliases: ["@PropertySource"],
-    body: "`application.yml` とは別の `.properties` ファイルを、追加の設定として読み込む印です。クラスに付けます。標準では `.yml` に対応しておらず、読み込んでもエラーにはならず、値が入らないだけです。Spring のアノテーションです。",
+    body: "`application.yml` とは別の `.properties` ファイルを、追加の設定として読み込む印です。クラスに付けます。標準では `.yml` の書き方に対応していません。`.yml` を指定しても読み込みはエラーになりませんが、入れ子のキーは期待した名前で登録されません。Spring のアノテーションです。",
   },
   {
     term: "property-placeholder",
@@ -702,7 +702,7 @@ export const terms: TermDef[] = [
   {
     term: "NAT",
     aliases: ["NAT"],
-    body: "複数の端末が、外向きには 1 つ（または少数）の IP アドレスに見えるよう変換する仕組みです。社内ネットワークやルータでよく使われます。access.log の接続元 IP に、利用者本人ではなくこの NAT のアドレスが残ることがあります。",
+    body: "複数の端末が、外向きには 1 つ（または少数）の IP アドレスに見えるよう変換する仕組みです。社内ネットワークやルータでよく使われます。`access.log` の接続元 IP に、利用者本人ではなくこの NAT のアドレスが残ることがあります。",
   },
   {
     term: "リバースプロキシ",
@@ -1138,9 +1138,14 @@ export const terms: TermDef[] = [
     body: "Java Web アプリの配布形式。外部の Tomcat などに載せるときに使います。",
   },
   {
+    term: "jar",
+    aliases: ["jar", "JAR"],
+    body: "Java のクラスファイルや設定ファイルなどを、1 つにまとめたファイルです。ライブラリの配布に使われ、Maven や Gradle が依存関係として取り込みます。Spring Boot では、アプリ全体を 1 つの jar にまとめ、`java -jar` で起動することが多いです。",
+  },
+  {
     term: "HTTP サーバ",
     aliases: ["HTTP サーバ", "HTTPサーバ"],
-    body: "ブラウザの手前でリクエストを受けるサーバ。Apache や nginx。静的ファイルの配信や後ろへの中継を担うことが多く、access.log と error.log を持ちます。",
+    body: "ブラウザの手前でリクエストを受けるサーバ。Apache や nginx。静的ファイルの配信や後ろへの中継を担うことが多く、`access.log` と `error.log` を持ちます。",
   },
   {
     term: "Apache",

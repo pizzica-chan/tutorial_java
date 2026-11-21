@@ -62,6 +62,15 @@ test("長い用語と状態名を優先し、既存のヒントを維持する",
   assert.deepEqual(hints("docker compose stop"), [["docker compose stop", "docker compose stop"]]);
 });
 
+test("jar は単語として拾い、識別子の一部は拾わない", () => {
+  const jarHints = (text) => hints(text).filter(([, term]) => term === "jar");
+  assert.deepEqual(jarHints("DB ドライバなどの jar"), [["jar", "jar"]]);
+  assert.deepEqual(jarHints("WAR や JAR"), [["JAR", "jar"]]);
+  for (const text of ["jarFile", "my_jar", "jars"]) {
+    assert.ok(!hints(text).some(([, term]) => term === "jar"), text);
+  }
+});
+
 test("別の用語とエイリアスが重複せず、検索と本文が同じ用語を参照する", () => {
   const seen = new Map();
   const names = new Set();
