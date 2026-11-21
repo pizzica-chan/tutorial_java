@@ -548,7 +548,7 @@ CREATE TABLE IF NOT EXISTS t_request (
     code: `@Bean
 SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
   http.authorizeHttpRequests(auth -> auth
-      .antMatchers("/login", "/css/**", "/js/**", "/error", "/demo/**").permitAll()
+      .antMatchers("/login", "/css/**", "/js/**").permitAll()
       .antMatchers("/admin/**").hasRole("ADMIN")
       .anyRequest().authenticated()
     )

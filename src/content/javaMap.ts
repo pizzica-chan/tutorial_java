@@ -643,7 +643,7 @@ public class MailService {
   private final JavaMailSender mailSender;
 
   public void notifyApplicant(RequestEntity request) {
-    // （件名や本文を組み立てる処理は省略）
+    // （件名や本文の組み立てと、例外の処理は省略）
     mailSender.send(message);
   }
 }`,

@@ -69,6 +69,7 @@ docker compose run --build --service-ports -e SPRING_PROFILES_ACTIVE=dev,investi
 - **ログのスレッド名は後ろから 15 文字（`%.15thread`）。** 本来の名前は `http-nio-8080-exec-3` ですが、教材のログ例は Spring Boot の既定の書式と同じ `nio-8080-exec-3` の形で書いています。`logback-spring.xml` の書式を `%thread` に戻すと、教材の 60 か所以上のログ例と合わなくなります。
 - **教材に載せるスタックの行番号は実ファイルと合わせる。** `RequestService.java` と `RequestController.java` を変更したときは、ラボ、図、クイズ、シナリオの番号も更新します。
 - **教材のソースツリーに無いファイルがある。** `WebMvcConfig`、`LoggingJavaMailSender`、`AccessLogInterceptor`、`ServiceLoggingAspect`、エラー画面などです。Interceptor / AOP / メールログを動かすために足しています。
+- **ソースツリーの `SecurityConfig` の抜粋は、`permitAll` の対象から `/error` と `/demo/**` を省いている。** `/error` は Spring Boot がエラー画面を返す URL で、`/demo/**` は下の教材キャプチャ用のモックです。どちらの画面のファイル（`templates/error/` と `static/demo/`）も、ソースツリーに出していないためです。`formLogin` の設定は実ファイルのとおりです。
 - **`static/demo/` は教材キャプチャ用のモック HTML です。** 0 件や CSS 無しなど、起動中のアプリでは出しにくい見え方を撮るためのものです。業務の画面ではありません。Network タブは偽 HTML ではなく、headed Chrome の実物を撮ります。手順は `AGENTS.md` の「教材の画面キャプチャ」です。
 - **CSS 404 の Network キャプチャは、Puppeteer が `app.css` を intercept して 404 にしている。** シナリオ「一覧は出るが、画面だけ崩れている」の原因は、手前の nginx が `/shinsei/css/` を先に受け、ディスクの別ディレクトリを見ている例です。起動中の申請くん（Docker）に nginx は無く、静的ファイルはアプリが返します。画面・Network の URL は検証用ホスト `intranet.example.co.jp` です。
 - **同じシナリオの「WAR を Tomcat へ展開」は、この検証用環境だけの想定です。** 申請くん自体は `pom.xml` に war パッケージング指定が無く、常に `spring-boot-maven-plugin` の実行可能 jar（`java -jar`）で動きます。static も実際は jar 内の `classpath:/static/` で、`WEB-INF/classes/static` を外部 Tomcat に展開する構成ではありません。WAR/Tomcat 配置のトラブルシューティングを教えるためのシナリオ用の設定です。

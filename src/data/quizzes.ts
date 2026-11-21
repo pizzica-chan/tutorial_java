@@ -181,7 +181,7 @@ export const quizzes = {
   "java-mapper-xml": {
     id: "java-mapper-xml",
     question:
-      "RequestMapper.xml の `searchHistory` にある `AND r.status = #{requestStatus}` を `AND r.status = ${requestStatus}` に書き換えた。何が変わる？",
+      "RequestMapper.xml の `searchHistory` にある `AND r.title LIKE CONCAT('%', #{title}, '%')` を `AND r.title LIKE '%${title}%'` に書き換えた。何が変わる？",
     choices: [
       "動きは変わらない。書き方の好みの違いだけ",
       "PreparedStatement へのバインドではなく、値がそのまま SQL の文字列に埋め込まれるようになる。利用者からの入力を渡すと SQL インジェクションの危険がある",
@@ -859,7 +859,7 @@ export const quizzes = {
       "`RequestService.approve`（承認処理）",
     ],
     answer: 0,
-    explanation: "申請履歴は今回の対象ですが、`searchHistory` で別の SQL です。`detail` や `approve` も、`findMine` とは別の SQL や別の入口です。同じ `findMine` を呼んでいるのは JSON 一覧です。",
+    explanation: "申請履歴は今回の対象ですが、`searchHistory` で別の SQL です。`detail` や `approve` も、`findMine` とは別の SQL や別の入口です。業務の画面や API で同じ `findMine` を呼んでいるのは、JSON 一覧です。",
   },
   "sc-impact-role": {
     id: "sc-impact-role",

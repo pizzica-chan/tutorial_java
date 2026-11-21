@@ -1000,7 +1000,7 @@ public String history(
           type: "code",
           title: "操作時刻のサーバログ（申請くん）",
           lang: "text",
-          code: `==>  Preparing: SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at,
+          code: `==>  Preparing: SELECT r.id, r.title, r.status, r.applicant_id, r.approver_id, r.applicant_email, r.created_at, r.updated_at,
        a.display_name AS applicant_name, v.display_name AS approver_name
 FROM t_request r
 JOIN t_user a ON a.id = r.applicant_id
@@ -2454,7 +2454,7 @@ requestMapper.update(request);`,
           type: "callout",
           kind: "note",
           title: "申請くんに無いもの",
-          text: "enum、DB の CHECK、夜間バッチは、申請くんにはありません。CSV エクスポートがあるのは、ほかのシナリオを再現するための `InvestigationService` だけです。同じ語で検索してヒットしなければ、見積もりに「無い」と書けます。現場のアプリではヒットすることがあります。",
+          text: "enum、DB の CHECK、夜間バッチは、申請くんにはありません。CSV エクスポートがあるのは、ほかのシナリオを再現するための `InvestigationService` だけです。同じ語で検索して業務の処理にヒットしなければ、見積もりに「無い」と書けます。現場のアプリではヒットすることがあります。",
         },
         {
           type: "h2",
