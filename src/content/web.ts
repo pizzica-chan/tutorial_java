@@ -727,7 +727,7 @@ public class RequestController {
           title: "ログイン成功の応答（例）",
           highlightLines: [3],
           code: `HTTP/1.1 302 Found
-Location: /shinsei/requests
+Location: http://intranet.example.co.jp:8080/shinsei/requests
 Set-Cookie: JSESSIONID=AB12CD34; Path=/shinsei; HttpOnly`,
         },
         {

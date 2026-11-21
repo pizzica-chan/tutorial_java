@@ -596,7 +596,7 @@ mailService.notifyApplicant(request);`,
             [
               "`application\\.yml`",
               "`\\.` でドットをそのまま",
-              "「`application.yml`」はヒットする。escape せず `.` だけで探すと、「`application-yml`」のような文字列にも誤ってヒットしてしまう",
+              "「`application.yml`」はヒットする。エスケープせず `.` だけで探すと、「`application-yml`」のような文字列にも誤ってヒットしてしまう",
             ],
             [
               "`\\s`",
