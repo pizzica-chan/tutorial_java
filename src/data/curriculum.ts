@@ -32,7 +32,7 @@ export function lessonLead(lesson: Lesson, max = 72): string {
   return `${cut.trimEnd()}…`;
 }
 
-/** meta の説明文には書式が効かないので、コードスパンの記号を外す */
+/** meta の説明文は書式の無い文字としてそのまま使われるので、コードスパンの記号を外す */
 function plainText(text: string): string {
   return text.replaceAll("`", "");
 }
