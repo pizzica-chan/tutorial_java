@@ -29,17 +29,12 @@ const definedQuizzes = new Set(
   [...quizzesSrc.matchAll(/^\s+"([^"]+)": \{/gm)].map((match) => match[1]),
 );
 const quizIdsFromBlocks = [...sourceText.matchAll(/type:\s*"quiz",\s*id:\s*"([^"]+)"/g)].map((match) => match[1]);
-const quizIdsFromLab = [...read(join(src, "pages", "LabPage.tsx")).matchAll(/QuizBlock id="([^"]+)"/g)].map(
-  (match) => match[1],
-);
-
-for (const id of [...quizIdsFromBlocks, ...quizIdsFromLab]) {
+for (const id of quizIdsFromBlocks) {
   if (!definedQuizzes.has(id)) errors.push(`未定義のクイズ ID: ${id}`);
 }
 
 for (const id of definedQuizzes) {
-  const referenced = quizIdsFromBlocks.includes(id) || quizIdsFromLab.includes(id);
-  if (!referenced) errors.push(`未使用のクイズ ID: ${id}`);
+  if (!quizIdsFromBlocks.includes(id)) errors.push(`未使用のクイズ ID: ${id}`);
 }
 
 function unionMembers(source, typeName) {

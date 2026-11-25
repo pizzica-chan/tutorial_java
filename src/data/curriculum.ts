@@ -86,7 +86,6 @@ export function pageDescription(pathname: string): string {
   const fallback =
     "既存の Java Web アプリのソースを読み、不具合の原因を切り分ける方法を学ぶ教材です。";
   if (pathname === "/") return fallback;
-  if (pathname === "/lab") return "通読とは独立して、申請くんの HTTP とソース、リクエストの区間を確認できます。";
   if (pathname === "/cheatsheet") return "本文で使った Linux・Git・SQL・HTTP の調査コマンドの早見表です。";
   if (pathname === "/devtools") return "ブラウザの開発者ツールで調査に使える機能を、症状からの逆引きとタブごとの一覧でまとめました。";
   if (pathname === "/eclipse") return "既存の Java Web アプリを読むときや、調査・修正するときに使う Eclipse の便利機能とショートカットの早見表です。";
@@ -113,7 +112,6 @@ export function pageDescription(pathname: string): string {
 export function pageTitle(pathname: string): string {
   const site = "参画前に知っておきたい Java Web アプリの読み解き方";
   if (pathname === "/") return site;
-  if (pathname === "/lab") return `ラボ — ${site}`;
   if (pathname === "/cheatsheet") return `チートシート — ${site}`;
   if (pathname === "/devtools") return `開発者ツールの Tips — ${site}`;
   if (pathname === "/eclipse") return `Eclipse 便利機能集 — ${site}`;

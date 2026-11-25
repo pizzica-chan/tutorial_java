@@ -3,7 +3,6 @@ import { Layout } from "./components/Layout";
 import { HomePage } from "./pages/HomePage";
 import { TrackPage } from "./pages/TrackPage";
 import { LessonPage } from "./pages/LessonPage";
-import { LabPage } from "./pages/LabPage";
 import { CheatSheetPage } from "./pages/CheatSheetPage";
 import { DevtoolsPage } from "./pages/DevtoolsPage";
 import { EclipsePage } from "./pages/EclipsePage";
@@ -33,7 +32,6 @@ export default function App() {
         ))}
         <Route path="/tracks/:trackId" element={<TrackPage />} />
         <Route path="/tracks/:trackId/:lessonId" element={<LessonPage />} />
-        <Route path="/lab" element={<LabPage />} />
         <Route path="/cheatsheet" element={<CheatSheetPage />} />
         <Route path="/devtools" element={<DevtoolsPage />} />
         <Route path="/eclipse" element={<EclipsePage />} />

@@ -2802,14 +2802,6 @@ th {
   padding: 10px 12px;
 }
 
-.lab-page {
-  max-width: 1120px;
-}
-
-.lab-page h2 {
-  margin: 40px 0 8px;
-}
-
 .pager {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
