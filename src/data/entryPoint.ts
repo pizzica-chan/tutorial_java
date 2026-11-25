@@ -63,7 +63,7 @@ public class RequestController {
   }
 }`;
 
-/** ラボのソースツリー用 */
+/** ディレクトリ構成のソースツリーと、本文の抜粋用 */
 export const requestControllerSample = `@Controller
 @RequestMapping("/requests")
 @RequiredArgsConstructor

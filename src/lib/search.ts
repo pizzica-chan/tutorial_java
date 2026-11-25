@@ -112,13 +112,15 @@ function blockText(block: Block): string {
 function widgetText(name: WidgetName): string {
   switch (name) {
     case "explorer":
-      return projectFiles.map((item) => `${item.path}\n${item.note}\n${item.why}`).join("\n");
+      return projectFiles.map((item) => [item.path, item.note, item.why, item.code].join("\n")).join("\n");
     case "flow":
-      return requestFlow.map((item) => `${item.layer}\n${item.title}\n${item.detail}`).join("\n");
+      return requestFlow.map((item) => [item.layer, item.title, item.detail, item.code ?? ""].join("\n")).join("\n");
     case "stack":
-      return stackCases.map((item) => `${item.title}\n${item.symptom}`).join("\n");
+      return stackCases
+        .flatMap((item) => [item.title, item.symptom, ...item.lines.map((line) => `${line.text} ${line.note}`)])
+        .join("\n");
     case "http":
-      return `${httpSample.request}\n${httpSample.response}`;
+      return [httpSample.request, httpSample.response, ...httpSample.notes.map((note) => `${note.label} ${note.text}`)].join("\n");
     case "troubleshoot-map":
       return troubleshootMap
         .flatMap((group) => [
@@ -179,20 +181,6 @@ const documents: Doc[] = [
       [item.term, ...item.aliases, item.body].join("\n"),
       "glossary",
     ),
-  ),
-  toDoc(
-    "/lab",
-    "ラボ",
-    "LAB",
-    [
-      "ラボ ソースツリー HTTP リクエスト追跡 スタックトレース 申請くん",
-      ...projectFiles.map((file) => [file.path, file.note, file.why, file.code].join("\n")),
-      ...requestFlow.map((step) => [step.title, step.detail, step.code ?? ""].join("\n")),
-      ...stackCases.flatMap((item) => [item.title, item.symptom, ...item.lines.map((line) => `${line.text} ${line.note}`)]),
-      httpSample.request,
-      httpSample.response,
-      ...httpSample.notes.map((note) => `${note.label} ${note.text}`),
-    ].join("\n"),
   ),
   toDoc(
     "/cheatsheet",

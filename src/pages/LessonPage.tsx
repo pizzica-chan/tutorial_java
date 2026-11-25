@@ -62,8 +62,8 @@ export function LessonPage() {
               <Icon name="arrow-right" size={16} />
             </Link>
           ) : (
-            <Link className="btn btn-primary" to="/lab">
-              ラボへ
+            <Link className="btn btn-ghost" to={`/tracks/${track.id}`}>
+              目次へ
               <Icon name="arrow-right" size={16} />
             </Link>
           )}

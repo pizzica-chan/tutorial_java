@@ -188,13 +188,6 @@ export function Layout() {
           );
         })}
 
-        <div className="nav-label">LAB</div>
-        <NavLink to="/lab" className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`} onClick={() => setOpen(false)}>
-          <span className="no">
-            <Icon name="lab" size={14} />
-          </span>
-          <span>ラボ</span>
-        </NavLink>
         <div className="nav-label">CHEAT SHEET</div>
         <NavLink
           to="/cheatsheet"

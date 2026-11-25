@@ -17,7 +17,6 @@ export type IconName =
   | "book"
   | "route"
   | "wrench"
-  | "lab"
   | "quiz"
   | "shield"
   | "inbox"
@@ -131,12 +130,6 @@ const paths: Record<IconName, ReactNode> = {
   wrench: (
     <>
       <path d="M14.5 6.5a4 4 0 0 0-5.6 5.6L4 17l3 3 4.9-4.9a4 4 0 0 0 5.6-5.6L15 12l-3-3z" />
-    </>
-  ),
-  lab: (
-    <>
-      <path d="M9 3h6" />
-      <path d="M10 3v6.2L5 19a2 2 0 0 0 1.7 3h10.6A2 2 0 0 0 19 19l-5-9.8V3" />
     </>
   ),
   quiz: (
