@@ -305,7 +305,12 @@ export const devtools: DevtoolsSection[] = [
           {
             name: "Export HAR",
             how: "上部の下向き矢印のボタン",
-            desc: "一覧を HAR ファイル（通信の記録を保存する形式）に書き出す。他の人に通信の記録を渡すときに使う。新しい Chrome では、Cookie などを除いて書き出すのが既定。除かずに書き出したファイルは、扱いに注意する",
+            desc: "一覧を HAR ファイル（通信の記録を保存する形式）に書き出す。他の人に通信の記録を渡すときに使う。Chrome 130 以降は Cookie などを除いて書き出すのが既定。除かれるのは `Cookie`、`Set-Cookie`、`Authorization` のヘッダだけで、フォームで送った値とレスポンスの本文は残る",
+          },
+          {
+            name: "Import HAR",
+            how: "上部の上向き矢印のボタン。または HAR ファイルを一覧へドラッグ",
+            desc: "受け取った HAR ファイルを読み込み、書き出した人の PC と同じ一覧を表示する。Headers や Response もふだんと同じように確認できる",
           },
           {
             name: "Override content",

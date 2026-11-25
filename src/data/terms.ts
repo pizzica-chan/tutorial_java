@@ -1338,6 +1338,11 @@ export const terms: TermDef[] = [
     body: "ブラウザ開発者ツールの画面。実際に飛んだ HTTP リクエストを見られます。見られるのは、開発者ツールを開いているウィンドウの通信です。別ウィンドウで送ったリクエストは、元のウィンドウには出ません。",
   },
   {
+    term: "HAR",
+    aliases: ["HAR"],
+    body: "HTTP Archive の略。ブラウザが送ったリクエストと受け取ったレスポンスを、ヘッダや本文ごと保存するファイルの形式です。中身は JSON で、拡張子は `.har` です。開発者ツールの Network タブから書き出せます。別の PC の Network タブに読み込むと、書き出したときと同じ一覧を確認できます。",
+  },
+  {
     term: "Elements タブ",
     aliases: ["Elements タブ", "Elementsタブ", "Elements（要素）", "Elements"],
     body: "ブラウザ開発者ツールの画面。現在のページにある HTML 要素と、適用されている CSS を確認できます。サーバが返した後に JavaScript が書き換えた内容も反映されます。",
