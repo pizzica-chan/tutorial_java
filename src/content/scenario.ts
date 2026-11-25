@@ -212,6 +212,10 @@ export const scenarioTrack: Track = {
           text: "原因の追跡",
         },
         {
+          type: "h3",
+          text: "`RequestService.java:48` を開く",
+        },
+        {
           type: "p",
           text: "上のログには `NullPointerException` がありました。",
         },
@@ -246,6 +250,10 @@ if (request == null) {
 if (!request.getApproverId().equals(approverId)) {
   throw new ForbiddenException("承認権限がありません");
 }`,
+        },
+        {
+          type: "h3",
+          text: "ID 16 のレコード",
         },
         {
           type: "p",
@@ -457,6 +465,10 @@ requestService.approve(id, user.getId());`,
           text: "原因の追跡",
         },
         {
+          type: "h3",
+          text: "2 回届いた承認のリクエスト",
+        },
+        {
           type: "p",
           text: "アプリのログで、該当の申請 ID（13）を検索しました。",
         },
@@ -476,7 +488,15 @@ requestService.approve(id, user.getId());`,
         },
         {
           type: "p",
-          text: "同じ `POST /shinsei/requests/13/approve` が、`nio-8080-exec-3` と `nio-8080-exec-7` という別々のスレッドで、約 2 秒の間隔で 2 回実行されています。1 回目は `update` のあと、`end` まで約 3 秒かかっています。佐藤花子に確認すると、画面が変わらなかったので、もう一度承認を押し、確認ダイアログでも OK を選んでいました。申請詳細画面の承認フォームを見ましょう。",
+          text: "同じ `POST /shinsei/requests/13/approve` が、`nio-8080-exec-3` と `nio-8080-exec-7` という別々のスレッドで、約 2 秒の間隔で 2 回実行されています。1 回目は `update` のあと、`end` まで約 3 秒かかっています。佐藤花子に確認すると、画面が変わらなかったので、もう一度承認を押し、確認ダイアログでも OK を選んでいました。",
+        },
+        {
+          type: "h3",
+          text: "承認ボタンの JavaScript",
+        },
+        {
+          type: "p",
+          text: "申請詳細画面の承認フォームを見ましょう。",
         },
         {
           type: "code",
@@ -514,6 +534,10 @@ document.querySelectorAll("form.js-approve-confirm").forEach((form) => {
         {
           type: "p",
           text: "確認ダイアログで「キャンセル」を選んだときだけ、送信を止めています。「OK」を選ぶと、ボタンを無効化することも、二重に送れないようにすることもなく、そのまま通常のフォーム送信が進みます。この確認は、うっかり押したことに気づくためのもので、二重送信を防ぐ仕組みではありません。",
+        },
+        {
+          type: "h3",
+          text: "承認の処理と更新の SQL",
         },
         {
           type: "p",
@@ -777,6 +801,10 @@ java.lang.StringIndexOutOfBoundsException: begin 0, end 10, length 4
           text: "原因の追跡",
         },
         {
+          type: "h3",
+          text: "実行された SQL",
+        },
+        {
           type: "p",
           text: "操作時刻のログで `findMine` を見ましょう。",
         },
@@ -797,7 +825,15 @@ ORDER BY r.created_at DESC
         },
         {
           type: "p",
-          text: "`Parameters` は 7, 7、`Total` は 0 です。検証用環境の DB で、同じ条件を実行してみましょう。",
+          text: "`Parameters` は 7, 7、`Total` は 0 です。",
+        },
+        {
+          type: "h3",
+          text: "2 つの環境の DB を比べる",
+        },
+        {
+          type: "p",
+          text: "検証用環境の DB で、同じ条件を実行してみましょう。",
         },
         {
           type: "code",
@@ -839,7 +875,15 @@ WHERE (applicant_id = 7 OR approver_id = 7)
         },
         {
           type: "p",
-          text: "ローカル環境では 4 件あります。WHERE は検証用環境と同じなので、違うのは各環境の DB に入っているレコードです。検証用環境で、`status` の条件だけを外して、山田に関係する申請を見てみましょう。",
+          text: "ローカル環境では 4 件あります。WHERE は検証用環境と同じなので、違うのは各環境の DB に入っているレコードです。",
+        },
+        {
+          type: "h3",
+          text: "承認済みのレコード",
+        },
+        {
+          type: "p",
+          text: "検証用環境で、`status` の条件だけを外して、山田に関係する申請を見てみましょう。",
         },
         {
           type: "code",
@@ -947,6 +991,10 @@ WHERE (applicant_id = 7 OR approver_id = 7);`,
           text: "原因の追跡",
         },
         {
+          type: "h3",
+          text: "Controller と Service",
+        },
+        {
           type: "p",
           text: "画面に表示している検索結果は、テンプレートが `${results}` から出しています。Controller で `results` に何を載せているかを見ましょう。",
         },
@@ -993,6 +1041,10 @@ public String history(
 }`,
         },
         {
+          type: "h3",
+          text: "実行された SQL",
+        },
+        {
           type: "p",
           text: "操作時刻の MyBatis ログが、実際に走った SQL です。",
         },
@@ -1034,6 +1086,10 @@ ORDER BY created_at DESC;`,
           ],
         },
         {
+          type: "h3",
+          text: "Mapper の XML",
+        },
+        {
           type: "p",
           text: "Mapper の XML を開き、SQL に `status` の絞り込み条件を足している箇所を見ましょう。",
         },
@@ -1056,6 +1112,10 @@ ORDER BY created_at DESC;`,
         {
           type: "p",
           text: "`requestStatus` が空でなければ、SQL に `AND r.status = #{requestStatus}` が足されます。",
+        },
+        {
+          type: "h3",
+          text: "Controller の引数とフォームの `name`",
         },
         {
           type: "p",
@@ -1204,6 +1264,10 @@ GET /shinsei/requests/history                   200`,
           text: "原因の追跡",
         },
         {
+          type: "h3",
+          text: "「戻る」の URL を組み立てる処理",
+        },
+        {
           type: "p",
           text: "詳細画面の「戻る」リンクは、テンプレートの `backTo` をそのまま `href` にしています。",
         },
@@ -1265,7 +1329,15 @@ GET /shinsei/requests/history                   200`,
         },
         {
           type: "p",
-          text: "ここで読んでいるキーは `historyCondition` です。検索条件をセッションに保存している側も見てみましょう。",
+          text: "ここで読んでいるキーは `historyCondition` です。",
+        },
+        {
+          type: "h3",
+          text: "検索条件を保存する処理",
+        },
+        {
+          type: "p",
+          text: "検索条件をセッションに保存している側も見てみましょう。",
         },
         {
           type: "code",
@@ -1357,6 +1429,10 @@ GET /shinsei/requests/history                   200`,
           text: "原因の追跡",
         },
         {
+          type: "h3",
+          text: "テンプレートと Entity",
+        },
+        {
           type: "p",
           text: "まずテンプレートで、「承認日時」がどの値を出しているかを確認しましょう。",
         },
@@ -1378,6 +1454,10 @@ GET /shinsei/requests/history                   200`,
           highlightLines: [2],
           code: `private LocalDateTime createdAt;
 private LocalDateTime approvedAt;`,
+        },
+        {
+          type: "h3",
+          text: "DB と実行された SQL",
         },
         {
           type: "p",
@@ -1411,7 +1491,15 @@ private LocalDateTime approvedAt;`,
         },
         {
           type: "p",
-          text: "SQL にも `r.updated_at` があり、DB にも値があります。ここまでは正しく動いています。残るのは、SELECT の結果を `RequestEntity` へ渡す部分です。`RequestMapper.xml` の `searchHistory` を見ましょう。",
+          text: "SQL にも `r.updated_at` があり、DB にも値があります。ここまでは正しく動いています。残るのは、SELECT の結果を `RequestEntity` へ渡す部分です。",
+        },
+        {
+          type: "h3",
+          text: "カラムとフィールドの対応",
+        },
+        {
+          type: "p",
+          text: "`RequestMapper.xml` の `searchHistory` を見ましょう。",
         },
         {
           type: "code",
@@ -1848,6 +1936,10 @@ Content-Type: text/html;charset=UTF-8`,
           text: "原因の追跡",
         },
         {
+          type: "h3",
+          text: "ログの例外",
+        },
+        {
           type: "p",
           text: "操作時刻のログを見ましょう。",
         },
@@ -1875,7 +1967,15 @@ com.mysql.cj.exceptions.ConnectionIsClosedException: No operations allowed after
         },
         {
           type: "p",
-          text: "いちばん下の原因（root cause）の `ConnectionIsClosedException` は、使えなくなった接続を扱おうとしたときの例外です。通信が止まった理由までは書かれていません。root cause の行だけで判断せず、ERROR 行のメッセージと WARN もあわせて読みましょう。まず、接続先の設定を確認しましょう。",
+          text: "いちばん下の原因（root cause）の `ConnectionIsClosedException` は、使えなくなった接続を扱おうとしたときの例外です。通信が止まった理由までは書かれていません。root cause の行だけで判断せず、ERROR 行のメッセージと WARN もあわせて読みましょう。",
+        },
+        {
+          type: "h3",
+          text: "接続の設定",
+        },
+        {
+          type: "p",
+          text: "まず、接続先の設定を確認しましょう。",
         },
         {
           type: "code",
@@ -1889,7 +1989,15 @@ com.mysql.cj.exceptions.ConnectionIsClosedException: No operations allowed after
         },
         {
           type: "p",
-          text: "ホスト名、ポート、DB 名に誤りは見当たりません。設定が正しいなら、次はネットワークの疎通です。この設定に書かれているホストとポートへ、アプリが動いているサーバから、まず TCP のポートが開いているかを確認しましょう。",
+          text: "ホスト名、ポート、DB 名に誤りは見当たりません。設定が正しいなら、次はネットワークの疎通です。",
+        },
+        {
+          type: "h3",
+          text: "TCP の疎通と経路",
+        },
+        {
+          type: "p",
+          text: "この設定に書かれているホストとポートへ、アプリが動いているサーバから、まず TCP のポートが開いているかを確認しましょう。",
         },
         {
           type: "code",
@@ -1990,6 +2098,10 @@ traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packet
           text: "原因の追跡",
         },
         {
+          type: "h3",
+          text: "プロセスと起動のエラー",
+        },
+        {
           type: "p",
           text: "検証用環境のサーバに SSH でログインし、申請くんのプロセスを探しました。",
         },
@@ -2014,7 +2126,15 @@ Exception in thread "main" java.io.FileNotFoundException: /var/log/shinsei-kun/a
         },
         {
           type: "p",
-          text: "ログファイルへの書き込みで失敗しています。ログの出力先ディレクトリの権限を見ましょう。",
+          text: "ログファイルへの書き込みで失敗しています。",
+        },
+        {
+          type: "h3",
+          text: "ログの出力先の権限",
+        },
+        {
+          type: "p",
+          text: "ログの出力先ディレクトリの権限を見ましょう。",
         },
         {
           type: "code",
@@ -2032,6 +2152,10 @@ drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
           kind: "trap",
           title: "SSH でログインできることと、アプリが動くことは別",
           text: "`opsuser` は SSH でログインでき、sudo で何でもできる強い権限を持っていました。それでも、ディレクトリを作った時点の所有者・グループがアプリの実行ユーザ（`appuser`）に合っていなければ、アプリはそこへ書き込めません。ディレクトリやファイルを作る作業では、所有者まで合わせる必要があります。",
+        },
+        {
+          type: "h3",
+          text: "所有者を直す",
         },
         {
           type: "p",
@@ -2131,6 +2255,10 @@ drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
           text: "原因の追跡",
         },
         {
+          type: "h3",
+          text: "Tomcat の展開先の CSS",
+        },
+        {
           type: "p",
           text: "Network タブの 404 は `/shinsei/css/app.css` でした。一覧の HTML のリクエストは Java まで届いています。この検証用環境は、申請くんを WAR にして Tomcat へ載せる構成です（配布している Docker 版は jar 起動で、構成が異なります）。WAR を展開した先に `app.css` があるかを、サーバ上で見ます。WAR では static が `WEB-INF/classes/static` に入ります。",
         },
@@ -2149,7 +2277,15 @@ drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
         },
         {
           type: "p",
-          text: "ファイルはあります。CSS のリクエストも Java まで届いていれば 200 になるはずなので、Java より手前に何か挟まっていないか疑いましょう。この検証用環境では、手前に nginx が動いています。nginx の設定を見ます。",
+          text: "ファイルはあります。CSS のリクエストも Java まで届いていれば 200 になるはずなので、Java より手前に何か挟まっていないか疑いましょう。この検証用環境では、手前に nginx が動いています。",
+        },
+        {
+          type: "h3",
+          text: "手前の nginx の設定",
+        },
+        {
+          type: "p",
+          text: "nginx の設定を見ます。",
         },
         {
           type: "code",
@@ -2178,6 +2314,10 @@ ls: cannot access '/var/www/html/css/': No such file or directory`,
         {
           type: "p",
           text: "手前の nginx が `/shinsei/css/` を先に受け、ディスクの別ディレクトリを見ています。そこには `app.css` が無いので 404 となっています。",
+        },
+        {
+          type: "h3",
+          text: "直し方",
         },
         {
           type: "p",

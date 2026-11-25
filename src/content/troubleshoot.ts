@@ -218,6 +218,10 @@ export const troubleshootTrack: Track = {
           },
         },
         {
+          type: "h3",
+          text: "設定ファイルの更新時刻",
+        },
+        {
           type: "p",
           text: "更新時刻は `ls -l` でも出ますが、`stat` の方が詳しく分かります。",
         },
@@ -250,6 +254,10 @@ Change: 2026-08-30 09:58:11.000000000 +0900`,
           kind: "note",
           title: "WAR や JAR の展開でも同じ",
           text: "WAR や JAR はアーカイブの中に元のタイムスタンプ（ビルド時刻）を持っていて、展開時にそれを復元します。復元そのものもメタデータの変更なので、Modify はビルド時刻のまま、Change は展開した時刻になります。`application.yml` を jar の外部に置く構成（外だし設定）もよく使われます。そのときはそのファイルの Change を見ましょう。jar に同梱している構成なら、`application.yml` は単体のファイルとしては存在しないので、WAR や JAR ファイルそのものの Change を見ましょう。",
+        },
+        {
+          type: "h3",
+          text: "コンテナの作成時刻",
         },
         {
           type: "p",
@@ -715,6 +723,12 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
           text: "例外のスタックトレースとのもう 1 つの違いは、最上段の意味です。例外のスタックトレースでは、最上段は例外が起きた場所でした。スレッドダンプでは、取った瞬間にそのスレッドが実行していた場所、または待っていた場所です。",
         },
         {
+          type: "callout",
+          kind: "note",
+          title: "書式は OpenJDK 系の JVM のもの",
+          text: "このページの例は、OpenJDK 系の JVM（Temurin や Oracle JDK など）が出すスレッドダンプです。ほかの JVM では、書式が違うことがあります。",
+        },
+        {
           type: "h2",
           text: "スレッドダンプを取る",
         },
@@ -748,6 +762,10 @@ Caused by: java.sql.SQLIntegrityConstraintViolationException: Column 'title' can
           text: "`jcmd PID Thread.print -l` でもスレッドダンプを取れます。いずれも動いている Java プロセスを終了させずに取得します。数秒おきに 2〜3 回取るときは、保存するファイル名を変えて、前の出力を残しましょう。比べ方は後の「数回取って比べる」で説明します。",
         },
         {
+          type: "h3",
+          text: "コンテナの中で取る",
+        },
+        {
           type: "p",
           text: "Docker では、対象のコンテナの中でコマンドを実行します。申請くんのイメージは JRE だけなので、`jstack` や `jcmd` が入っていません。代わりに、次のコマンドで Java プロセスに `kill -3` を送り、標準出力に書き出されたダンプを確認しましょう。",
         },
@@ -770,12 +788,6 @@ docker logs コンテナ名`,
             label: "トラブル例：処理が返ってこない（スレッドダンプ）",
             to: "/tracks/troubleshoot/p-hang",
           },
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "書式は OpenJDK 系の JVM のもの",
-          text: "このページの例は、OpenJDK 系の JVM（Temurin や Oracle JDK など）が出すスレッドダンプです。ほかの JVM では、書式が違うことがあります。",
         },
         {
           type: "h2",
@@ -1312,6 +1324,10 @@ docker logs shinsei-hang`,
         },
         { type: "diagram", name: "not-found" },
         {
+          type: "h2",
+          text: "404 になる 2 つの場合",
+        },
+        {
           type: "p",
           text: "404 になる場合は、大きく分けて 2 つあります。",
         },
@@ -1344,6 +1360,10 @@ docker logs shinsei-hang`,
             ["GET では出るが POST で 404", "HTTP メソッドのマッピング。Spring の `@GetMapping` しか無いなど"],
             ["リンク先だけ 404", "テンプレートの `th:href` / action と、実際のマッピング"],
           ],
+        },
+        {
+          type: "h2",
+          text: "ソースで URL を探すとき",
         },
         {
           type: "p",
@@ -2371,6 +2391,10 @@ public int remindAll(Long userId) {
           text: "Docker を起動し、端末で `shinsei-kun` ディレクトリへ移動しましょう。通常の app コンテナが起動している場合は、先に `docker compose stop app` で 8080 番ポートを空けます。",
         },
         {
+          type: "h3",
+          text: "例 1 を試す",
+        },
+        {
           type: "p",
           text: "例 1 では先に DB へ山田の申請を 30 万件足します。そのあと、ヒープの上限を 256MB にして、再現用の申請くんを起動します。",
         },
@@ -2398,6 +2422,10 @@ docker compose run --build --service-ports --name shinsei-oom -e SPRING_PROFILES
           code: `docker compose exec db mysql -uapp -papp shinsei_dev -e "DELETE FROM t_request WHERE id > 16"`,
         },
         {
+          type: "h3",
+          text: "例 2 を試す",
+        },
+        {
           type: "p",
           text: "例 2 はデータを足さずに試せます。次を実行すると、起動の途中で終了します。",
         },
@@ -2410,6 +2438,10 @@ docker compose run --build --service-ports --name shinsei-oom -e SPRING_PROFILES
         {
           type: "p",
           text: "Metaspace の使用量を確かめるときは、`docker compose up -d app` で通常どおり起動し、ログイン画面を開いてから `docker compose exec app kill -3 1` を実行しましょう。出力は `docker compose logs app` の末尾に出ます。",
+        },
+        {
+          type: "h3",
+          text: "例 3 を試す",
         },
         {
           type: "p",

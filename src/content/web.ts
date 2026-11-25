@@ -541,6 +541,10 @@ _csrf=8f3a2b1c-4e5f-6789-abcd-ef0123456789&title=%E4%BA%A4%E9%80%9A%E8%B2%BB%E7%
           size: "small",
         },
         {
+          type: "h3",
+          text: "受け取る Java メソッド",
+        },
+        {
           type: "p",
           text: "送信先の `POST /shinsei/requests` は、`RequestController.create` が受け取ります。",
         },
@@ -623,6 +627,10 @@ public class RequestController {
         {
           type: "p",
           text: "POST のあとにリダイレクトするのは、再読み込みで同じ POST がもう一度送られないようにするためです。POST の応答の画面のまま再読み込みすると、ブラウザは再送信してよいかを確認します。再送信すると同じ POST がもう一度届くので、登録の処理なら同じ内容が 2 件登録されることがあります。リダイレクトしておけば、再読み込みしても一覧の GET が送られるだけです。",
+        },
+        {
+          type: "h3",
+          text: "入力エラーのとき",
         },
         {
           type: "p",
