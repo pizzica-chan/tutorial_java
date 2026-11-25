@@ -280,6 +280,10 @@ export const serverNetworkTrack: Track = {
           text: "ここまでの考え方を、申請くんのファイルで確認しましょう。app のイメージは `Dockerfile` から作り、db には公開されている `mysql:8.0` のイメージを使います。",
         },
         {
+          type: "h3",
+          text: "`Dockerfile`",
+        },
+        {
           type: "code",
           title: "Dockerfile（申請くん・抜粋）",
           lang: "dockerfile",
@@ -293,6 +297,10 @@ ENTRYPOINT ["java", "-Duser.timezone=Asia/Tokyo", "-jar", "app.jar"]`,
         {
           type: "p",
           text: "`FROM` は元にするイメージ（ベースイメージ）、`ENTRYPOINT` はコンテナを起動したときに実行するコマンドです。この例では、イメージに含まれる JRE で `app.jar` を起動します。`COPY --from=build` は、この抜粋では省いた前半の段階（`build` という名前のステージで、Maven で jar を作る）から、できた jar をコピーする指定です。",
+        },
+        {
+          type: "h3",
+          text: "`docker-compose.yml` の接続設定",
         },
         {
           type: "p",
@@ -992,6 +1000,22 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
           ],
         },
         {
+          type: "callout",
+          kind: "note",
+          title: "内蔵 Tomcat だけのとき",
+          text: "Spring Boot を `java -jar` だけで動かし、手前に Apache / nginx が無い環境では、HTTP サーバ用のログはありません。静的ファイルもアプリが返すことが多く、切り分けは Network タブとアプリログで足りることが多いです。",
+        },
+        {
+          type: "callout",
+          kind: "tip",
+          title: "複数台",
+          text: "アプリが複数台で動き、手前にロードバランサがあると、ログは操作のたびに別のサーバ（インスタンス）に出ることがあります。まず、その操作を処理したサーバを特定してから読みましょう。",
+        },
+        {
+          type: "h2",
+          text: "`access.log` の 1 行を読む",
+        },
+        {
           type: "code",
           title: "nginx の access.log の例（combined 形式）",
           highlightLines: [2],
@@ -1021,18 +1045,6 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
           kind: "note",
           title: "接続元 IP は NAT されていることがある",
           text: "先頭の IP は、あくまで HTTP サーバに直接つないできた相手のアドレスです。手前にロードバランサやリバースプロキシ、社内 NAT があると、ここに残るのはその機器の IP で、利用者本人の IP ではないことがあります。本来の送信元は `X-Forwarded-For` ヘッダに入っていることがありますが、詰め方は構成次第で、途中の機器が正しく引き継いでいるとは限りません。",
-        },
-        {
-          type: "callout",
-          kind: "note",
-          title: "内蔵 Tomcat だけのとき",
-          text: "Spring Boot を `java -jar` だけで動かし、手前に Apache / nginx が無い環境では、HTTP サーバ用のログはありません。静的ファイルもアプリが返すことが多く、切り分けは Network タブとアプリログで足りることが多いです。",
-        },
-        {
-          type: "callout",
-          kind: "tip",
-          title: "複数台",
-          text: "アプリが複数台で動き、手前にロードバランサがあると、ログは操作のたびに別のサーバ（インスタンス）に出ることがあります。まず、その操作を処理したサーバを特定してから読みましょう。",
         },
         { type: "quiz", id: "ts-http-log" },
       ],

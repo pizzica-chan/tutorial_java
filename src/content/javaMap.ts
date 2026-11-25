@@ -1070,6 +1070,14 @@ if (updated == 0) {
         },
         { type: "diagram", name: "view-file", caption: "`return \"request/list\"` が `templates/request/list.html` を指します。" },
         {
+          type: "p",
+          text: "`@RestController` は templates を使いません。「Controller / Service / Repository / Mapper」で説明したように、JSON を返す Web API では出口が JSON になることが多いです。",
+          link: {
+            label: "Controller / Service / Repository / Mapper",
+            to: "/tracks/java-map/layers",
+          },
+        },
+        {
           type: "h2",
           text: "静的ファイル（static）",
         },
@@ -1117,8 +1125,18 @@ if (updated == 0) {
           text: "ブラウザは HTML のあと、CSS と JS を別リクエストで取りに行きます。これらの静的ファイルは、Controller や Service を通りません。ただし Filter や、内蔵のサーブレットコンテナ自体は通ることがあります。",
         },
         {
+          type: "callout",
+          kind: "trap",
+          title: "見た目だけ崩れる",
+          text: "画面は出るのに CSS だけ適用されないときは、Network タブで `/shinsei/css/app.css` が 404 になっていないかを見ましょう。ファイルの有無と URL のずれが多いです。崩れた画面の例は、シナリオ章の「一覧は出るが、画面だけ崩れている」にあります。",
+        },
+        {
+          type: "h3",
+          text: "HTML に直接書く CSS と JS",
+        },
+        {
           type: "p",
-          text: "一方で、CSS や JS をテンプレートや HTML に直接書いている画面もあります。申請くんは static に分けて置いていますが、見た目や動きを直すときは templates 内も見ましょう。",
+          text: "CSS や JS をテンプレートや HTML に直接書いている画面もあります。申請くんは static に分けて置いていますが、見た目や動きを直すときは templates 内も見ましょう。",
         },
         {
           type: "ul",
@@ -1139,20 +1157,6 @@ if (updated == 0) {
 <script>
   function confirmDelete() { /* ... */ }
 </script>`,
-        },
-        {
-          type: "callout",
-          kind: "trap",
-          title: "見た目だけ崩れる",
-          text: "画面は出るのに CSS だけ適用されないときは、Network タブで `/shinsei/css/app.css` が 404 になっていないかを見ましょう。ファイルの有無と URL のずれが多いです。崩れた画面の例は、シナリオ章の「一覧は出るが、画面だけ崩れている」にあります。",
-        },
-        {
-          type: "p",
-          text: "`@RestController` は templates を使いません。「Controller / Service / Repository / Mapper」で説明したように、JSON を返す Web API では出口が JSON になることが多いです。",
-          link: {
-            label: "Controller / Service / Repository / Mapper",
-            to: "/tracks/java-map/layers",
-          },
         },
       ],
     },
