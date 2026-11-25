@@ -152,6 +152,16 @@ export const devtools: DevtoolsSection[] = [
             links: [{ label: "ネットワークの疎通確認", to: "/tracks/server-network/net-check" }],
           },
           {
+            symptom: "報告者の PC でしか起きない通信を、自分の PC で確かめたい",
+            tool: "Network（Export HAR / Import HAR）",
+            check: [
+              "報告者に Network タブを開いたまま再現してもらいましょう。画面が切り替わる操作なら、先に Keep log も付けてもらいましょう。",
+              "Export HAR で一覧を書き出して送ってもらい、自分の Network タブに Import HAR で読み込みましょう。",
+              "HAR にはフォームで送った値やレスポンスの本文が残ります。ログインを済ませてから記録を始めてもらいましょう。",
+            ],
+            links: [{ label: "調査手順", to: "/tracks/troubleshoot/loop" }],
+          },
+          {
             symptom: "リクエストが多すぎて、失敗したものが見つからない",
             tool: "Network（フィルタ）",
             check: [
