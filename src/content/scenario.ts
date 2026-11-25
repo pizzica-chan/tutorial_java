@@ -1937,7 +1937,7 @@ Content-Type: text/html;charset=UTF-8`,
         },
         {
           type: "h3",
-          text: "ログの例外",
+          text: "ログに出た例外",
         },
         {
           type: "p",
@@ -1971,7 +1971,7 @@ com.mysql.cj.exceptions.ConnectionIsClosedException: No operations allowed after
         },
         {
           type: "h3",
-          text: "接続の設定",
+          text: "接続先の設定",
         },
         {
           type: "p",
@@ -2099,7 +2099,7 @@ traceroute to stg-db.example.internal (10.30.40.50), 30 hops max, 60 byte packet
         },
         {
           type: "h3",
-          text: "プロセスと起動のエラー",
+          text: "プロセスの有無と起動時のエラー",
         },
         {
           type: "p",
@@ -2155,7 +2155,7 @@ drwxr-xr-x 2 opsuser opsuser 4096 Aug 20 09:10 shinsei-kun`,
         },
         {
           type: "h3",
-          text: "所有者を直す",
+          text: "所有者とグループを直す",
         },
         {
           type: "p",
