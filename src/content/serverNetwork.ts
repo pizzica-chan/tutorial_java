@@ -1013,7 +1013,7 @@ java    1842 appuser   8w   REG    8,1    48213 123457 app.log`,
         },
         {
           type: "h2",
-          text: "`access.log` の 1 行を読む",
+          text: "`access.log` の読み方",
         },
         {
           type: "code",
