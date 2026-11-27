@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://tutorial-java.kitchen1217.workers.dev/sitemap.xml
